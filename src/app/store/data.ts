@@ -35,6 +35,25 @@ const AUTH_KEY = "ccms_auth";
 const INITIALIZED_KEY = "ccms_initialized";
 const DATA_VERSION_KEY = "ccms_data_version";
 const DATA_VERSION = "2";
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000/api";
+
+async function apiRequest(path: string, options?: RequestInit) {
+  const response = await fetch(`${API_BASE}${path}`, {
+    headers: {
+      "Content-Type": "application/json",
+      ...(options?.headers || {}),
+    },
+    ...options,
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(text || `Request failed with status ${response.status}`);
+  }
+
+  if (response.status === 204) return null;
+  return response.json();
+}
 
 // Seed data (equivalent to INSERT INTO SQL statements)
 const INITIAL_DEPARTMENTS: Department[] = [
@@ -159,6 +178,21 @@ function initializeData(): void {
   localStorage.setItem(DATA_VERSION_KEY, DATA_VERSION);
 }
 
+export function setDepartments(value: Department[]): void {
+  localStorage.setItem(DEPARTMENTS_KEY, JSON.stringify(value));
+  localStorage.setItem(INITIALIZED_KEY, "true");
+}
+
+export function setCharters(value: Charter[]): void {
+  localStorage.setItem(CHARTERS_KEY, JSON.stringify(value));
+  localStorage.setItem(INITIALIZED_KEY, "true");
+}
+
+export function setRatings(value: Rating[]): void {
+  localStorage.setItem(RATINGS_KEY, JSON.stringify(value));
+  localStorage.setItem(INITIALIZED_KEY, "true");
+}
+
 // =============================================================================
 // DEPARTMENTS - CRUD Operations (equivalent to PHP functions with PDO queries)
 // =============================================================================
@@ -179,6 +213,10 @@ export function createDepartment(data: Omit<Department, "id">): Department {
   const newDept: Department = { ...data, id: newId };
   departments.push(newDept);
   localStorage.setItem(DEPARTMENTS_KEY, JSON.stringify(departments));
+  apiRequest("/departments", {
+    method: "POST",
+    body: JSON.stringify(data),
+  }).catch(() => void 0);
   return newDept;
 }
 
@@ -191,12 +229,17 @@ export function updateDepartment(
   if (idx === -1) return false;
   departments[idx] = { id, ...data };
   localStorage.setItem(DEPARTMENTS_KEY, JSON.stringify(departments));
+  apiRequest(`/departments/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(data),
+  }).catch(() => void 0);
   return true;
 }
 
 export function deleteDepartment(id: number): boolean {
   const departments = getDepartments().filter((d) => d.id !== id);
   localStorage.setItem(DEPARTMENTS_KEY, JSON.stringify(departments));
+  apiRequest(`/departments/${id}`, { method: "DELETE" }).catch(() => void 0);
   return true;
 }
 
@@ -228,6 +271,10 @@ export function createCharter(data: Omit<Charter, "id" | "created_at">): Charter
   };
   charters.push(newCharter);
   localStorage.setItem(CHARTERS_KEY, JSON.stringify(charters));
+  apiRequest("/charters", {
+    method: "POST",
+    body: JSON.stringify(data),
+  }).catch(() => void 0);
   return newCharter;
 }
 
@@ -240,12 +287,17 @@ export function updateCharter(
   if (idx === -1) return false;
   charters[idx] = { ...charters[idx], ...data };
   localStorage.setItem(CHARTERS_KEY, JSON.stringify(charters));
+  apiRequest(`/charters/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(data),
+  }).catch(() => void 0);
   return true;
 }
 
 export function deleteCharter(id: number): boolean {
   const charters = getCharters().filter((c) => c.id !== id);
   localStorage.setItem(CHARTERS_KEY, JSON.stringify(charters));
+  apiRequest(`/charters/${id}`, { method: "DELETE" }).catch(() => void 0);
   return true;
 }
 
@@ -280,6 +332,10 @@ export function addRating(data: Omit<Rating, "id" | "created_at">): Rating {
   };
   ratings.push(newRating);
   localStorage.setItem(RATINGS_KEY, JSON.stringify(ratings));
+  apiRequest(`/charters/${data.charter_id}/ratings`, {
+    method: "POST",
+    body: JSON.stringify({ rating: data.rating, comment: data.comment }),
+  }).catch(() => void 0);
   return newRating;
 }
 
@@ -299,6 +355,25 @@ export function login(username: string, password: string): boolean {
     return true;
   }
   return false;
+}
+
+export async function loginWithApi(username: string, password: string): Promise<boolean> {
+  try {
+    const result = await apiRequest("/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ username, password }),
+    });
+    if (result?.user?.username) {
+      localStorage.setItem(
+        AUTH_KEY,
+        JSON.stringify({ loggedIn: true, username: result.user.username, timestamp: Date.now() })
+      );
+      return true;
+    }
+    return false;
+  } catch {
+    return login(username, password);
+  }
 }
 
 export function logout(): void {
