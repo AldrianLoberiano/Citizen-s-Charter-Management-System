@@ -7,7 +7,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router";
 import { Shield, Eye, EyeOff, AlertCircle, Lock, User } from "lucide-react";
-import { login, isAuthenticated } from "../../store/data";
+import { loginWithApi, isAuthenticated } from "../../store/data";
 
 export function Login() {
   const [username, setUsername] = useState("");
@@ -42,13 +42,15 @@ export function Login() {
 
     // Simulate server response delay
     setTimeout(() => {
-      const success = login(username.trim(), password);
-      if (success) {
-        navigate("/admin/dashboard", { replace: true });
-      } else {
-        setError("Invalid username or password. Please try again.");
-        setLoading(false);
-      }
+      loginWithApi(username.trim(), password)
+        .then((success) => {
+          if (success) {
+            navigate("/admin/dashboard", { replace: true });
+            return;
+          }
+          setError("Invalid username or password. Please try again.");
+        })
+        .finally(() => setLoading(false));
     }, 600);
   };
 
