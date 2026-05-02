@@ -34,7 +34,7 @@ const RATINGS_KEY = "ccms_ratings";
 const AUTH_KEY = "ccms_auth";
 const INITIALIZED_KEY = "ccms_initialized";
 const DATA_VERSION_KEY = "ccms_data_version";
-const DATA_VERSION = "2";
+const DATA_VERSION = "3";
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000/api";
 
 async function apiRequest(path: string, options?: RequestInit) {
