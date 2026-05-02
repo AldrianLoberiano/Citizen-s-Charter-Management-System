@@ -326,7 +326,7 @@ export function Departments() {
               onChange={(e) =>
                 setFormData((p) => ({ ...p, name: e.target.value }))
               }
-              placeholder="e.g., Civil Registry Office"
+              placeholder="e.g., Public Works Office"
               className={`w-full px-4 py-2.5 border rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow ${
                 formErrors.name ? "border-red-400" : "border-slate-300"
               }`}
