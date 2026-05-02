@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
+import fs from "fs";
 import multer from "multer";
 import { pool } from "./db.js";
 
@@ -19,6 +20,8 @@ const adminUsername = process.env.ADMIN_USERNAME || "admin";
 const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
 
 const uploadsDir = path.join(__dirname, "../uploads/charters");
+fs.mkdirSync(uploadsDir, { recursive: true });
+
 const storage = multer.diskStorage({
   destination: (_req, _file, callback) => {
     callback(null, uploadsDir);
