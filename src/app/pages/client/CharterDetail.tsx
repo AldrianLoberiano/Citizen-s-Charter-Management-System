@@ -66,13 +66,14 @@ export function CharterDetail() {
   const department = getDepartmentById(charter.department_id);
   const currentUrl = typeof window !== "undefined" ? window.location.href : "";
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(currentUrl)}&bgcolor=ffffff&color=1e3a8a`;
+  const defaultPdfUrl = "/charter-viewer.pdf";
   const pdfUrl = charter.file_path
     ? charter.file_path.startsWith("/")
       ? charter.file_path
       : charter.file_path.startsWith("uploads/")
         ? `/${charter.file_path}`
         : `/uploads/charters/${charter.file_path}`
-    : "";
+    : defaultPdfUrl;
 
   // Format content with line breaks preserved
   const formattedContent = charter.content.split("\n").map((line, idx) => {
@@ -118,11 +119,7 @@ export function CharterDetail() {
 
   // Simulate file download (in production: serves file from /uploads/charters/)
   const handleDownload = () => {
-    if (!charter.file_path) return;
-    const downloadUrl = charter.file_path.startsWith("/")
-      ? charter.file_path
-      : `/uploads/charters/${charter.file_path}`;
-    window.open(downloadUrl, "_blank", "noopener,noreferrer");
+    window.open(pdfUrl, "_blank", "noopener,noreferrer");
   };
 
   // Submit rating
