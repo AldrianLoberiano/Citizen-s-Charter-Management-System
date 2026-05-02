@@ -118,12 +118,11 @@ export function CharterDetail() {
 
   // Simulate file download (in production: serves file from /uploads/charters/)
   const handleDownload = () => {
-    const msg = document.createElement("div");
-    msg.textContent = `In a live system, "${charter.file_path}" would be downloaded from the server.`;
-    console.info(msg.textContent);
-    alert(
-      `File Download: "${charter.file_path}"\n\nIn the production XAMPP/PHP system, this file is stored in /uploads/charters/ and served directly by Apache.`
-    );
+    if (!charter.file_path) return;
+    const downloadUrl = charter.file_path.startsWith("/")
+      ? charter.file_path
+      : `/uploads/charters/${charter.file_path}`;
+    window.open(downloadUrl, "_blank", "noopener,noreferrer");
   };
 
   // Submit rating
