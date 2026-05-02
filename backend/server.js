@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
+import multer from "multer";
 import { pool } from "./db.js";
 
 dotenv.config();
@@ -17,9 +18,46 @@ const corsOrigin = process.env.CORS_ORIGIN || "http://localhost:5173";
 const adminUsername = process.env.ADMIN_USERNAME || "admin";
 const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
 
+const uploadsDir = path.join(__dirname, "../uploads/charters");
+const storage = multer.diskStorage({
+  destination: (_req, _file, callback) => {
+    callback(null, uploadsDir);
+  },
+  filename: (_req, file, callback) => {
+    const safeBase = `${Date.now()}-${file.originalname}`.replace(/[^a-zA-Z0-9._-]/g, "_");
+    callback(null, safeBase);
+  },
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (_req, file, callback) => {
+    const allowed = ["application/pdf", "image/jpeg", "image/png", "image/gif"];
+    if (!allowed.includes(file.mimetype)) {
+      callback(new Error("Only PDF and image files are allowed."));
+      return;
+    }
+    callback(null, true);
+  },
+});
+
 app.use(cors({ origin: corsOrigin }));
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+
+app.post("/api/uploads/charters", upload.single("file"), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ message: "No file uploaded" });
+  }
+
+  res.status(201).json({
+    file_path: `/uploads/charters/${req.file.filename}`,
+    original_name: req.file.originalname,
+    mime_type: req.file.mimetype,
+    size: req.file.size,
+  });
+});
 
 app.get("/api/health", (_req, res) => {
   res.json({ ok: true });
