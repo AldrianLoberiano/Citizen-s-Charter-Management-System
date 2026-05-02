@@ -27,6 +27,7 @@ import {
   Department,
   formatDate,
 } from "../../store/data";
+import { api } from "../../lib/api";
 import { Modal } from "../../components/Modal";
 import { Pagination } from "../../components/Pagination";
 import { Notification } from "../../components/Notification";
@@ -64,6 +65,7 @@ export function Charters() {
   // Form
   const [formData, setFormData] = useState<FormData>(emptyForm);
   const [formErrors, setFormErrors] = useState<Partial<FormData>>({});
+  const [uploadingFile, setUploadingFile] = useState(false);
 
   // Notification
   const [notification, setNotification] = useState<{
@@ -142,7 +144,7 @@ export function Charters() {
   };
 
   // Handle file input change (simulates /uploads/charters folder in PHP)
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       // Validate file type: accept PDF and images only
@@ -162,9 +164,20 @@ export function Charters() {
         }));
         return;
       }
-      // Store filename (in production, file would be saved to /uploads/charters/)
-      setFormData((p) => ({ ...p, file_path: file.name }));
-      setFormErrors((p) => ({ ...p, file_path: "" }));
+      try {
+        setUploadingFile(true);
+        setFormErrors((p) => ({ ...p, file_path: "" }));
+        const result = await api.uploadCharterFile(file);
+        setFormData((p) => ({ ...p, file_path: result.file_path }));
+      } catch (error) {
+        setFormErrors((p) => ({
+          ...p,
+          file_path:
+            error instanceof Error ? error.message : "Failed to upload file.",
+        }));
+      } finally {
+        setUploadingFile(false);
+      }
     }
   };
 
@@ -527,7 +540,7 @@ export function Charters() {
                 <label className="flex flex-col items-center gap-2 cursor-pointer">
                   <Paperclip className="w-5 h-5 text-slate-400" />
                   <span className="text-slate-500 text-sm">
-                    Click to upload or drag and drop
+                    {uploadingFile ? "Uploading file..." : "Click to upload or drag and drop"}
                   </span>
                   <span className="text-slate-400 text-xs">PDF, JPG, PNG, GIF</span>
                   <input
@@ -535,6 +548,7 @@ export function Charters() {
                     accept=".pdf,.jpg,.jpeg,.png,.gif"
                     onChange={handleFileChange}
                     className="hidden"
+                    disabled={uploadingFile}
                   />
                 </label>
               )}
