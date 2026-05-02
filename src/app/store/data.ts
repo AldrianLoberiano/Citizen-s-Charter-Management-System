@@ -91,7 +91,7 @@ const INITIAL_CHARTERS: Charter[] = [
     title: "New Business Permit Application",
     content:
       "For new business establishments seeking a Mayor's Permit to operate within the municipality.\n\nREQUIREMENTS:\n- Duly accomplished application form\n- Barangay clearance\n- DTI, SEC, or CDA registration\n- Lease contract or tax declaration of property\n- Fire Safety Inspection Certificate (FSIC)\n- Sanitary permit from the Municipal Health Office\n- Zoning clearance from the Municipal Planning Office\n\nFEES: Vary based on business capitalization and type of business activity\n\nPROCESSING TIME: 5-7 working days\n\nOFFICE HOURS: Monday to Friday, 8:00 AM to 5:00 PM",
-    file_path: "business_permit_checklist.pdf",
+    file_path: null,
     created_at: "2024-01-18T08:00:00Z",
   },
   {
@@ -109,7 +109,7 @@ const INITIAL_CHARTERS: Charter[] = [
     title: "Pantawid Pamilyang Pilipino Program (4Ps)",
     content:
       "Conditional cash transfer program providing health and education grants to poor households.\n\nELIGIBILITY CRITERIA:\n- Household must be identified as poor through the National Household Targeting System (NHTS)\n- Household must have children aged 0-18 years\n- Must commit to comply with health and education conditionalities\n\nBENEFITS:\n- Health grant: PHP 750 per month\n- Education grant: PHP 300-500 per child per month (maximum 3 children)\n\nCOMPLIANCE REQUIREMENTS:\n- Children aged 6-18 must attend school at least 85% of the time\n- Children aged 0-5 must be brought to health centers for regular check-ups\n- Pregnant women must attend pre-natal check-ups as scheduled",
-    file_path: "4ps_beneficiary_guide.pdf",
+    file_path: null,
     created_at: "2024-02-01T08:00:00Z",
   },
   {
@@ -145,7 +145,7 @@ const INITIAL_CHARTERS: Charter[] = [
     title: "Immunization Program",
     content:
       "Routine immunization services for children below 1 year old and for other eligible groups.\n\nSCHEDULE:\n- Every Wednesday and Friday: 8:00 AM to 12:00 PM\n- Conducted at the Municipal Health Center and barangay health stations\n\nVACCINES PROVIDED (Free of charge):\n- BCG (Bacillus Calmette-Guerin)\n- DPT-HepB-Hib (Pentavalent vaccine)\n- OPV (Oral Polio Vaccine)\n- PCV (Pneumococcal Conjugate Vaccine)\n- MMR (Measles, Mumps, Rubella)\n\nBRING:\n- Mother and child health book\n- Birth certificate of child",
-    file_path: "immunization_schedule.pdf",
+    file_path: null,
     created_at: "2024-02-20T08:00:00Z",
   },
   {
@@ -154,7 +154,7 @@ const INITIAL_CHARTERS: Charter[] = [
     title: "Tourist Destination Registration",
     content:
       "For tourism operators and property owners wishing to register a destination or accommodation with the local tourism office.\n\nREQUIREMENTS FOR REGISTRATION:\n- Accomplished tourism accreditation form\n- Valid Mayor's Permit\n- DTI or SEC registration\n- Photos of the tourism facility or destination\n- Environmental Compliance Certificate (if applicable)\n\nBENEFITS OF REGISTRATION:\n- Inclusion in the official local tourism map and directory\n- Marketing support through official channels\n- Priority access to LGU tourism programs and events\n\nPROCESSING TIME: 7-10 working days",
-    file_path: "tourism_registration_form.pdf",
+    file_path: null,
     created_at: "2024-03-01T08:00:00Z",
   },
 ];
