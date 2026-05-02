@@ -3,3 +3,4 @@
 **/*.md
 !README.md
 node_modules
+*.sql
