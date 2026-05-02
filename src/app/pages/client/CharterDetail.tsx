@@ -281,17 +281,7 @@ export function CharterDetail() {
                         {department?.name || "Department"}
                       </p>
                     </div>
-                    <div className="flex flex-col items-end gap-2">
-                      <span className="inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-blue-700">
-                        Official File
-                      </span>
-                      {charter.file_path && (
-                        <div className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs text-slate-500">
-                          <Paperclip className="h-3.5 w-3.5 text-slate-400" />
-                          {charter.file_path}
-                        </div>
-                      )}
-                    </div>
+                    <div />
                   </div>
 
                   <div className="px-5 py-6 sm:px-8 sm:py-8">
@@ -516,26 +506,15 @@ export function CharterDetail() {
           {/* Sidebar */}
           <div className="space-y-5">
             {/* File Download */}
-            {charter.file_path && (
+            {pdfUrl && (
               <div className="bg-white rounded-xl border border-slate-200 p-5">
-                <h3 className="text-slate-900 mb-3">Attached Document</h3>
-                <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg border border-slate-200 mb-3">
-                  <div className="w-9 h-9 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Paperclip className="w-4 h-4 text-blue-700" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-slate-700 text-sm truncate">
-                      {charter.file_path}
-                    </p>
-                    <p className="text-slate-400 text-xs">Official Document</p>
-                  </div>
-                </div>
+                <h3 className="text-slate-900 mb-3">PDF Viewer</h3>
                 <button
                   onClick={handleDownload}
                   className="w-full flex items-center justify-center gap-2 py-2.5 bg-blue-800 text-white rounded-lg hover:bg-blue-900 transition-colors text-sm"
                 >
                   <Download className="w-4 h-4" />
-                  Download File
+                  Open PDF
                 </button>
               </div>
             )}
