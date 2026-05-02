@@ -4,7 +4,7 @@
  * and citizen feedback/rating system
  */
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link, useParams, Navigate } from "react-router";
 import {
   ChevronRight,
@@ -20,6 +20,12 @@ import {
   Paperclip,
   MessageSquare,
   ThumbsUp,
+  Menu,
+  Minus,
+  Plus,
+  Printer,
+  RotateCcw,
+  MoreVertical,
 } from "lucide-react";
 import {
   getCharterById,
@@ -49,6 +55,8 @@ export function CharterDetail() {
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [showQr, setShowQr] = useState(false);
+  const [pageZoom, setPageZoom] = useState(100);
+  const [activePage, setActivePage] = useState(0);
 
   // Redirect if charter not found
   if (!charter) {
@@ -58,48 +66,66 @@ export function CharterDetail() {
   const department = getDepartmentById(charter.department_id);
   const currentUrl = typeof window !== "undefined" ? window.location.href : "";
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(currentUrl)}&bgcolor=ffffff&color=1e3a8a`;
+  const attachmentUrl = charter.file_path
+    ? charter.file_path.startsWith("/")
+      ? charter.file_path
+      : charter.file_path.startsWith("uploads/")
+        ? `/${charter.file_path}`
+        : `/uploads/charters/${charter.file_path}`
+    : "";
 
-  // Format content with line breaks preserved
-  const formattedContent = charter.content.split("\n").map((line, idx) => {
-    const trimmed = line.trim();
-    if (!trimmed) return <br key={idx} />;
+  const pageSections = useMemo(() => {
+    const sections = charter.content
+      .split(/\n\s*\n/)
+      .map((section) => section.trim())
+      .filter(Boolean);
 
-    // Section headers (all caps lines)
-    if (trimmed === trimmed.toUpperCase() && trimmed.length > 3 && !trimmed.startsWith("-")) {
+    return sections.length > 0 ? sections : [charter.content.trim()];
+  }, [charter.content]);
+
+  const pageCount = pageSections.length;
+  const currentPage = Math.min(activePage, pageCount - 1);
+
+  const renderPageContent = (pageText: string) => {
+    return pageText.split("\n").map((line, idx) => {
+      const trimmed = line.trim();
+      if (!trimmed) return <div key={idx} className="h-2" />;
+
+      if (trimmed === trimmed.toUpperCase() && trimmed.length > 3 && !trimmed.startsWith("-")) {
+        return (
+          <p key={idx} className="mt-5 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+            {trimmed}
+          </p>
+        );
+      }
+
+      if (trimmed.startsWith("-")) {
+        return (
+          <div key={idx} className="flex gap-3 text-sm leading-relaxed text-slate-700">
+            <span className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-blue-700" />
+            <span>{trimmed.slice(1).trim()}</span>
+          </div>
+        );
+      }
+
+      if (/^\d+\./.test(trimmed)) {
+        return (
+          <div key={idx} className="flex gap-3 text-sm leading-relaxed text-slate-700">
+            <span className="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-[11px] font-semibold text-slate-600">
+              {trimmed.match(/^\d+/)?.[0]}
+            </span>
+            <span className="pt-0.5">{trimmed.replace(/^\d+\.\s*/, "")}</span>
+          </div>
+        );
+      }
+
       return (
-        <p key={idx} className="text-slate-800 mt-4 mb-1">
+        <p key={idx} className="text-sm leading-relaxed text-slate-700">
           {trimmed}
         </p>
       );
-    }
-
-    // Bullet points
-    if (trimmed.startsWith("-")) {
-      return (
-        <li key={idx} className="text-slate-600 text-sm leading-relaxed ml-4">
-          {trimmed.slice(1).trim()}
-        </li>
-      );
-    }
-
-    // Numbered items
-    if (/^\d+\./.test(trimmed)) {
-      return (
-        <li
-          key={idx}
-          className="text-slate-600 text-sm leading-relaxed ml-4 list-decimal"
-        >
-          {trimmed.replace(/^\d+\.\s*/, "")}
-        </li>
-      );
-    }
-
-    return (
-      <p key={idx} className="text-slate-600 text-sm leading-relaxed">
-        {trimmed}
-      </p>
-    );
-  });
+    });
+  };
 
   // Simulate file download (in production: serves file from /uploads/charters/)
   const handleDownload = () => {
@@ -203,10 +229,178 @@ export function CharterDetail() {
           {/* Charter Content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Content Card */}
-            <div className="bg-white rounded-xl border border-slate-200 p-6">
-              <h2 className="text-slate-900 mb-5">Service Information</h2>
-              <div className="space-y-1 text-sm leading-relaxed">
-                {formattedContent}
+            <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+              <div className="flex items-center justify-between gap-3 border-b border-slate-700 bg-slate-800 px-4 py-3 text-white">
+                <div className="flex items-center gap-3 min-w-0">
+                  <button
+                    type="button"
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-white/10 bg-white/5 text-white/90 hover:bg-white/10"
+                    aria-label="Menu"
+                  >
+                    <Menu className="h-4 w-4" />
+                  </button>
+                  <div className="rounded-md bg-black/40 px-2 py-1 text-xs font-medium">
+                    {currentPage + 1} / {pageCount}
+                  </div>
+                  <div className="h-6 w-px bg-white/15" />
+                  <h2 className="truncate text-sm font-medium text-white">
+                    Service Information
+                  </h2>
+                </div>
+
+                <div className="flex items-center gap-1 text-white/85">
+                  <button
+                    type="button"
+                    onClick={() => setPageZoom((value) => Math.max(75, value - 10))}
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-white/10"
+                    aria-label="Zoom out"
+                  >
+                    <Minus className="h-4 w-4" />
+                  </button>
+                  <span className="min-w-[3.5rem] text-center text-xs font-medium text-white/80">
+                    {pageZoom}%
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setPageZoom((value) => Math.min(150, value + 10))}
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-white/10"
+                    aria-label="Zoom in"
+                  >
+                    <Plus className="h-4 w-4" />
+                  </button>
+                  <div className="h-6 w-px bg-white/15 mx-1" />
+                  <button type="button" onClick={() => setActivePage((value) => Math.max(0, value - 1))} className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-white/10" aria-label="Previous page">
+                    <ChevronRight className="h-4 w-4 rotate-180" />
+                  </button>
+                  <button type="button" onClick={() => setActivePage((value) => Math.min(pageCount - 1, value + 1))} className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-white/10" aria-label="Next page">
+                    <ChevronRight className="h-4 w-4" />
+                  </button>
+                  <div className="h-6 w-px bg-white/15 mx-1" />
+                  <button type="button" className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-white/10" aria-label="Rotate">
+                    <RotateCcw className="h-4 w-4" />
+                  </button>
+                  <button type="button" onClick={handleDownload} className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-white/10" aria-label="Download">
+                    <Download className="h-4 w-4" />
+                  </button>
+                  <button type="button" className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-white/10" aria-label="Print">
+                    <Printer className="h-4 w-4" />
+                  </button>
+                  <button type="button" className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-white/10" aria-label="More options">
+                    <MoreVertical className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="bg-slate-100 p-4 sm:p-6">
+                <div className="mx-auto flex max-w-6xl gap-4">
+                  <div className="hidden w-24 flex-col gap-3 lg:flex">
+                    {pageSections.map((section, index) => (
+                      <button
+                        key={`${index}-${section.slice(0, 20)}`}
+                        type="button"
+                        onClick={() => setActivePage(index)}
+                        className={`group overflow-hidden rounded-xl border p-2 text-left transition-all ${
+                          index === currentPage
+                            ? "border-blue-500 bg-white shadow-md"
+                            : "border-slate-200 bg-white/70 hover:border-slate-300 hover:bg-white"
+                        }`}
+                      >
+                        <div className="mb-2 flex items-center justify-between text-[10px] text-slate-400">
+                          <span>Page {index + 1}</span>
+                          <span className={`h-2.5 w-2.5 rounded-full ${index === currentPage ? "bg-blue-600" : "bg-slate-200"}`} />
+                        </div>
+                        <div className="h-24 rounded-lg border border-slate-100 bg-slate-50 p-2">
+                          <div className="space-y-1">
+                            <div className="h-1.5 w-3/4 rounded-full bg-slate-300" />
+                            <div className="h-1.5 w-2/3 rounded-full bg-slate-200" />
+                            <div className="h-1.5 w-full rounded-full bg-slate-200" />
+                            <div className="mt-3 h-1.5 w-4/5 rounded-full bg-slate-200" />
+                            <div className="h-1.5 w-1/2 rounded-full bg-slate-300" />
+                          </div>
+                        </div>
+                        <p className="mt-2 line-clamp-2 text-[10px] leading-relaxed text-slate-500">
+                          {section.replace(/\n+/g, " ")}
+                        </p>
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="min-w-0 flex-1">
+                    <div className="mx-auto overflow-hidden rounded-[1.35rem] border border-slate-200 bg-white shadow-[0_24px_60px_rgba(15,23,42,0.16)]">
+                  <div className="flex items-start justify-between gap-4 border-b border-slate-200 bg-slate-50 px-5 py-4 sm:px-8">
+                    <div>
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">
+                        Citizen's Charter
+                      </p>
+                      <h3 className="mt-1 text-slate-900">{charter.title}</h3>
+                      <p className="mt-1 text-xs text-slate-500">
+                        {department?.name || "Department"}
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-end gap-2">
+                      <span className="inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-blue-700">
+                        Official File
+                      </span>
+                      {charter.file_path && (
+                        <div className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs text-slate-500">
+                          <Paperclip className="h-3.5 w-3.5 text-slate-400" />
+                          {charter.file_path}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="px-5 py-6 sm:px-8 sm:py-8">
+                    <div className="mb-6 flex items-center justify-between border-b border-slate-100 pb-4 text-xs text-slate-400">
+                      <span>Service details</span>
+                      <span>Published {formatDate(charter.created_at)}</span>
+                    </div>
+
+                    <div
+                      className="origin-top-left"
+                      style={{ transform: `scale(${pageZoom / 100})`, width: `${100 * (100 / pageZoom)}%` }}
+                    >
+                      <div className="space-y-3">
+                        {renderPageContent(pageSections[currentPage])}
+                      </div>
+                    </div>
+
+                    <div className="mt-8 flex items-center justify-between border-t border-slate-100 pt-4 text-xs text-slate-400">
+                      <span>Citizen's Charter Management System</span>
+                      <span>Page {currentPage + 1} of {pageCount}</span>
+                    </div>
+                  </div>
+                    </div>
+                  </div>
+                </div>
+
+                {attachmentUrl && (
+                  <div className="mx-auto mt-5 max-w-6xl overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                    <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
+                      <div>
+                        <h3 className="text-slate-900">Attached PDF Preview</h3>
+                        <p className="text-xs text-slate-500">
+                          Live preview from the uploaded charter file
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleDownload}
+                        className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-600 hover:bg-slate-50"
+                      >
+                        <Download className="h-4 w-4" />
+                        Download
+                      </button>
+                    </div>
+                    <div className="bg-slate-100 p-3">
+                      <iframe
+                        src={attachmentUrl}
+                        title={`${charter.title} PDF preview`}
+                        className="h-[720px] w-full rounded-lg border border-slate-200 bg-white"
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
