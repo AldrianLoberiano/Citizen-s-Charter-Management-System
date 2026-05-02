@@ -18,6 +18,20 @@ async function request(path: string, options?: RequestInit) {
   return response.json();
 }
 
+async function upload(path: string, formData: FormData) {
+  const response = await fetch(`${API_BASE}${path}`, {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(message || `Upload failed: ${response.status}`);
+  }
+
+  return response.json();
+}
+
 export const api = {
   getDepartments: () => request("/departments"),
   getCharters: () => request("/charters"),
@@ -67,4 +81,9 @@ export const api = {
       method: "POST",
       body: JSON.stringify(payload),
     }),
+  uploadCharterFile: (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return upload("/uploads/charters", formData);
+  },
 };
