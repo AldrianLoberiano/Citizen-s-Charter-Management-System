@@ -4,12 +4,9 @@
  */
 
 import { Outlet, Link } from "react-router";
-import { Shield, Lock, Phone, Mail, MapPin } from "lucide-react";
-import { isAuthenticated } from "../store/data";
+import { Shield, Phone, Mail, MapPin } from "lucide-react";
 
 export function ClientLayout() {
-  const adminHref = isAuthenticated() ? "/admin/dashboard" : "/admin/login";
-
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
       {/* Top announcement bar */}
@@ -36,16 +33,6 @@ export function ClientLayout() {
             </div>
           </Link>
 
-          {/* Admin Login Link */}
-          <Link
-            to={adminHref}
-            className="flex items-center gap-2 text-blue-100 hover:text-white text-sm transition-colors flex-shrink-0 border border-blue-600 px-3 py-1.5 rounded-lg hover:border-blue-400"
-          >
-            <Lock className="w-4 h-4" />
-            <span className="hidden sm:inline">
-              {isAuthenticated() ? "Admin Dashboard" : "Admin Login"}
-            </span>
-          </Link>
         </div>
       </header>
 
@@ -79,14 +66,6 @@ export function ClientLayout() {
                 <li>
                   <Link to="/" className="text-slate-400 hover:text-white transition-colors">
                     Home
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to={adminHref}
-                    className="text-slate-400 hover:text-white transition-colors"
-                  >
-                    {isAuthenticated() ? "Admin Dashboard" : "Admin Login"}
                   </Link>
                 </li>
               </ul>
