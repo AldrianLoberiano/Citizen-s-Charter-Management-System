@@ -4,7 +4,7 @@
  * Public-facing page for citizens to browse available services
  */
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Link } from "react-router";
 import {
   Search,
@@ -24,6 +24,20 @@ import LogoLoop from "../../components/LogoLoop";
 export function Home() {
   const [search, setSearch] = useState("");
   const departments = getDepartments();
+
+  const [now, setNow] = useState<Date>(new Date());
+  useEffect(() => {
+    const t = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(t);
+  }, []);
+
+  const formattedDate = now.toLocaleDateString(undefined, {
+    weekday: "short",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+  const formattedTime = now.toLocaleTimeString();
 
   const filtered = useMemo(
     () =>
@@ -46,13 +60,17 @@ export function Home() {
       <section className="border-b border-slate-200 bg-white">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:py-20">
           <div className="max-w-3xl">
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-sm text-slate-700">
-              <Shield className="h-4 w-4" />
-              <span>Official Government Service Directory</span>
+            <div className="mb-4 flex flex-wrap items-center gap-3">
+              <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-sm text-slate-700">
+                <Shield className="h-4 w-4" />
+                <span>Official Government Service Directory</span>
+              </div>
             </div>
-            <h1 className="mb-4 text-3xl leading-tight text-slate-950 sm:text-4xl">
-              Calauan Citizen's Charter
-            </h1>
+            <div className="mb-4 flex flex-wrap items-center gap-3">
+              <h1 className="text-3xl leading-tight text-slate-950 sm:text-4xl">
+                Calauan Citizen's Charter
+              </h1>
+            </div>
             <p className="mb-8 max-w-2xl text-base leading-relaxed text-slate-600">
               Access information on government services, requirements, processing
               times, and fees. Our Citizen's Charter ensures transparency and
@@ -60,23 +78,28 @@ export function Home() {
             </p>
 
             {/* Search Bar */}
-            <div className="relative max-w-lg">
-              <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-              <input
-                type="text"
-                placeholder="Search departments or services..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full rounded-2xl border border-slate-300 bg-white px-12 py-3.5 text-slate-800 shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-300"
-              />
-              {search && (
-                <button
-                  onClick={() => setSearch("")}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 transition-colors hover:text-slate-600"
-                >
-                  &times;
-                </button>
-              )}
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <div className="inline-flex shrink-0 items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs text-slate-600 shadow-sm">
+                {formattedDate} · {formattedTime}
+              </div>
+              <div className="relative w-full max-w-lg">
+                <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Search departments or services..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-full rounded-2xl border border-slate-300 bg-white px-12 py-3.5 text-slate-800 shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-300"
+                />
+                {search && (
+                  <button
+                    onClick={() => setSearch("")}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 transition-colors hover:text-slate-600"
+                  >
+                    &times;
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>
