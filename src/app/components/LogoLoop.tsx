@@ -18,6 +18,15 @@ const images = [
   "AgriOffice.jpg",
 ];
 
+// Resolve local image URLs from src/public/images using Vite import meta URL
+const imageUrls = images.map((f) => {
+  try {
+    return new URL(`../../public/images/${f}`, import.meta.url).href;
+  } catch (e) {
+    return `/images/${encodeURIComponent(f)}`;
+  }
+});
+
 export const LogoLoop: React.FC<LogoLoopProps> = ({ height = 56, speed = 20 }) => {
   useEffect(() => {
     // Debug log to confirm component is mounted in the browser
@@ -65,14 +74,9 @@ export const LogoLoop: React.FC<LogoLoopProps> = ({ height = 56, speed = 20 }) =
             animation: `logoLoop ${duration} linear infinite`,
           }}
         >
-          {[...images, ...images].map((f, i) => (
-            <div key={`${f}-${i}`} style={{ display: "flex", alignItems: "center" }}>
-              <img
-                src={`/images/${encodeURIComponent(f)}`}
-                alt={`logo-${i}`}
-                style={style.img}
-                className="select-none"
-              />
+          {[...imageUrls, ...imageUrls].map((src, i) => (
+            <div key={`${src}-${i}`} style={{ display: "flex", alignItems: "center" }}>
+              <img src={src} alt={`logo-${i}`} style={style.img} className="select-none" />
             </div>
           ))}
         </div>
