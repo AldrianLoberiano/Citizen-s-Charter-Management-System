@@ -55,10 +55,10 @@ export function ClientLayout() {
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <Shield className="h-5 w-5 text-slate-900" />
-                <span className="text-slate-900">Citizen's Charter</span>
+                <span className="text-slate-900">Calauan Citizen's Charter</span>
               </div>
               <p className="text-sm leading-relaxed text-slate-500">
-                The Citizen's Charter is a document that communicates, in simple
+                The Calauan Citizen's Charter is a document that communicates, in simple
                 terms, information on the services provided by the government,
                 the requirements needed to avail them, and the procedure to
                 follow.
