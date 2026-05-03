@@ -190,7 +190,7 @@ export const LogoLoop: React.FC<LogoLoopProps> = ({ height = 88, speed = 20 }) =
         </div>
       </div>
 
-      <style>{`\n        @keyframes logoLoop {\n          0% { transform: translateX(0); }\n          100% { transform: translateX(-50%); }\n        }\n        .logo-loop-track {\n          will-change: transform;\n        }\n      `}</style>
+      <style>{`\n        @keyframes logoLoop {\n          0% { transform: translateX(0); }\n          100% { transform: translateX(calc(var(--logo-shift) * -1)); }\n        }\n        .logo-loop-track {\n          will-change: transform;\n          animation: logoLoop var(--logo-duration, 20s) linear infinite;\n        }\n      `}</style>
     </div>
   );
 };
