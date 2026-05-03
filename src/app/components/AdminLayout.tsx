@@ -92,9 +92,9 @@ export function AdminLayout() {
           />
           <div className="min-w-0">
             <div className="truncate text-sm leading-tight text-white">
-              CCMS Admin
+              CCCMS Admin
             </div>
-            <div className="text-xs text-slate-400">Citizens Charter</div>
+            <div className="text-xs text-slate-400">Calauan Citizens Charter</div>
           </div>
           <button
             className="ml-auto rounded-lg p-1 text-slate-400 transition-colors hover:text-white lg:hidden"
