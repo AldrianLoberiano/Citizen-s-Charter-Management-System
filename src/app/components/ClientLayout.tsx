@@ -20,7 +20,7 @@ export function ClientLayout() {
 
       {/* Main Navigation Header */}
       <header
-        className="sticky top-0 z-40 border-b border-slate-200 bg-slate-900 shadow-sm"
+        className="sticky top-0 z-40 border-b border-slate-200 bg-gradient-to-r from-slate-900 via-purple-950 to-slate-900 shadow-sm"
         style={{
           backgroundImage: `url(${clientHeaderBgSrc})`,
           backgroundSize: "cover",
@@ -29,7 +29,7 @@ export function ClientLayout() {
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4">
           {/* Logo and System Name */}
-          <Link to="/" className="flex items-center gap-3 min-w-0">
+          <Link to="/" className="flex items-center gap-5 min-w-0">
             <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-white p-0.5">
               <img
                 src={clientLogoSrc}
@@ -42,7 +42,7 @@ export function ClientLayout() {
                 Calauan Citizen's Charter
               </div>
               <div className="truncate text-xs text-slate-200">
-                Management System
+                Municipality of Calauan
               </div>
             </div>
           </Link>
