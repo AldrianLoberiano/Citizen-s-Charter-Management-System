@@ -13,13 +13,20 @@ export function ClientLayout() {
   return (
     <div className="min-h-screen bg-white flex flex-col">
       {/* Top announcement bar */}
-      <div className="border-b border-slate-200 bg-white px-4 py-2 text-center text-xs text-slate-600">
+      <div className="border-b border-slate-800 bg-slate-950 px-4 py-2 text-center text-xs text-slate-200">
         Official Website of the Local Government Unit — For inquiries, contact
         the Information Officer
       </div>
 
       {/* Main Navigation Header */}
-      <header className="sticky top-0 z-40 border-b border-slate-200 bg-white shadow-sm">
+      <header
+        className="sticky top-0 z-40 border-b border-slate-200 bg-gradient-to-r from-slate-900 via-purple-950 to-slate-900 shadow-sm"
+        style={{
+          backgroundImage: `url(${clientHeaderBgSrc})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4">
           {/* Logo and System Name */}
           <Link to="/" className="flex items-center gap-5 min-w-0">
@@ -31,10 +38,10 @@ export function ClientLayout() {
               />
             </div>
             <div className="min-w-0">
-              <div className="truncate leading-tight text-slate-950">
+              <div className="truncate leading-tight text-white">
                 Calauan Citizen's Charter
               </div>
-              <div className="truncate text-xs text-slate-500">
+              <div className="truncate text-xs text-slate-200">
                 Municipality of Calauan
               </div>
             </div>
