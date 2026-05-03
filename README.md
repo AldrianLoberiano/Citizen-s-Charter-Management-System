@@ -10,10 +10,80 @@ Citizen's Charter Management System is a React + Vite frontend with an Express +
 
 ## Project Structure
 
-- Frontend: root app powered by Vite
-- Backend: `backend/`
-- Database seed: `database/ccms_mysql.sql`
-- Uploaded charter files: `uploads/charters/`
+```text
+Citizen’s Charter Management System/
+├─ backend/
+│  ├─ db.js
+│  ├─ package.json
+│  └─ server.js
+├─ database/
+│  ├─ ccms_mysql.sql
+│  └─ mysql_connection_example.js
+├─ public/
+│  └─ images/
+│     └─ header/
+├─ src/
+│  ├─ app/
+│  │  ├─ components/
+│  │  │  ├─ AdminLayout.tsx
+│  │  │  ├─ ClientLayout.tsx
+│  │  │  ├─ LogoLoop.tsx
+│  │  │  ├─ Modal.tsx
+│  │  │  ├─ Notification.tsx
+│  │  │  ├─ Pagination.tsx
+│  │  │  ├─ figma/
+│  │  │  └─ ui/
+│  │  ├─ lib/
+│  │  │  └─ api.ts
+│  │  ├─ pages/
+│  │  │  ├─ admin/
+│  │  │  │  ├─ Charters.tsx
+│  │  │  │  ├─ Dashboard.tsx
+│  │  │  │  ├─ Departments.tsx
+│  │  │  │  └─ Login.tsx
+│  │  │  └─ client/
+│  │  │     ├─ CharterDetail.tsx
+│  │  │     ├─ DepartmentPage.tsx
+│  │  │     └─ Home.tsx
+│  │  ├─ store/
+│  │  │  ├─ apiSync.ts
+│  │  │  └─ data.ts
+│  │  └─ routes.tsx
+│  ├─ styles/
+│  │  ├─ fonts.css
+│  │  ├─ index.css
+│  │  ├─ tailwind.css
+│  │  └─ theme.css
+│  ├─ main.tsx
+│  └─ vite-env.d.ts
+├─ uploads/
+│  └─ charters/
+├─ index.html
+├─ package.json
+├─ postcss.config.mjs
+├─ README.md
+└─ vite.config.ts
+```
+
+- `src/` contains the React frontend.
+- `backend/` contains the Express API and MySQL connection logic.
+- `database/` contains the SQL schema and sample connection script.
+- `public/images/header/` stores the header and logo assets used by the client UI.
+- `uploads/charters/` stores uploaded charter documents served by the backend.
+
+### Directory Purpose
+
+| Path                    | Purpose                                               |
+| ----------------------- | ----------------------------------------------------- |
+| `backend/`              | Express API, MySQL access, and server startup code    |
+| `database/`             | SQL schema, seed data, and connection example         |
+| `public/images/header/` | Header artwork and logo assets                        |
+| `src/app/components/`   | Shared UI layouts, dialogs, pagination, and logo loop |
+| `src/app/pages/client/` | Public-facing pages for citizens                      |
+| `src/app/pages/admin/`  | Admin dashboard, login, departments, and charters     |
+| `src/app/store/`        | Local data store and API sync helpers                 |
+| `src/styles/`           | Global CSS, fonts, theme, and Tailwind entry files    |
+| `uploads/charters/`     | Uploaded PDF and document files                       |
 
 ## Setup
 
