@@ -8,26 +8,26 @@ import { Shield, Phone, Mail, MapPin } from "lucide-react";
 
 export function ClientLayout() {
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Top announcement bar */}
-      <div className="bg-blue-900 text-blue-100 text-xs py-1.5 px-4 text-center">
+      <div className="border-b border-slate-800 bg-slate-950 px-4 py-2 text-center text-xs text-slate-200">
         Official Website of the Local Government Unit — For inquiries, contact
         the Information Officer
       </div>
 
       {/* Main Navigation Header */}
-      <header className="bg-blue-800 text-white shadow-md sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
+      <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4">
           {/* Logo and System Name */}
           <Link to="/" className="flex items-center gap-3 min-w-0">
-            <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center flex-shrink-0">
-              <Shield className="w-6 h-6 text-blue-800" />
+            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-slate-900 text-white shadow-sm">
+              <Shield className="h-6 w-6" />
             </div>
             <div className="min-w-0">
-              <div className="text-white leading-tight truncate">
+              <div className="truncate leading-tight text-slate-900">
                 Citizen's Charter
               </div>
-              <div className="text-blue-200 text-xs truncate">
+              <div className="truncate text-xs text-slate-500">
                 Management System
               </div>
             </div>
@@ -42,16 +42,16 @@ export function ClientLayout() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-slate-800 text-slate-300 mt-auto">
-        <div className="max-w-7xl mx-auto px-4 py-10">
+      <footer className="mt-auto border-t border-slate-200 bg-slate-50 text-slate-600">
+        <div className="mx-auto max-w-7xl px-4 py-10">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* About */}
             <div>
               <div className="flex items-center gap-2 mb-3">
-                <Shield className="w-5 h-5 text-blue-400" />
-                <span className="text-white">Citizen's Charter</span>
+                <Shield className="h-5 w-5 text-slate-900" />
+                <span className="text-slate-900">Citizen's Charter</span>
               </div>
-              <p className="text-sm text-slate-400 leading-relaxed">
+              <p className="text-sm leading-relaxed text-slate-500">
                 The Citizen's Charter is a document that communicates, in simple
                 terms, information on the services provided by the government,
                 the requirements needed to avail them, and the procedure to
@@ -61,10 +61,10 @@ export function ClientLayout() {
 
             {/* Quick Links */}
             <div>
-              <h4 className="text-white mb-3">Quick Links</h4>
+              <h4 className="mb-3 text-slate-900">Quick Links</h4>
               <ul className="space-y-2 text-sm">
                 <li>
-                  <Link to="/" className="text-slate-400 hover:text-white transition-colors">
+                  <Link to="/" className="text-slate-500 transition-colors hover:text-slate-900">
                     Home
                   </Link>
                 </li>
@@ -73,30 +73,30 @@ export function ClientLayout() {
 
             {/* Contact */}
             <div>
-              <h4 className="text-white mb-3">Contact Information</h4>
-              <ul className="space-y-2 text-sm text-slate-400">
+              <h4 className="mb-3 text-slate-900">Contact Information</h4>
+              <ul className="space-y-2 text-sm text-slate-500">
                 <li className="flex items-start gap-2">
-                  <MapPin className="w-4 h-4 flex-shrink-0 mt-0.5 text-slate-500" />
+                  <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-slate-400" />
                   <span>Municipal Hall, Poblacion, Municipality</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <Phone className="w-4 h-4 flex-shrink-0 text-slate-500" />
+                  <Phone className="h-4 w-4 flex-shrink-0 text-slate-400" />
                   <span>(000) 000-0000</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <Mail className="w-4 h-4 flex-shrink-0 text-slate-500" />
+                  <Mail className="h-4 w-4 flex-shrink-0 text-slate-400" />
                   <span>info@municipality.gov.ph</span>
                 </li>
               </ul>
             </div>
           </div>
 
-          <div className="border-t border-slate-700 mt-8 pt-6 text-center text-sm text-slate-500">
+          <div className="mt-8 border-t border-slate-200 pt-6 text-center text-sm text-slate-500">
             <p>
               &copy; {new Date().getFullYear()} Citizen's Charter Management
               System. All Rights Reserved.
             </p>
-            <p className="mt-1 text-xs text-slate-600">
+            <p className="mt-1 text-xs text-slate-400">
               In compliance with RA 11032 — Ease of Doing Business and Efficient
               Government Service Delivery Act
             </p>
