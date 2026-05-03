@@ -25,6 +25,10 @@ const bagongPilipinasLogoSrc = new URL(
   "../../../public/images/header/Bagong_Pilipinas_logo.png",
   import.meta.url
 ).href;
+const calauanLogo2Src = new URL(
+  "../../../public/images/header/calauan_logo2.png",
+  import.meta.url
+).href;
 
 export function Home() {
   const [search, setSearch] = useState("");
@@ -108,13 +112,22 @@ export function Home() {
             <div className="inline-flex shrink-0 items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs text-slate-600 shadow-sm">
               {formattedDate} · {formattedTime}
             </div>
-            <img
-              src={bagongPilipinasLogoSrc}
-              alt="Bagong Pilipinas logo"
-              className="h-14 w-auto object-contain"
-              loading="lazy"
-              decoding="async"
-            />
+            <div className="flex items-center gap-2">
+              <img
+                src={calauanLogo2Src}
+                alt="Calauan logo"
+                className="h-14 w-auto object-contain"
+                loading="lazy"
+                decoding="async"
+              />
+              <img
+                src={bagongPilipinasLogoSrc}
+                alt="Bagong Pilipinas logo"
+                className="h-14 w-auto object-contain"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
           </div>
         </div>
       </section>
