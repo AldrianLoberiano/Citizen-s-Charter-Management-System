@@ -55,8 +55,11 @@ export function CharterDetail() {
   }
 
   const department = getDepartmentById(charter.department_id);
-  const currentUrl = typeof window !== "undefined" ? window.location.href : "";
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(currentUrl)}&bgcolor=ffffff&color=1e3a8a`;
+  const feedbackUrl =
+    typeof window !== "undefined"
+      ? `${window.location.origin}/charter/${charter.id}#feedback-form`
+      : "";
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(feedbackUrl)}&bgcolor=ffffff&color=1e3a8a`;
   const pdfUrl = charter.file_path
     ? charter.file_path.startsWith("/")
       ? charter.file_path
@@ -424,34 +427,26 @@ export function CharterDetail() {
             <div className="bg-white rounded-xl border border-slate-200 p-5">
               <h3 className="text-slate-900 mb-3 flex items-center gap-2">
                 <QrCode className="w-4 h-4 text-slate-500" />
-                QR Code
+                Feedback QR Code
               </h3>
               <p className="text-slate-500 text-xs mb-3">
-                Scan to access this charter on a mobile device
+                Scan to open the citizen feedback form.
               </p>
-              {showQr ? (
-                <div className="flex flex-col items-center gap-3">
-                  <img
-                    src={qrUrl}
-                    alt="QR Code for this charter"
-                    className="w-40 h-40 border border-slate-200 rounded-lg"
-                  />
-                  <button
-                    onClick={() => setShowQr(false)}
-                    className="text-slate-500 text-xs hover:text-slate-700"
-                  >
-                    Hide QR Code
-                  </button>
-                </div>
-              ) : (
-                <button
-                  onClick={() => setShowQr(true)}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 border border-slate-300 text-slate-600 rounded-lg hover:bg-slate-50 transition-colors text-sm"
+              <div className="flex flex-col items-center gap-3">
+                <img
+                  src={qrUrl}
+                  alt="QR Code for the citizen feedback form"
+                  className="w-40 h-40 border border-slate-200 rounded-lg bg-white"
+                />
+                <a
+                  href={feedbackUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-xs text-blue-700 hover:underline break-all text-center"
                 >
-                  <QrCode className="w-4 h-4" />
-                  Show QR Code
-                </button>
-              )}
+                  {feedbackUrl}
+                </a>
+              </div>
             </div>
 
             {/* Charter Details */}
