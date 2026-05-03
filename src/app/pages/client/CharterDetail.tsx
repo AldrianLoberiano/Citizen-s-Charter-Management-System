@@ -16,6 +16,7 @@ import {
   Send,
   CheckCircle,
   QrCode,
+  ArrowLeft,
   MessageSquare,
   ThumbsUp,
 } from "lucide-react";
@@ -56,6 +57,14 @@ export function CharterDetail() {
   const department = getDepartmentById(charter.department_id);
   const currentUrl = typeof window !== "undefined" ? window.location.href : "";
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(currentUrl)}&bgcolor=ffffff&color=1e3a8a`;
+  const pdfUrl = charter.file_path
+    ? charter.file_path.startsWith("/")
+      ? charter.file_path
+      : charter.file_path.startsWith("uploads/")
+        ? `/${charter.file_path}`
+        : `/uploads/charters/${charter.file_path}`
+    : "/charter-viewer.pdf";
+
   // Format content with line breaks preserved
   const formattedContent = charter.content.split("\n").map((line, idx) => {
     const trimmed = line.trim();
@@ -97,6 +106,10 @@ export function CharterDetail() {
       </p>
     );
   });
+
+  const handleDownload = () => {
+    window.open(pdfUrl, "_blank", "noopener,noreferrer");
+  };
 
   // Submit rating
   const handleSubmitRating = (e: React.FormEvent) => {
@@ -210,6 +223,33 @@ export function CharterDetail() {
                   <span>Citizen's Charter Management System</span>
                   <span>Page 1 of 1</span>
                 </div>
+              </div>
+            </div>
+
+            {/* PDF Viewer */}
+            <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+              <div className="flex items-center justify-between gap-3 border-b border-slate-200 px-4 py-3">
+                <div>
+                  <h3 className="text-slate-900">PDF Viewer</h3>
+                  <p className="text-xs text-slate-500">
+                    View the attached charter document
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleDownload}
+                  className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-600 hover:bg-slate-50"
+                >
+                  <Download className="h-4 w-4" />
+                  Download
+                </button>
+              </div>
+              <div className="bg-slate-100 p-3">
+                <iframe
+                  src={pdfUrl}
+                  title={`${charter.title} PDF preview`}
+                  className="h-[720px] w-full rounded-lg border border-slate-200 bg-white"
+                />
               </div>
             </div>
 
