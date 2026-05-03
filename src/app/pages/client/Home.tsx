@@ -65,7 +65,7 @@ export function Home() {
                 <Shield className="h-4 w-4" />
                 <span>Official Government Service Directory</span>
               </div>
-              <div className="inline-flex shrink-0 items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs text-slate-600 shadow-sm">
+              <div className="ml-auto inline-flex shrink-0 items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs text-slate-600 shadow-sm">
                 {formattedDate} · {formattedTime}
               </div>
             </div>
