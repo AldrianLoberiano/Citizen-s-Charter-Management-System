@@ -146,49 +146,49 @@ export function CharterDetail() {
   return (
     <div>
       {/* Header */}
-      <section className="bg-blue-800 text-white">
-        <div className="max-w-5xl mx-auto px-4 py-10">
+      <section className="border-b border-slate-200 bg-white">
+        <div className="mx-auto max-w-5xl px-4 py-10">
           {/* Breadcrumb */}
-          <nav className="flex items-center gap-2 text-blue-200 text-sm mb-6 flex-wrap">
-            <Link to="/" className="hover:text-white transition-colors">
+          <nav className="mb-6 flex flex-wrap items-center gap-2 text-sm text-slate-500">
+            <Link to="/" className="transition-colors hover:text-slate-900">
               Home
             </Link>
-            <ChevronRight className="w-3.5 h-3.5" />
+            <ChevronRight className="h-3.5 w-3.5" />
             {department && (
               <>
                 <Link
                   to={`/department/${department.id}`}
-                  className="hover:text-white transition-colors"
+                  className="transition-colors hover:text-slate-900"
                 >
                   {department.name}
                 </Link>
-                <ChevronRight className="w-3.5 h-3.5" />
+                <ChevronRight className="h-3.5 w-3.5" />
               </>
             )}
-            <span className="text-white truncate max-w-xs">{charter.title}</span>
+            <span className="max-w-xs truncate text-slate-900">{charter.title}</span>
           </nav>
 
           {/* Title */}
           <div className="flex items-start gap-4">
-            <div className="w-12 h-12 bg-blue-700 border border-blue-600 rounded-xl flex items-center justify-center flex-shrink-0">
-              <FileText className="w-6 h-6 text-white" />
+            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-slate-900 text-white shadow-sm">
+              <FileText className="h-6 w-6" />
             </div>
             <div>
-              <h1 className="text-white leading-tight">{charter.title}</h1>
-              <div className="flex flex-wrap items-center gap-4 mt-2">
+              <h1 className="leading-tight text-slate-950">{charter.title}</h1>
+              <div className="mt-2 flex flex-wrap items-center gap-4">
                 {department && (
-                  <div className="flex items-center gap-1.5 text-blue-200 text-sm">
-                    <Building2 className="w-4 h-4" />
+                  <div className="flex items-center gap-1.5 text-sm text-slate-500">
+                    <Building2 className="h-4 w-4" />
                     {department.name}
                   </div>
                 )}
-                <div className="flex items-center gap-1.5 text-blue-200 text-sm">
-                  <Clock className="w-4 h-4" />
+                <div className="flex items-center gap-1.5 text-sm text-slate-500">
+                  <Clock className="h-4 w-4" />
                   Published {formatDate(charter.created_at)}
                 </div>
                 {ratings.length > 0 && (
-                  <div className="flex items-center gap-1 text-amber-300 text-sm">
-                    <Star className="w-4 h-4 fill-amber-300" />
+                  <div className="flex items-center gap-1 text-sm text-amber-600">
+                    <Star className="h-4 w-4 fill-amber-500 text-amber-500" />
                     {avgRating} ({ratings.length} review
                     {ratings.length !== 1 ? "s" : ""})
                   </div>
@@ -200,18 +200,18 @@ export function CharterDetail() {
       </section>
 
       {/* Main Content */}
-      <div className="max-w-5xl mx-auto px-4 py-10">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="mx-auto max-w-5xl px-4 py-10">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           {/* Charter Content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Content Card */}
-            <div className="bg-white rounded-xl border border-slate-200 p-6">
-              <div className="flex items-center gap-2 mb-5">
-                <FileText className="w-5 h-5 text-blue-700" />
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+              <div className="mb-5 flex items-center gap-2">
+                <FileText className="h-5 w-5 text-slate-700" />
                 <h2 className="text-slate-900">Service Information</h2>
               </div>
 
-              <div className="space-y-4 text-slate-600 text-sm leading-relaxed">
+              <div className="space-y-4 text-sm leading-relaxed text-slate-600">
                 <div className="flex items-center justify-between gap-3 border-b border-slate-100 pb-4 text-xs text-slate-400">
                   <span>Service details</span>
                   <span>Published {formatDate(charter.created_at)}</span>
@@ -229,7 +229,7 @@ export function CharterDetail() {
             </div>
 
             {/* PDF Viewer */}
-            <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
               <div className="flex items-center justify-between gap-3 border-b border-slate-200 px-4 py-3">
                 <div>
                   <h3 className="text-slate-900">PDF Viewer</h3>
@@ -240,7 +240,7 @@ export function CharterDetail() {
                 <button
                   type="button"
                   onClick={handleDownload}
-                  className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-600 hover:bg-slate-50"
+                  className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-600 transition-colors hover:bg-slate-50"
                 >
                   <Download className="h-4 w-4" />
                   Download
@@ -256,18 +256,18 @@ export function CharterDetail() {
             </div>
 
             {/* Feedback Section */}
-            <div id="feedback-form" className="bg-white rounded-xl border border-slate-200 p-6">
-              <div className="flex items-center gap-2 mb-5">
-                <MessageSquare className="w-5 h-5 text-blue-700" />
+            <div id="feedback-form" className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+              <div className="mb-5 flex items-center gap-2">
+                <MessageSquare className="h-5 w-5 text-slate-700" />
                 <h2 className="text-slate-900">Citizen Feedback</h2>
               </div>
 
               {submitted ? (
-                <div className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-lg text-green-700">
-                  <CheckCircle className="w-5 h-5 flex-shrink-0" />
+                <div className="flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-700">
+                  <CheckCircle className="h-5 w-5 flex-shrink-0" />
                   <div>
                     <p>Thank you for your feedback!</p>
-                    <p className="text-green-600 text-sm mt-0.5">
+                    <p className="mt-0.5 text-sm text-emerald-600">
                       Your rating has been submitted and helps improve our
                       services.
                     </p>
@@ -277,7 +277,7 @@ export function CharterDetail() {
                 <form onSubmit={handleSubmitRating} className="space-y-4">
                   {/* Star Rating */}
                   <div>
-                    <label className="block text-slate-700 mb-2 text-sm">
+                    <label className="mb-2 block text-sm text-slate-700">
                       Rate this service
                     </label>
                     <div className="flex items-center gap-1">
@@ -291,7 +291,7 @@ export function CharterDetail() {
                           className="p-1 transition-transform hover:scale-110"
                         >
                           <Star
-                            className={`w-7 h-7 transition-colors ${
+                            className={`h-7 w-7 transition-colors ${
                               star <= (hoverStar || selectedStar)
                                 ? "fill-amber-400 text-amber-400"
                                 : "text-slate-300"
@@ -300,21 +300,21 @@ export function CharterDetail() {
                         </button>
                       ))}
                       {(hoverStar || selectedStar) > 0 && (
-                        <span className="ml-2 text-slate-600 text-sm">
+                        <span className="ml-2 text-sm text-slate-600">
                           {starLabel[hoverStar || selectedStar]}
                         </span>
                       )}
                     </div>
                     {submitError && (
-                      <p className="text-red-600 text-xs mt-1">{submitError}</p>
+                      <p className="mt-1 text-xs text-red-600">{submitError}</p>
                     )}
                   </div>
 
                   {/* Comment */}
                   <div>
-                    <label className="block text-slate-700 mb-1.5 text-sm">
+                    <label className="mb-1.5 block text-sm text-slate-700">
                       Comment{" "}
-                      <span className="text-slate-400 text-xs">(optional)</span>
+                      <span className="text-xs text-slate-400">(optional)</span>
                     </label>
                     <textarea
                       value={comment}
