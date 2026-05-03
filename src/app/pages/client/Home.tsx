@@ -82,8 +82,10 @@ export function Home() {
         </div>
       </section>
 
-      {/* Logo loop */}
+      {/* Logo loop (reverted position) */}
       <LogoLoop />
+
+      {/* Logo loop (moved down) */}
 
       {/* Stats Banner */}
       <section className="border-b border-slate-200 bg-slate-100">
