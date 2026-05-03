@@ -246,7 +246,7 @@ export function CharterDetail() {
                   Download
                 </button>
               </div>
-              <div className="bg-slate-100 p-3">
+              <div className="bg-white p-3">
                 <iframe
                   src={pdfUrl}
                   title={`${charter.title} PDF preview`}
