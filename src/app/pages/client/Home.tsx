@@ -51,7 +51,7 @@ export function Home() {
               <span>Official Government Service Directory</span>
             </div>
             <h1 className="mb-4 text-3xl leading-tight text-slate-950 sm:text-4xl">
-              Citizen's Charter
+              Calauan Citizen's Charter
             </h1>
             <p className="mb-8 max-w-2xl text-base leading-relaxed text-slate-600">
               Access information on government services, requirements, processing
