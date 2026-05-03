@@ -181,7 +181,7 @@ export function DepartmentPage() {
       </section>
 
       {/* Other Departments suggestion */}
-      <section className="border-t border-slate-200 bg-slate-50 py-8">
+      <section className="border-t border-slate-200 bg-white py-8">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 sm:flex-row">
           <div>
             <h3 className="text-slate-900">Looking for another service?</h3>
