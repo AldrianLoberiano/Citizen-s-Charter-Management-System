@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 interface LogoLoopProps {
   height?: number;
@@ -27,18 +27,50 @@ const imageUrls = images.map((f) => {
   }
 });
 
+const loopImages = [...imageUrls, imageUrls[0]];
+
 export const LogoLoop: React.FC<LogoLoopProps> = ({ height = 88, speed = 20 }) => {
+  useEffect(() => {
+    const existing = new Set(
+      Array.from(document.head.querySelectorAll('link[data-logo-loop-preload="true"]')).map(
+        (node) => node.getAttribute("href") || ""
+      )
+    );
+
+    const links = imageUrls
+      .filter((src) => !existing.has(src))
+      .map((src) => {
+        const link = document.createElement("link");
+        link.rel = "preload";
+        link.as = "image";
+        link.href = src;
+        link.setAttribute("data-logo-loop-preload", "true");
+        document.head.appendChild(link);
+        return link;
+      });
+
+    return () => {
+      links.forEach((link) => link.remove());
+    };
+  }, []);
+
   const style = {
-    track: {
-      display: "flex",
-      gap: "3rem",
-      alignItems: "center",
-      transform: "translate3d(0,0,0)",
-      paddingBlock: "0.5rem",
-    } as React.CSSProperties,
     wrapper: {
       overflow: "hidden",
       background: "transparent",
+    } as React.CSSProperties,
+    track: {
+      display: "inline-flex",
+      width: "max-content",
+      alignItems: "center",
+      transform: "translate3d(0,0,0)",
+    } as React.CSSProperties,
+    group: {
+      display: "inline-flex",
+      alignItems: "center",
+      gap: 0,
+      whiteSpace: "nowrap",
+      marginRight: "-1px",
     } as React.CSSProperties,
     img: {
       height: `${height}px`,
@@ -62,11 +94,35 @@ export const LogoLoop: React.FC<LogoLoopProps> = ({ height = 88, speed = 20 }) =
               animation: `logoLoop ${duration} linear infinite`,
             }}
           >
-            {[...imageUrls, ...imageUrls].map((src, i) => (
-              <div key={`${src}-${i}`} style={{ display: "flex", alignItems: "center" }}>
-                <img src={src} alt={`logo-${i}`} style={style.img} className="select-none" />
-              </div>
-            ))}
+            <div style={style.group}>
+              {loopImages.map((src, i) => (
+                <div key={`a-${src}-${i}`} style={{ display: "flex", alignItems: "center" }}>
+                  <img
+                    src={src}
+                    alt={`logo-${i}`}
+                    style={style.img}
+                    className="select-none"
+                    loading="eager"
+                    fetchPriority="high"
+                    decoding="async"
+                  />
+                </div>
+              ))}
+            </div>
+            <div style={style.group} aria-hidden="true">
+              {loopImages.map((src, i) => (
+                <div key={`b-${src}-${i}`} style={{ display: "flex", alignItems: "center" }}>
+                  <img
+                    src={src}
+                    alt=""
+                    style={style.img}
+                    className="select-none"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
