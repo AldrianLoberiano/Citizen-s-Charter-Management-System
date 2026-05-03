@@ -7,6 +7,7 @@ import { Outlet, Link } from "react-router";
 import { Shield, Phone, Mail, MapPin } from "lucide-react";
 
 const clientLogoSrc = new URL("../../public/images/header/calauan_logo-removebg-preview.png", import.meta.url).href;
+const clientHeaderBgSrc = new URL("../../public/images/header/header1.png", import.meta.url).href;
 
 export function ClientLayout() {
   return (
@@ -18,7 +19,14 @@ export function ClientLayout() {
       </div>
 
       {/* Main Navigation Header */}
-      <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur">
+      <header
+        className="sticky top-0 z-40 border-b border-slate-200 bg-slate-900 shadow-sm"
+        style={{
+          backgroundImage: `url(${clientHeaderBgSrc})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4">
           {/* Logo and System Name */}
           <Link to="/" className="flex items-center gap-3 min-w-0">
@@ -30,10 +38,10 @@ export function ClientLayout() {
               />
             </div>
             <div className="min-w-0">
-              <div className="truncate leading-tight text-slate-900">
+              <div className="truncate leading-tight text-white">
                 Calauan Citizen's Charter
               </div>
-              <div className="truncate text-xs text-slate-500">
+              <div className="truncate text-xs text-slate-200">
                 Management System
               </div>
             </div>
