@@ -120,7 +120,7 @@ export const LogoLoop: React.FC<LogoLoopProps> = ({ height = 88, speed = 20 }) =
     group: {
       display: "flex",
       alignItems: "center",
-      gap: 0,
+      gap: "1rem",
       whiteSpace: "nowrap",
     } as React.CSSProperties,
     img: {
