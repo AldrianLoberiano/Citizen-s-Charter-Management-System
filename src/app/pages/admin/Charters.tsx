@@ -62,6 +62,7 @@ export function Charters() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [editingCharter, setEditingCharter] = useState<Charter | null>(null);
   const [deletingCharter, setDeletingCharter] = useState<Charter | null>(null);
+  const [selectedCharter, setSelectedCharter] = useState<Charter | null>(null);
 
   // Form
   const [formData, setFormData] = useState<FormData>(emptyForm);
@@ -387,6 +388,13 @@ export function Charters() {
                     </td>
                     <td className="px-5 py-4">
                       <div className="flex items-center justify-center gap-1">
+                        <button
+                          onClick={() => setSelectedCharter(charter)}
+                          title="View details"
+                          className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-50 rounded-lg transition-colors"
+                        >
+                          <FileText className="w-4 h-4" />
+                        </button>
                         <button
                           onClick={() => openEdit(charter)}
                           title="Edit charter"
