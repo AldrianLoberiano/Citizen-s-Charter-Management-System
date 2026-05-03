@@ -14,18 +14,15 @@ import {
   Users,
   Shield,
   BookOpen,
-  Lock,
 } from "lucide-react";
 import {
   getDepartments,
   getChartersByDepartment,
-  isAuthenticated,
 } from "../../store/data";
 
 export function Home() {
   const [search, setSearch] = useState("");
   const departments = getDepartments();
-  const adminHref = isAuthenticated() ? "/admin/dashboard" : "/admin/login";
 
   const filtered = useMemo(
     () =>
@@ -60,16 +57,6 @@ export function Home() {
               times, and fees. Our Citizen's Charter ensures transparency and
               accountability in public service delivery.
             </p>
-
-            <div className="mb-6">
-              <Link
-                to={adminHref}
-                className="inline-flex items-center gap-2 px-4 py-2.5 border border-blue-300 rounded-lg text-sm text-white hover:bg-blue-700 transition-colors"
-              >
-                <Lock className="w-4 h-4" />
-                {isAuthenticated() ? "Go to Admin Dashboard" : "Admin Login"}
-              </Link>
-            </div>
 
             {/* Search Bar */}
             <div className="relative max-w-lg">
