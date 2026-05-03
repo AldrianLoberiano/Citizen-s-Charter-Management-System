@@ -171,7 +171,7 @@ export const LogoLoop: React.FC<LogoLoopProps> = ({ height = 88, speed = 20 }) =
   const duration = `${speed}s`;
 
   return (
-    <div className="my-8 bg-transparent">
+    <div className="my-8" style={{ background: "transparent" }}>
       <div className="mx-auto max-w-7xl px-4">
         <div style={style.wrapper} aria-label="Partner logos">
           <div
