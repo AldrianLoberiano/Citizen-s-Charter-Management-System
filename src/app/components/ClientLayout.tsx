@@ -6,6 +6,8 @@
 import { Outlet, Link } from "react-router";
 import { Shield, Phone, Mail, MapPin } from "lucide-react";
 
+const clientLogoSrc = new URL("../../public/images/header/calauan_logo-removebg-preview.png", import.meta.url).href;
+
 export function ClientLayout() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -20,8 +22,12 @@ export function ClientLayout() {
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4">
           {/* Logo and System Name */}
           <Link to="/" className="flex items-center gap-3 min-w-0">
-            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-slate-900 text-white shadow-sm">
-              <Shield className="h-6 w-6" />
+            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-slate-900 p-1.5 text-white shadow-sm">
+              <img
+                src={clientLogoSrc}
+                alt="Calauan City Seal"
+                className="h-full w-full object-contain"
+              />
             </div>
             <div className="min-w-0">
               <div className="truncate leading-tight text-slate-900">
