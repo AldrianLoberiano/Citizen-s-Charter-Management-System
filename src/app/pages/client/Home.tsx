@@ -82,6 +82,9 @@ export function Home() {
         </div>
       </section>
 
+      {/* Logo loop */}
+      <LogoLoop />
+
       {/* Stats Banner */}
       <section className="border-b border-slate-200 bg-slate-100">
         <div className="mx-auto max-w-7xl px-4 py-6">
@@ -122,9 +125,6 @@ export function Home() {
           </div>
         </div>
       </section>
-
-      {/* Logo loop */}
-      <LogoLoop />
 
       {/* Departments Section */}
       <section className="mx-auto max-w-7xl px-4 py-12">
