@@ -19,7 +19,6 @@ import {
   ArrowLeft,
   MessageSquare,
   ThumbsUp,
-  ExternalLink,
 } from "lucide-react";
 import {
   getCharterById,
@@ -31,17 +30,6 @@ import {
   formatDateTime,
   Rating,
 } from "../../store/data";
-
-// Paste your Google Form URL here to embed it in the feedback section.
-const GOOGLE_FEEDBACK_FORM_URL = "";
-
-function toEmbeddedFeedbackUrl(url: string): string {
-  if (!url) return "";
-  if (!url.includes("docs.google.com/forms")) return url;
-  return url.includes("embedded=true")
-    ? url
-    : `${url}${url.includes("?") ? "&" : "?"}embedded=true`;
-}
 
 export function CharterDetail() {
   const { id } = useParams<{ id: string }>();
@@ -59,7 +47,6 @@ export function CharterDetail() {
   const [comment, setComment] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState("");
-  const [showQr, setShowQr] = useState(false);
 
   // Redirect if charter not found
   if (!charter) {
@@ -67,8 +54,6 @@ export function CharterDetail() {
   }
 
   const department = getDepartmentById(charter.department_id);
-  const googleFeedbackUrl = GOOGLE_FEEDBACK_FORM_URL.trim();
-  const googleEmbedUrl = toEmbeddedFeedbackUrl(googleFeedbackUrl);
   const feedbackUrl =
     typeof window !== "undefined"
       ? `${window.location.origin}/charter/${charter.id}#feedback-form`
@@ -275,35 +260,6 @@ export function CharterDetail() {
               <div className="flex items-center gap-2 mb-5">
                 <MessageSquare className="w-5 h-5 text-blue-700" />
                 <h2 className="text-slate-900">Citizen Feedback</h2>
-              </div>
-
-              <div className="mb-5 rounded-lg border border-blue-100 bg-blue-50 p-4">
-                <div className="flex items-center justify-between gap-3 mb-2">
-                  <h3 className="text-blue-900 text-sm">Google Feedback Form</h3>
-                  {googleFeedbackUrl && (
-                    <a
-                      href={googleFeedbackUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center gap-1 text-xs text-blue-700 hover:underline"
-                    >
-                      <ExternalLink className="w-3.5 h-3.5" />
-                      Open in new tab
-                    </a>
-                  )}
-                </div>
-
-                {googleFeedbackUrl ? (
-                  <iframe
-                    src={googleEmbedUrl}
-                    title="Google feedback form"
-                    className="h-[560px] w-full rounded-lg border border-blue-100 bg-white"
-                  />
-                ) : (
-                  <p className="text-xs text-blue-800">
-                    Add your Google Form URL in <strong>GOOGLE_FEEDBACK_FORM_URL</strong> at the top of this file to enable embedded responses connected to your Google Sheet.
-                  </p>
-                )}
               </div>
 
               {submitted ? (
