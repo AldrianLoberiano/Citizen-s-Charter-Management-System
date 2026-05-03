@@ -15,7 +15,10 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const port = Number(process.env.PORT || 4000);
-const corsOrigin = process.env.CORS_ORIGIN || "http://localhost:5173";
+const allowedOrigins = (process.env.CORS_ORIGIN || "http://localhost:5173,http://localhost:5174")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 const adminUsername = process.env.ADMIN_USERNAME || "admin";
 const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
 
@@ -45,7 +48,17 @@ const upload = multer({
   },
 });
 
-app.use(cors({ origin: corsOrigin }));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+      callback(new Error("Not allowed by CORS"));
+    },
+  })
+);
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
