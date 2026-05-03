@@ -76,10 +76,16 @@ export function Charters() {
   } | null>(null);
 
   const feedbackUrl = editingCharter
-    ? `${window.location.origin}/charter/${editingCharter.id}`
+    ? `${window.location.origin}/charter/${editingCharter.id}#feedback-form`
     : "";
   const feedbackQrUrl = feedbackUrl
     ? `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(feedbackUrl)}&bgcolor=ffffff&color=1e3a8a`
+    : "";
+  const selectedFeedbackUrl = selectedCharter
+    ? `${window.location.origin}/charter/${selectedCharter.id}#feedback-form`
+    : "";
+  const selectedFeedbackQrUrl = selectedFeedbackUrl
+    ? `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(selectedFeedbackUrl)}&bgcolor=ffffff&color=1e3a8a`
     : "";
 
   const refresh = useCallback(() => setCharters(getCharters()), []);
@@ -633,6 +639,58 @@ export function Charters() {
           )}
         </form>
       </Modal>
+
+      {/* Selected charter right-hand sidebar */}
+      {selectedCharter && (
+        <aside className="fixed right-6 top-24 w-80 z-50">
+          <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-lg">
+            <div className="flex items-start justify-between mb-3">
+              <div>
+                <h4 className="text-slate-900 text-sm">{selectedCharter.title}</h4>
+                <p className="text-slate-400 text-xs">Charter #{selectedCharter.id}</p>
+              </div>
+              <button
+                onClick={() => setSelectedCharter(null)}
+                className="p-1 text-slate-400 hover:text-slate-700"
+                title="Close"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="text-xs text-slate-500 mb-3">Share this QR for the citizen feedback form</div>
+            <div className="flex items-center gap-3">
+              <div className="shrink-0 rounded-lg border border-slate-200 bg-white p-2">
+                <img src={selectedFeedbackQrUrl} alt={`QR ${selectedCharter.title}`} className="h-36 w-36" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <input
+                  type="text"
+                  readOnly
+                  value={selectedFeedbackUrl}
+                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-600"
+                />
+                <div className="flex gap-2 mt-2">
+                  <a
+                    href={selectedFeedbackUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-xs text-blue-700 hover:underline"
+                  >
+                    Open link
+                  </a>
+                  <button
+                    onClick={() => navigator.clipboard?.writeText(selectedFeedbackUrl)}
+                    className="text-xs text-slate-600 hover:text-slate-800"
+                  >
+                    Copy
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      )}
 
       {/* Delete Confirmation Modal */}
       <Modal
