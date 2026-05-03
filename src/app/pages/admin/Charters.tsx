@@ -15,7 +15,6 @@ import {
   Paperclip,
   X,
   Filter,
-  QrCode,
 } from "lucide-react";
 import {
   getCharters,
@@ -62,7 +61,6 @@ export function Charters() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [editingCharter, setEditingCharter] = useState<Charter | null>(null);
   const [deletingCharter, setDeletingCharter] = useState<Charter | null>(null);
-  const [selectedCharter, setSelectedCharter] = useState<Charter | null>(null);
 
   // Form
   const [formData, setFormData] = useState<FormData>(emptyForm);
@@ -75,113 +73,100 @@ export function Charters() {
     message: string;
   } | null>(null);
 
-  const feedbackUrl = editingCharter
-    ? `${window.location.origin}/charter/${editingCharter.id}#feedback-form`
-              {paginated.map((charter) => {
-                const dept = getDepartmentById(charter.department_id);
-                return (
-                  <tr key={charter.id} className="transition-colors hover:bg-slate-50">
-                    <td className="px-5 py-4 text-sm text-slate-400">
-                      {charter.id}
-                    </td>
-                    <td className="px-5 py-4">
-                      <div className="flex items-start gap-2">
-                        <FileText className="mt-0.5 h-4 w-4 flex-shrink-0 text-slate-400" />
-                        <div>
-                          <p className="text-sm leading-snug text-slate-900">
-                            {charter.title}
-                          </p>
-                          <p className="mt-0.5 line-clamp-1 text-xs text-slate-400">
-                            {charter.content.slice(0, 60)}...
-                          </p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="hidden px-5 py-4 md:table-cell">
-                      {paginated.map((charter) => {
-                        const dept = getDepartmentById(charter.department_id);
-                        return (
-                          <tr key={charter.id} className="transition-colors hover:bg-slate-50">
-                            <td className="px-5 py-4 text-sm text-slate-400">
-                              {charter.id}
-                            </td>
-                            <td className="px-5 py-4">
-                              <div className="flex items-start gap-2">
-                                <FileText className="mt-0.5 h-4 w-4 flex-shrink-0 text-slate-400" />
-                                <div>
-                                  <p className="text-sm leading-snug text-slate-900">
-                                    {charter.title}
-                                  </p>
-                                  <p className="mt-0.5 line-clamp-1 text-xs text-slate-400">
-                                    {charter.content.slice(0, 60)}...
-                                  </p>
-                                </div>
-                              </div>
-                            </td>
-                            <td className="hidden px-5 py-4 md:table-cell">
-                              {dept ? (
-                                <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-100 px-2.5 py-0.5 text-xs text-slate-700">
-                                  {dept.name}
-                                </span>
-                              ) : (
-                                <span className="text-xs text-red-400">Unknown dept.</span>
-                              )}
-                            </td>
-                            <td className="hidden px-5 py-4 text-sm text-slate-500 lg:table-cell">
-                              {formatDate(charter.created_at)}
-                            </td>
-                            <td className="px-5 py-4 text-center">
-                              {charter.file_path ? (
-                                <div
-                                  title={charter.file_path}
-                                  className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-slate-100 transition-colors hover:bg-slate-200"
-                                >
-                                  <Paperclip className="h-3.5 w-3.5 text-slate-700" />
-                                </div>
-                              ) : (
-                                <span className="text-sm text-slate-300">â€”</span>
-                              )}
-                            </td>
-                            <td className="px-5 py-4">
-                              <div className="flex items-center justify-center gap-1">
-                                <button
-                                  onClick={() => setSelectedCharter(charter)}
-                                  title="View details"
-                                  className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
-                                >
-                                  <FileText className="h-4 w-4" />
-                                </button>
-                                <button
-                                  onClick={() => openEdit(charter)}
-                                  title="Edit charter"
-                                  className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
-                                >
-                                  <Pencil className="h-4 w-4" />
-                                </button>
-                                <button
-                                  onClick={() => openDelete(charter)}
-                                  title="Delete charter"
-                                  className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-600"
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                      {paginated.length === 0 && (
-                        <tr>
-                          <td
-                            colSpan={6}
-                            className="px-6 py-12 text-center text-sm text-slate-400"
-                          >
-                            {search || filterDept
-                              ? "No charters match the current filters."
-                              : "No charters found. Click Add Charter to create one."}
-                          </td>
-                        </tr>
-                      )}
+  const refresh = useCallback(() => setCharters(getCharters()), []);
+
+  const showNotification = (type: "success" | "error", message: string) => {
+    setNotification({ type, message });
+    setTimeout(() => setNotification(null), 3500);
+  };
+
+  // Filter charters
+  const filtered = charters.filter((c) => {
+    const matchSearch =
+      c.title.toLowerCase().includes(search.toLowerCase()) ||
+      c.content.toLowerCase().includes(search.toLowerCase());
+    const matchDept =
+      filterDept === "" || c.department_id === parseInt(filterDept);
+    return matchSearch && matchDept;
+  });
+
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+  const paginated = filtered.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
+  // Open add form
+  const openAdd = () => {
+    setEditingCharter(null);
+    setFormData(emptyForm);
+    setFormErrors({});
+    setFormModalOpen(true);
+  };
+
+  // Open edit form
+  const openEdit = (charter: Charter) => {
+    setEditingCharter(charter);
+    setFormData({
+      department_id: String(charter.department_id),
+      title: charter.title,
+      content: charter.content,
+      file_path: charter.file_path || "",
+    });
+    setFormErrors({});
+    setFormModalOpen(true);
+  };
+
+  // Open delete modal
+  const openDelete = (charter: Charter) => {
+    setDeletingCharter(charter);
+    setDeleteModalOpen(true);
+  };
+
+  // Validate form
+  const validate = (): boolean => {
+    const errors: Partial<FormData> = {};
+    if (!formData.department_id) {
+      errors.department_id = "Please select a department.";
+    }
+    if (!formData.title.trim()) {
+      errors.title = "Charter title is required.";
+    } else if (formData.title.trim().length < 5) {
+      errors.title = "Title must be at least 5 characters.";
+    }
+    if (!formData.content.trim()) {
+      errors.content = "Charter content/description is required.";
+    } else if (formData.content.trim().length < 20) {
+      errors.content = "Content must be at least 20 characters.";
+    }
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  // Handle file input change (simulates /uploads/charters folder in PHP)
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type: accept PDF and images only
+      const allowed = ["application/pdf", "image/jpeg", "image/png", "image/gif"];
+      if (!allowed.includes(file.type)) {
+        setFormErrors((p) => ({
+          ...p,
+          file_path: "Only PDF and image files are allowed.",
+        }));
+        return;
+      }
+      // Validate file size: max 5MB
+      if (file.size > 5 * 1024 * 1024) {
+        setFormErrors((p) => ({
+          ...p,
+          file_path: "File size must not exceed 5MB.",
+        }));
+        return;
+      }
+      try {
+        setUploadingFile(true);
+        setFormErrors((p) => ({ ...p, file_path: "" }));
         const result = await api.uploadCharterFile(file);
         setFormData((p) => ({ ...p, file_path: result.file_path }));
       } catch (error) {
@@ -252,46 +237,46 @@ export function Charters() {
       )}
 
       {/* Page Header */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h1 className="text-slate-900">Charters</h1>
-          <p className="mt-0.5 text-sm text-slate-500">
+          <p className="text-slate-500 text-sm mt-0.5">
             {charters.length} charter{charters.length !== 1 ? "s" : ""} in the
             system
           </p>
         </div>
         <button
           onClick={openAdd}
-          className="flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-sm text-white transition-colors hover:bg-slate-800"
+          className="flex items-center justify-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-colors text-sm"
         >
-          <Plus className="h-4 w-4" />
+          <Plus className="w-4 h-4" />
           Add Charter
         </button>
       </div>
 
       {/* Table Card */}
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+      <div className="bg-white rounded-xl border border-slate-200">
         {/* Filters */}
-        <div className="flex flex-col gap-3 border-b border-slate-200 p-4 sm:flex-row">
+        <div className="p-4 border-b border-slate-200 flex flex-col sm:flex-row gap-3">
           {/* Search */}
           <div className="relative flex-1 max-w-xs">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <input
               type="text"
               placeholder="Search charters..."
               value={search}
               onChange={handleSearchChange}
-              className="w-full rounded-lg border border-slate-300 bg-white py-2 pl-9 pr-4 text-sm text-slate-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-300"
+              className="w-full pl-9 pr-4 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent"
             />
           </div>
 
           {/* Department Filter */}
           <div className="relative">
-            <Filter className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
             <select
               value={filterDept}
               onChange={handleFilterChange}
-              className="cursor-pointer appearance-none rounded-lg border border-slate-300 bg-white py-2 pl-9 pr-8 text-sm text-slate-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-300"
+              className="pl-9 pr-8 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent appearance-none cursor-pointer"
             >
               <option value="">All Departments</option>
               {departments.map((d) => (
@@ -310,9 +295,9 @@ export function Charters() {
                 setFilterDept("");
                 setCurrentPage(1);
               }}
-              className="flex items-center gap-1 px-2 text-sm text-slate-500 transition-colors hover:text-slate-900"
+              className="flex items-center gap-1 text-slate-500 hover:text-slate-700 text-sm px-2"
             >
-              <X className="h-4 w-4" /> Clear
+              <X className="w-4 h-4" /> Clear
             </button>
           )}
         </div>
@@ -322,22 +307,22 @@ export function Charters() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-slate-200 bg-slate-50">
-                <th className="w-12 px-5 py-3 text-left text-xs uppercase tracking-wide text-slate-500">
+                <th className="text-left px-5 py-3 text-slate-500 text-xs uppercase tracking-wide w-12">
                   ID
                 </th>
-                <th className="px-5 py-3 text-left text-xs uppercase tracking-wide text-slate-500">
+                <th className="text-left px-5 py-3 text-slate-500 text-xs uppercase tracking-wide">
                   Title
                 </th>
-                <th className="hidden px-5 py-3 text-left text-xs uppercase tracking-wide text-slate-500 md:table-cell">
+                <th className="text-left px-5 py-3 text-slate-500 text-xs uppercase tracking-wide hidden md:table-cell">
                   Department
                 </th>
-                <th className="hidden px-5 py-3 text-left text-xs uppercase tracking-wide text-slate-500 lg:table-cell">
+                <th className="text-left px-5 py-3 text-slate-500 text-xs uppercase tracking-wide hidden lg:table-cell">
                   Date Created
                 </th>
-                <th className="w-20 px-5 py-3 text-center text-xs uppercase tracking-wide text-slate-500">
+                <th className="text-center px-5 py-3 text-slate-500 text-xs uppercase tracking-wide w-20">
                   File
                 </th>
-                <th className="w-28 px-5 py-3 text-center text-xs uppercase tracking-wide text-slate-500">
+                <th className="text-center px-5 py-3 text-slate-500 text-xs uppercase tracking-wide w-28">
                   Actions
                 </th>
               </tr>
@@ -346,83 +331,82 @@ export function Charters() {
               {paginated.map((charter) => {
                 const dept = getDepartmentById(charter.department_id);
                 return (
-                  <tr key={charter.id} className="transition-colors hover:bg-slate-50">
-                    <td className="px-5 py-4 text-sm text-slate-400">
+                  <tr
+                    key={charter.id}
+                    className="hover:bg-slate-50 transition-colors"
+                  >
+                    <td className="px-5 py-4 text-slate-400 text-sm">
                       {charter.id}
                     </td>
                     <td className="px-5 py-4">
                       <div className="flex items-start gap-2">
-                        <FileText className="mt-0.5 h-4 w-4 flex-shrink-0 text-slate-400" />
+                        <FileText className="w-4 h-4 text-slate-400 flex-shrink-0 mt-0.5" />
                         <div>
-                          <p className="text-sm leading-snug text-slate-900">
+                          <p className="text-slate-900 text-sm leading-snug">
                             {charter.title}
                           </p>
-                          <tr className="border-b border-slate-200 bg-slate-50">
-                            <th className="w-12 px-5 py-3 text-left text-xs uppercase tracking-wide text-slate-500">
+                          <p className="text-slate-400 text-xs mt-0.5 line-clamp-1">
+                            {charter.content.slice(0, 60)}...
                           </p>
                         </div>
-                            <th className="px-5 py-3 text-left text-xs uppercase tracking-wide text-slate-500">
+                      </div>
                     </td>
                     <td className="px-5 py-4 hidden md:table-cell">
-                            <th className="hidden px-5 py-3 text-left text-xs uppercase tracking-wide text-slate-500 md:table-cell">
-                        <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-100 px-2.5 py-0.5 text-xs text-slate-700">
+                      {dept ? (
+                        <span className="inline-flex items-center gap-1.5 text-blue-800 bg-slate-100 border border-slate-200 px-2.5 py-0.5 rounded-full text-xs">
                           {dept.name}
-                            <th className="hidden px-5 py-3 text-left text-xs uppercase tracking-wide text-slate-500 lg:table-cell">
+                        </span>
                       ) : (
-                        <span className="text-xs text-red-400">
-                            <th className="w-20 px-5 py-3 text-center text-xs uppercase tracking-wide text-slate-500">
+                        <span className="text-red-400 text-xs">
+                          Unknown dept.
                         </span>
                       )}
-                            <th className="w-28 px-5 py-3 text-center text-xs uppercase tracking-wide text-slate-500">
-                    <td className="hidden px-5 py-4 text-sm text-slate-500 lg:table-cell">
+                    </td>
+                    <td className="px-5 py-4 text-slate-500 text-sm hidden lg:table-cell">
                       {formatDate(charter.created_at)}
                     </td>
                     <td className="px-5 py-4 text-center">
                       {charter.file_path ? (
                         <div
                           title={charter.file_path}
-                          className="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg bg-slate-100 transition-colors hover:bg-slate-200"
-                              <tr key={charter.id} className="transition-colors hover:bg-slate-50">
-                                <td className="px-5 py-4 text-sm text-slate-400">
+                          className="inline-flex items-center justify-center w-7 h-7 bg-green-50 rounded-lg cursor-pointer hover:bg-green-100 transition-colors"
+                        >
+                          <Paperclip className="w-3.5 h-3.5 text-green-700" />
+                        </div>
+                      ) : (
+                        <span className="text-slate-300 text-sm">—</span>
                       )}
                     </td>
                     <td className="px-5 py-4">
                       <div className="flex items-center justify-center gap-1">
-                                    <FileText className="mt-0.5 h-4 w-4 flex-shrink-0 text-slate-400" />
-                          onClick={() => setSelectedCharter(charter)}
-                                      <p className="text-sm leading-snug text-slate-900">
-                          className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
-                        >
-                                      <p className="mt-0.5 line-clamp-1 text-xs text-slate-400">
-                        </button>
                         <button
                           onClick={() => openEdit(charter)}
                           title="Edit charter"
-                          className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
+                          className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
                         >
-                          <Pencil className="h-4 w-4" />
-                                    <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-100 px-2.5 py-0.5 text-xs text-slate-700">
+                          <Pencil className="w-4 h-4" />
+                        </button>
                         <button
                           onClick={() => openDelete(charter)}
                           title="Delete charter"
-                                    <span className="text-xs text-red-400">
+                          className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                         >
-                          <Trash2 className="h-4 w-4" />
+                          <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
-                                <td className="hidden px-5 py-4 text-sm text-slate-500 lg:table-cell">
+                    </td>
                   </tr>
                 );
               })}
               {paginated.length === 0 && (
                 <tr>
                   <td
-                                      className="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg bg-slate-100 transition-colors hover:bg-slate-200"
+                    colSpan={6}
                     className="px-6 py-12 text-center text-slate-400 text-sm"
-                                      <Paperclip className="h-3.5 w-3.5 text-slate-700" />
+                  >
                     {search || filterDept
                       ? "No charters match the current filters."
-                                    <span className="text-sm text-slate-300">â€”</span>
+                      : "No charters found. Click Add Charter to create one."}
                   </td>
                 </tr>
               )}
@@ -430,23 +414,23 @@ export function Charters() {
           </table>
         </div>
 
-                                      className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
+        {/* Pagination */}
         <Pagination
-                                      <FileText className="h-4 w-4" />
+          currentPage={currentPage}
           totalPages={totalPages}
           totalItems={filtered.length}
           itemsPerPage={ITEMS_PER_PAGE}
           onPageChange={setCurrentPage}
-                                      className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
+        />
       </div>
-                                      <Pencil className="h-4 w-4" />
+
       {/* Add / Edit Charter Modal */}
       <Modal
         isOpen={formModalOpen}
         onClose={() => setFormModalOpen(false)}
-                                      className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-600"
+        title={editingCharter ? "Edit Charter" : "Add New Charter"}
         size="xl"
-                                      <Trash2 className="h-4 w-4" />
+      >
         <form onSubmit={handleSubmit} noValidate className="space-y-4">
           {/* Department Selection */}
           <div>
@@ -458,7 +442,7 @@ export function Charters() {
               onChange={(e) =>
                 setFormData((p) => ({ ...p, department_id: e.target.value }))
               }
-              className={`w-full px-4 py-2.5 border rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer ${
+              className={`w-full px-4 py-2.5 border rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-slate-300 cursor-pointer ${
                 formErrors.department_id ? "border-red-400" : "border-slate-300"
               }`}
             >
@@ -489,7 +473,7 @@ export function Charters() {
                 setFormData((p) => ({ ...p, title: e.target.value }))
               }
               placeholder="e.g., Birth Certificate Issuance"
-              className={`w-full px-4 py-2.5 border rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              className={`w-full px-4 py-2.5 border rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-slate-300 ${
                 formErrors.title ? "border-red-400" : "border-slate-300"
               }`}
             />
@@ -513,12 +497,12 @@ export function Charters() {
               }
               placeholder="Describe the service, requirements, fees, processing time, and how to avail..."
               rows={8}
-              className={`w-full px-4 py-2.5 border rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y font-mono ${
+              className={`w-full px-4 py-2.5 border rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-slate-300 resize-y font-mono ${
                 formErrors.content ? "border-red-400" : "border-slate-300"
               }`}
             />
             <p className="text-slate-400 text-xs mt-1">
-              {formData.content.length} characters â€” Use line breaks for
+              {formData.content.length} characters — Use line breaks for
               requirements and steps
             </p>
             {formErrors.content && (
@@ -539,7 +523,7 @@ export function Charters() {
               {formData.file_path ? (
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 text-sm text-slate-700">
-                    <Paperclip className="w-4 h-4 text-green-600" />
+                    <Paperclip className="w-4 h-4 text-slate-600" />
                     <span className="truncate max-w-xs">{formData.file_path}</span>
                   </div>
                   <button
@@ -591,100 +575,13 @@ export function Charters() {
             </button>
             <button
               type="submit"
-              className="px-4 py-2 text-sm bg-blue-800 text-white rounded-lg hover:bg-blue-900 transition-colors"
+              className="px-4 py-2 text-sm bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-colors"
             >
               {editingCharter ? "Save Changes" : "Create Charter"}
             </button>
           </div>
-
-          {editingCharter && (
-            <div className="mt-6 rounded-xl border border-slate-200 bg-slate-50 p-4">
-              <div className="flex items-center gap-2 mb-3">
-                <QrCode className="w-4 h-4 text-blue-700" />
-                <h4 className="text-slate-900">Citizen Feedback QR Code</h4>
-              </div>
-              <p className="text-slate-500 text-xs mb-4">
-                Share this QR code so citizens can open the charter feedback page.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 items-start">
-                <div className="shrink-0 rounded-lg border border-slate-200 bg-white p-3">
-                  <img
-                    src={feedbackQrUrl}
-                    alt={`QR code for ${editingCharter.title}`}
-                    className="h-44 w-44"
-                  />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <label className="block text-slate-700 mb-1.5 text-sm">
-                    Feedback link
-                  </label>
-                  <input
-                    type="text"
-                    readOnly
-                    value={feedbackUrl}
-                    className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-600"
-                  />
-                  <p className="text-slate-400 text-xs mt-1">
-                    Use this QR code on posters, desks, or printed service materials.
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
         </form>
       </Modal>
-
-      {/* Selected charter right-hand sidebar */}
-      {selectedCharter && (
-        <aside className="fixed right-6 top-24 w-80 z-50">
-          <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-lg">
-            <div className="flex items-start justify-between mb-3">
-              <div>
-                <h4 className="text-slate-900 text-sm">{selectedCharter.title}</h4>
-                <p className="text-slate-400 text-xs">Charter #{selectedCharter.id}</p>
-              </div>
-              <button
-                onClick={() => setSelectedCharter(null)}
-                className="p-1 text-slate-400 hover:text-slate-700"
-                title="Close"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <div className="text-xs text-slate-500 mb-3">Share this QR for the citizen feedback form</div>
-            <div className="flex items-center gap-3">
-              <div className="shrink-0 rounded-lg border border-slate-200 bg-white p-2">
-                <img src={selectedFeedbackQrUrl} alt={`QR ${selectedCharter.title}`} className="h-36 w-36" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <input
-                  type="text"
-                  readOnly
-                  value={selectedFeedbackUrl}
-                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-600"
-                />
-                <div className="flex gap-2 mt-2">
-                  <a
-                    href={selectedFeedbackUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-xs text-blue-700 hover:underline"
-                  >
-                    Open link
-                  </a>
-                  <button
-                    onClick={() => navigator.clipboard?.writeText(selectedFeedbackUrl)}
-                    className="text-xs text-slate-600 hover:text-slate-800"
-                  >
-                    Copy
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </aside>
-      )}
 
       {/* Delete Confirmation Modal */}
       <Modal
@@ -721,3 +618,4 @@ export function Charters() {
     </div>
   );
 }
+
