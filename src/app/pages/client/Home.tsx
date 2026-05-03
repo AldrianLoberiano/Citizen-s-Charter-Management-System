@@ -60,10 +60,13 @@ export function Home() {
       <section className="border-b border-slate-200 bg-white">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:py-20">
           <div className="max-w-3xl">
-            <div className="mb-4 flex flex-wrap items-center gap-3">
+            <div className="mb-4 flex items-center justify-between gap-3">
               <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-sm text-slate-700">
                 <Shield className="h-4 w-4" />
                 <span>Official Government Service Directory</span>
+              </div>
+              <div className="inline-flex shrink-0 items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs text-slate-600 shadow-sm">
+                {formattedDate} · {formattedTime}
               </div>
             </div>
             <div className="mb-4 flex flex-wrap items-center gap-3">
@@ -79,9 +82,6 @@ export function Home() {
 
             {/* Search Bar */}
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-              <div className="inline-flex shrink-0 items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs text-slate-600 shadow-sm">
-                {formattedDate} · {formattedTime}
-              </div>
               <div className="relative w-full max-w-lg">
                 <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
                 <input
