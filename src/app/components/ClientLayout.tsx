@@ -31,7 +31,7 @@ export function ClientLayout() {
             </div>
             <div className="min-w-0">
               <div className="truncate leading-tight text-slate-900">
-                Citizen's Charter
+                Calauan Citizen's Charter
               </div>
               <div className="truncate text-xs text-slate-500">
                 Management System
