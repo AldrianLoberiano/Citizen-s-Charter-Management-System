@@ -36,6 +36,7 @@ export const LogoLoop: React.FC<LogoLoopProps> = ({ height = 88, speed = 20 }) =
   const [loaded, setLoaded] = useState<Record<string, boolean>>({});
   const trackRef = useRef<HTMLDivElement | null>(null);
   const groupRef = useRef<HTMLDivElement | null>(null);
+  const logoGapPx = 16; // 1rem
 
   useEffect(() => {
     const existing = new Set(
@@ -91,7 +92,8 @@ export const LogoLoop: React.FC<LogoLoopProps> = ({ height = 88, speed = 20 }) =
     if (!track || !group) return;
     const setShift = () => {
       const w = group.getBoundingClientRect().width;
-      track.style.setProperty("--logo-shift", `${w}px`);
+      // Shift by one full group plus the inter-group gap so seam spacing stays consistent.
+      track.style.setProperty("--logo-shift", `${w + logoGapPx}px`);
       track.style.setProperty("--logo-duration", `${speed}s`);
       track.style.setProperty("--logo-start", "16px");
     };
@@ -146,6 +148,7 @@ export const LogoLoop: React.FC<LogoLoopProps> = ({ height = 88, speed = 20 }) =
       display: "flex",
       width: "max-content",
       alignItems: "center",
+      columnGap: `${logoGapPx}px`,
       transform: "translate3d(0,0,0)",
       // use CSS vars: --logo-shift and --logo-duration are set at runtime
       animation: "logoLoop var(--logo-duration, 20s) linear infinite",
