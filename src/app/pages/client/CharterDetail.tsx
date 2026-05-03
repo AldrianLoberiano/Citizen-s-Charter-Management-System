@@ -222,7 +222,7 @@ export function CharterDetail() {
                 </div>
 
                 <div className="mt-8 flex items-center justify-between border-t border-slate-100 pt-4 text-xs text-slate-400">
-                  <span>Citizen's Charter Management System</span>
+                  <span>Calauan Citizen's Charter Management System</span>
                   <span>Page 1 of 1</span>
                 </div>
               </div>
