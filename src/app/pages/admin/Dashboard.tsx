@@ -78,15 +78,15 @@ export function Dashboard() {
   return (
     <div className="space-y-6">
       {/* Page Title */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-slate-900">Dashboard</h1>
-          <p className="text-slate-500 text-sm mt-0.5">
+          <p className="mt-0.5 text-sm text-slate-500">
             Overview of the Citizen's Charter Management System
           </p>
         </div>
-        <div className="text-slate-400 text-sm flex items-center gap-1">
-          <Clock className="w-4 h-4" />
+        <div className="flex items-center gap-1 text-sm text-slate-400">
+          <Clock className="h-4 w-4" />
           {new Date().toLocaleDateString("en-PH", {
             weekday: "long",
             year: "numeric",
@@ -97,22 +97,22 @@ export function Dashboard() {
       </div>
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {stats.map((stat) => (
           <Link
             key={stat.label}
             to={stat.link}
-            className="bg-white rounded-xl border border-slate-200 p-5 flex items-center gap-4 hover:shadow-md transition-all hover:border-slate-300 group"
+            className="group flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 transition-all hover:border-slate-300 hover:shadow-sm"
           >
             <div
-              className={`${stat.bgColor} p-3 rounded-xl flex-shrink-0 group-hover:opacity-90 transition-opacity`}
+              className="flex-shrink-0 rounded-xl bg-slate-900 p-3 transition-opacity group-hover:opacity-90"
             >
-              <stat.icon className="w-6 h-6 text-white" />
+              <stat.icon className="h-6 w-6 text-white" />
             </div>
             <div className="min-w-0">
-              <p className="text-slate-500 text-xs truncate">{stat.label}</p>
-              <p className="text-slate-900 text-2xl">{stat.value}</p>
-              <p className="text-slate-400 text-xs truncate">
+              <p className="truncate text-xs text-slate-500">{stat.label}</p>
+              <p className="text-2xl text-slate-900">{stat.value}</p>
+              <p className="truncate text-xs text-slate-400">
                 {stat.description}
               </p>
             </div>
@@ -121,19 +121,19 @@ export function Dashboard() {
       </div>
 
       {/* Recent Charters Table */}
-      <div className="bg-white rounded-xl border border-slate-200">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+        <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4">
           <div>
             <h2 className="text-slate-900">Recent Charters</h2>
-            <p className="text-slate-400 text-xs mt-0.5">
+            <p className="mt-0.5 text-xs text-slate-400">
               Last {recentCharters.length} added or updated charters
             </p>
           </div>
           <Link
             to="/admin/charters"
-            className="flex items-center gap-1 text-blue-700 hover:text-blue-900 text-sm transition-colors"
+            className="flex items-center gap-1 text-sm text-slate-700 transition-colors hover:text-slate-950"
           >
-            View all <ChevronRight className="w-4 h-4" />
+            View all <ChevronRight className="h-4 w-4" />
           </Link>
         </div>
 
@@ -141,16 +141,16 @@ export function Dashboard() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-50">
-                <th className="text-left px-6 py-3 text-slate-500 text-xs uppercase tracking-wide">
+                <th className="px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500">
                   Charter Title
                 </th>
-                <th className="text-left px-6 py-3 text-slate-500 text-xs uppercase tracking-wide hidden md:table-cell">
+                <th className="hidden px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 md:table-cell">
                   Department
                 </th>
-                <th className="text-left px-6 py-3 text-slate-500 text-xs uppercase tracking-wide hidden sm:table-cell">
+                <th className="hidden px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 sm:table-cell">
                   Date Added
                 </th>
-                <th className="text-left px-6 py-3 text-slate-500 text-xs uppercase tracking-wide w-24">
+                <th className="w-24 px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500">
                   File
                 </th>
               </tr>
@@ -159,30 +159,30 @@ export function Dashboard() {
               {recentCharters.map((charter) => {
                 const dept = getDepartmentById(charter.department_id);
                 return (
-                  <tr key={charter.id} className="hover:bg-slate-50 transition-colors">
+                  <tr key={charter.id} className="transition-colors hover:bg-slate-50">
                     <td className="px-6 py-3.5">
                       <div className="flex items-center gap-2">
-                        <FileText className="w-4 h-4 text-slate-400 flex-shrink-0" />
-                        <span className="text-slate-900 text-sm">
+                        <FileText className="h-4 w-4 flex-shrink-0 text-slate-400" />
+                        <span className="text-sm text-slate-900">
                           {charter.title}
                         </span>
                       </div>
                     </td>
-                    <td className="px-6 py-3.5 text-slate-500 text-sm hidden md:table-cell">
+                    <td className="hidden px-6 py-3.5 text-sm text-slate-500 md:table-cell">
                       {dept?.name || (
                         <span className="text-red-400">Unknown</span>
                       )}
                     </td>
-                    <td className="px-6 py-3.5 text-slate-500 text-sm hidden sm:table-cell">
+                    <td className="hidden px-6 py-3.5 text-sm text-slate-500 sm:table-cell">
                       {formatDate(charter.created_at)}
                     </td>
                     <td className="px-6 py-3.5">
                       {charter.file_path ? (
-                        <span className="inline-flex items-center gap-1 text-green-700 text-xs bg-green-50 px-2 py-0.5 rounded-full border border-green-200">
-                          <Paperclip className="w-3 h-3" /> Attached
+                        <span className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-100 px-2 py-0.5 text-xs text-slate-600">
+                          <Paperclip className="h-3 w-3" /> Attached
                         </span>
                       ) : (
-                        <span className="text-slate-300 text-xs">—</span>
+                        <span className="text-xs text-slate-300">—</span>
                       )}
                     </td>
                   </tr>
