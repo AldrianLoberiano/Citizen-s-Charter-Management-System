@@ -6,16 +6,16 @@ interface LogoLoopProps {
 }
 
 const images = [
-  "sb.jpg",
-  "mto.jpg",
-  "mpdc.jpg",
-  "mho.png",
-  "mdrrmo.jpg",
-  "hrmo.jpg",
-  "ctmo.jpg",
-  "bplo.jpg",
-  "assesors office.jpg",
-  "AgriOffice.jpg",
+  "sb-removebg-preview.png",
+  "mto-removebg-preview.png",
+  "mpdc-removebg-preview.png",
+  "mho-removebg-preview.png",
+  "mdrrmo-removebg-preview.png",
+  "hrmo-removebg-preview.png",
+  "ctmo-removebg-preview.png",
+  "bplo-removebg-preview.png",
+  "assesors_office-removebg-preview.png",
+  "AgriOffice-removebg-preview.png",
 ];
 
 // Resolve local image URLs from src/public/images using Vite import meta URL
