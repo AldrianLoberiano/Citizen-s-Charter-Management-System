@@ -82,12 +82,7 @@ export function Home() {
         </div>
       </section>
 
-      {/* Logo loop (reverted position) */}
-      <LogoLoop />
-
-      {/* Logo loop (moved down) */}
-
-      {/* Stats Banner */}
+      {/* Stats Banner (moved here to sit above the logo loop) */}
       <section className="border-b border-slate-200 bg-slate-100">
         <div className="mx-auto max-w-7xl px-4 py-6">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -127,6 +122,13 @@ export function Home() {
           </div>
         </div>
       </section>
+
+      {/* Logo loop (reverted position) */}
+      <LogoLoop />
+
+      {/* Logo loop (moved down) */}
+
+      
 
       {/* Departments Section */}
       <section className="mx-auto max-w-7xl px-4 py-12">
