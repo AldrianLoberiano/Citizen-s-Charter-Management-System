@@ -16,6 +16,9 @@ const images = [
   "bplo-removebg-preview.png",
   "assesors_office-removebg-preview.png",
   "AgriOffice-removebg-preview.png",
+  "lydo.png",
+  "osca.png",
+  "peso.png",
 ];
 
 // Resolve local image URLs from src/public/images using Vite import meta URL
@@ -90,8 +93,11 @@ export const LogoLoop: React.FC<LogoLoopProps> = ({ height = 88, speed = 20 }) =
       const w = group.getBoundingClientRect().width;
       track.style.setProperty("--logo-shift", `${w}px`);
       track.style.setProperty("--logo-duration", `${speed}s`);
+      track.style.setProperty("--logo-start", "16px");
     };
     setShift();
+    // Pause animation until we finish measurement and first images are ready
+    if (trackRef.current) trackRef.current.style.animationPlayState = "paused";
     // Recompute on resize
     const ro = new ResizeObserver(setShift);
     ro.observe(group);
@@ -104,10 +110,37 @@ export const LogoLoop: React.FC<LogoLoopProps> = ({ height = 88, speed = 20 }) =
     };
   }, [speed]);
 
+  // Start animation when at least one visible image has loaded (or after timeout)
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    let started = false;
+    const tryStart = () => {
+      if (started) return;
+      const anyLoaded = imageUrls.some((src) => loaded[src]);
+      if (anyLoaded) {
+        track.style.animationPlayState = "running";
+        started = true;
+      }
+    };
+    // attempt immediately
+    tryStart();
+    // fallback: start after 500ms even if images not loaded to avoid permanent pause
+    const t = setTimeout(() => {
+      if (!started) {
+        track.style.animationPlayState = "running";
+        started = true;
+      }
+    }, 500);
+    return () => clearTimeout(t);
+  }, [loaded]);
+
   const style = {
     wrapper: {
       overflow: "hidden",
       background: "transparent",
+      paddingLeft: "0.5rem",
+      paddingRight: "0.5rem",
     } as React.CSSProperties,
     track: {
       display: "flex",
@@ -155,7 +188,6 @@ export const LogoLoop: React.FC<LogoLoopProps> = ({ height = 88, speed = 20 }) =
                         style={style.img}
                         className="select-none"
                         loading="eager"
-                        fetchPriority="high"
                         decoding="async"
                       />
                     ) : (
@@ -190,7 +222,7 @@ export const LogoLoop: React.FC<LogoLoopProps> = ({ height = 88, speed = 20 }) =
         </div>
       </div>
 
-      <style>{`\n        @keyframes logoLoop {\n          0% { transform: translateX(0); }\n          100% { transform: translateX(calc(var(--logo-shift) * -1)); }\n        }\n        .logo-loop-track {\n          will-change: transform;\n          animation: logoLoop var(--logo-duration, 20s) linear infinite;\n        }\n      `}</style>
+      <style>{`\n        @keyframes logoLoop {\n          0% { transform: translateX(var(--logo-start, 0px)); }\n          100% { transform: translateX(calc(var(--logo-start, 0px) + (var(--logo-shift) * -1))); }\n        }\n        .logo-loop-track {\n          will-change: transform;\n          animation: logoLoop var(--logo-duration, 20s) linear infinite;\n        }\n      `}</style>
     </div>
   );
 };
