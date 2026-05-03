@@ -26,7 +26,7 @@ export function ClientLayout() {
               <img
                 src={clientLogoSrc}
                 alt="Calauan City Seal"
-                className="h-full w-full scale-160 object-contain"
+                className="h-full w-full scale-165 object-contain"
               />
             </div>
             <div className="min-w-0">
