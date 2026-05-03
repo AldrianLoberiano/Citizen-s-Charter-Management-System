@@ -11,22 +11,15 @@ const clientHeaderBgSrc = new URL("../../public/images/header/header1.png", impo
 
 export function ClientLayout() {
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col">
       {/* Top announcement bar */}
-      <div className="border-b border-slate-800 bg-slate-950 px-4 py-2 text-center text-xs text-slate-200">
+      <div className="border-b border-slate-200 bg-white px-4 py-2 text-center text-xs text-slate-600">
         Official Website of the Local Government Unit — For inquiries, contact
         the Information Officer
       </div>
 
       {/* Main Navigation Header */}
-      <header
-        className="sticky top-0 z-40 border-b border-slate-200 bg-gradient-to-r from-slate-900 via-purple-950 to-slate-900 shadow-sm"
-        style={{
-          backgroundImage: `url(${clientHeaderBgSrc})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
+      <header className="sticky top-0 z-40 border-b border-slate-200 bg-white shadow-sm">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4">
           {/* Logo and System Name */}
           <Link to="/" className="flex items-center gap-5 min-w-0">
@@ -38,10 +31,10 @@ export function ClientLayout() {
               />
             </div>
             <div className="min-w-0">
-              <div className="truncate leading-tight text-white">
+              <div className="truncate leading-tight text-slate-950">
                 Calauan Citizen's Charter
               </div>
-              <div className="truncate text-xs text-slate-200">
+              <div className="truncate text-xs text-slate-500">
                 Municipality of Calauan
               </div>
             </div>
@@ -56,7 +49,7 @@ export function ClientLayout() {
       </main>
 
       {/* Footer */}
-      <footer className="mt-auto border-t border-slate-200 bg-slate-50 text-slate-600">
+      <footer className="mt-auto border-t border-slate-200 bg-white text-slate-600">
         <div className="mx-auto max-w-7xl px-4 py-10">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* About */}
