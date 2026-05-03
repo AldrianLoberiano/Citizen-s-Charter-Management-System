@@ -19,6 +19,7 @@ import {
   getDepartments,
   getChartersByDepartment,
 } from "../../store/data";
+import LogoLoop from "../../components/LogoLoop";
 
 export function Home() {
   const [search, setSearch] = useState("");
@@ -121,6 +122,9 @@ export function Home() {
           </div>
         </div>
       </section>
+
+      {/* Logo loop */}
+      <LogoLoop />
 
       {/* Departments Section */}
       <section className="mx-auto max-w-7xl px-4 py-12">
