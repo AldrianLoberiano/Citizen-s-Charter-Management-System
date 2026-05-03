@@ -83,7 +83,7 @@ export function Home() {
       </section>
 
       {/* Stats Banner (moved here to sit above the logo loop) */}
-      <section className="border-b border-slate-200 bg-slate-100">
+      <section className="border-b border-slate-200 bg-white">
         <div className="mx-auto max-w-7xl px-4 py-6">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
@@ -251,7 +251,7 @@ export function Home() {
             ].map((item) => (
               <div
                 key={item.step}
-                className="rounded-2xl border border-slate-200 bg-slate-50 p-6 shadow-sm"
+                className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
               >
                 <div className="mb-4 flex items-center gap-3">
                   <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-900 text-sm text-white">
