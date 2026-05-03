@@ -21,6 +21,11 @@ import {
 } from "../../store/data";
 import LogoLoop from "../../components/LogoLoop";
 
+const bagongPilipinasLogoSrc = new URL(
+  "../../../public/images/header/Bagong_Pilipinas_logo.png",
+  import.meta.url
+).href;
+
 export function Home() {
   const [search, setSearch] = useState("");
   const departments = getDepartments();
@@ -99,8 +104,17 @@ export function Home() {
               </div>
             </div>
           </div>
-          <div className="absolute right-4 top-16 inline-flex shrink-0 items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs text-slate-600 shadow-sm sm:top-20">
-            {formattedDate} · {formattedTime}
+          <div className="absolute right-4 top-16 flex flex-col items-end gap-2 sm:top-20">
+            <div className="inline-flex shrink-0 items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs text-slate-600 shadow-sm">
+              {formattedDate} · {formattedTime}
+            </div>
+            <img
+              src={bagongPilipinasLogoSrc}
+              alt="Bagong Pilipinas logo"
+              className="h-14 w-auto object-contain"
+              loading="lazy"
+              decoding="async"
+            />
           </div>
         </div>
       </section>
