@@ -4,7 +4,7 @@
   --font-size: 16px;
   --font-display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
   --font-body: "Segoe UI", "Aptos", sans-serif;
-  --background: #f6f3ee;
+  --background: #ffffff;
   --foreground: #1f2937;
   --card: #ffffff;
   --card-foreground: #111827;
@@ -12,11 +12,11 @@
   --popover-foreground: #111827;
   --primary: #111827;
   --primary-foreground: #ffffff;
-  --secondary: #ece7de;
+  --secondary: #ffffff;
   --secondary-foreground: #111827;
-  --muted: #e6e1d8;
+  --muted: #ffffff;
   --muted-foreground: #6b7280;
-  --accent: #dde4ea;
+  --accent: #ffffff;
   --accent-foreground: #111827;
   --destructive: #d4183d;
   --destructive-foreground: #ffffff;
