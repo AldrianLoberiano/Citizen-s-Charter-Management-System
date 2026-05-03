@@ -84,9 +84,6 @@ export function AdminLayout() {
       >
         {/* Sidebar Header / Logo */}
         <div className="flex items-center gap-3 border-b border-slate-800 px-5 py-5">
-          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-white text-slate-900">
-            <Shield className="h-5 w-5" />
-          </div>
           <div className="min-w-0">
             <div className="truncate text-sm leading-tight text-white">
               CCMS Admin
