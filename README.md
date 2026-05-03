@@ -1,56 +1,68 @@
 # Calauans Citizen's Charter Management System
 
-Citizen's Charter Management System frontend built with React + Vite.
+Citizen's Charter Management System is a React + Vite frontend with an Express + MySQL backend.
 
 ## Prerequisites
 
 - Node.js 18+
 - npm
-- MySQL 8.0+ (or XAMPP MySQL)
+- MySQL 8.0+ or XAMPP MySQL
 
-## Install and Run
+## Project Structure
 
-1. Install dependencies:
-   npm install
-2. Start the development server:
-   npm run dev
+- Frontend: root app powered by Vite
+- Backend: `backend/`
+- Database seed: `database/ccms_mysql.sql`
+- Uploaded charter files: `uploads/charters/`
 
-## MySQL Database Setup
+## Setup
 
-The project includes a ready-to-import SQL file:
+1. Install frontend dependencies from the project root:
+   `npm install`
+2. Install backend dependencies:
+   `cd backend && npm install`
+3. Import the database schema and seed data:
+   `mysql -u root -p < database/ccms_mysql.sql`
 
-- database/ccms_mysql.sql
+## Run the App
 
-Create and import the database:
+Start the backend in one terminal:
 
-1. Open MySQL terminal
-2. Run:
-   mysql -u root -p < database/ccms_mysql.sql
+`npm run server`
 
-This creates:
+Start the frontend in another terminal:
 
-- ccms_db database
-- admins, departments, charters, ratings tables
-- sample seed data
+`npm run dev`
 
-## Upload Storage Path
+The frontend runs on `http://localhost:5173` and the backend runs on `http://localhost:4000` by default.
 
-Uploaded files should be saved on disk in:
+## Environment Variables
 
-- uploads/charters/
+Backend `backend/.env` can override the defaults used by `backend/server.js` and `backend/db.js`:
 
-Store only the relative file path in MySQL, for example:
+- `PORT` - backend port, default `4000`
+- `CORS_ORIGIN` - allowed frontend origin, default `http://localhost:5173`
+- `DB_HOST` - MySQL host, default `127.0.0.1`
+- `DB_PORT` - MySQL port, default `3306`
+- `DB_USER` - MySQL user, default `root`
+- `DB_PASSWORD` - MySQL password, default empty
+- `DB_NAME` - database name, default `ccms_db`
+- `ADMIN_USERNAME` - default `admin`
+- `ADMIN_PASSWORD` - default `admin123`
 
-- uploads/charters/document.pdf
+## API Behavior
 
-## Admin Access
+The frontend syncs with the backend API and can fall back to local storage when the API is unavailable. Main API routes include departments, charters, ratings, authentication, and charter file uploads.
 
-Default seeded admin account:
+## Upload Storage
 
-- username: admin
-- password: admin123
+Uploaded files are stored on disk in `uploads/charters/`. The backend returns and stores relative paths such as `uploads/charters/document.pdf`.
 
-## Notes
+## Default Admin Login
 
-- Current frontend data uses local storage in development.
-- For full MERN integration, connect your backend API to ccms_db and replace local storage calls with HTTP requests.
+- Username: `admin`
+- Password: `admin123`
+
+## Database Notes
+
+The imported SQL file creates the `ccms_db` database with `departments`, `charters`, and `ratings` tables plus seed data for initial testing.
