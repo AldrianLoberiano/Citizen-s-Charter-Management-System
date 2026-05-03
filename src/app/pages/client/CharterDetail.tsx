@@ -254,7 +254,7 @@ export function CharterDetail() {
             </div>
 
             {/* Feedback Section */}
-            <div className="bg-white rounded-xl border border-slate-200 p-6">
+            <div id="feedback-form" className="bg-white rounded-xl border border-slate-200 p-6">
               <div className="flex items-center gap-2 mb-5">
                 <MessageSquare className="w-5 h-5 text-blue-700" />
                 <h2 className="text-slate-900">Citizen Feedback</h2>
