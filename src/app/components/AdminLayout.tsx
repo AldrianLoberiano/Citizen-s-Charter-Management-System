@@ -15,11 +15,12 @@ import {
   X,
   ExternalLink,
   ChevronRight,
-  Shield,
   User,
   QrCode,
 } from "lucide-react";
 import { isAuthenticated, logout, getAuthUser, getCharters } from "../store/data";
+
+const adminLogoSrc = new URL("../../public/images/header/calauan_logo2.png", import.meta.url).href;
 
 interface NavItem {
   path: string;
@@ -84,6 +85,11 @@ export function AdminLayout() {
       >
         {/* Sidebar Header / Logo */}
         <div className="flex items-center gap-3 border-b border-slate-800 px-5 py-5">
+          <img
+            src={adminLogoSrc}
+            alt="Calauan City Seal"
+            className="h-9 w-9 flex-shrink-0 object-contain"
+          />
           <div className="min-w-0">
             <div className="truncate text-sm leading-tight text-white">
               CCMS Admin
