@@ -6,7 +6,7 @@
 import { Outlet, Link } from "react-router";
 import { Shield, Phone, Mail, MapPin } from "lucide-react";
 
-const clientLogoSrc = new URL("../../public/images/header/calauan_logo-removebg-preview.png", import.meta.url).href;
+const clientLogoSrc = new URL("../../public/images/header/logo.png", import.meta.url).href;
 const clientHeaderBgSrc = new URL("../../public/images/header/header1.png", import.meta.url).href;
 
 export function ClientLayout() {
