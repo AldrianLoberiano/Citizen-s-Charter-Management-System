@@ -199,7 +199,6 @@ export const LogoLoop: React.FC<LogoLoopProps> = ({ height = 88, speed = 20 }) =
                         style={{
                           ...style.img,
                           display: "inline-block",
-                          background: "#f3f4f6",
                           minWidth: Math.round(height * 1.2) + "px",
                         }}
                       />
