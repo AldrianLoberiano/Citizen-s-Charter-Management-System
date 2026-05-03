@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { isAuthenticated, logout, getAuthUser, getCharters } from "../store/data";
 
-const adminLogoSrc = new URL("../../public/images/header/calauan_logo2.png", import.meta.url).href;
+const adminLogoSrc = new URL("../../public/images/header/calauan_logo.png", import.meta.url).href;
 
 interface NavItem {
   path: string;
