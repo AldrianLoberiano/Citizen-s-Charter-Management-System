@@ -64,11 +64,11 @@ export function AdminLayout() {
       : "";
 
   return (
-    <div className="flex h-screen bg-slate-100 overflow-hidden">
+    <div className="flex h-screen overflow-hidden bg-slate-100">
       {/* Mobile overlay backdrop */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-20 lg:hidden"
+          className="fixed inset-0 z-20 bg-black/40 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -76,34 +76,34 @@ export function AdminLayout() {
       {/* Sidebar */}
       <aside
         className={`
-          fixed inset-y-0 left-0 z-30 w-64 bg-slate-900 text-white flex flex-col
+          fixed inset-y-0 left-0 z-30 flex w-64 flex-col border-r border-slate-800 bg-slate-950 text-white shadow-xl
           transform transition-transform duration-300 ease-in-out
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
           lg:relative lg:translate-x-0
         `}
       >
         {/* Sidebar Header / Logo */}
-        <div className="flex items-center gap-3 px-5 py-5 border-b border-slate-700">
-          <div className="w-9 h-9 bg-blue-700 rounded-lg flex items-center justify-center flex-shrink-0">
-            <Shield className="w-5 h-5 text-white" />
+        <div className="flex items-center gap-3 border-b border-slate-800 px-5 py-5">
+          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-white text-slate-900">
+            <Shield className="h-5 w-5" />
           </div>
           <div className="min-w-0">
-            <div className="text-white text-sm leading-tight truncate">
+            <div className="truncate text-sm leading-tight text-white">
               CCMS Admin
             </div>
-            <div className="text-slate-400 text-xs">Citizens Charter</div>
+            <div className="text-xs text-slate-400">Citizens Charter</div>
           </div>
           <button
-            className="ml-auto lg:hidden text-slate-400 hover:text-white p-1 rounded-lg"
+            className="ml-auto rounded-lg p-1 text-slate-400 transition-colors hover:text-white lg:hidden"
             onClick={() => setSidebarOpen(false)}
           >
-            <X className="w-5 h-5" />
+            <X className="h-5 w-5" />
           </button>
         </div>
 
         {/* Navigation Links */}
-        <nav className="flex-1 px-3 py-5 space-y-1 overflow-y-auto">
-          <p className="text-slate-500 text-xs uppercase px-3 mb-3 tracking-wider">
+        <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-5">
+          <p className="mb-3 px-3 text-xs uppercase tracking-wider text-slate-500">
             Main Menu
           </p>
           {navItems.map(({ path, label, icon: Icon }) => (
@@ -111,18 +111,16 @@ export function AdminLayout() {
               key={path}
               to={path}
               onClick={() => setSidebarOpen(false)}
-              className={`
-                flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors
-                ${
-                  isActive(path)
-                    ? "bg-blue-700 text-white"
-                    : "text-slate-300 hover:bg-slate-800 hover:text-white"
-                }
-              `}
+              className={
+                `flex items-center gap-3 rounded-xl px-3 py-2.5 transition-colors ` +
+                (isActive(path)
+                  ? "bg-white text-slate-950 shadow-sm"
+                  : "text-slate-300 hover:bg-white/8 hover:text-white")
+              }
             >
-              <Icon className="w-5 h-5 flex-shrink-0" />
+              <Icon className="h-5 w-5 flex-shrink-0" />
               <span className="flex-1">{label}</span>
-              {isActive(path) && <ChevronRight className="w-4 h-4" />}
+              {isActive(path) && <ChevronRight className="h-4 w-4" />}
             </Link>
           ))}
 
@@ -130,58 +128,58 @@ export function AdminLayout() {
             type="button"
             disabled={!feedbackUrl}
             onClick={() => feedbackUrl && window.open(feedbackUrl, "_blank", "noopener,noreferrer")}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-slate-300 hover:bg-slate-800 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-slate-300 transition-colors hover:bg-white/8 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
           >
-            <QrCode className="w-5 h-5 flex-shrink-0" />
+            <QrCode className="h-5 w-5 flex-shrink-0" />
             <span className="flex-1 text-left">Feedback QR Code</span>
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="h-4 w-4" />
           </button>
         </nav>
 
         {/* Sidebar Footer */}
-        <div className="px-3 py-4 border-t border-slate-700 space-y-1">
+        <div className="space-y-1 border-t border-slate-800 px-3 py-4">
           <Link
             to="/"
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+            className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-slate-300 transition-colors hover:bg-white/8 hover:text-white"
           >
-            <ExternalLink className="w-5 h-5 flex-shrink-0" />
+            <ExternalLink className="h-5 w-5 flex-shrink-0" />
             <span>View Public Site</span>
           </Link>
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-red-800 hover:text-white transition-colors"
+            className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-slate-300 transition-colors hover:bg-red-500/15 hover:text-white"
           >
-            <LogOut className="w-5 h-5 flex-shrink-0" />
+            <LogOut className="h-5 w-5 flex-shrink-0" />
             <span>Logout</span>
           </button>
         </div>
       </aside>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         {/* Top Header Bar */}
-        <header className="bg-white border-b border-slate-200 px-4 py-3 flex items-center gap-4 flex-shrink-0">
+        <header className="flex flex-shrink-0 items-center gap-4 border-b border-slate-200 bg-white px-4 py-3 shadow-sm">
           {/* Mobile hamburger */}
           <button
-            className="lg:hidden p-2 rounded-lg text-slate-500 hover:bg-slate-100 transition-colors"
+            className="rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 lg:hidden"
             onClick={() => setSidebarOpen(true)}
           >
-            <Menu className="w-5 h-5" />
+            <Menu className="h-5 w-5" />
           </button>
 
           {/* Breadcrumb / Title */}
           <div className="flex-1 min-w-0">
-            <span className="text-slate-500 text-sm hidden sm:block truncate">
+            <span className="hidden truncate text-sm text-slate-500 sm:block">
               Citizen's Charter Management System — Admin Panel
             </span>
           </div>
 
           {/* User info */}
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-              <User className="w-4 h-4 text-blue-700" />
+          <div className="flex flex-shrink-0 items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100">
+              <User className="h-4 w-4 text-slate-700" />
             </div>
-            <span className="text-slate-700 text-sm hidden sm:block capitalize">
+            <span className="hidden text-sm capitalize text-slate-700 sm:block">
               {currentUser || "admin"}
             </span>
           </div>
