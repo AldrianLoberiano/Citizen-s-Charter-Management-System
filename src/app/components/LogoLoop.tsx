@@ -27,7 +27,7 @@ const imageUrls = images.map((f) => {
   }
 });
 
-const loopImages = [...imageUrls, imageUrls[0]];
+const loopImages = imageUrls;
 
 export const LogoLoop: React.FC<LogoLoopProps> = ({ height = 88, speed = 20 }) => {
   const [loaded, setLoaded] = useState<Record<string, boolean>>({});
