@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 interface LogoLoopProps {
   height?: number;
@@ -30,6 +30,10 @@ const imageUrls = images.map((f) => {
 const loopImages = [...imageUrls, imageUrls[0]];
 
 export const LogoLoop: React.FC<LogoLoopProps> = ({ height = 88, speed = 20 }) => {
+  const [loaded, setLoaded] = useState<Record<string, boolean>>({});
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const groupRef = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
     const existing = new Set(
       Array.from(document.head.querySelectorAll('link[data-logo-loop-preload="true"]')).map(
@@ -54,23 +58,70 @@ export const LogoLoop: React.FC<LogoLoopProps> = ({ height = 88, speed = 20 }) =
     };
   }, []);
 
+  // JS preload images and mark when each is ready; used to show placeholders immediately
+  useEffect(() => {
+    const toLoad = imageUrls.slice(0, imageUrls.length);
+    let cancelled = false;
+    toLoad.forEach((src) => {
+      if (loaded[src]) return;
+      const img = new Image();
+      img.src = src;
+      img.decoding = "async";
+      img.onload = () => {
+        if (cancelled) return;
+        setLoaded((s) => ({ ...s, [src]: true }));
+      };
+      img.onerror = () => {
+        if (cancelled) return;
+        setLoaded((s) => ({ ...s, [src]: false }));
+      };
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Measure first group width and set CSS variable to shift exactly that many pixels
+  useLayoutEffect(() => {
+    const track = trackRef.current;
+    const group = groupRef.current;
+    if (!track || !group) return;
+    const setShift = () => {
+      const w = group.getBoundingClientRect().width;
+      track.style.setProperty("--logo-shift", `${w}px`);
+      track.style.setProperty("--logo-duration", `${speed}s`);
+    };
+    setShift();
+    // Recompute on resize
+    const ro = new ResizeObserver(setShift);
+    ro.observe(group);
+    window.addEventListener("load", setShift);
+    window.addEventListener("resize", setShift);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("load", setShift);
+      window.removeEventListener("resize", setShift);
+    };
+  }, [speed]);
+
   const style = {
     wrapper: {
       overflow: "hidden",
       background: "transparent",
     } as React.CSSProperties,
     track: {
-      display: "inline-flex",
+      display: "flex",
       width: "max-content",
       alignItems: "center",
       transform: "translate3d(0,0,0)",
+      // use CSS vars: --logo-shift and --logo-duration are set at runtime
+      animation: "logoLoop var(--logo-duration, 20s) linear infinite",
     } as React.CSSProperties,
     group: {
-      display: "inline-flex",
+      display: "flex",
       alignItems: "center",
       gap: 0,
       whiteSpace: "nowrap",
-      marginRight: "-1px",
     } as React.CSSProperties,
     img: {
       height: `${height}px`,
@@ -88,27 +139,39 @@ export const LogoLoop: React.FC<LogoLoopProps> = ({ height = 88, speed = 20 }) =
       <div className="mx-auto max-w-7xl px-4">
         <div style={style.wrapper} aria-label="Partner logos">
           <div
+            ref={trackRef}
             className="logo-loop-track"
             style={{
               ...style.track,
-              animation: `logoLoop ${duration} linear infinite`,
             }}
           >
-            <div style={style.group}>
-              {loopImages.map((src, i) => (
-                <div key={`a-${src}-${i}`} style={{ display: "flex", alignItems: "center" }}>
-                  <img
-                    src={src}
-                    alt={`logo-${i}`}
-                    style={style.img}
-                    className="select-none"
-                    loading="eager"
-                    fetchPriority="high"
-                    decoding="async"
-                  />
-                </div>
-              ))}
-            </div>
+              <div ref={groupRef} style={style.group}>
+                {loopImages.map((src, i) => (
+                  <div key={`a-${src}-${i}`} style={{ display: "flex", alignItems: "center" }}>
+                    {loaded[src] ? (
+                      <img
+                        src={src}
+                        alt={`logo-${i}`}
+                        style={style.img}
+                        className="select-none"
+                        loading="eager"
+                        fetchPriority="high"
+                        decoding="async"
+                      />
+                    ) : (
+                      <div
+                        aria-hidden
+                        style={{
+                          ...style.img,
+                          display: "inline-block",
+                          background: "#f3f4f6",
+                          minWidth: Math.round(height * 1.2) + "px",
+                        }}
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
             <div style={style.group} aria-hidden="true">
               {loopImages.map((src, i) => (
                 <div key={`b-${src}-${i}`} style={{ display: "flex", alignItems: "center" }}>
