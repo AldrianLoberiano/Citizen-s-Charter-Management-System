@@ -192,12 +192,12 @@ export function Dashboard() {
                 <tr>
                   <td
                     colSpan={4}
-                    className="px-6 py-12 text-center text-slate-400 text-sm"
+                    className="px-6 py-12 text-center text-sm text-slate-400"
                   >
                     No charters have been added yet.{" "}
                     <Link
                       to="/admin/charters"
-                      className="text-blue-700 hover:underline"
+                      className="text-slate-700 transition-colors hover:text-slate-950"
                     >
                       Add the first charter
                     </Link>
@@ -211,32 +211,32 @@ export function Dashboard() {
       </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Link
           to="/admin/departments"
-          className="bg-white rounded-xl border border-slate-200 p-5 flex items-center justify-between hover:shadow-md transition-all hover:border-blue-200 group"
+          className="group flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-5 transition-all hover:border-slate-300 hover:shadow-sm"
         >
           <div className="flex items-center gap-3">
-            <Building2 className="w-5 h-5 text-blue-700" />
+            <Building2 className="h-5 w-5 text-slate-700" />
             <div>
               <p className="text-slate-900">Manage Departments</p>
-              <p className="text-slate-400 text-xs">Add, edit, or remove departments</p>
+              <p className="text-xs text-slate-400">Add, edit, or remove departments</p>
             </div>
           </div>
-          <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-blue-700 transition-colors" />
+          <ArrowRight className="h-4 w-4 text-slate-400 transition-colors group-hover:text-slate-700" />
         </Link>
         <Link
           to="/admin/charters"
-          className="bg-white rounded-xl border border-slate-200 p-5 flex items-center justify-between hover:shadow-md transition-all hover:border-blue-200 group"
+          className="group flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-5 transition-all hover:border-slate-300 hover:shadow-sm"
         >
           <div className="flex items-center gap-3">
-            <FileText className="w-5 h-5 text-green-700" />
+            <FileText className="h-5 w-5 text-slate-700" />
             <div>
               <p className="text-slate-900">Manage Charters</p>
-              <p className="text-slate-400 text-xs">Create, edit, or delete charters</p>
+              <p className="text-xs text-slate-400">Create, edit, or delete charters</p>
             </div>
           </div>
-          <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-green-700 transition-colors" />
+          <ArrowRight className="h-4 w-4 text-slate-400 transition-colors group-hover:text-slate-700" />
         </Link>
       </div>
     </div>
