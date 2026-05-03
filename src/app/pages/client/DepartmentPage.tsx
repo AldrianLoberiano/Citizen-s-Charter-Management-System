@@ -21,6 +21,8 @@ import {
   formatDate,
 } from "../../store/data";
 
+const departmentLogoSrc = new URL("../../../public/images/header/calauan_logo-removebg-preview.png", import.meta.url).href;
+
 export function DepartmentPage() {
   const { id } = useParams<{ id: string }>();
   const [search, setSearch] = useState("");
@@ -56,9 +58,11 @@ export function DepartmentPage() {
 
           {/* Department Info */}
           <div className="flex items-start gap-4">
-            <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-slate-900 text-white shadow-sm">
-              <Building2 className="h-7 w-7" />
-            </div>
+            <img
+              src={departmentLogoSrc}
+              alt="Calauan City Seal"
+              className="h-14 w-14 flex-shrink-0 object-contain"
+            />
             <div>
               <h1 className="leading-tight text-slate-950">{department.name}</h1>
               <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">
