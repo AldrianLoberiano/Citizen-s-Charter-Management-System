@@ -17,8 +17,9 @@ import {
   ChevronRight,
   Shield,
   User,
+  QrCode,
 } from "lucide-react";
-import { isAuthenticated, logout, getAuthUser } from "../store/data";
+import { isAuthenticated, logout, getAuthUser, getCharters } from "../store/data";
 
 interface NavItem {
   path: string;
@@ -56,6 +57,11 @@ export function AdminLayout() {
   };
 
   const isActive = (path: string) => location.pathname === path;
+  const firstCharter = getCharters()[0];
+  const feedbackUrl =
+    typeof window !== "undefined" && firstCharter
+      ? `${window.location.origin}/charter/${firstCharter.id}#feedback-form`
+      : "";
 
   return (
     <div className="flex h-screen bg-slate-100 overflow-hidden">
@@ -119,6 +125,16 @@ export function AdminLayout() {
               {isActive(path) && <ChevronRight className="w-4 h-4" />}
             </Link>
           ))}
+
+          <button
+            type="button"
+            disabled={!feedbackUrl}
+            onClick={() => feedbackUrl && window.open(feedbackUrl, "_blank", "noopener,noreferrer")}
+            className="mt-5 w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-slate-300 hover:bg-slate-800 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <QrCode className="w-5 h-5 flex-shrink-0" />
+            <span className="flex-1 text-left">Feedback QR Code</span>
+          </button>
         </nav>
 
         {/* Sidebar Footer */}
