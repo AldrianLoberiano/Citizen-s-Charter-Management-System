@@ -55,24 +55,24 @@ export function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col items-center justify-center p-4">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-slate-100 p-4">
       {/* Header */}
-      <div className="text-center mb-8">
-        <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-800 rounded-2xl mb-4 shadow-md">
-          <Shield className="w-8 h-8 text-white" />
+      <div className="mb-8 text-center">
+        <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-900 shadow-md">
+          <Shield className="h-8 w-8 text-white" />
         </div>
         <h1 className="text-slate-900">Admin Portal</h1>
-        <p className="text-slate-500 mt-1 text-sm">
+        <p className="mt-1 text-sm text-slate-500">
           Citizen's Charter Management System
         </p>
       </div>
 
       {/* Login Card */}
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8">
+        <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
           <div className="mb-6">
             <h2 className="text-slate-800">Sign In</h2>
-            <p className="text-slate-500 text-sm mt-1">
+            <p className="mt-1 text-sm text-slate-500">
               Enter your administrator credentials to continue
             </p>
           </div>
@@ -80,8 +80,8 @@ export function Login() {
           <form onSubmit={handleSubmit} className="space-y-5" noValidate>
             {/* Error Alert */}
             {error && (
-              <div className="flex items-start gap-2.5 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-                <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+              <div className="flex items-start gap-2.5 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+                <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0" />
                 <span>{error}</span>
               </div>
             )}
@@ -90,12 +90,12 @@ export function Login() {
             <div>
               <label
                 htmlFor="username"
-                className="block text-slate-700 mb-1.5"
+                className="mb-1.5 block text-slate-700"
               >
                 Username
               </label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                 <input
                   id="username"
                   type="text"
@@ -103,7 +103,7 @@ export function Login() {
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="Enter your username"
                   autoComplete="username"
-                  className="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg bg-white text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow"
+                  className="w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-10 pr-4 text-slate-900 shadow-sm placeholder-slate-400 transition-shadow focus:outline-none focus:ring-2 focus:ring-slate-300"
                 />
               </div>
             </div>
@@ -112,12 +112,12 @@ export function Login() {
             <div>
               <label
                 htmlFor="password"
-                className="block text-slate-700 mb-1.5"
+                className="mb-1.5 block text-slate-700"
               >
                 Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                 <input
                   id="password"
                   type={showPassword ? "text" : "password"}
@@ -125,18 +125,18 @@ export function Login() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
                   autoComplete="current-password"
-                  className="w-full pl-10 pr-12 py-2.5 border border-slate-300 rounded-lg bg-white text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow"
+                  className="w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-10 pr-12 text-slate-900 shadow-sm placeholder-slate-400 transition-shadow focus:outline-none focus:ring-2 focus:ring-slate-300"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition-colors hover:text-slate-600"
                   tabIndex={-1}
                 >
                   {showPassword ? (
-                    <EyeOff className="w-4 h-4" />
+                    <EyeOff className="h-4 w-4" />
                   ) : (
-                    <Eye className="w-4 h-4" />
+                    <Eye className="h-4 w-4" />
                   )}
                 </button>
               </div>
@@ -146,12 +146,12 @@ export function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 bg-blue-800 text-white rounded-lg hover:bg-blue-900 active:bg-blue-950 transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 py-2.5 text-white transition-colors hover:bg-slate-800 active:bg-slate-950 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {loading ? (
                 <>
                   <svg
-                    className="animate-spin w-4 h-4"
+                    className="h-4 w-4 animate-spin"
                     fill="none"
                     viewBox="0 0 24 24"
                   >
@@ -178,8 +178,8 @@ export function Login() {
           </form>
 
           {/* Demo credentials */}
-          <div className="mt-6 p-4 bg-slate-50 rounded-lg border border-slate-200">
-            <p className="text-slate-500 text-xs text-center mb-2">
+            <div className="mt-6 rounded-lg border border-slate-200 bg-slate-50 p-4">
+              <p className="mb-2 text-center text-xs text-slate-500">
               Demo Credentials
             </p>
             <div className="flex justify-center gap-6 text-sm">
