@@ -22,11 +22,11 @@ export function ClientLayout() {
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4">
           {/* Logo and System Name */}
           <Link to="/" className="flex items-center gap-3 min-w-0">
-            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-white p-1">
+            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-white p-0.5">
               <img
                 src={clientLogoSrc}
                 alt="Calauan City Seal"
-                className="h-full w-full object-contain"
+                className="h-full w-full scale-160 object-contain"
               />
             </div>
             <div className="min-w-0">
