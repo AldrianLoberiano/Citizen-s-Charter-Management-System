@@ -82,7 +82,7 @@ export function Dashboard() {
         <div>
           <h1 className="text-slate-900">Dashboard</h1>
           <p className="mt-0.5 text-sm text-slate-500">
-            Overview of the Citizen's Charter Management System
+            Overview of the Calauan Citizen's Charter Management System
           </p>
         </div>
         <div className="flex items-center gap-1 text-sm text-slate-400">
