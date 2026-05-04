@@ -30,6 +30,7 @@ const departmentLogosByName: Record<string, string> = {
   "sangguniang bayan": "sb-removebg-preview.png",
   "mdrrmo & ctmo": "mdrrmo-removebg-preview.png",
   "mdrrmo": "mdrrmo-removebg-preview.png",
+  "ctmo": "ctmo-removebg-preview.png",
 };
 
 const getLogoForDepartment = (deptName: string): string => {
