@@ -21,7 +21,6 @@ import {
   formatDate,
 } from "../../store/data";
 
-  "Human Resources": "hrmo-removebg-preview.png",
   "Civil Registry": "lydo.png",
   "Assessor's Office": "assesors_office-removebg-preview.png",
   "Agriculture": "AgriOffice-removebg-preview.png",
