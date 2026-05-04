@@ -32,6 +32,7 @@ const departmentLogos: Record<string, string> = {
   "MDRRMO": "mdrrmo-removebg-preview.png",
   "CTMO": "ctmo-removebg-preview.png",
   "Human Resources": "hrmo-removebg-preview.png",
+  "Civil Registry": "lydo.png",
 
 export function DepartmentPage() {
   const { id } = useParams<{ id: string }>();
