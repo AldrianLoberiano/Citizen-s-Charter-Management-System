@@ -22,6 +22,7 @@ import {
 } from "../../store/data";
 
 const departmentLogosByName: Record<string, string> = {
+  "business permits and licensing": "bplo-removebg-preview.png",
 };
 
 const getLogoForDepartment = (deptName: string): string => {
