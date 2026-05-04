@@ -123,7 +123,6 @@ export function Home() {
               <img
                 src={bagongPilipinasLogoSrc}
                 alt="Bagong Pilipinas logo"
-                className="h-14 w-14 object-contain"
                 loading="lazy"
                 decoding="async"
               />
