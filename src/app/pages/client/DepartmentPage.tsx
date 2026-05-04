@@ -30,7 +30,6 @@ export function DepartmentPage() {
   const deptId = parseInt(id || "0");
   const department = getDepartmentById(deptId);
 
-
   // Redirect if department not found
   if (!department) {
     return <Navigate to="/" replace />;
