@@ -27,6 +27,7 @@ const departmentLogosByName: Record<string, string> = {
   "engineering and public works": "mpdc-removebg-preview.png",
   "health services": "mho-removebg-preview.png",
   "tourism and culture": "mto-removebg-preview.png",
+  "sangguniang bayan": "sb-removebg-preview.png",
 };
 
 const getLogoForDepartment = (deptName: string): string => {
