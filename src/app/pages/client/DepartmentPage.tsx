@@ -21,7 +21,6 @@ import {
   formatDate,
 } from "../../store/data";
 
-  "MDRRMO & CTMO": "mdrrmo-removebg-preview.png",
   "MDRRMO": "mdrrmo-removebg-preview.png",
   "CTMO": "ctmo-removebg-preview.png",
   "Human Resources": "hrmo-removebg-preview.png",
