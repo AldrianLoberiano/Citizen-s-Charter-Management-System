@@ -52,6 +52,7 @@ const getLogoForDepartment = (deptName: string): string => {
   if (normalized.includes("engineering")) return "mpdc-removebg-preview.png";
   if (normalized.includes("health")) return "mho-removebg-preview.png";
   if (normalized.includes("tourism")) return "mto-removebg-preview.png";
+  if (normalized.includes("human")) return "hrmo-removebg-preview.png";
 };
 
 export function DepartmentPage() {
