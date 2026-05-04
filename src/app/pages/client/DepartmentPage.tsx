@@ -62,7 +62,6 @@ export function DepartmentPage() {
           </nav>
 
           {/* Department Info */}
-              />
             </div>
             <div>
               <h1 className="leading-tight text-slate-950">{department.name}</h1>
