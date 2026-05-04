@@ -30,7 +30,6 @@ export function DepartmentPage() {
   const deptId = parseInt(id || "0");
   const department = getDepartmentById(deptId);
 
-  const logoSrc = (department?.name || "").toLowerCase().includes("sangguniang")
     ? sbLogoSrc
     : calauanLogoSrc;
 
