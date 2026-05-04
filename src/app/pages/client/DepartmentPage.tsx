@@ -127,6 +127,7 @@ export function DepartmentPage() {
                 className="group flex flex-col rounded-2xl border border-slate-200 bg-white p-6 transition-all hover:border-slate-300 hover:shadow-sm"
               >
                 {/* Top */}
+                <div className="mb-4 flex items-start gap-3">
                 </div>
 
                 {/* Content preview */}
