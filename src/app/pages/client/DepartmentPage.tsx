@@ -53,6 +53,7 @@ export function DepartmentPage() {
     return <Navigate to="/" replace />;
   }
 
+  const departmentLogoSrc = new URL(
   const allCharters = getChartersByDepartment(deptId);
   const charters = allCharters.filter(
     (c) =>
