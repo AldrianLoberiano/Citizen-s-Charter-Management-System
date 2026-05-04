@@ -22,6 +22,7 @@ import {
 } from "../../store/data";
 
 const calauanLogoSrc = new URL("../../../public/images/header/calauan_logo-removebg-preview.png", import.meta.url).href;
+const sbLogoSrc = new URL("../../../public/images/sb-removebg-preview.png", import.meta.url).href;
 
 export function DepartmentPage() {
   const { id } = useParams<{ id: string }>();
