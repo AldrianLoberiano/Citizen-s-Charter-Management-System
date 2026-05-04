@@ -62,7 +62,6 @@ export function DepartmentPage() {
           </nav>
 
           {/* Department Info */}
-                src={logoSrc}
                 alt={`${department.name} logo`}
                 className="h-full w-full object-contain"
               />
