@@ -32,6 +32,7 @@ export function DepartmentPage() {
   const department = getDepartmentById(deptId);
 
   const logoSrc = (department?.name || "").toLowerCase().includes("sangguniang")
+    ? sbLogoSrc
   // Redirect if department not found
   if (!department) {
     return <Navigate to="/" replace />;
