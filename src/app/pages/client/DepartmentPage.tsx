@@ -38,7 +38,6 @@ const departmentLogosByName: Record<string, string> = {
 };
 
 const getLogoForDepartment = (deptName: string): string => {
-  return departmentLogos[deptName] || "calauan_logo-removebg-preview.png";
 };
 
 export function DepartmentPage() {
