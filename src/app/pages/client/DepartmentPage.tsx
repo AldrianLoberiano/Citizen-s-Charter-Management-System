@@ -27,6 +27,7 @@ const departmentLogos: Record<string, string> = {
   "Engineering and Public Works": "mpdc-removebg-preview.png",
   "Health Services": "mho-removebg-preview.png",
   "Tourism and Culture": "mto-removebg-preview.png",
+  "Sangguniang Bayan": "sb-removebg-preview.png",
 
 export function DepartmentPage() {
   const { id } = useParams<{ id: string }>();
