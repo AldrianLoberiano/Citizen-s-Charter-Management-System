@@ -21,7 +21,6 @@ import {
   formatDate,
 } from "../../store/data";
 
-const sbLogoSrc = new URL("../../../public/images/sb-removebg-preview.png", import.meta.url).href;
 
 export function DepartmentPage() {
   const { id } = useParams<{ id: string }>();
