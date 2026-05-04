@@ -62,7 +62,6 @@ export function DepartmentPage() {
           </nav>
 
           {/* Department Info */}
-                className="h-full w-full object-contain"
               />
             </div>
             <div>
