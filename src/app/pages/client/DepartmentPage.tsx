@@ -128,6 +128,7 @@ export function DepartmentPage() {
               >
                 {/* Top */}
                 <div className="mb-4">
+                  <h3 className="leading-snug text-slate-900 transition-colors group-hover:text-slate-950 text-lg font-medium normal-case">
                 </div>
 
                 {/* Content preview */}
