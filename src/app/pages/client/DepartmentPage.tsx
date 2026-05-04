@@ -37,6 +37,7 @@ const departmentLogos: Record<string, string> = {
   "Agriculture": "AgriOffice-removebg-preview.png",
 };
 
+const getLogoForDepartment = (deptName: string): string => {
 export function DepartmentPage() {
   const { id } = useParams<{ id: string }>();
   const [search, setSearch] = useState("");
