@@ -57,6 +57,7 @@ export function DepartmentPage() {
           </nav>
 
           {/* Department Info */}
+          <div className="flex items-start gap-4">
             <div>
               <h1 className="text-2xl sm:text-3xl font-semibold leading-tight text-slate-950 normal-case">
                 {department.name}
