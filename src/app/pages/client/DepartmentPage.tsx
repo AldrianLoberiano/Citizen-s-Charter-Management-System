@@ -21,7 +21,6 @@ import {
   formatDate,
 } from "../../store/data";
 
-  "Tourism and Culture": "mto-removebg-preview.png",
   "Sangguniang Bayan": "sb-removebg-preview.png",
   "MDRRMO & CTMO": "mdrrmo-removebg-preview.png",
   "MDRRMO": "mdrrmo-removebg-preview.png",
