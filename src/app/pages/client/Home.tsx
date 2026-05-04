@@ -116,6 +116,7 @@ export function Home() {
               <img
                 src={calauanLogo2Src}
                 alt="Calauan logo"
+                className="h-12 w-12 object-contain md:h-[160px] md:w-[160px]"
                 loading="lazy"
                 decoding="async"
               />
