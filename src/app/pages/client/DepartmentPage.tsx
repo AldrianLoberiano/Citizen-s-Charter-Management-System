@@ -21,7 +21,6 @@ import {
   formatDate,
 } from "../../store/data";
 
-  "Engineering and Public Works": "mpdc-removebg-preview.png",
   "Health Services": "mho-removebg-preview.png",
   "Tourism and Culture": "mto-removebg-preview.png",
   "Sangguniang Bayan": "sb-removebg-preview.png",
