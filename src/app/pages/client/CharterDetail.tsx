@@ -169,6 +169,7 @@ export function CharterDetail() {
           </nav>
 
           {/* Title */}
+          <div className="flex items-start gap-3">
             <div>
               <h1 className="leading-tight text-slate-950">{charter.title}</h1>
               <div className="mt-2 flex flex-wrap items-center gap-4">
