@@ -34,6 +34,7 @@ const departmentLogosByName: Record<string, string> = {
   "human resources": "hrmo-removebg-preview.png",
   "civil registry": "lydo.png",
   "assessor's office": "assesors_office-removebg-preview.png",
+  "agriculture": "AgriOffice-removebg-preview.png",
 };
 
 const getLogoForDepartment = (deptName: string): string => {
