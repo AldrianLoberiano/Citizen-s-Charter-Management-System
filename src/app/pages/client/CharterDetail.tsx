@@ -172,6 +172,7 @@ export function CharterDetail() {
           <div className="flex items-start gap-3">
             <div>
               <h1 className="text-2xl sm:text-3xl font-semibold leading-tight text-slate-950 normal-case break-words">
+                {charter.title}
               <div className="mt-2 flex flex-wrap items-center gap-4">
                 {department && (
                   <div className="flex items-center gap-1.5 text-sm text-slate-500">
