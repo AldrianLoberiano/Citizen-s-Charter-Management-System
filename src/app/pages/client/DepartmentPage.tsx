@@ -30,6 +30,7 @@ const departmentLogos: Record<string, string> = {
   "Sangguniang Bayan": "sb-removebg-preview.png",
   "MDRRMO & CTMO": "mdrrmo-removebg-preview.png",
   "MDRRMO": "mdrrmo-removebg-preview.png",
+  "CTMO": "ctmo-removebg-preview.png",
 
 export function DepartmentPage() {
   const { id } = useParams<{ id: string }>();
