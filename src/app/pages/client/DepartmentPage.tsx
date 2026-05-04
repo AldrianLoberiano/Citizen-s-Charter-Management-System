@@ -34,6 +34,7 @@ export function DepartmentPage() {
   const logoSrc = (department?.name || "").toLowerCase().includes("sangguniang")
     ? sbLogoSrc
     : calauanLogoSrc;
+
   // Redirect if department not found
   if (!department) {
     return <Navigate to="/" replace />;
