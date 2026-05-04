@@ -56,6 +56,7 @@ export function DepartmentPage() {
   const departmentLogoSrc = new URL(
     `../../../public/images/${getLogoForDepartment(department.name)}`,
     import.meta.url
+  ).href;
   const allCharters = getChartersByDepartment(deptId);
   const charters = allCharters.filter(
     (c) =>
