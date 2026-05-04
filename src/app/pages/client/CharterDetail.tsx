@@ -171,7 +171,6 @@ export function CharterDetail() {
           {/* Title */}
           <div className="flex items-start gap-3">
             <div>
-              <h1 className="leading-tight text-slate-950">{charter.title}</h1>
               <div className="mt-2 flex flex-wrap items-center gap-4">
                 {department && (
                   <div className="flex items-center gap-1.5 text-sm text-slate-500">
