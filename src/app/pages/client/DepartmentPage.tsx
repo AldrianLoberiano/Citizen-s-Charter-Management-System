@@ -44,6 +44,7 @@ const getLogoForDepartment = (deptName: string): string => {
   }
 
   // Keyword fallback for name variants
+  if (normalized.includes("mdrrmo")) return "mdrrmo-removebg-preview.png";
 };
 
 export function DepartmentPage() {
