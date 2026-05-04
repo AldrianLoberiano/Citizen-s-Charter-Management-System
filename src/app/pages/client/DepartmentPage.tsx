@@ -29,6 +29,7 @@ const departmentLogosByName: Record<string, string> = {
   "tourism and culture": "mto-removebg-preview.png",
   "sangguniang bayan": "sb-removebg-preview.png",
   "mdrrmo & ctmo": "mdrrmo-removebg-preview.png",
+  "mdrrmo": "mdrrmo-removebg-preview.png",
 };
 
 const getLogoForDepartment = (deptName: string): string => {
