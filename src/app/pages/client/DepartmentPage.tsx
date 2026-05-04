@@ -56,6 +56,7 @@ const getLogoForDepartment = (deptName: string): string => {
   if (normalized.includes("civil registry")) return "lydo.png";
   if (normalized.includes("assessor")) return "assesors_office-removebg-preview.png";
   if (normalized.includes("agriculture")) return "AgriOffice-removebg-preview.png";
+
 };
 
 export function DepartmentPage() {
