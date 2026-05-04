@@ -48,6 +48,7 @@ const getLogoForDepartment = (deptName: string): string => {
   if (normalized.includes("ctmo")) return "ctmo-removebg-preview.png";
   if (normalized.includes("sangguniang")) return "sb-removebg-preview.png";
   if (normalized.includes("business")) return "bplo-removebg-preview.png";
+  if (normalized.includes("social welfare")) return "osca.png";
 };
 
 export function DepartmentPage() {
