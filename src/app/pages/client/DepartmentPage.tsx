@@ -41,6 +41,7 @@ const getLogoForDepartment = (deptName: string): string => {
   const normalized = deptName.trim().toLowerCase();
   if (departmentLogosByName[normalized]) {
     return departmentLogosByName[normalized];
+  }
 };
 
 export function DepartmentPage() {
