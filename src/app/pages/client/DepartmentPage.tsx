@@ -63,6 +63,7 @@ export function DepartmentPage() {
                 src={departmentLogoSrc}
                 alt="Calauan City Seal"
                 className="h-full w-full object-contain"
+              />
             <div>
               <h1 className="text-2xl sm:text-3xl font-semibold leading-tight text-slate-950 normal-case">
                 {department.name}
