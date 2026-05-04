@@ -21,7 +21,6 @@ import {
   formatDate,
 } from "../../store/data";
 
-  "Social Welfare and Development": "osca.png",
   "Engineering and Public Works": "mpdc-removebg-preview.png",
   "Health Services": "mho-removebg-preview.png",
   "Tourism and Culture": "mto-removebg-preview.png",
