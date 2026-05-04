@@ -21,7 +21,6 @@ import {
   formatDate,
 } from "../../store/data";
 
-  "Sangguniang Bayan": "sb-removebg-preview.png",
   "MDRRMO & CTMO": "mdrrmo-removebg-preview.png",
   "MDRRMO": "mdrrmo-removebg-preview.png",
   "CTMO": "ctmo-removebg-preview.png",
