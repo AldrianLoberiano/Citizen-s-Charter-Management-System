@@ -49,6 +49,7 @@ const getLogoForDepartment = (deptName: string): string => {
   if (normalized.includes("mho")) return "mho-removebg-preview.png";
   if (normalized.includes("hrmo")) return "hrmo-removebg-preview.png";
   if (normalized.includes("mao")) return "AgriOffice-removebg-preview.png";
+  if (normalized.includes("mcao")) return "assesors_office-removebg-preview.png";
   if (normalized.includes("sangguniang")) return "sb-removebg-preview.png";
   if (normalized.includes("business")) return "bplo-removebg-preview.png";
   if (normalized.includes("social welfare")) return "osca.png";
