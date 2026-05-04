@@ -23,6 +23,7 @@ import {
 
 const departmentLogos: Record<string, string> = {
   "Business Permits and Licensing": "bplo-removebg-preview.png",
+  "Social Welfare and Development": "osca.png",
 
 export function DepartmentPage() {
   const { id } = useParams<{ id: string }>();
