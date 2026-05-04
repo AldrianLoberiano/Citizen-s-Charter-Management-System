@@ -31,6 +31,7 @@ export function DepartmentPage() {
   const deptId = parseInt(id || "0");
   const department = getDepartmentById(deptId);
 
+  const logoSrc = (department?.name || "").toLowerCase().includes("sangguniang")
   // Redirect if department not found
   if (!department) {
     return <Navigate to="/" replace />;
