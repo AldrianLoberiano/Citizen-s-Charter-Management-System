@@ -21,6 +21,7 @@ import {
   formatDate,
 } from "../../store/data";
 
+const departmentLogos: Record<string, string> = {
 
 export function DepartmentPage() {
   const { id } = useParams<{ id: string }>();
