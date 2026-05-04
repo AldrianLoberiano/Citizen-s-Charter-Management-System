@@ -64,7 +64,6 @@ export function DepartmentPage() {
           {/* Department Info */}
           <div className="flex items-start gap-3">
             <div>
-              <h1 className="leading-tight text-slate-950">{department.name}</h1>
               <h1 className="text-2xl sm:text-3xl font-semibold leading-tight text-slate-950 normal-case">
               <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">
                 {department.description || "No description available."}
