@@ -169,7 +169,6 @@ export function CharterDetail() {
           </nav>
 
           {/* Title */}
-              <FileText className="h-6 w-6" />
             </div>
             <div>
               <h1 className="leading-tight text-slate-950">{charter.title}</h1>
