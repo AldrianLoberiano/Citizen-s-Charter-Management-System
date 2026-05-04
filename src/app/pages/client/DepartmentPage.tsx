@@ -21,7 +21,6 @@ import {
   formatDate,
 } from "../../store/data";
 
-  "Agriculture": "AgriOffice-removebg-preview.png",
 };
 
 const getLogoForDepartment = (deptName: string): string => {
