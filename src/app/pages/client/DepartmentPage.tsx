@@ -57,6 +57,7 @@ const getLogoForDepartment = (deptName: string): string => {
   if (normalized.includes("assessor")) return "assesors_office-removebg-preview.png";
   if (normalized.includes("agriculture")) return "AgriOffice-removebg-preview.png";
 
+  return "calauan_logo-removebg-preview.png";
 };
 
 export function DepartmentPage() {
