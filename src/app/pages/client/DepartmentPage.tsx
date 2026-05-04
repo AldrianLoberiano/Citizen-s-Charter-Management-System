@@ -21,6 +21,7 @@ import {
   formatDate,
 } from "../../store/data";
 
+const departmentLogosByName: Record<string, string> = {
 };
 
 const getLogoForDepartment = (deptName: string): string => {
