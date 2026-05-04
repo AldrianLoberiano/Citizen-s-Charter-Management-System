@@ -134,6 +134,7 @@ export function DepartmentPage() {
                   <div className="min-w-0">
                     <h3 className="leading-snug text-slate-900 transition-colors group-hover:text-slate-950">
                       {charter.title}
+                    </h3>
                 </div>
 
                 {/* Content preview */}
