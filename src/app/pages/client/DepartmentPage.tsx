@@ -42,6 +42,7 @@ const getLogoForDepartment = (deptName: string): string => {
   if (departmentLogosByName[normalized]) {
     return departmentLogosByName[normalized];
   }
+  // Keyword fallback for name variants
 };
 
 export function DepartmentPage() {
