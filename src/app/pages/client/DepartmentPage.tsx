@@ -62,7 +62,6 @@ export function DepartmentPage() {
           </nav>
 
           {/* Department Info */}
-            <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center bg-transparent p-0">
                 src={logoSrc}
                 alt={`${department.name} logo`}
                 className="h-full w-full object-contain"
