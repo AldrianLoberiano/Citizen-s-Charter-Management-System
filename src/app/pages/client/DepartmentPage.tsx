@@ -127,7 +127,6 @@ export function DepartmentPage() {
                 className="group flex flex-col rounded-2xl border border-slate-200 bg-white p-6 transition-all hover:border-slate-300 hover:shadow-sm"
               >
                 {/* Top */}
-                    {charter.title}
                   </h3>
                 </div>
 
