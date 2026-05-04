@@ -39,6 +39,7 @@ const departmentLogosByName: Record<string, string> = {
 
 const getLogoForDepartment = (deptName: string): string => {
   const normalized = deptName.trim().toLowerCase();
+    return departmentLogosByName[normalized];
 };
 
 export function DepartmentPage() {
