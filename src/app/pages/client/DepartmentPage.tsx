@@ -38,6 +38,7 @@ const departmentLogosByName: Record<string, string> = {
   "municipal treasurer office": "mto-removebg-preview.png",
   "municipal treasurer's office": "mto-removebg-preview.png",
   "municipal treasurer": "mto-removebg-preview.png",
+  "mto": "mto-removebg-preview.png",
 };
 
 const getLogoForDepartment = (deptName: string): string => {
@@ -65,8 +66,11 @@ const getLogoForDepartment = (deptName: string): string => {
   if (normalized.includes("agriculture")) return "AgriOffice-removebg-preview.png";
   if (normalized.includes("civil registry")) return "lydo.png";
   if (normalized.includes("assessor")) return "assesors_office-removebg-preview.png";
-  if (normalized.includes("treasurer")) return "mto-removebg-preview.png";
-  return "calauan_logo-removebg-preview.png";
+  if (normalized.includes("treasurer") || normalized.includes("treasury")) {
+    return "mto-removebg-preview.png";
+  }
+  if (normalized === "mto" || normalized.includes("mto")) return "mto-removebg-preview.png";
+  return "header/calauan_logo-removebg-preview.png";
 };
 
 export function DepartmentPage() {
