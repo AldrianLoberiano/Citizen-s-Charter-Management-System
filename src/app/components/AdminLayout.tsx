@@ -189,7 +189,7 @@ export function AdminLayout() {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-auto p-4 sm:p-6">
+        <main className="flex-1 overflow-auto p-4 pt-20 sm:p-6 sm:pt-24">
           <Outlet />
         </main>
       </div>
