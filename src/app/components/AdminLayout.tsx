@@ -105,7 +105,7 @@ export function AdminLayout() {
         </div>
 
         {/* Navigation Links */}
-        <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-5">
+        <nav className="flex-1 min-h-0 space-y-1 overflow-y-auto px-3 py-5">
           <p className="mb-3 px-3 text-xs uppercase tracking-wider text-slate-500">
             Main Menu
           </p>
@@ -159,7 +159,7 @@ export function AdminLayout() {
       </aside>
 
       {/* Main Content Area */}
-      <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
+      <div className="flex min-w-0 flex-1 flex-col overflow-hidden min-h-0">
         {/* Top Header Bar */}
         <header className="flex flex-shrink-0 items-center gap-4 border-b border-slate-200 bg-white px-4 py-3 shadow-sm">
           {/* Mobile hamburger */}
@@ -189,7 +189,7 @@ export function AdminLayout() {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-auto p-4 sm:p-6">
+        <main className="flex-1 min-h-0 overflow-auto p-4 sm:p-6">
           <Outlet />
         </main>
       </div>
