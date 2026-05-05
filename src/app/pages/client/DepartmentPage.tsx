@@ -35,6 +35,7 @@ const departmentLogosByName: Record<string, string> = {
   "civil registry": "lydo.png",
   "assessor's office": "assesors_office-removebg-preview.png",
   "agriculture": "AgriOffice-removebg-preview.png",
+  "municipal treasurer office": "mto-removebg-preview.png",
 };
 
 const getLogoForDepartment = (deptName: string): string => {
@@ -62,7 +63,7 @@ const getLogoForDepartment = (deptName: string): string => {
   if (normalized.includes("agriculture")) return "AgriOffice-removebg-preview.png";
   if (normalized.includes("civil registry")) return "lydo.png";
   if (normalized.includes("assessor")) return "assesors_office-removebg-preview.png";
-
+  if (normalized.includes("treauerer")) return "mto-removebg-preview.png";
   return "calauan_logo-removebg-preview.png";
 };
 
