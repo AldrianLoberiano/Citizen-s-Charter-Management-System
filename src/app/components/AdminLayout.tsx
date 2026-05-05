@@ -105,7 +105,7 @@ export function AdminLayout() {
         </div>
 
         {/* Navigation Links */}
-        <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-5 pb-28">
+        <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-5">
           <p className="mb-3 px-3 text-xs uppercase tracking-wider text-slate-500">
             Main Menu
           </p>
@@ -140,7 +140,7 @@ export function AdminLayout() {
         </nav>
 
         {/* Sidebar Footer */}
-        <div className="sticky bottom-0 space-y-1 border-t border-slate-800 bg-slate-950 px-3 py-4">
+        <div className="space-y-1 border-t border-slate-800 px-3 py-4">
           <Link
             to="/"
             className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-slate-300 transition-colors hover:bg-white/8 hover:text-white"
@@ -161,7 +161,7 @@ export function AdminLayout() {
       {/* Main Content Area */}
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         {/* Top Header Bar */}
-        <header className="sticky top-0 z-40 flex flex-shrink-0 items-center gap-4 border-b border-slate-200 bg-white px-4 py-3 shadow-sm">
+        <header className="flex flex-shrink-0 items-center gap-4 border-b border-slate-200 bg-white px-4 py-3 shadow-sm">
           {/* Mobile hamburger */}
           <button
             className="rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 lg:hidden"
@@ -189,7 +189,7 @@ export function AdminLayout() {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-auto p-4 pt-20 sm:p-6 sm:pt-24">
+        <main className="flex-1 overflow-auto p-4 sm:p-6">
           <Outlet />
         </main>
       </div>
