@@ -244,7 +244,6 @@ export function Home() {
                   </div>
 
                   {/* Footer */}
-                  <div className="mt-5 flex items-center justify-between border-t border-white/30 pt-4">
                     <div className="flex items-center gap-1.5 text-sm text-slate-200">
                       <FileText className="h-4 w-4 text-slate-300" />
                       <span>
