@@ -244,6 +244,7 @@ export function Home() {
                   </div>
 
                   {/* Footer */}
+                  <div className="mt-4 flex items-center justify-between rounded-xl bg-white/85 px-3 py-2.5 shadow-sm backdrop-blur">
                       <span>
                         {charterCount} charter{charterCount !== 1 ? "s" : ""}
                       </span>
