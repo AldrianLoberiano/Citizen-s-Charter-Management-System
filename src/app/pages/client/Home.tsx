@@ -234,6 +234,7 @@ export function Home() {
                   </div>
 
                   {/* Content */}
+                  <div className="flex-1">
                       {dept.name}
                     </h3>
                     <p className="line-clamp-3 text-sm leading-relaxed text-slate-600">
