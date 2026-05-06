@@ -225,6 +225,7 @@ export function Home() {
                   style={{
                     backgroundImage: `url(${lightVioletBgSrc})`,
                     backgroundSize: "cover",
+                    backgroundPosition: "center",
                 >
                   {/* Icon */}
                   <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl border border-slate-200 bg-slate-100 transition-colors group-hover:bg-slate-200">
