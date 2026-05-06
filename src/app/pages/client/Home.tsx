@@ -238,6 +238,7 @@ export function Home() {
                     <h3 className="mb-2 text-lg font-semibold leading-tight text-white transition-colors group-hover:text-white">
                       {dept.name}
                     </h3>
+                    <p className="line-clamp-3 text-base font-medium leading-relaxed text-slate-100">
                       {dept.description || "No description available."}
                     </p>
                   </div>
