@@ -235,6 +235,7 @@ export function Home() {
 
                   {/* Content */}
                   <div className="flex-1">
+                    <h3 className="mb-2 text-lg font-semibold leading-tight text-white transition-colors group-hover:text-white">
                       {dept.name}
                     </h3>
                     <p className="line-clamp-3 text-sm leading-relaxed text-slate-600">
