@@ -244,7 +244,6 @@ export function Home() {
                   </div>
 
                   {/* Footer */}
-                  <div className="mt-4 flex items-center justify-between rounded-xl bg-white/85 px-3 py-2.5 shadow-sm backdrop-blur">
                     <div className="flex items-center gap-1.5 text-sm text-slate-600">
                       <FileText className="h-4 w-4 text-slate-500" />
                       <span>
