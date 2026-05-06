@@ -31,6 +31,7 @@ const calauanLogo2Src = new URL(
 ).href;
 const lightVioletBgSrc = new URL(
   "../../../public/images/header/lightviolet.png",
+  import.meta.url
 
 export function Home() {
   const [search, setSearch] = useState("");
