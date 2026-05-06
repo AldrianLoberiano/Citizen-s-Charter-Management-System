@@ -251,7 +251,6 @@ export function Home() {
                         {charterCount} charter{charterCount !== 1 ? "s" : ""}
                       </span>
                     </div>
-                    <div className="flex items-center gap-1 text-sm text-slate-700 transition-all group-hover:gap-2">
                       <span>View</span>
                       <ChevronRight className="h-4 w-4" />
                     </div>
