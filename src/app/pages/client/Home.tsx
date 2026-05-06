@@ -234,7 +234,6 @@ export function Home() {
                   </div>
 
                   {/* Content */}
-                    <h3 className="mb-2 leading-tight text-slate-50 transition-colors group-hover:text-white">
                       {dept.name}
                     </h3>
                     <p className="line-clamp-3 text-sm leading-relaxed text-slate-200">
