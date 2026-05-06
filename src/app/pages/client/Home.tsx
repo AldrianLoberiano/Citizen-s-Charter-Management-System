@@ -244,7 +244,6 @@ export function Home() {
                   </div>
 
                   {/* Footer */}
-                      <FileText className="h-4 w-4 text-slate-400" />
                       <span>
                         {charterCount} charter{charterCount !== 1 ? "s" : ""}
                       </span>
