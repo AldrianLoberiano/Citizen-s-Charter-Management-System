@@ -223,7 +223,6 @@ export function Home() {
                   to={`/department/${dept.id}`}
                   className="group flex flex-col rounded-2xl border border-slate-200 p-6 transition-all hover:border-slate-300 hover:shadow-sm"
                   style={{
-                    backgroundImage: `url(${lightVioletBgSrc})`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                   }}
