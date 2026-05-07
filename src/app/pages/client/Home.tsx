@@ -272,7 +272,7 @@ export function Home() {
             {search && (
               <button
                 onClick={() => setSearch("")}
-                className="mt-4 rounded-lg bg-slate-900 px-4 py-2 text-sm text-white transition-colors hover:bg-slate-800"
+                className="mt-4 rounded-lg bg-violet-900 px-4 py-2 text-sm text-white transition-colors hover:bg-violet-950"
               >
                 Clear Search
               </button>
