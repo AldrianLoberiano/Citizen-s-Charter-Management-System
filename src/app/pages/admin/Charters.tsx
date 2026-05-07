@@ -147,6 +147,7 @@ export function Charters() {
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Validate file type: accept Excel and PDF files only
       if (!allowed.includes(file.type)) {
         setFormErrors((p) => ({
           ...p,
