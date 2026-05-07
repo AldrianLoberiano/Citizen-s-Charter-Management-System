@@ -41,6 +41,7 @@ const upload = multer({
   fileFilter: (_req, file, callback) => {
     const allowed = [
       "application/pdf",
+      "application/vnd.ms-excel",
     if (!allowed.includes(file.mimetype)) {
       callback(new Error("Only PDF and Excel files are allowed."));
       return;
