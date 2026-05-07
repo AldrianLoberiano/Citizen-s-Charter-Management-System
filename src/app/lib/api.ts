@@ -1,9 +1,12 @@
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000/api";
 
 async function request(path: string, options?: RequestInit) {
+  const rawUser = typeof window === "undefined" ? null : window.localStorage.getItem("ccms_auth_user");
+  const adminUsername = rawUser ? JSON.parse(rawUser) : null;
   const response = await fetch(`${API_BASE}${path}`, {
     headers: {
       "Content-Type": "application/json",
+      ...(adminUsername ? { "x-admin-username": adminUsername } : {}),
       ...(options?.headers || {}),
     },
     ...options,
