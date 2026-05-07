@@ -60,7 +60,7 @@ export function DepartmentPage() {
       {/* Department Hero */}
       <section className="border-b border-slate-200 bg-white">
         <div className="relative mx-auto max-w-7xl px-4 py-10">
-          <div className="absolute right-4 top-8 flex flex-col items-center gap-2 sm:top-10">
+          <div className="mt-6 flex flex-col items-center gap-2 sm:absolute sm:right-4 sm:top-10 sm:mt-0">
             <div className="inline-flex shrink-0 items-center rounded-full border border-slate-200 bg-white px-2.5 py-0.5 text-[11px] text-slate-600 shadow-sm">
               {now.toLocaleDateString(undefined, {
                 weekday: "short",
