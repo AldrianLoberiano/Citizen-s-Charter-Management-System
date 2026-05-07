@@ -179,11 +179,25 @@ export function AdminLayout() {
             <Menu className="h-5 w-5" />
           </button>
 
-          {/* Breadcrumb / Title */}
+          {/* Center Navigation */}
           <div className="relative flex-1 min-w-0">
-            <span className="hidden truncate text-sm text-white sm:block">
-              Citizen's Charter Management System — Admin Panel
-            </span>
+            <nav className="hidden items-center justify-center gap-2 sm:flex">
+              {navItems.map(({ path, label, icon: Icon }) => (
+                <Link
+                  key={path}
+                  to={path}
+                  className={
+                    `flex items-center gap-2 rounded-full px-3 py-1.5 text-xs transition-colors ` +
+                    (isActive(path)
+                      ? "bg-white/15 text-white"
+                      : "text-white/80 hover:bg-white/10 hover:text-white")
+                  }
+                >
+                  <Icon className="h-4 w-4" />
+                  <span>{label}</span>
+                </Link>
+              ))}
+            </nav>
           </div>
 
           {/* User info */}
