@@ -86,10 +86,26 @@ const seedCharters: Charter[] = [
 
 const seedRatings: Rating[] = [];
 
-function safeRead<T>(key: string, fallback: T): T {
+function getAuthUserFromStorage(): string | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEYS.authUser);
+    return raw ? (JSON.parse(raw) as string | null) : null;
+  } catch {
+    return null;
+  }
+}
+
+function getScopedKey(key: string) {
+  const user = getAuthUserFromStorage();
+  return user ? `${key}:${user}` : key;
+}
+
+function safeRead<T>(key: string, fallback: T, scoped = false): T {
   if (typeof window === "undefined") return fallback;
   try {
-    const raw = window.localStorage.getItem(key);
+    const storageKey = scoped ? getScopedKey(key) : key;
+    const raw = window.localStorage.getItem(storageKey);
     if (!raw) return fallback;
     return JSON.parse(raw) as T;
   } catch {
@@ -97,10 +113,11 @@ function safeRead<T>(key: string, fallback: T): T {
   }
 }
 
-function safeWrite<T>(key: string, value: T) {
+function safeWrite<T>(key: string, value: T, scoped = false) {
   if (typeof window === "undefined") return;
   try {
-    window.localStorage.setItem(key, JSON.stringify(value));
+    const storageKey = scoped ? getScopedKey(key) : key;
+    window.localStorage.setItem(storageKey, JSON.stringify(value));
   } catch {
     return;
   }
@@ -109,15 +126,18 @@ function safeWrite<T>(key: string, value: T) {
 function ensureSeedData() {
   const existingDepartments = safeRead<Department[] | null>(
     STORAGE_KEYS.departments,
-    null
+    null,
+    true
   );
   const existingCharters = safeRead<Charter[] | null>(
     STORAGE_KEYS.charters,
-    null
+    null,
+    true
   );
   const existingRatings = safeRead<Rating[] | null>(
     STORAGE_KEYS.ratings,
-    null
+    null,
+    true
   );
 
   if (!existingDepartments || existingDepartments.length === 0) {
@@ -149,15 +169,15 @@ let chartersCache = safeRead<Charter[]>(STORAGE_KEYS.charters, seedCharters);
 let ratingsCache = safeRead<Rating[]>(STORAGE_KEYS.ratings, seedRatings);
 
 function persistDepartments() {
-  safeWrite(STORAGE_KEYS.departments, departmentsCache);
+  safeWrite(STORAGE_KEYS.departments, departmentsCache, true);
 }
 
 function persistCharters() {
-  safeWrite(STORAGE_KEYS.charters, chartersCache);
+  safeWrite(STORAGE_KEYS.charters, chartersCache, true);
 }
 
 function persistRatings() {
-  safeWrite(STORAGE_KEYS.ratings, ratingsCache);
+  safeWrite(STORAGE_KEYS.ratings, ratingsCache, true);
 }
 
 export function setDepartments(departments: Department[]) {
@@ -344,6 +364,12 @@ export function isAuthenticated(): boolean {
 }
 
 export function logout() {
+  const currentUser = getAuthUserFromStorage();
+  if (currentUser && typeof window !== "undefined") {
+    window.localStorage.removeItem(`${STORAGE_KEYS.departments}:${currentUser}`);
+    window.localStorage.removeItem(`${STORAGE_KEYS.charters}:${currentUser}`);
+    window.localStorage.removeItem(`${STORAGE_KEYS.ratings}:${currentUser}`);
+  }
   safeWrite(STORAGE_KEYS.authUser, null);
 }
 
