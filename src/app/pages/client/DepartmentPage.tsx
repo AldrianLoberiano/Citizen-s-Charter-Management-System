@@ -90,6 +90,16 @@ export function DepartmentPage() {
     import.meta.url
   ).href;
 
+  const isSangguniang = department.name.toLowerCase().includes("sangguniang");
+  const bagongPilipinasLogo = new URL(
+    "../../../public/images/header/Bagong_Pilipinas_logo.png",
+    import.meta.url
+  ).href;
+  const bangonCalauanLogo = new URL(
+    "../../../public/images/header/calauan_logo-removebg-preview.png",
+    import.meta.url
+  ).href;
+
   const allCharters = getChartersByDepartment(deptId);
   const charters = allCharters.filter(
     (c) =>
@@ -121,6 +131,20 @@ export function DepartmentPage() {
               />
             </div>
             <div>
+              {isSangguniang && (
+                <div className="mb-3 flex flex-wrap items-center gap-4">
+                  <img
+                    src={bangonCalauanLogo}
+                    alt="Bangon Calauan Logo"
+                    className="h-12 w-auto object-contain"
+                  />
+                  <img
+                    src={bagongPilipinasLogo}
+                    alt="Bagong Pilipinas Logo"
+                    className="h-12 w-auto object-contain"
+                  />
+                </div>
+              )}
               <h1 className="leading-tight text-slate-950">{department.name}</h1>
               <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">
                 {department.description || "No description available."}
