@@ -73,7 +73,6 @@ export function ClientLayout() {
               </p>
             </div>
 
-                  </Link>
                 </li>
               </ul>
             </div>
