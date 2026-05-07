@@ -66,13 +66,6 @@ app.use(
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
-async function resolveAdmin(req) {
-  const username = req.get("x-admin-username");
-  if (!username) return null;
-  const [rows] = await pool.query("SELECT * FROM admins WHERE username = ?", [username]);
-  return rows[0] || null;
-}
-
 app.post("/api/uploads/charters", upload.single("file"), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ message: "No file uploaded" });
@@ -90,19 +83,13 @@ app.get("/api/health", (_req, res) => {
   res.json({ ok: true });
 });
 
-app.get("/api/departments", async (req, res) => {
-  const admin = await resolveAdmin(req);
-  const [rows] = admin
-    ? await pool.query("SELECT * FROM departments WHERE owner_admin_id = ? ORDER BY id ASC", [admin.id])
-    : await pool.query("SELECT * FROM departments ORDER BY id ASC");
+app.get("/api/departments", async (_req, res) => {
+  const [rows] = await pool.query("SELECT * FROM departments ORDER BY id ASC");
   res.json(rows);
 });
 
 app.get("/api/departments/:id", async (req, res) => {
-  const admin = await resolveAdmin(req);
-  const [rows] = admin
-    ? await pool.query("SELECT * FROM departments WHERE id = ? AND owner_admin_id = ?", [req.params.id, admin.id])
-    : await pool.query("SELECT * FROM departments WHERE id = ?", [req.params.id]);
+  const [rows] = await pool.query("SELECT * FROM departments WHERE id = ?", [req.params.id]);
   const department = rows[0];
   if (!department) return res.status(404).json({ message: "Department not found" });
   res.json(department);
@@ -111,10 +98,9 @@ app.get("/api/departments/:id", async (req, res) => {
 app.post("/api/departments", async (req, res) => {
   const { name, description = "" } = req.body || {};
   if (!name?.trim()) return res.status(400).json({ message: "Department name is required" });
-  const admin = await resolveAdmin(req);
   const [result] = await pool.query(
-    "INSERT INTO departments (name, description, owner_admin_id) VALUES (?, ?, ?)",
-    [name.trim(), description.trim(), admin ? admin.id : null]
+    "INSERT INTO departments (name, description) VALUES (?, ?)",
+    [name.trim(), description.trim()]
   );
   const [rows] = await pool.query("SELECT * FROM departments WHERE id = ?", [result.insertId]);
   res.status(201).json(rows[0]);
@@ -123,42 +109,28 @@ app.post("/api/departments", async (req, res) => {
 app.put("/api/departments/:id", async (req, res) => {
   const { name, description = "" } = req.body || {};
   if (!name?.trim()) return res.status(400).json({ message: "Department name is required" });
-  const admin = await resolveAdmin(req);
-  const [result] = admin
-    ? await pool.query(
-        "UPDATE departments SET name = ?, description = ? WHERE id = ? AND owner_admin_id = ?",
-        [name.trim(), description.trim(), req.params.id, admin.id]
-      )
-    : await pool.query(
-        "UPDATE departments SET name = ?, description = ? WHERE id = ?",
-        [name.trim(), description.trim(), req.params.id]
-      );
+  const [result] = await pool.query(
+    "UPDATE departments SET name = ?, description = ? WHERE id = ?",
+    [name.trim(), description.trim(), req.params.id]
+  );
   if (result.affectedRows === 0) return res.status(404).json({ message: "Department not found" });
   const [rows] = await pool.query("SELECT * FROM departments WHERE id = ?", [req.params.id]);
   res.json(rows[0]);
 });
 
 app.delete("/api/departments/:id", async (req, res) => {
-  const admin = await resolveAdmin(req);
-  const [result] = admin
-    ? await pool.query("DELETE FROM departments WHERE id = ? AND owner_admin_id = ?", [req.params.id, admin.id])
-    : await pool.query("DELETE FROM departments WHERE id = ?", [req.params.id]);
+  const [result] = await pool.query("DELETE FROM departments WHERE id = ?", [req.params.id]);
   if (result.affectedRows === 0) return res.status(404).json({ message: "Department not found" });
   res.status(204).send();
 });
 
 app.get("/api/charters", async (req, res) => {
   const { departmentId } = req.query;
-  const admin = await resolveAdmin(req);
   const conditions = [];
   const params = [];
   if (departmentId) {
     conditions.push("department_id = ?");
     params.push(departmentId);
-  }
-  if (admin) {
-    conditions.push("owner_admin_id = ?");
-    params.push(admin.id);
   }
   const where = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
   const sql = `SELECT * FROM charters ${where} ORDER BY id ASC`;
@@ -167,10 +139,7 @@ app.get("/api/charters", async (req, res) => {
 });
 
 app.get("/api/charters/:id", async (req, res) => {
-  const admin = await resolveAdmin(req);
-  const [rows] = admin
-    ? await pool.query("SELECT * FROM charters WHERE id = ? AND owner_admin_id = ?", [req.params.id, admin.id])
-    : await pool.query("SELECT * FROM charters WHERE id = ?", [req.params.id]);
+  const [rows] = await pool.query("SELECT * FROM charters WHERE id = ?", [req.params.id]);
   const charter = rows[0];
   if (!charter) return res.status(404).json({ message: "Charter not found" });
   res.json(charter);
@@ -181,10 +150,9 @@ app.post("/api/charters", async (req, res) => {
   if (!department_id || !title?.trim() || !content?.trim()) {
     return res.status(400).json({ message: "department_id, title, and content are required" });
   }
-  const admin = await resolveAdmin(req);
   const [result] = await pool.query(
-    "INSERT INTO charters (department_id, title, content, file_path, owner_admin_id) VALUES (?, ?, ?, ?, ?)",
-    [department_id, title.trim(), content.trim(), file_path, admin ? admin.id : null]
+    "INSERT INTO charters (department_id, title, content, file_path) VALUES (?, ?, ?, ?)",
+    [department_id, title.trim(), content.trim(), file_path]
   );
   const [rows] = await pool.query("SELECT * FROM charters WHERE id = ?", [result.insertId]);
   res.status(201).json(rows[0]);
@@ -195,38 +163,23 @@ app.put("/api/charters/:id", async (req, res) => {
   if (!department_id || !title?.trim() || !content?.trim()) {
     return res.status(400).json({ message: "department_id, title, and content are required" });
   }
-  const admin = await resolveAdmin(req);
-  const [result] = admin
-    ? await pool.query(
-        "UPDATE charters SET department_id = ?, title = ?, content = ?, file_path = ? WHERE id = ? AND owner_admin_id = ?",
-        [department_id, title.trim(), content.trim(), file_path, req.params.id, admin.id]
-      )
-    : await pool.query(
-        "UPDATE charters SET department_id = ?, title = ?, content = ?, file_path = ? WHERE id = ?",
-        [department_id, title.trim(), content.trim(), file_path, req.params.id]
-      );
+  const [result] = await pool.query(
+    "UPDATE charters SET department_id = ?, title = ?, content = ?, file_path = ? WHERE id = ?",
+    [department_id, title.trim(), content.trim(), file_path, req.params.id]
+  );
   if (result.affectedRows === 0) return res.status(404).json({ message: "Charter not found" });
   const [rows] = await pool.query("SELECT * FROM charters WHERE id = ?", [req.params.id]);
   res.json(rows[0]);
 });
 
 app.delete("/api/charters/:id", async (req, res) => {
-  const admin = await resolveAdmin(req);
-  const [result] = admin
-    ? await pool.query("DELETE FROM charters WHERE id = ? AND owner_admin_id = ?", [req.params.id, admin.id])
-    : await pool.query("DELETE FROM charters WHERE id = ?", [req.params.id]);
+  const [result] = await pool.query("DELETE FROM charters WHERE id = ?", [req.params.id]);
   if (result.affectedRows === 0) return res.status(404).json({ message: "Charter not found" });
   res.status(204).send();
 });
 
 app.get("/api/charters/:id/ratings", async (req, res) => {
-  const admin = await resolveAdmin(req);
-  const [rows] = admin
-    ? await pool.query(
-        "SELECT * FROM ratings WHERE charter_id = ? AND owner_admin_id = ? ORDER BY id ASC",
-        [req.params.id, admin.id]
-      )
-    : await pool.query("SELECT * FROM ratings WHERE charter_id = ? ORDER BY id ASC", [req.params.id]);
+  const [rows] = await pool.query("SELECT * FROM ratings WHERE charter_id = ? ORDER BY id ASC", [req.params.id]);
   res.json(rows);
 });
 
@@ -236,10 +189,9 @@ app.post("/api/charters/:id/ratings", async (req, res) => {
   if (!parsedRating || parsedRating < 1 || parsedRating > 5) {
     return res.status(400).json({ message: "Rating must be between 1 and 5" });
   }
-  const admin = await resolveAdmin(req);
   const [result] = await pool.query(
-    "INSERT INTO ratings (charter_id, rating, comment, owner_admin_id) VALUES (?, ?, ?, ?)",
-    [req.params.id, parsedRating, comment.trim(), admin ? admin.id : null]
+    "INSERT INTO ratings (charter_id, rating, comment) VALUES (?, ?, ?)",
+    [req.params.id, parsedRating, comment.trim()]
   );
   const [rows] = await pool.query("SELECT * FROM ratings WHERE id = ?", [result.insertId]);
   res.status(201).json(rows[0]);
