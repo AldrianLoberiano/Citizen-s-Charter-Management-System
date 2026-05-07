@@ -378,7 +378,7 @@ export function Charters() {
                           <Paperclip className="w-3.5 h-3.5 text-green-700" />
                         </div>
                       ) : (
-                        <span className="text-slate-300 text-sm">—</span>
+                        <span className="text-slate-300 text-sm">ï¿½</span>
                       )}
                     </td>
                     <td className="px-5 py-4">
@@ -506,7 +506,7 @@ export function Charters() {
               }`}
             />
             <p className="text-slate-400 text-xs mt-1">
-              {formData.content.length} characters — Use line breaks for
+              {formData.content.length} characters ï¿½ Use line breaks for
               requirements and steps
             </p>
             {formErrors.content && (
@@ -521,7 +521,7 @@ export function Charters() {
           <div>
             <label className="block text-slate-700 mb-1.5 text-sm">
               Attachment{" "}
-              <span className="text-slate-400 text-xs">(PDF or Image, max 5MB)</span>
+              <span className="text-slate-400 text-xs">(Excel or PDF, max 5MB)</span>
             </label>
             <div className="border-2 border-dashed border-slate-300 rounded-lg p-4 hover:border-slate-400 transition-colors">
               {formData.file_path ? (
@@ -546,10 +546,10 @@ export function Charters() {
                   <span className="text-slate-500 text-sm">
                     {uploadingFile ? "Uploading file..." : "Click to upload or drag and drop"}
                   </span>
-                  <span className="text-slate-400 text-xs">PDF, JPG, PNG, GIF</span>
+                  <span className="text-slate-400 text-xs">XLS, XLSX, PDF</span>
                   <input
                     type="file"
-                    accept=".pdf,.jpg,.jpeg,.png,.gif"
+                    accept=".xls,.xlsx,.pdf"
                     onChange={handleFileChange}
                     className="hidden"
                     disabled={uploadingFile}
