@@ -59,7 +59,7 @@ export function DepartmentPage() {
     <div>
       {/* Department Hero */}
       <section className="border-b border-slate-200 bg-white">
-        <div className="relative mx-auto max-w-7xl px-4 py-10">
+        <div className="relative mx-auto w-full px-4 py-10">
           <div className="mt-6 flex flex-col items-center gap-2 sm:absolute sm:right-4 sm:top-10 sm:mt-0">
             <div className="inline-flex shrink-0 items-center rounded-full border border-slate-200 bg-white px-2.5 py-0.5 text-[11px] text-slate-600 shadow-sm">
               {now.toLocaleDateString(undefined, {
@@ -115,7 +115,7 @@ export function DepartmentPage() {
       </section>
 
       {/* Charters Section */}
-      <section className="mx-auto max-w-7xl px-4 py-10">
+      <section className="mx-auto w-full px-4 py-10">
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="text-slate-950">Available Services</h2>
