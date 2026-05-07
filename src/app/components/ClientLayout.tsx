@@ -4,8 +4,8 @@
  */
 
 import { Outlet, Link, useLocation } from "react-router";
-import { Shield, Phone, Mail, MapPin } from "lucide-react";
-import { useEffect } from "react";
+import { Shield, Phone, Mail, MapPin, ArrowUp } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const clientLogoSrc = new URL("../../public/images/header/logo.png", import.meta.url).href;
 const clientHeaderBgSrc = new URL("../../public/images/header/header1.png", import.meta.url).href;
@@ -16,20 +16,44 @@ const mayorAssistantSrc = new URL(
 
 export function ClientLayout() {
   const location = useLocation();
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   }, [location.pathname]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 200);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <img
         src={mayorAssistantSrc}
         alt="Assistant"
-        className="fixed bottom-4 right-4 h-16 w-16 object-contain md:h-20 md:w-20"
+        className="fixed bottom-16 right-4 h-16 w-16 object-contain md:h-20 md:w-20"
         loading="lazy"
         decoding="async"
       />
+      {showScrollTop && (
+        <button
+          type="button"
+          onClick={() => window.scrollTo({ top: 0, left: 0, behavior: "smooth" })}
+          className="fixed bottom-4 right-4 z-50 inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-white shadow-lg transition hover:bg-slate-800"
+          aria-label="Scroll to top"
+        >
+          <ArrowUp className="h-5 w-5" />
+        </button>
+      )}
       {/* Top announcement bar */}
       <div className="border-b border-slate-800 bg-slate-950 px-4 py-2 text-center text-xs text-slate-200">
         Official Website of the Local Government Unit — For inquiries, contact
