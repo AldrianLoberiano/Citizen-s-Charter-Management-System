@@ -27,7 +27,7 @@ export function ClientLayout() {
           backgroundPosition: "center",
         }}
       >
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4">
+        <div className="mx-auto flex w-full items-center justify-between gap-4 px-4 py-4">
           {/* Logo and System Name */}
           <Link to="/" className="flex items-center gap-5 min-w-0">
             <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-white p-0.5">
@@ -57,7 +57,7 @@ export function ClientLayout() {
 
       {/* Footer */}
       <footer className="mt-auto border-t border-slate-200 bg-white text-slate-600">
-        <div className="mx-auto max-w-7xl px-4 py-10">
+        <div className="mx-auto w-full px-4 py-10">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-[1.25fr_1fr]">
             {/* About */}
             <div>
