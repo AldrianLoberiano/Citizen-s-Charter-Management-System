@@ -10,6 +10,7 @@ import {
   ChevronRight,
   Building2,
   FileText,
+  ExternalLink,
   Clock,
   Star,
   Send,
