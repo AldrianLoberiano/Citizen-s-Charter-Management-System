@@ -54,7 +54,13 @@ export function ClientLayout() {
         <button
           type="button"
           onClick={() => setShowHelp((prev) => !prev)}
-          className="h-16 w-16 bg-transparent p-0 focus:outline-none focus:ring-2 focus:ring-slate-900/40 md:h-20 md:w-20"
+          className={
+            "h-16 w-16 bg-transparent p-0 focus:outline-none transition " +
+            "md:h-20 md:w-20 " +
+            (showHelp
+              ? "translate-x-0 opacity-100"
+              : "translate-x-8 opacity-60 hover:opacity-100")
+          }
           aria-pressed={showHelp}
           aria-controls="help-panel"
           title="Need help?"
