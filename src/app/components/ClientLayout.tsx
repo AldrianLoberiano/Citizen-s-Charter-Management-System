@@ -38,27 +38,11 @@ export function ClientLayout() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <button
-        type="button"
-        onClick={() => setShowHelp((prev) => !prev)}
-        className="fixed bottom-16 right-4 z-50 h-16 w-16 rounded-full focus:outline-none focus:ring-2 focus:ring-slate-900/40 md:h-20 md:w-20"
-        aria-pressed={showHelp}
-        aria-controls="help-panel"
-        title="Need help?"
-      >
-        <img
-          src={mayorAssistantSrc}
-          alt="Assistant"
-          className="h-full w-full object-contain"
-          loading="lazy"
-          decoding="async"
-        />
-      </button>
-      <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end gap-2">
+      <div className="fixed bottom-12 right-4 z-50 flex flex-col items-end">
         {showHelp && (
           <div
             id="help-panel"
-            className="w-72 rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-700 shadow-lg"
+            className="mb-2 w-72 rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-700 shadow-lg"
           >
             <div className="mb-1 text-slate-900">How to use the Citizen's Charter</div>
             <p className="text-slate-600">
@@ -67,6 +51,24 @@ export function ClientLayout() {
             </p>
           </div>
         )}
+        <button
+          type="button"
+          onClick={() => setShowHelp((prev) => !prev)}
+          className="h-16 w-16 rounded-full focus:outline-none focus:ring-2 focus:ring-slate-900/40 md:h-20 md:w-20"
+          aria-pressed={showHelp}
+          aria-controls="help-panel"
+          title="Need help?"
+        >
+          <img
+            src={mayorAssistantSrc}
+            alt="Assistant"
+            className="h-full w-full object-contain"
+            loading="lazy"
+            decoding="async"
+          />
+        </button>
+      </div>
+      <div className="fixed bottom-4 right-4 z-40 flex flex-col items-end gap-2">
         {showScrollTop && (
           <button
             type="button"
