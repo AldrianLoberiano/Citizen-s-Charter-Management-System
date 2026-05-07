@@ -4,8 +4,7 @@
  * and citizen feedback/rating system
  */
 
-import { useEffect, useState } from "react";
-import * as XLSX from "xlsx";
+import { useState } from "react";
 import { Link, useParams, Navigate } from "react-router";
 import {
   ChevronRight,
@@ -68,9 +67,6 @@ export function CharterDetail() {
         : `/uploads/charters/${charter.file_path}`
     : "/charter-viewer.pdf";
 
-  const MAX_PREVIEW_ROWS = 200;
-  const MAX_PREVIEW_COLS = 20;
-
   type ViewerType = "pdf" | "excel" | "unknown";
 
   const getViewerType = (filePath: string): ViewerType => {
@@ -81,11 +77,9 @@ export function CharterDetail() {
   };
 
   const viewerType = getViewerType(attachmentUrl);
-  const [viewerRows, setViewerRows] = useState<string[][]>([]);
-  const [viewerSheet, setViewerSheet] = useState("");
-  const [viewerLoading, setViewerLoading] = useState(false);
-  const [viewerError, setViewerError] = useState<string | null>(null);
-  const [viewerTruncated, setViewerTruncated] = useState(false);
+  const officeViewerUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(
+    attachmentUrl
+  )}`;
 
   // Format content with line breaks preserved
   const formattedContent = charter.content.split("\n").map((line, idx) => {
@@ -330,57 +324,24 @@ export function CharterDetail() {
                 </button>
               </div>
               <div className="bg-white p-3">
-                {viewerLoading && (
-                  <div className="p-4 text-sm text-slate-500">Loading attachment...</div>
+                {viewerType === "excel" && (
+                  <iframe
+                    src={officeViewerUrl}
+                    title={`${charter.title} Excel preview`}
+                    className="h-[720px] w-full rounded-lg border border-slate-200 bg-white"
+                  />
                 )}
-                {!viewerLoading && viewerError && (
-                  <div className="p-4 text-sm text-red-600">{viewerError}</div>
-                )}
-                {!viewerLoading && !viewerError && viewerType === "excel" && (
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between text-xs text-slate-500">
-                      <span>Sheet: {viewerSheet || "Sheet1"}</span>
-                      {viewerTruncated && (
-                        <span>
-                          Showing first {MAX_PREVIEW_ROWS} rows and {MAX_PREVIEW_COLS} columns
-                        </span>
-                      )}
-                    </div>
-                    <div className="max-h-[720px] overflow-auto rounded-lg border border-slate-200">
-                      {viewerRows.length === 0 ? (
-                        <div className="p-6 text-sm text-slate-500">
-                          No data to display.
-                        </div>
-                      ) : (
-                        <table className="min-w-full text-sm">
-                          <tbody>
-                            {viewerRows.map((row, rowIndex) => (
-                              <tr
-                                key={`row-${rowIndex}`}
-                                className={rowIndex % 2 === 0 ? "bg-white" : "bg-slate-50"}
-                              >
-                                {row.map((cell, cellIndex) => (
-                                  <td
-                                    key={`cell-${rowIndex}-${cellIndex}`}
-                                    className="whitespace-nowrap border-b border-slate-200 px-3 py-2 text-slate-700"
-                                  >
-                                    {cell}
-                                  </td>
-                                ))}
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      )}
-                    </div>
-                  </div>
-                )}
-                {!viewerLoading && !viewerError && viewerType !== "excel" && (
+                {viewerType === "pdf" && (
                   <iframe
                     src={attachmentUrl}
                     title={`${charter.title} PDF preview`}
                     className="h-[720px] w-full rounded-lg border border-slate-200 bg-white"
                   />
+                )}
+                {viewerType === "unknown" && (
+                  <div className="p-4 text-sm text-slate-500">
+                    No preview available for this file type. Use Download File to open it.
+                  </div>
                 )}
               </div>
             </div>
