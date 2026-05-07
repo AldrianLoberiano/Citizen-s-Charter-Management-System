@@ -73,7 +73,6 @@ export function ClientLayout() {
               </p>
             </div>
 
-            </div>
 
             {/* Contact */}
             <div>
