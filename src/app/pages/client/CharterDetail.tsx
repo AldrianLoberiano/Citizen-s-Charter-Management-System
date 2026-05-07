@@ -270,7 +270,6 @@ export function CharterDetail() {
                   className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-600 transition-colors hover:bg-slate-50"
                 >
                   <Download className="h-4 w-4" />
-                  Download File
                 </button>
               </div>
               <div className="bg-white p-3">
