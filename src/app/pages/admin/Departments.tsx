@@ -264,14 +264,14 @@ export function Departments() {
                         <button
                           onClick={() => openEdit(dept)}
                           title="Edit department"
-                          className="p-2 text-slate-400 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
+                          className="p-2 text-slate-400 hover:text-violet-700 hover:bg-violet-50 rounded-lg transition-colors"
                         >
                           <Pencil className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => openDelete(dept)}
                           title="Delete department"
-                          className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          className="p-2 text-slate-400 hover:text-violet-700 hover:bg-violet-50 rounded-lg transition-colors"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -372,7 +372,7 @@ export function Departments() {
             </button>
             <button
               type="submit"
-              className="px-4 py-2 text-sm bg-blue-800 text-white rounded-lg hover:bg-blue-900 transition-colors"
+              className="px-4 py-2 text-sm bg-violet-900 text-white rounded-lg hover:bg-violet-950 transition-colors"
             >
               {editingDept ? "Save Changes" : "Create Department"}
             </button>
@@ -416,7 +416,7 @@ export function Departments() {
             </button>
             <button
               onClick={handleDelete}
-              className="px-4 py-2 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              className="px-4 py-2 text-sm bg-violet-900 text-white rounded-lg hover:bg-violet-950 transition-colors"
             >
               Delete Department
             </button>
