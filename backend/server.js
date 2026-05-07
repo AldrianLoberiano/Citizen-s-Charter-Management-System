@@ -206,7 +206,8 @@ app.post("/api/auth/login", async (req, res) => {
     const admin = rows[0];
 
     if (admin) {
-      const ok = await bcrypt.compare(password, admin.password_hash);
+      const normalizedHash = admin.password_hash.replace(/^\$2y\$/, "$2b$");
+      const ok = await bcrypt.compare(password, normalizedHash);
       if (!ok) {
         return res.status(401).json({ message: "Invalid username or password" });
       }
