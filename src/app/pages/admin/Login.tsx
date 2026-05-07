@@ -9,7 +9,10 @@ import { useNavigate, Link } from "react-router";
 import { Eye, EyeOff, AlertCircle, Lock, User } from "lucide-react";
 import { loginWithApi, isAuthenticated } from "../../store/data";
 
-const adminLogoSrc = new URL("../../public/images/header/logo.png", import.meta.url).href;
+const adminLogoSrc = new URL(
+  "../../../public/images/header/logo.png",
+  import.meta.url
+).href;
 
 export function Login() {
   const [username, setUsername] = useState("");
