@@ -151,6 +151,7 @@ export function Charters() {
       const allowed = [
         "application/vnd.ms-excel",
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "application/pdf",
       if (!allowed.includes(file.type)) {
         setFormErrors((p) => ({
           ...p,
