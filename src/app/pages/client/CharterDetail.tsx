@@ -67,6 +67,17 @@ export function CharterDetail() {
         : `/uploads/charters/${charter.file_path}`
     : "/charter-viewer.pdf";
 
+  const FILE_BASE = (import.meta.env.VITE_API_URL || "http://localhost:4000/api").replace(
+    /\/api$/,
+    ""
+  );
+
+  const resolveFileUrl = (filePath: string) => {
+    if (filePath.startsWith("http://") || filePath.startsWith("https://")) return filePath;
+    if (filePath.startsWith("/")) return `${FILE_BASE}${filePath}`;
+    return `${FILE_BASE}/${filePath}`;
+  };
+
   type ViewerType = "pdf" | "excel" | "unknown";
 
   const getViewerType = (filePath: string): ViewerType => {
@@ -77,8 +88,9 @@ export function CharterDetail() {
   };
 
   const viewerType = getViewerType(attachmentUrl);
+  const resolvedAttachmentUrl = resolveFileUrl(attachmentUrl);
   const officeViewerUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(
-    attachmentUrl
+    resolvedAttachmentUrl
   )}`;
 
   // Format content with line breaks preserved
@@ -271,7 +283,7 @@ export function CharterDetail() {
                 )}
                 {viewerType === "pdf" && (
                   <iframe
-                    src={attachmentUrl}
+                    src={resolvedAttachmentUrl}
                     title={`${charter.title} PDF preview`}
                     className="h-[720px] w-full rounded-lg border border-slate-200 bg-white"
                   />
