@@ -5,6 +5,7 @@
  */
 
 import { useState, useCallback } from "react";
+import * as XLSX from "xlsx";
 import {
   Plus,
   Search,
@@ -33,6 +34,27 @@ import { Pagination } from "../../components/Pagination";
 import { Notification } from "../../components/Notification";
 
 const ITEMS_PER_PAGE = 8;
+const FILE_BASE = (import.meta.env.VITE_API_URL || "http://localhost:4000/api").replace(
+  /\/api$/,
+  ""
+);
+const MAX_PREVIEW_ROWS = 200;
+const MAX_PREVIEW_COLS = 20;
+
+type ViewerType = "pdf" | "excel" | "unknown";
+
+const getViewerType = (filePath: string): ViewerType => {
+  const lower = filePath.toLowerCase();
+  if (lower.endsWith(".pdf")) return "pdf";
+  if (lower.endsWith(".xlsx") || lower.endsWith(".xls")) return "excel";
+  return "unknown";
+};
+
+const resolveFileUrl = (filePath: string) => {
+  if (filePath.startsWith("http://") || filePath.startsWith("https://")) return filePath;
+  if (filePath.startsWith("/")) return `${FILE_BASE}${filePath}`;
+  return `${FILE_BASE}/${filePath}`;
+};
 
 interface FormData {
   department_id: string;
@@ -61,6 +83,14 @@ export function Charters() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [editingCharter, setEditingCharter] = useState<Charter | null>(null);
   const [deletingCharter, setDeletingCharter] = useState<Charter | null>(null);
+  const [viewerOpen, setViewerOpen] = useState(false);
+  const [viewerFilePath, setViewerFilePath] = useState("");
+  const [viewerType, setViewerType] = useState<ViewerType>("unknown");
+  const [viewerRows, setViewerRows] = useState<string[][]>([]);
+  const [viewerSheet, setViewerSheet] = useState("");
+  const [viewerLoading, setViewerLoading] = useState(false);
+  const [viewerError, setViewerError] = useState<string | null>(null);
+  const [viewerTruncated, setViewerTruncated] = useState(false);
 
   // Form
   const [formData, setFormData] = useState<FormData>(emptyForm);
@@ -121,6 +151,68 @@ export function Charters() {
   const openDelete = (charter: Charter) => {
     setDeletingCharter(charter);
     setDeleteModalOpen(true);
+  };
+
+  const closeViewer = () => {
+    setViewerOpen(false);
+    setViewerFilePath("");
+    setViewerType("unknown");
+    setViewerRows([]);
+    setViewerSheet("");
+    setViewerLoading(false);
+    setViewerError(null);
+    setViewerTruncated(false);
+  };
+
+  const openViewer = async (filePath: string) => {
+    const type = getViewerType(filePath);
+    setViewerOpen(true);
+    setViewerFilePath(filePath);
+    setViewerType(type);
+    setViewerRows([]);
+    setViewerSheet("");
+    setViewerError(null);
+    setViewerTruncated(false);
+
+    if (type === "unknown") {
+      setViewerError("Preview is not available for this file type.");
+      return;
+    }
+
+    if (type === "excel") {
+      setViewerLoading(true);
+      try {
+        const response = await fetch(resolveFileUrl(filePath));
+        if (!response.ok) {
+          throw new Error(`Failed to load file (${response.status}).`);
+        }
+        const data = await response.arrayBuffer();
+        const workbook = XLSX.read(data, { type: "array" });
+        const sheetName = workbook.SheetNames[0] || "Sheet1";
+        const sheet = workbook.Sheets[sheetName];
+        const rows = XLSX.utils.sheet_to_json(sheet, {
+          header: 1,
+          blankrows: false,
+        }) as Array<Array<string | number | boolean | Date | null>>;
+        const truncatedRows = rows.slice(0, MAX_PREVIEW_ROWS).map((row) =>
+          row
+            .slice(0, MAX_PREVIEW_COLS)
+            .map((cell) => (cell === null || cell === undefined ? "" : String(cell)))
+        );
+        const truncated =
+          rows.length > MAX_PREVIEW_ROWS ||
+          rows.some((row) => row.length > MAX_PREVIEW_COLS);
+        setViewerRows(truncatedRows);
+        setViewerSheet(sheetName);
+        setViewerTruncated(truncated);
+      } catch (error) {
+        setViewerError(
+          error instanceof Error ? error.message : "Failed to load Excel file."
+        );
+      } finally {
+        setViewerLoading(false);
+      }
+    }
   };
 
   // Validate form
@@ -371,12 +463,14 @@ export function Charters() {
                     </td>
                     <td className="px-5 py-4 text-center">
                       {charter.file_path ? (
-                        <div
-                          title={charter.file_path}
-                          className="inline-flex items-center justify-center w-7 h-7 bg-green-50 rounded-lg cursor-pointer hover:bg-green-100 transition-colors"
+                        <button
+                          type="button"
+                          title="View attachment"
+                          onClick={() => openViewer(charter.file_path)}
+                          className="inline-flex items-center justify-center w-7 h-7 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
                         >
                           <Paperclip className="w-3.5 h-3.5 text-green-700" />
-                        </div>
+                        </button>
                       ) : (
                         <span className="text-slate-300 text-sm">�</span>
                       )}
@@ -585,6 +679,67 @@ export function Charters() {
             </button>
           </div>
         </form>
+      </Modal>
+
+      {/* Attachment Viewer */}
+      <Modal
+        isOpen={viewerOpen}
+        onClose={closeViewer}
+        title="Attachment Viewer"
+        size="xl"
+      >
+        {viewerLoading && (
+          <div className="text-sm text-slate-500">Loading attachment...</div>
+        )}
+        {!viewerLoading && viewerError && (
+          <div className="text-sm text-red-600">{viewerError}</div>
+        )}
+        {!viewerLoading && !viewerError && viewerType === "pdf" && (
+          <div className="h-[70vh]">
+            <iframe
+              title="PDF Preview"
+              src={resolveFileUrl(viewerFilePath)}
+              className="h-full w-full rounded-lg border border-slate-200"
+            />
+          </div>
+        )}
+        {!viewerLoading && !viewerError && viewerType === "excel" && (
+          <div className="space-y-3">
+            <div className="flex items-center justify-between text-xs text-slate-500">
+              <span>Sheet: {viewerSheet || "Sheet1"}</span>
+              {viewerTruncated && (
+                <span>
+                  Showing first {MAX_PREVIEW_ROWS} rows and {MAX_PREVIEW_COLS} columns
+                </span>
+              )}
+            </div>
+            <div className="max-h-[70vh] overflow-auto rounded-lg border border-slate-200">
+              {viewerRows.length === 0 ? (
+                <div className="p-6 text-sm text-slate-500">No data to display.</div>
+              ) : (
+                <table className="min-w-full text-sm">
+                  <tbody>
+                    {viewerRows.map((row, rowIndex) => (
+                      <tr
+                        key={`row-${rowIndex}`}
+                        className={rowIndex % 2 === 0 ? "bg-white" : "bg-slate-50"}
+                      >
+                        {row.map((cell, cellIndex) => (
+                          <td
+                            key={`cell-${rowIndex}-${cellIndex}`}
+                            className="whitespace-nowrap border-b border-slate-200 px-3 py-2 text-slate-700"
+                          >
+                            {cell}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </div>
+        )}
       </Modal>
 
       {/* Delete Confirmation Modal */}
