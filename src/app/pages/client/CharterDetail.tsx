@@ -290,6 +290,7 @@ export function CharterDetail() {
                 )}
                 {viewerType === "unknown" && (
                   <div className="p-4 text-sm text-slate-500">
+                    No preview available for this file type. Use View Full Page to open it.
                   </div>
                 )}
               </div>
