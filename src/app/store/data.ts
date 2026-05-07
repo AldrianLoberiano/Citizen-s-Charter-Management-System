@@ -183,32 +183,35 @@ export function getDepartmentById(id: number): Department | undefined {
   return departmentsCache.find((dept) => dept.id === id);
 }
 
-export function createDepartment(data: Omit<Department, "id" | "created_at">) {
-  const newDept: Department = {
-    id: getNextId(departmentsCache),
+export async function createDepartment(data: Omit<Department, "id" | "created_at">) {
+  const created = await api.createDepartment({
     name: data.name,
     description: data.description,
-    created_at: getNowIso(),
-  };
-  departmentsCache = [newDept, ...departmentsCache];
+  });
+  departmentsCache = [created, ...departmentsCache];
   persistDepartments();
-  return newDept;
+  return created;
 }
 
-export function updateDepartment(id: number, data: Partial<Department>) {
+export async function updateDepartment(id: number, data: Partial<Department>) {
+  const updated = await api.updateDepartment(id, {
+    name: data.name ?? "",
+    description: data.description ?? "",
+  });
   departmentsCache = departmentsCache.map((dept) =>
     dept.id === id
       ? {
           ...dept,
-          ...data,
-          updated_at: getNowIso(),
+          ...updated,
         }
       : dept
   );
   persistDepartments();
+  return updated;
 }
 
-export function deleteDepartment(id: number) {
+export async function deleteDepartment(id: number) {
+  await api.deleteDepartment(id);
   departmentsCache = departmentsCache.filter((dept) => dept.id !== id);
   const removedCharterIds = new Set(
     chartersCache.filter((c) => c.department_id === id).map((c) => c.id)
@@ -232,26 +235,24 @@ export function getChartersByDepartment(deptId: number): Charter[] {
   return chartersCache.filter((charter) => charter.department_id === deptId);
 }
 
-export function createCharter(data: {
+export async function createCharter(data: {
   department_id: number;
   title: string;
   content: string;
   file_path: string | null;
 }) {
-  const newCharter: Charter = {
-    id: getNextId(chartersCache),
+  const created = await api.createCharter({
     department_id: data.department_id,
     title: data.title,
     content: data.content,
     file_path: data.file_path,
-    created_at: getNowIso(),
-  };
-  chartersCache = [newCharter, ...chartersCache];
+  });
+  chartersCache = [created, ...chartersCache];
   persistCharters();
-  return newCharter;
+  return created;
 }
 
-export function updateCharter(
+export async function updateCharter(
   id: number,
   data: {
     department_id: number;
@@ -260,19 +261,21 @@ export function updateCharter(
     file_path: string | null;
   }
 ) {
+  const updated = await api.updateCharter(id, data);
   chartersCache = chartersCache.map((charter) =>
     charter.id === id
       ? {
           ...charter,
-          ...data,
-          updated_at: getNowIso(),
+          ...updated,
         }
       : charter
   );
   persistCharters();
+  return updated;
 }
 
-export function deleteCharter(id: number) {
+export async function deleteCharter(id: number) {
+  await api.deleteCharter(id);
   chartersCache = chartersCache.filter((charter) => charter.id !== id);
   ratingsCache = ratingsCache.filter((rating) => rating.charter_id !== id);
   persistCharters();
@@ -287,21 +290,18 @@ export function getRatingsByCharter(charterId: number): Rating[] {
   return ratingsCache.filter((rating) => rating.charter_id === charterId);
 }
 
-export function addRating(data: {
+export async function addRating(data: {
   charter_id: number;
   rating: number;
   comment: string;
 }) {
-  const newRating: Rating = {
-    id: getNextId(ratingsCache),
-    charter_id: data.charter_id,
+  const created = await api.addRating(data.charter_id, {
     rating: data.rating,
     comment: data.comment,
-    created_at: getNowIso(),
-  };
-  ratingsCache = [...ratingsCache, newRating];
+  });
+  ratingsCache = [...ratingsCache, created];
   persistRatings();
-  return newRating;
+  return created;
 }
 
 export function getAverageRating(charterId: number) {
