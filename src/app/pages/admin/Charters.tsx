@@ -278,7 +278,7 @@ export function Charters() {
   };
 
   // Submit form
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
 
@@ -289,26 +289,34 @@ export function Charters() {
       file_path: formData.file_path.trim() || null,
     };
 
-    if (editingCharter) {
-      updateCharter(editingCharter.id, data);
-      showNotification("success", `Charter "${data.title}" has been updated.`);
-    } else {
-      createCharter(data);
-      showNotification("success", `Charter "${data.title}" has been created.`);
-    }
+    try {
+      if (editingCharter) {
+        await updateCharter(editingCharter.id, data);
+        showNotification("success", `Charter "${data.title}" has been updated.`);
+      } else {
+        await createCharter(data);
+        showNotification("success", `Charter "${data.title}" has been created.`);
+      }
 
-    refresh();
-    setFormModalOpen(false);
+      refresh();
+      setFormModalOpen(false);
+    } catch (error) {
+      showNotification("error", error instanceof Error ? error.message : "Failed to save charter.");
+    }
   };
 
   // Confirm delete
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!deletingCharter) return;
-    deleteCharter(deletingCharter.id);
-    refresh();
-    setDeleteModalOpen(false);
-    showNotification("success", `Charter "${deletingCharter.title}" has been deleted.`);
-    setDeletingCharter(null);
+    try {
+      await deleteCharter(deletingCharter.id);
+      refresh();
+      setDeleteModalOpen(false);
+      showNotification("success", `Charter "${deletingCharter.title}" has been deleted.`);
+      setDeletingCharter(null);
+    } catch (error) {
+      showNotification("error", error instanceof Error ? error.message : "Failed to delete charter.");
+    }
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
