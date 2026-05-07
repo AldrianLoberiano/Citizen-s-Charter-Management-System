@@ -195,15 +195,34 @@ app.post("/api/charters/:id/ratings", async (req, res) => {
 
 app.post("/api/auth/login", async (req, res) => {
   const { username, password } = req.body || {};
-  if (username !== adminUsername || password !== adminPassword) {
-    return res.status(401).json({ message: "Invalid username or password" });
+  if (!username || !password) {
+    return res.status(400).json({ message: "Username and password are required" });
   }
 
-  const token = await bcrypt.hash(`${username}:${Date.now()}`, 8);
-  res.json({
-    token,
-    user: { username },
-  });
+  try {
+    const [rows] = await pool.query("SELECT * FROM admins WHERE username = ?", [
+      username,
+    ]);
+    const admin = rows[0];
+
+    if (admin) {
+      const ok = await bcrypt.compare(password, admin.password_hash);
+      if (!ok) {
+        return res.status(401).json({ message: "Invalid username or password" });
+      }
+    } else if (username !== adminUsername || password !== adminPassword) {
+      return res.status(401).json({ message: "Invalid username or password" });
+    }
+
+    const token = await bcrypt.hash(`${username}:${Date.now()}`, 8);
+    res.json({
+      token,
+      user: { username },
+    });
+  } catch (error) {
+    console.error("Login error:", error);
+    return res.status(500).json({ message: "Login failed" });
+  }
 });
 
 app.listen(port, () => {
