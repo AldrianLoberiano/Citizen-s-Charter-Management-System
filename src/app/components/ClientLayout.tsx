@@ -58,7 +58,7 @@ export function ClientLayout() {
       {/* Footer */}
       <footer className="mt-auto border-t border-slate-200 bg-white text-slate-600">
         <div className="mx-auto max-w-7xl px-4 py-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-[1.25fr_1fr]">
             {/* About */}
             <div>
               <div className="flex items-center gap-2 mb-3">
