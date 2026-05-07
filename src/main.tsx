@@ -36,11 +36,4 @@ const root = globalScope.__ccmsRoot ?? createRoot(rootElement);
 globalScope.__ccmsRoot = root;
 
 root.render(<BootstrapApp />);
-
-if (import.meta.hot) {
-  import.meta.hot.dispose(() => {
-    root.unmount();
-    globalScope.__ccmsRoot = undefined;
-  });
-}
   
