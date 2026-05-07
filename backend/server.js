@@ -43,6 +43,7 @@ const upload = multer({
       "application/pdf",
       "application/vnd.ms-excel",
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ];
     if (!allowed.includes(file.mimetype)) {
       callback(new Error("Only PDF and Excel files are allowed."));
       return;
