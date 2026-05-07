@@ -28,10 +28,19 @@ if (!rootElement) {
   throw new Error("Root element not found");
 }
 
-const existingRoot = (rootElement as HTMLElement & { _reactRoot?: ReturnType<typeof createRoot> })
-  ._reactRoot;
-const root = existingRoot ?? createRoot(rootElement);
-(rootElement as HTMLElement & { _reactRoot?: ReturnType<typeof createRoot> })._reactRoot = root;
+const globalScope = globalThis as typeof globalThis & {
+  __ccmsRoot?: ReturnType<typeof createRoot>;
+};
+
+const root = globalScope.__ccmsRoot ?? createRoot(rootElement);
+globalScope.__ccmsRoot = root;
 
 root.render(<BootstrapApp />);
+
+if (import.meta.hot) {
+  import.meta.hot.dispose(() => {
+    root.unmount();
+    globalScope.__ccmsRoot = undefined;
+  });
+}
   
