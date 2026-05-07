@@ -73,7 +73,6 @@ export function ClientLayout() {
               </p>
             </div>
 
-            <div>
               <h4 className="mb-3 text-slate-900">Quick Links</h4>
               <ul className="space-y-2 text-sm">
                 <li>
