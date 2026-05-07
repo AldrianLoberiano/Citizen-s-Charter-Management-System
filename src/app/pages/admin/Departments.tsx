@@ -229,8 +229,8 @@ export function Departments() {
                     </td>
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                          <Building2 className="w-4 h-4 text-blue-700" />
+                        <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <Building2 className="w-4 h-4 text-slate-400" />
                         </div>
                         <span className="text-slate-900 text-sm">
                           {dept.name}
