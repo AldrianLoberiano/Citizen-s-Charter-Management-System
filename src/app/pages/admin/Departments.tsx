@@ -221,7 +221,6 @@ export function Departments() {
                     key={dept.id}
                     className="hover:bg-slate-50 transition-colors"
                   >
-                    </td>
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-2.5">
                         <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0">
