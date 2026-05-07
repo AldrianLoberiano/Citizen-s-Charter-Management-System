@@ -9,6 +9,10 @@ import { useEffect } from "react";
 
 const clientLogoSrc = new URL("../../public/images/header/logo.png", import.meta.url).href;
 const clientHeaderBgSrc = new URL("../../public/images/header/header1.png", import.meta.url).href;
+const mayorAssistantSrc = new URL(
+  "../../public/images/header/mayor.png",
+  import.meta.url
+).href;
 
 export function ClientLayout() {
   const location = useLocation();
@@ -19,6 +23,13 @@ export function ClientLayout() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
+      <img
+        src={mayorAssistantSrc}
+        alt="Assistant"
+        className="fixed bottom-4 right-4 h-16 w-16 object-contain md:h-20 md:w-20"
+        loading="lazy"
+        decoding="async"
+      />
       {/* Top announcement bar */}
       <div className="border-b border-slate-800 bg-slate-950 px-4 py-2 text-center text-xs text-slate-200">
         Official Website of the Local Government Unit — For inquiries, contact
