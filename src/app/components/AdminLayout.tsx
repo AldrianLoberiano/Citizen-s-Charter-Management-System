@@ -21,6 +21,7 @@ import {
 import { isAuthenticated, logout, getAuthUser, getCharters } from "../store/data";
 
 const adminLogoSrc = new URL("../../public/images/header/calauan_logo.png", import.meta.url).href;
+const adminHeaderBgSrc = new URL("../../public/images/header/header1.png", import.meta.url).href;
 
 interface NavItem {
   path: string;
@@ -161,7 +162,14 @@ export function AdminLayout() {
       {/* Main Content Area */}
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden min-h-0">
         {/* Top Header Bar */}
-        <header className="flex flex-shrink-0 items-center gap-4 border-b border-slate-200 bg-white px-4 py-3 shadow-sm">
+        <header
+          className="flex flex-shrink-0 items-center gap-4 border-b border-slate-200 bg-white px-4 py-3 shadow-sm"
+          style={{
+            backgroundImage: `url(${adminHeaderBgSrc})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        >
           {/* Mobile hamburger */}
           <button
             className="rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 lg:hidden"
