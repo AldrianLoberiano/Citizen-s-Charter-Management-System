@@ -67,7 +67,7 @@ export function Login() {
           <img
             src={adminLogoSrc}
             alt="Calauan City Seal"
-            className="h-9 w-9 object-contain"
+            className="h-20 w-20 object-contain"
             loading="lazy"
             decoding="async"
           />
