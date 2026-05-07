@@ -21,58 +21,6 @@ import {
   formatDate,
 } from "../../store/data";
 
-const departmentLogosByName: Record<string, string> = {
-  "business permits and licensing": "bplo-removebg-preview.png",
-  "social welfare and development": "osca.png",
-  "engineering and public works": "mpdc-removebg-preview.png",
-  "health services": "mho-removebg-preview.png",
-  "tourism and culture": "mto-removebg-preview.png",
-  "sangguniang bayan": "sb-removebg-preview.png",
-  "mdrrmo & ctmo": "mdrrmo-removebg-preview.png",
-  "mdrrmo": "mdrrmo-removebg-preview.png",
-  "ctmo": "ctmo-removebg-preview.png",
-  "human resources": "hrmo-removebg-preview.png",
-  "civil registry": "lydo.png",
-  "assessor's office": "assesors_office-removebg-preview.png",
-  "agriculture": "AgriOffice-removebg-preview.png",
-  "municipal treasurer office": "mto-removebg-preview.png",
-  "municipal treasurer's office": "mto-removebg-preview.png",
-  "municipal treasurer": "mto-removebg-preview.png",
-  "mto": "mto-removebg-preview.png",
-};
-
-const getLogoForDepartment = (deptName: string): string => {
-  const normalized = deptName.trim().toLowerCase();
-  if (departmentLogosByName[normalized]) {
-    return departmentLogosByName[normalized];
-  }
-
-  // Keyword fallback for name variants
-  if (normalized.includes("mdrrmo")) return "mdrrmo-removebg-preview.png";
-  if (normalized.includes("ctmo")) return "ctmo-removebg-preview.png";
-  if (normalized.includes("mho")) return "mho-removebg-preview.png";
-  if (normalized.includes("hrmo")) return "hrmo-removebg-preview.png";
-  if (normalized.includes("mao")) return "AgriOffice-removebg-preview.png";
-  if (normalized.includes("mcao")) return "assesors_office-removebg-preview.png";
-  if (normalized.includes("sangguniang")) return "sb-removebg-preview.png";
-  if (normalized.includes("business")) return "bplo-removebg-preview.png";
-  if (normalized.includes("social welfare")) return "osca.png";
-  if (normalized.includes("engineering")) return "mpdc-removebg-preview.png";
-  if (normalized.includes("health")) return "mho-removebg-preview.png";
-  if (normalized.includes("tourism")) return "mto-removebg-preview.png";
-  if (normalized.includes("human")) return "hrmo-removebg-preview.png";
-  if (normalized.includes("municipal health")) return "mho-removebg-preview.png";
-  if (normalized.includes("human resource")) return "hrmo-removebg-preview.png";
-  if (normalized.includes("agriculture")) return "AgriOffice-removebg-preview.png";
-  if (normalized.includes("civil registry")) return "lydo.png";
-  if (normalized.includes("assessor")) return "assesors_office-removebg-preview.png";
-  if (normalized.includes("treasurer") || normalized.includes("treasury")) {
-    return "mto-removebg-preview.png";
-  }
-  if (normalized === "mto" || normalized.includes("mto")) return "mto-removebg-preview.png";
-  return "header/calauan_logo-removebg-preview.png";
-};
-
 export function DepartmentPage() {
   const { id } = useParams<{ id: string }>();
   const [search, setSearch] = useState("");
@@ -91,18 +39,13 @@ export function DepartmentPage() {
     return <Navigate to="/" replace />;
   }
 
-  const departmentLogoSrc = new URL(
-    `../../../public/images/${getLogoForDepartment(department.name)}`,
-    import.meta.url
-  ).href;
-
   const isSangguniang = department.name.toLowerCase().includes("sangguniang");
   const bagongPilipinasLogo = new URL(
     "../../../public/images/header/Bagong_Pilipinas_logo.png",
     import.meta.url
   ).href;
-  const bangonCalauanLogo = new URL(
-    "../../../public/images/header/calauan_logo-removebg-preview.png",
+  const calauanLogo2 = new URL(
+    "../../../public/images/header/calauan_logo2.png",
     import.meta.url
   ).href;
 
@@ -130,8 +73,8 @@ export function DepartmentPage() {
               </div>
               <div className="flex items-center justify-center gap-2">
                 <img
-                  src={bangonCalauanLogo}
-                  alt="Bangon Calauan Logo"
+                  src={calauanLogo2}
+                  alt="Calauan logo"
                   className="h-12 w-12 object-contain md:h-[160px] md:w-[160px]"
                   loading="lazy"
                   decoding="async"
@@ -157,28 +100,7 @@ export function DepartmentPage() {
 
           {/* Department Info */}
           <div className="flex items-start gap-4">
-            <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center bg-transparent p-0">
-              <img
-                src={departmentLogoSrc}
-                alt="Calauan City Seal"
-                className="h-full w-full object-contain"
-              />
-            </div>
             <div>
-              {isSangguniang && (
-                <div className="mb-3 flex flex-wrap items-center gap-4">
-                  <img
-                    src={bangonCalauanLogo}
-                    alt="Bangon Calauan Logo"
-                    className="h-12 w-auto object-contain"
-                  />
-                  <img
-                    src={bagongPilipinasLogo}
-                    alt="Bagong Pilipinas Logo"
-                    className="h-12 w-auto object-contain"
-                  />
-                </div>
-              )}
               <h1 className="leading-tight text-slate-950">{department.name}</h1>
               <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">
                 {department.description || "No description available."}
