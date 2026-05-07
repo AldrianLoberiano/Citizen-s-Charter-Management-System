@@ -123,33 +123,6 @@ function safeWrite<T>(key: string, value: T, scoped = false) {
   }
 }
 
-function ensureSeedData() {
-  const existingDepartments = safeRead<Department[] | null>(
-    STORAGE_KEYS.departments,
-    null,
-    true
-  );
-  const existingCharters = safeRead<Charter[] | null>(
-    STORAGE_KEYS.charters,
-    null,
-    true
-  );
-  const existingRatings = safeRead<Rating[] | null>(
-    STORAGE_KEYS.ratings,
-    null,
-    true
-  );
-
-  if (!existingDepartments || existingDepartments.length === 0) {
-    safeWrite(STORAGE_KEYS.departments, seedDepartments);
-  }
-  if (!existingCharters || existingCharters.length === 0) {
-    safeWrite(STORAGE_KEYS.charters, seedCharters);
-  }
-  if (!existingRatings) {
-    safeWrite(STORAGE_KEYS.ratings, seedRatings);
-  }
-}
 
 function getNextId(items: { id: number }[]): number {
   return items.length === 0 ? 1 : Math.max(...items.map((item) => item.id)) + 1;
@@ -159,14 +132,13 @@ function getNowIso() {
   return new Date().toISOString();
 }
 
-ensureSeedData();
-
 let departmentsCache = safeRead<Department[]>(
   STORAGE_KEYS.departments,
-  seedDepartments
+  [],
+  true
 );
-let chartersCache = safeRead<Charter[]>(STORAGE_KEYS.charters, seedCharters);
-let ratingsCache = safeRead<Rating[]>(STORAGE_KEYS.ratings, seedRatings);
+let chartersCache = safeRead<Charter[]>(STORAGE_KEYS.charters, [], true);
+let ratingsCache = safeRead<Rating[]>(STORAGE_KEYS.ratings, [], true);
 
 function persistDepartments() {
   safeWrite(STORAGE_KEYS.departments, departmentsCache, true);
