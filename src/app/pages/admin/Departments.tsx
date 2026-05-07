@@ -221,7 +221,6 @@ export function Departments() {
                     key={dept.id}
                     className="hover:bg-slate-50 transition-colors"
                   >
-                    <td className="px-5 py-4 text-slate-400 text-sm">
                       {dept.id}
                     </td>
                     <td className="px-5 py-4">
