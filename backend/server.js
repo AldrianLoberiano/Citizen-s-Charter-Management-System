@@ -39,6 +39,7 @@ const upload = multer({
   storage,
   limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: (_req, file, callback) => {
+    const allowed = [
     if (!allowed.includes(file.mimetype)) {
       callback(new Error("Only PDF and Excel files are allowed."));
       return;
