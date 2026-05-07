@@ -149,6 +149,7 @@ export function Charters() {
     if (file) {
       // Validate file type: accept Excel and PDF files only
       const allowed = [
+        "application/vnd.ms-excel",
       if (!allowed.includes(file.type)) {
         setFormErrors((p) => ({
           ...p,
