@@ -38,15 +38,15 @@ export function ClientLayout() {
   }, []);
 
   useEffect(() => {
-    if (showHelp) {
-      setAssistantVisible(true);
-      return;
-    }
-
     const hideDelayMs = 6000;
     const hideTimer = setTimeout(() => {
+      setShowHelp(false);
       setAssistantVisible(false);
     }, hideDelayMs);
+
+    if (showHelp) {
+      setAssistantVisible(true);
+    }
 
     return () => {
       clearTimeout(hideTimer);
