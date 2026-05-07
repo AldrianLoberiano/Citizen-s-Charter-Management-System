@@ -140,7 +140,7 @@ export function CharterDetail() {
   };
 
   // Submit rating
-  const handleSubmitRating = (e: React.FormEvent) => {
+  const handleSubmitRating = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitError("");
 
@@ -149,22 +149,26 @@ export function CharterDetail() {
       return;
     }
 
-    const newRating = addRating({
-      charter_id: charterId,
-      rating: selectedStar,
-      comment: comment.trim(),
-    });
+    try {
+      const newRating = await addRating({
+        charter_id: charterId,
+        rating: selectedStar,
+        comment: comment.trim(),
+      });
 
-    const updatedRatings = [...ratings, newRating];
-    setRatings(updatedRatings);
-    setAvgRating(
-      Math.round(
-        (updatedRatings.reduce((a, r) => a + r.rating, 0) /
-          updatedRatings.length) *
-          10
-      ) / 10
-    );
-    setSubmitted(true);
+      const updatedRatings = [...ratings, newRating];
+      setRatings(updatedRatings);
+      setAvgRating(
+        Math.round(
+          (updatedRatings.reduce((a, r) => a + r.rating, 0) /
+            updatedRatings.length) *
+            10
+        ) / 10
+      );
+      setSubmitted(true);
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : "Failed to submit rating.");
+    }
   };
 
   const starLabel = ["", "Poor", "Fair", "Good", "Very Good", "Excellent"];
