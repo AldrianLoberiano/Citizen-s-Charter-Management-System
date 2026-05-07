@@ -73,7 +73,6 @@ export function ClientLayout() {
               </p>
             </div>
 
-                  <Link to="/" className="text-slate-500 transition-colors hover:text-slate-900">
                     Home
                   </Link>
                 </li>
