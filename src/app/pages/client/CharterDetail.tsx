@@ -4,7 +4,8 @@
  * and citizen feedback/rating system
  */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import * as XLSX from "xlsx";
 import { Link, useParams, Navigate } from "react-router";
 import {
   ChevronRight,
@@ -59,13 +60,32 @@ export function CharterDetail() {
       ? `${window.location.origin}/charter/${charter.id}#feedback-form`
       : "";
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(feedbackUrl)}&bgcolor=ffffff&color=1e3a8a`;
-  const pdfUrl = charter.file_path
+  const attachmentUrl = charter.file_path
     ? charter.file_path.startsWith("/")
       ? charter.file_path
       : charter.file_path.startsWith("uploads/")
         ? `/${charter.file_path}`
         : `/uploads/charters/${charter.file_path}`
     : "/charter-viewer.pdf";
+
+  const MAX_PREVIEW_ROWS = 200;
+  const MAX_PREVIEW_COLS = 20;
+
+  type ViewerType = "pdf" | "excel" | "unknown";
+
+  const getViewerType = (filePath: string): ViewerType => {
+    const lower = filePath.toLowerCase();
+    if (lower.endsWith(".pdf")) return "pdf";
+    if (lower.endsWith(".xlsx") || lower.endsWith(".xls")) return "excel";
+    return "unknown";
+  };
+
+  const viewerType = getViewerType(attachmentUrl);
+  const [viewerRows, setViewerRows] = useState<string[][]>([]);
+  const [viewerSheet, setViewerSheet] = useState("");
+  const [viewerLoading, setViewerLoading] = useState(false);
+  const [viewerError, setViewerError] = useState<string | null>(null);
+  const [viewerTruncated, setViewerTruncated] = useState(false);
 
   // Format content with line breaks preserved
   const formattedContent = charter.content.split("\n").map((line, idx) => {
@@ -109,8 +129,70 @@ export function CharterDetail() {
     );
   });
 
+  useEffect(() => {
+    if (viewerType !== "excel") {
+      setViewerRows([]);
+      setViewerSheet("");
+      setViewerLoading(false);
+      setViewerError(null);
+      setViewerTruncated(false);
+      return;
+    }
+
+    let active = true;
+    const loadExcel = async () => {
+      setViewerLoading(true);
+      setViewerError(null);
+      setViewerTruncated(false);
+
+      try {
+        const response = await fetch(attachmentUrl);
+        if (!response.ok) {
+          throw new Error(`Failed to load file (${response.status}).`);
+        }
+        const data = await response.arrayBuffer();
+        const workbook = XLSX.read(data, { type: "array" });
+        const sheetName = workbook.SheetNames[0] || "Sheet1";
+        const sheet = workbook.Sheets[sheetName];
+        const rows = XLSX.utils.sheet_to_json(sheet, {
+          header: 1,
+          blankrows: false,
+        }) as Array<Array<string | number | boolean | Date | null>>;
+        const truncatedRows = rows.slice(0, MAX_PREVIEW_ROWS).map((row) =>
+          row
+            .slice(0, MAX_PREVIEW_COLS)
+            .map((cell) => (cell === null || cell === undefined ? "" : String(cell)))
+        );
+        const truncated =
+          rows.length > MAX_PREVIEW_ROWS ||
+          rows.some((row) => row.length > MAX_PREVIEW_COLS);
+
+        if (active) {
+          setViewerRows(truncatedRows);
+          setViewerSheet(sheetName);
+          setViewerTruncated(truncated);
+        }
+      } catch (error) {
+        if (active) {
+          setViewerError(
+            error instanceof Error ? error.message : "Failed to load Excel file."
+          );
+        }
+      } finally {
+        if (active) {
+          setViewerLoading(false);
+        }
+      }
+    };
+
+    loadExcel();
+    return () => {
+      active = false;
+    };
+  }, [attachmentUrl, viewerType]);
+
   const handleDownload = () => {
-    window.open(pdfUrl, "_blank", "noopener,noreferrer");
+    window.open(attachmentUrl, "_blank", "noopener,noreferrer");
   };
 
   // Submit rating
@@ -227,11 +309,13 @@ export function CharterDetail() {
               </div>
             </div>
 
-            {/* PDF Viewer */}
+            {/* File Viewer */}
             <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
               <div className="flex items-center justify-between gap-3 border-b border-slate-200 px-4 py-3">
                 <div>
-                  <h3 className="text-slate-900">PDF Viewer</h3>
+                  <h3 className="text-slate-900">
+                    {viewerType === "excel" ? "Excel Viewer" : "PDF Viewer"}
+                  </h3>
                   <p className="text-xs text-slate-500">
                     View the attached charter document
                   </p>
@@ -242,15 +326,62 @@ export function CharterDetail() {
                   className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-600 transition-colors hover:bg-slate-50"
                 >
                   <Download className="h-4 w-4" />
-                  Download
+                  Download File
                 </button>
               </div>
               <div className="bg-white p-3">
-                <iframe
-                  src={pdfUrl}
-                  title={`${charter.title} PDF preview`}
-                  className="h-[720px] w-full rounded-lg border border-slate-200 bg-white"
-                />
+                {viewerLoading && (
+                  <div className="p-4 text-sm text-slate-500">Loading attachment...</div>
+                )}
+                {!viewerLoading && viewerError && (
+                  <div className="p-4 text-sm text-red-600">{viewerError}</div>
+                )}
+                {!viewerLoading && !viewerError && viewerType === "excel" && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between text-xs text-slate-500">
+                      <span>Sheet: {viewerSheet || "Sheet1"}</span>
+                      {viewerTruncated && (
+                        <span>
+                          Showing first {MAX_PREVIEW_ROWS} rows and {MAX_PREVIEW_COLS} columns
+                        </span>
+                      )}
+                    </div>
+                    <div className="max-h-[720px] overflow-auto rounded-lg border border-slate-200">
+                      {viewerRows.length === 0 ? (
+                        <div className="p-6 text-sm text-slate-500">
+                          No data to display.
+                        </div>
+                      ) : (
+                        <table className="min-w-full text-sm">
+                          <tbody>
+                            {viewerRows.map((row, rowIndex) => (
+                              <tr
+                                key={`row-${rowIndex}`}
+                                className={rowIndex % 2 === 0 ? "bg-white" : "bg-slate-50"}
+                              >
+                                {row.map((cell, cellIndex) => (
+                                  <td
+                                    key={`cell-${rowIndex}-${cellIndex}`}
+                                    className="whitespace-nowrap border-b border-slate-200 px-3 py-2 text-slate-700"
+                                  >
+                                    {cell}
+                                  </td>
+                                ))}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      )}
+                    </div>
+                  </div>
+                )}
+                {!viewerLoading && !viewerError && viewerType !== "excel" && (
+                  <iframe
+                    src={attachmentUrl}
+                    title={`${charter.title} PDF preview`}
+                    className="h-[720px] w-full rounded-lg border border-slate-200 bg-white"
+                  />
+                )}
               </div>
             </div>
 
