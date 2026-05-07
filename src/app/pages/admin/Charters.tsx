@@ -148,6 +148,7 @@ export function Charters() {
     const file = e.target.files?.[0];
     if (file) {
       // Validate file type: accept Excel and PDF files only
+      const allowed = [
       if (!allowed.includes(file.type)) {
         setFormErrors((p) => ({
           ...p,
