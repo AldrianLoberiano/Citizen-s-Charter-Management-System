@@ -38,7 +38,7 @@ export function ClientLayout() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <div className="fixed bottom-12 right-4 z-50 flex flex-col items-end">
+      <div className="fixed bottom-15 right-4 z-50 flex flex-col items-end">
         {showHelp && (
           <div
             id="help-panel"
@@ -54,7 +54,7 @@ export function ClientLayout() {
         <button
           type="button"
           onClick={() => setShowHelp((prev) => !prev)}
-          className="h-16 w-16 rounded-full focus:outline-none focus:ring-2 focus:ring-slate-900/40 md:h-20 md:w-20"
+          className="h-16 w-16 bg-transparent p-0 focus:outline-none focus:ring-2 focus:ring-slate-900/40 md:h-20 md:w-20"
           aria-pressed={showHelp}
           aria-controls="help-panel"
           title="Need help?"
