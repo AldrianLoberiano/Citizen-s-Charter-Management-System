@@ -109,6 +109,7 @@ export function AdminLayout() {
               alt="Calauan City Seal"
               className="h-15 w-20 flex-shrink-0 object-contain drop-shadow"
             />
+            <span className="hidden text-sm text-white drop-shadow sm:block">CCCMS Admin</span>
           </div>
 
           {/* Center Navigation */}
