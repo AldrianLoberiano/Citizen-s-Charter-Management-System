@@ -71,7 +71,7 @@ export function Home() {
     <div>
       {/* Hero Section */}
       <section className="border-b border-slate-200 bg-white">
-        <div className="relative mx-auto w-full px-4 py-16 sm:py-20">
+        <div className="relative mx-auto w-full px-6 py-16 sm:px-10 sm:py-20 lg:px-16">
           <div className="max-w-3xl">
             <div className="mb-4 flex items-center gap-3">
               <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-sm text-slate-700">
@@ -138,7 +138,7 @@ export function Home() {
 
       {/* Stats Banner (moved here to sit above the logo loop) */}
       <section className="border-b border-slate-200 bg-white">
-        <div className="mx-auto w-full px-4 py-6">
+        <div className="mx-auto w-full px-6 py-6 sm:px-10 lg:px-16">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
               <div className="flex items-center gap-3">
@@ -185,7 +185,7 @@ export function Home() {
       
 
       {/* Departments Section */}
-      <section className="mx-auto w-full px-4 py-12">
+      <section className="mx-auto w-full px-6 py-12 sm:px-10 lg:px-16">
         <div className="mb-6 flex items-center justify-between">
           <div>
             <h2 className="text-slate-950">
