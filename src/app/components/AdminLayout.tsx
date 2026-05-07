@@ -163,34 +163,35 @@ export function AdminLayout() {
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden min-h-0">
         {/* Top Header Bar */}
         <header
-          className="flex flex-shrink-0 items-center gap-4 border-b border-slate-200 bg-white px-4 py-3 shadow-sm"
+          className="relative flex flex-shrink-0 items-center gap-4 border-b border-slate-200 bg-white px-4 py-3 shadow-sm"
           style={{
             backgroundImage: `url(${adminHeaderBgSrc})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
         >
+          <div className="absolute inset-0 bg-slate-950/35" />
           {/* Mobile hamburger */}
           <button
-            className="rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 lg:hidden"
+            className="relative rounded-lg p-2 text-white/80 transition-colors hover:bg-white/10 lg:hidden"
             onClick={() => setSidebarOpen(true)}
           >
             <Menu className="h-5 w-5" />
           </button>
 
           {/* Breadcrumb / Title */}
-          <div className="flex-1 min-w-0">
-            <span className="hidden truncate text-sm text-slate-500 sm:block">
+          <div className="relative flex-1 min-w-0">
+            <span className="hidden truncate text-sm text-white sm:block">
               Citizen's Charter Management System — Admin Panel
             </span>
           </div>
 
           {/* User info */}
-          <div className="flex flex-shrink-0 items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100">
-              <User className="h-4 w-4 text-slate-700" />
+          <div className="relative flex flex-shrink-0 items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/15">
+              <User className="h-4 w-4 text-white" />
             </div>
-            <span className="hidden text-sm capitalize text-slate-700 sm:block">
+            <span className="hidden text-sm capitalize text-white sm:block">
               {currentUser || "admin"}
             </span>
           </div>
