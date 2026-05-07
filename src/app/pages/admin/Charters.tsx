@@ -493,6 +493,7 @@ export function Charters() {
               {paginated.length === 0 && (
                 <tr>
                   <td
+                    colSpan={5}
                     className="px-6 py-12 text-center text-slate-400 text-sm"
                   >
                     {search || filterDept
