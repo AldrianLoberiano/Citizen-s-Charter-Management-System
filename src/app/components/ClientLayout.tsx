@@ -17,6 +17,7 @@ const mayorAssistantSrc = new URL(
 export function ClientLayout() {
   const location = useLocation();
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
@@ -37,23 +38,46 @@ export function ClientLayout() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <img
-        src={mayorAssistantSrc}
-        alt="Assistant"
-        className="fixed bottom-16 right-4 h-16 w-16 object-contain md:h-20 md:w-20"
-        loading="lazy"
-        decoding="async"
-      />
-      {showScrollTop && (
-        <button
-          type="button"
-          onClick={() => window.scrollTo({ top: 0, left: 0, behavior: "smooth" })}
-          className="fixed bottom-4 right-4 z-50 inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-white shadow-lg transition hover:bg-slate-800"
-          aria-label="Scroll to top"
-        >
-          <ArrowUp className="h-5 w-5" />
-        </button>
-      )}
+      <button
+        type="button"
+        onClick={() => setShowHelp((prev) => !prev)}
+        className="fixed bottom-16 right-4 z-50 h-16 w-16 rounded-full focus:outline-none focus:ring-2 focus:ring-slate-900/40 md:h-20 md:w-20"
+        aria-pressed={showHelp}
+        aria-controls="help-panel"
+        title="Need help?"
+      >
+        <img
+          src={mayorAssistantSrc}
+          alt="Assistant"
+          className="h-full w-full object-contain"
+          loading="lazy"
+          decoding="async"
+        />
+      </button>
+      <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end gap-2">
+        {showHelp && (
+          <div
+            id="help-panel"
+            className="w-72 rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-700 shadow-lg"
+          >
+            <div className="mb-1 text-slate-900">How to use the Citizen's Charter</div>
+            <p className="text-slate-600">
+              Choose a department, open a service charter, then follow the
+              requirements and steps listed.
+            </p>
+          </div>
+        )}
+        {showScrollTop && (
+          <button
+            type="button"
+            onClick={() => window.scrollTo({ top: 0, left: 0, behavior: "smooth" })}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-white shadow-lg transition hover:bg-slate-800"
+            aria-label="Scroll to top"
+          >
+            <ArrowUp className="h-5 w-5" />
+          </button>
+        )}
+      </div>
       {/* Top announcement bar */}
       <div className="border-b border-slate-800 bg-slate-950 px-4 py-2 text-center text-xs text-slate-200">
         Official Website of the Local Government Unit — For inquiries, contact
