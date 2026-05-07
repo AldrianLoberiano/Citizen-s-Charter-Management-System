@@ -150,17 +150,18 @@ app.delete("/api/departments/:id", async (req, res) => {
 app.get("/api/charters", async (req, res) => {
   const { departmentId } = req.query;
   const admin = await resolveAdmin(req);
-  const baseSql = departmentId
-    ? "SELECT * FROM charters WHERE department_id = ?"
-    : "SELECT * FROM charters";
-  const sql = admin ? `${baseSql} AND owner_admin_id = ? ORDER BY id ASC` : `${baseSql} ORDER BY id ASC`;
-  const params = departmentId
-    ? admin
-      ? [departmentId, admin.id]
-      : [departmentId]
-    : admin
-      ? [admin.id]
-      : [];
+  const conditions = [];
+  const params = [];
+  if (departmentId) {
+    conditions.push("department_id = ?");
+    params.push(departmentId);
+  }
+  if (admin) {
+    conditions.push("owner_admin_id = ?");
+    params.push(admin.id);
+  }
+  const where = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
+  const sql = `SELECT * FROM charters ${where} ORDER BY id ASC`;
   const [rows] = await pool.query(sql, params);
   res.json(rows);
 });
