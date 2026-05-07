@@ -3,13 +3,20 @@
  * Public-facing layout with navigation header and footer
  */
 
-import { Outlet, Link } from "react-router";
+import { Outlet, Link, useLocation } from "react-router";
 import { Shield, Phone, Mail, MapPin } from "lucide-react";
+import { useEffect } from "react";
 
 const clientLogoSrc = new URL("../../public/images/header/logo.png", import.meta.url).href;
 const clientHeaderBgSrc = new URL("../../public/images/header/header1.png", import.meta.url).href;
 
 export function ClientLayout() {
+  const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [location.pathname]);
+
   return (
     <div className="min-h-screen bg-white flex flex-col">
       {/* Top announcement bar */}
@@ -30,7 +37,7 @@ export function ClientLayout() {
         <div className="mx-auto flex w-full items-center justify-between gap-4 px-6 py-4 sm:px-10 lg:px-16">
           {/* Logo and System Name */}
           <Link to="/" className="flex items-center gap-5 min-w-0">
-            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-white p-0.5">
+            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-white p-0.5">
               <img
                 src={clientLogoSrc}
                 alt="Calauan City Seal"
