@@ -3,7 +3,7 @@
  * Displays all Citizen's Charters for a specific department
  */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams, Navigate } from "react-router";
 import {
   ChevronRight,
@@ -77,6 +77,12 @@ export function DepartmentPage() {
   const { id } = useParams<{ id: string }>();
   const [search, setSearch] = useState("");
 
+  const [now, setNow] = useState<Date>(new Date());
+  useEffect(() => {
+    const t = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(t);
+  }, []);
+
   const deptId = parseInt(id || "0");
   const department = getDepartmentById(deptId);
 
@@ -111,7 +117,35 @@ export function DepartmentPage() {
     <div>
       {/* Department Hero */}
       <section className="border-b border-slate-200 bg-white">
-        <div className="mx-auto max-w-7xl px-4 py-10">
+        <div className="relative mx-auto max-w-7xl px-4 py-10">
+          {isSangguniang && (
+            <div className="absolute right-4 top-8 flex flex-col items-center gap-2 sm:top-10">
+              <div className="inline-flex shrink-0 items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs text-slate-600 shadow-sm">
+                {now.toLocaleDateString(undefined, {
+                  weekday: "short",
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                })} · {now.toLocaleTimeString()}
+              </div>
+              <div className="flex items-center justify-center gap-2">
+                <img
+                  src={bangonCalauanLogo}
+                  alt="Bangon Calauan Logo"
+                  className="h-12 w-12 object-contain md:h-[160px] md:w-[160px]"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <img
+                  src={bagongPilipinasLogo}
+                  alt="Bagong Pilipinas Logo"
+                  className="h-12 w-12 object-contain md:h-[160px] md:w-[160px]"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+            </div>
+          )}
           {/* Breadcrumb */}
           <nav className="mb-6 flex items-center gap-2 text-sm text-slate-500">
             <Link to="/" className="transition-colors hover:text-slate-900">
