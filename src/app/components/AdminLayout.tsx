@@ -107,7 +107,6 @@ export function AdminLayout() {
             <img
               src={adminLogoSrc}
               alt="Calauan City Seal"
-              className="h-15 w-20 flex-shrink-0 object-contain"
             />
             <span className="hidden text-sm text-white sm:block">CCCMS Admin</span>
           </div>
