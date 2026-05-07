@@ -110,7 +110,7 @@ export function Departments() {
   };
 
   // Submit add/edit form
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
 
@@ -119,26 +119,34 @@ export function Departments() {
       description: formData.description.trim(),
     };
 
-    if (editingDept) {
-      updateDepartment(editingDept.id, data);
-      showNotification("success", `Department "${data.name}" has been updated.`);
-    } else {
-      createDepartment(data);
-      showNotification("success", `Department "${data.name}" has been created.`);
-    }
+    try {
+      if (editingDept) {
+        await updateDepartment(editingDept.id, data);
+        showNotification("success", `Department "${data.name}" has been updated.`);
+      } else {
+        await createDepartment(data);
+        showNotification("success", `Department "${data.name}" has been created.`);
+      }
 
-    refresh();
-    setFormModalOpen(false);
+      refresh();
+      setFormModalOpen(false);
+    } catch (error) {
+      showNotification("error", error instanceof Error ? error.message : "Failed to save department.");
+    }
   };
 
   // Confirm delete
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!deletingDept) return;
-    deleteDepartment(deletingDept.id);
-    refresh();
-    setDeleteModalOpen(false);
-    showNotification("success", `Department "${deletingDept.name}" has been deleted.`);
-    setDeletingDept(null);
+    try {
+      await deleteDepartment(deletingDept.id);
+      refresh();
+      setDeleteModalOpen(false);
+      showNotification("success", `Department "${deletingDept.name}" has been deleted.`);
+      setDeletingDept(null);
+    } catch (error) {
+      showNotification("error", error instanceof Error ? error.message : "Failed to delete department.");
+    }
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
