@@ -428,7 +428,6 @@ export function Charters() {
                     key={charter.id}
                     className="hover:bg-slate-50 transition-colors"
                   >
-                      {charter.id}
                     </td>
                     <td className="px-5 py-4">
                       <div className="flex items-start gap-2">
