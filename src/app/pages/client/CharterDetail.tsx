@@ -123,68 +123,6 @@ export function CharterDetail() {
     );
   });
 
-  useEffect(() => {
-    if (viewerType !== "excel") {
-      setViewerRows([]);
-      setViewerSheet("");
-      setViewerLoading(false);
-      setViewerError(null);
-      setViewerTruncated(false);
-      return;
-    }
-
-    let active = true;
-    const loadExcel = async () => {
-      setViewerLoading(true);
-      setViewerError(null);
-      setViewerTruncated(false);
-
-      try {
-        const response = await fetch(attachmentUrl);
-        if (!response.ok) {
-          throw new Error(`Failed to load file (${response.status}).`);
-        }
-        const data = await response.arrayBuffer();
-        const workbook = XLSX.read(data, { type: "array" });
-        const sheetName = workbook.SheetNames[0] || "Sheet1";
-        const sheet = workbook.Sheets[sheetName];
-        const rows = XLSX.utils.sheet_to_json(sheet, {
-          header: 1,
-          blankrows: false,
-        }) as Array<Array<string | number | boolean | Date | null>>;
-        const truncatedRows = rows.slice(0, MAX_PREVIEW_ROWS).map((row) =>
-          row
-            .slice(0, MAX_PREVIEW_COLS)
-            .map((cell) => (cell === null || cell === undefined ? "" : String(cell)))
-        );
-        const truncated =
-          rows.length > MAX_PREVIEW_ROWS ||
-          rows.some((row) => row.length > MAX_PREVIEW_COLS);
-
-        if (active) {
-          setViewerRows(truncatedRows);
-          setViewerSheet(sheetName);
-          setViewerTruncated(truncated);
-        }
-      } catch (error) {
-        if (active) {
-          setViewerError(
-            error instanceof Error ? error.message : "Failed to load Excel file."
-          );
-        }
-      } finally {
-        if (active) {
-          setViewerLoading(false);
-        }
-      }
-    };
-
-    loadExcel();
-    return () => {
-      active = false;
-    };
-  }, [attachmentUrl, viewerType]);
-
   const handleDownload = () => {
     window.open(attachmentUrl, "_blank", "noopener,noreferrer");
   };
