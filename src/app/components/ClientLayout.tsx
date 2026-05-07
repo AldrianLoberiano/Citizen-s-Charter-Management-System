@@ -73,7 +73,6 @@ export function ClientLayout() {
               </p>
             </div>
 
-
             {/* Contact */}
             <div>
               <h4 className="mb-3 text-slate-900">Contact Information</h4>
