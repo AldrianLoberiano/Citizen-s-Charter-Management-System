@@ -10,7 +10,6 @@ import {
   ChevronRight,
   Building2,
   FileText,
-  Download,
   Clock,
   Star,
   Send,
@@ -269,7 +268,7 @@ export function CharterDetail() {
                   onClick={handleDownload}
                   className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-600 transition-colors hover:bg-slate-50"
                 >
-                  <Download className="h-4 w-4" />
+                  <ExternalLink className="h-4 w-4" />
                   View Full Page
                 </button>
               </div>
