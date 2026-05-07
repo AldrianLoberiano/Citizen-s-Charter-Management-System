@@ -156,7 +156,6 @@ export function Charters() {
       if (!allowed.includes(file.type)) {
         setFormErrors((p) => ({
           ...p,
-          file_path: "Only PDF and image files are allowed.",
         }));
         return;
       }
