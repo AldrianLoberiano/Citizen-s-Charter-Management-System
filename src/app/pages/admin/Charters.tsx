@@ -469,9 +469,9 @@ export function Charters() {
                           type="button"
                           title="View attachment"
                           onClick={() => openViewer(charter.file_path)}
-                          className="inline-flex items-center justify-center w-7 h-7 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
+                          className="inline-flex items-center justify-center w-7 h-7 bg-violet-900 rounded-lg hover:bg-violet-950 transition-colors"
                         >
-                          <Paperclip className="w-3.5 h-3.5 text-green-700" />
+                          <Paperclip className="w-3.5 h-3.5 text-white" />
                         </button>
                       ) : (
                         <span className="text-slate-300 text-sm">�</span>
@@ -482,14 +482,14 @@ export function Charters() {
                         <button
                           onClick={() => openEdit(charter)}
                           title="Edit charter"
-                          className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+                          className="p-2 text-slate-400 hover:text-violet-700 hover:bg-violet-50 rounded-lg transition-colors"
                         >
                           <Pencil className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => openDelete(charter)}
                           title="Delete charter"
-                          className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          className="p-2 text-slate-400 hover:text-violet-700 hover:bg-violet-50 rounded-lg transition-colors"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -631,7 +631,7 @@ export function Charters() {
                     onClick={() =>
                       setFormData((p) => ({ ...p, file_path: "" }))
                     }
-                    className="p-1 text-slate-400 hover:text-red-600 rounded transition-colors"
+                      className="p-1 text-slate-400 hover:text-violet-700 rounded transition-colors"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -675,7 +675,7 @@ export function Charters() {
             </button>
             <button
               type="submit"
-              className="px-4 py-2 text-sm bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-colors"
+              className="px-4 py-2 text-sm bg-violet-900 text-white rounded-lg hover:bg-violet-950 transition-colors"
             >
               {editingCharter ? "Save Changes" : "Create Charter"}
             </button>
@@ -769,7 +769,7 @@ export function Charters() {
             </button>
             <button
               onClick={handleDelete}
-              className="px-4 py-2 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              className="px-4 py-2 text-sm bg-violet-900 text-white rounded-lg hover:bg-violet-950 transition-colors"
             >
               Delete Charter
             </button>
