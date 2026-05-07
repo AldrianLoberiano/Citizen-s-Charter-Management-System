@@ -179,7 +179,7 @@ export function Departments() {
         </div>
         <button
           onClick={openAdd}
-          className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-800 text-white rounded-lg hover:bg-blue-900 transition-colors text-sm"
+          className="flex items-center justify-center gap-2 px-4 py-2 bg-violet-900 text-white rounded-lg hover:bg-violet-950 transition-colors text-sm"
         >
           <Plus className="w-4 h-4" />
           Add Department
