@@ -17,8 +17,11 @@ import {
 } from "lucide-react";
 import {
   getDepartments,
-  getChartersByDepartment,
+  getCharters,
+  Department,
+  Charter,
 } from "../../store/data";
+import { api } from "../../lib/api";
 import LogoLoop from "../../components/LogoLoop";
 
 const bagongPilipinasLogoSrc = new URL(
@@ -36,7 +39,26 @@ const lightVioletBgSrc = new URL(
 
 export function Home() {
   const [search, setSearch] = useState("");
-  const departments = getDepartments();
+  const [departments, setDepartments] = useState<Department[]>(getDepartments());
+  const [charters, setCharters] = useState<Charter[]>(getCharters());
+
+  useEffect(() => {
+    let isMounted = true;
+
+    Promise.all([api.getDepartments(), api.getCharters()])
+      .then(([nextDepartments, nextCharters]) => {
+        if (!isMounted) return;
+        setDepartments(nextDepartments);
+        setCharters(nextCharters);
+      })
+      .catch(() => {
+        return;
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const [now, setNow] = useState<Date>(new Date());
   useEffect(() => {
@@ -62,10 +84,17 @@ export function Home() {
     [departments, search]
   );
 
-  const totalCharters = departments.reduce(
-    (acc, d) => acc + getChartersByDepartment(d.id).length,
-    0
-  );
+  const chartersByDepartment = useMemo(() => {
+    const map = new Map<number, Charter[]>();
+    for (const charter of charters) {
+      const existing = map.get(charter.department_id) || [];
+      existing.push(charter);
+      map.set(charter.department_id, existing);
+    }
+    return map;
+  }, [charters]);
+
+  const totalCharters = charters.length;
 
   return (
     <div>
@@ -216,7 +245,7 @@ export function Home() {
         {filtered.length > 0 ? (
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {filtered.map((dept) => {
-              const charterCount = getChartersByDepartment(dept.id).length;
+              const charterCount = chartersByDepartment.get(dept.id)?.length || 0;
               return (
                 <Link
                   key={dept.id}
