@@ -63,7 +63,7 @@ export function DepartmentPage() {
         <div className="relative mx-auto max-w-7xl px-4 py-10">
           {isSangguniang && (
             <div className="absolute right-4 top-8 flex flex-col items-center gap-2 sm:top-10">
-              <div className="inline-flex shrink-0 items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs text-slate-600 shadow-sm">
+              <div className="inline-flex shrink-0 items-center rounded-full border border-slate-200 bg-white px-2.5 py-0.5 text-[11px] text-slate-600 shadow-sm">
                 {now.toLocaleDateString(undefined, {
                   weekday: "short",
                   year: "numeric",
@@ -75,14 +75,14 @@ export function DepartmentPage() {
                 <img
                   src={calauanLogo2}
                   alt="Calauan logo"
-                  className="h-12 w-12 object-contain md:h-[160px] md:w-[160px]"
+                  className="h-10 w-10 object-contain md:h-[120px] md:w-[120px]"
                   loading="lazy"
                   decoding="async"
                 />
                 <img
                   src={bagongPilipinasLogo}
                   alt="Bagong Pilipinas Logo"
-                  className="h-12 w-12 object-contain md:h-[160px] md:w-[160px]"
+                  className="h-10 w-10 object-contain md:h-[120px] md:w-[120px]"
                   loading="lazy"
                   decoding="async"
                 />
