@@ -18,6 +18,7 @@ export function ClientLayout() {
   const location = useLocation();
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
+  const [assistantVisible, setAssistantVisible] = useState(true);
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
@@ -33,6 +34,41 @@ export function ClientLayout() {
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    const hideDelayMs = 6000;
+    let hideTimer: ReturnType<typeof setTimeout> | null = null;
+
+    const scheduleHide = () => {
+      if (hideTimer) {
+        clearTimeout(hideTimer);
+      }
+      hideTimer = setTimeout(() => {
+        setAssistantVisible(false);
+      }, hideDelayMs);
+    };
+
+    const handleActivity = () => {
+      setAssistantVisible(true);
+      scheduleHide();
+    };
+
+    handleActivity();
+    window.addEventListener("mousemove", handleActivity, { passive: true });
+    window.addEventListener("scroll", handleActivity, { passive: true });
+    window.addEventListener("keydown", handleActivity);
+    window.addEventListener("touchstart", handleActivity, { passive: true });
+
+    return () => {
+      if (hideTimer) {
+        clearTimeout(hideTimer);
+      }
+      window.removeEventListener("mousemove", handleActivity);
+      window.removeEventListener("scroll", handleActivity);
+      window.removeEventListener("keydown", handleActivity);
+      window.removeEventListener("touchstart", handleActivity);
     };
   }, []);
 
@@ -57,9 +93,9 @@ export function ClientLayout() {
           className={
             "h-16 w-16 bg-transparent p-0 focus:outline-none transition " +
             "md:h-20 md:w-20 " +
-            (showHelp
+            (showHelp || assistantVisible
               ? "translate-x-0 opacity-100"
-              : "translate-x-8 opacity-60 hover:opacity-100")
+              : "translate-x-8 opacity-60")
           }
           aria-pressed={showHelp}
           aria-controls="help-panel"
