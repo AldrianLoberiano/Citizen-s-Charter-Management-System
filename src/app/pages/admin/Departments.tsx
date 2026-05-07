@@ -199,7 +199,6 @@ export function Departments() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-slate-200 bg-slate-50">
-                  ID
                 </th>
                 <th className="text-left px-5 py-3 text-slate-500 text-xs uppercase tracking-wide">
                   Department Name
