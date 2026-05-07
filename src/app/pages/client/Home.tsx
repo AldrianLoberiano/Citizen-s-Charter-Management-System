@@ -32,10 +32,6 @@ const calauanLogo2Src = new URL(
   "../../../public/images/header/calauan_logo2.png",
   import.meta.url
 ).href;
-const mayorAssistantSrc = new URL(
-  "../../../public/images/header/mayor.png",
-  import.meta.url
-).href;
 const lightVioletBgSrc = new URL(
   "../../../public/images/header/lightviolet.png",
   import.meta.url
@@ -106,19 +102,10 @@ export function Home() {
       <section className="border-b border-slate-200 bg-white">
         <div className="relative mx-auto w-full px-6 py-16 sm:px-10 sm:py-20 lg:px-16">
           <div className="max-w-3xl">
-            <div className="mb-4 flex items-center gap-3">
-              <img
-                src={mayorAssistantSrc}
-                alt="Assistant"
-                className="h-16 w-16 object-contain"
-                loading="lazy"
-                decoding="async"
-              />
-              <div>
-                <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-sm text-slate-700">
-                  <Shield className="h-4 w-4" />
-                  <span>Official Government Service Directory</span>
-                </div>
+            <div className="mb-3 -mt-2">
+              <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-sm text-slate-700">
+                <Shield className="h-4 w-4" />
+                <span>Official Government Service Directory</span>
               </div>
             </div>
             <div className="mb-4 flex flex-wrap items-center gap-3">
