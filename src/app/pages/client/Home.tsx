@@ -112,7 +112,7 @@ export function Home() {
               </div>
             </div>
           </div>
-          <div className="absolute right-4 top-16 flex flex-col items-center gap-2 sm:top-20">
+          <div className="mt-8 flex flex-col items-center gap-2 sm:absolute sm:right-4 sm:top-20 sm:mt-0">
             <div className="inline-flex shrink-0 items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs text-slate-600 shadow-sm">
               {formattedDate} · {formattedTime}
             </div>
