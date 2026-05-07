@@ -39,7 +39,6 @@ export function DepartmentPage() {
     return <Navigate to="/" replace />;
   }
 
-  const isSangguniang = department.name.toLowerCase().includes("sangguniang");
   const bagongPilipinasLogo = new URL(
     "../../../public/images/header/Bagong_Pilipinas_logo.png",
     import.meta.url
@@ -61,34 +60,32 @@ export function DepartmentPage() {
       {/* Department Hero */}
       <section className="border-b border-slate-200 bg-white">
         <div className="relative mx-auto max-w-7xl px-4 py-10">
-          {isSangguniang && (
-            <div className="absolute right-4 top-8 flex flex-col items-center gap-2 sm:top-10">
-              <div className="inline-flex shrink-0 items-center rounded-full border border-slate-200 bg-white px-2.5 py-0.5 text-[11px] text-slate-600 shadow-sm">
-                {now.toLocaleDateString(undefined, {
-                  weekday: "short",
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric",
-                })} · {now.toLocaleTimeString()}
-              </div>
-              <div className="flex items-center justify-center gap-2">
-                <img
-                  src={calauanLogo2}
-                  alt="Calauan logo"
-                  className="h-10 w-10 object-contain md:h-[120px] md:w-[120px]"
-                  loading="lazy"
-                  decoding="async"
-                />
-                <img
-                  src={bagongPilipinasLogo}
-                  alt="Bagong Pilipinas Logo"
-                  className="h-10 w-10 object-contain md:h-[120px] md:w-[120px]"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
+          <div className="absolute right-4 top-8 flex flex-col items-center gap-2 sm:top-10">
+            <div className="inline-flex shrink-0 items-center rounded-full border border-slate-200 bg-white px-2.5 py-0.5 text-[11px] text-slate-600 shadow-sm">
+              {now.toLocaleDateString(undefined, {
+                weekday: "short",
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })} · {now.toLocaleTimeString()}
             </div>
-          )}
+            <div className="flex items-center justify-center gap-2">
+              <img
+                src={calauanLogo2}
+                alt="Calauan logo"
+                className="h-10 w-10 object-contain md:h-[120px] md:w-[120px]"
+                loading="lazy"
+                decoding="async"
+              />
+              <img
+                src={bagongPilipinasLogo}
+                alt="Bagong Pilipinas Logo"
+                className="h-10 w-10 object-contain md:h-[120px] md:w-[120px]"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          </div>
           {/* Breadcrumb */}
           <nav className="mb-6 flex items-center gap-2 text-sm text-slate-500">
             <Link to="/" className="transition-colors hover:text-slate-900">
