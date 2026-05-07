@@ -351,7 +351,7 @@ export function Charters() {
         </div>
         <button
           onClick={openAdd}
-          className="flex items-center justify-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-colors text-sm"
+          className="flex items-center justify-center gap-2 px-4 py-2 bg-violet-900 text-white rounded-lg hover:bg-violet-950 transition-colors text-sm"
         >
           <Plus className="w-4 h-4" />
           Add Charter
