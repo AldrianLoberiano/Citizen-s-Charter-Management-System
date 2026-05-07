@@ -109,9 +109,10 @@ export function AdminLayout() {
               alt="Calauan City Seal"
               className="h-15 w-20 flex-shrink-0 object-contain drop-shadow"
             />
-            <span className="hidden text-sm text-white drop-shadow sm:block">
-              Calauan Citizens Charter Municipality of Calauan
-            </span>
+            <div className="hidden text-white drop-shadow sm:block">
+              <div className="text-sm leading-tight">Calauan Citizen's Charter</div>
+              <div className="text-xs text-white/90">Municipality of Calauan</div>
+            </div>
           </div>
 
           {/* Center Navigation */}
