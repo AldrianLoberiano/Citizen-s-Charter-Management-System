@@ -173,7 +173,7 @@ export function CharterDetail() {
     <div>
       {/* Header */}
       <section className="border-b border-slate-200 bg-white">
-        <div className="mx-auto max-w-5xl px-4 py-10">
+        <div className="mx-auto w-full px-4 py-10">
           {/* Breadcrumb */}
           <nav className="mb-6 flex flex-wrap items-center gap-2 text-sm text-slate-500">
             <Link to="/" className="transition-colors hover:text-slate-900">
@@ -225,7 +225,7 @@ export function CharterDetail() {
       </section>
 
       {/* Main Content */}
-      <div className="mx-auto max-w-5xl px-4 py-10">
+      <div className="mx-auto w-full px-4 py-10">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           {/* Charter Content */}
           <div className="lg:col-span-2 space-y-6">
