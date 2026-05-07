@@ -38,39 +38,20 @@ export function ClientLayout() {
   }, []);
 
   useEffect(() => {
-    const hideDelayMs = 6000;
-    let hideTimer: ReturnType<typeof setTimeout> | null = null;
-
-    const scheduleHide = () => {
-      if (hideTimer) {
-        clearTimeout(hideTimer);
-      }
-      hideTimer = setTimeout(() => {
-        setAssistantVisible(false);
-      }, hideDelayMs);
-    };
-
-    const handleActivity = () => {
+    if (showHelp) {
       setAssistantVisible(true);
-      scheduleHide();
-    };
+      return;
+    }
 
-    handleActivity();
-    window.addEventListener("mousemove", handleActivity, { passive: true });
-    window.addEventListener("scroll", handleActivity, { passive: true });
-    window.addEventListener("keydown", handleActivity);
-    window.addEventListener("touchstart", handleActivity, { passive: true });
+    const hideDelayMs = 6000;
+    const hideTimer = setTimeout(() => {
+      setAssistantVisible(false);
+    }, hideDelayMs);
 
     return () => {
-      if (hideTimer) {
-        clearTimeout(hideTimer);
-      }
-      window.removeEventListener("mousemove", handleActivity);
-      window.removeEventListener("scroll", handleActivity);
-      window.removeEventListener("keydown", handleActivity);
-      window.removeEventListener("touchstart", handleActivity);
+      clearTimeout(hideTimer);
     };
-  }, []);
+  }, [showHelp]);
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
