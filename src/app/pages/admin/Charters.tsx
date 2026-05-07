@@ -156,6 +156,7 @@ export function Charters() {
       if (!allowed.includes(file.type)) {
         setFormErrors((p) => ({
           ...p,
+          file_path: "Only Excel files (.xls, .xlsx) and PDF are allowed.",
         }));
         return;
       }
