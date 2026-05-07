@@ -363,9 +363,6 @@ export async function loginWithApi(username: string, password: string) {
     safeWrite(STORAGE_KEYS.authUser, resolvedUser);
     return true;
   } catch {
-    const fallbackOk = username === "admin" && password === "admin123";
-    if (!fallbackOk) return false;
-    safeWrite(STORAGE_KEYS.authUser, username);
-    return true;
+    return false;
   }
 }
