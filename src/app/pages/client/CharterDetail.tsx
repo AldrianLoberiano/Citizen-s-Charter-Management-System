@@ -290,7 +290,6 @@ export function CharterDetail() {
                 )}
                 {viewerType === "unknown" && (
                   <div className="p-4 text-sm text-slate-500">
-                    No preview available for this file type. Use Download File to open it.
                   </div>
                 )}
               </div>
