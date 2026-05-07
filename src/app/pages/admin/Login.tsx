@@ -159,7 +159,7 @@ export function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 py-2.5 text-white transition-colors hover:bg-slate-800 active:bg-slate-950 disabled:cursor-not-allowed disabled:opacity-60"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-violet-900 py-2.5 text-white transition-colors hover:bg-violet-950 active:bg-violet-950 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {loading ? (
                 <>
