@@ -4,21 +4,39 @@
  * Automatically redirects to login if user is not authenticated.
  */
 
-import { useState, useEffect } from "react";
-import { Outlet, Link, useNavigate } from "react-router";
+import { useState, useEffect, useRef } from "react";
+import { Outlet, Link, useNavigate, useLocation } from "react-router";
 import {
+  LayoutDashboard,
+  Building2,
+  FileText,
   LogOut,
   ExternalLink,
+  QrCode,
   User,
 } from "lucide-react";
-import { isAuthenticated, logout, getAuthUser } from "../store/data";
+import { isAuthenticated, logout, getAuthUser, getCharters } from "../store/data";
 
-const adminLogoSrc = new URL("../../public/images/header/calauan_logo.png", import.meta.url).href;
+const adminLogoSrc = new URL("../../public/images/header/logo.png", import.meta.url).href;
 const adminHeaderBgSrc = new URL("../../public/images/header/header1.png", import.meta.url).href;
+
+interface NavItem {
+  path: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+}
+
+const navItems: NavItem[] = [
+  { path: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { path: "/admin/departments", label: "Departments", icon: Building2 },
+  { path: "/admin/charters", label: "Charters", icon: FileText },
+];
 
 export function AdminLayout() {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const menuRef = useRef<HTMLDivElement | null>(null);
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -32,11 +50,43 @@ export function AdminLayout() {
   }
 
   const currentUser = getAuthUser();
+  const firstCharter = getCharters()[0];
+  const feedbackUrl =
+    typeof window !== "undefined" && firstCharter
+      ? `${window.location.origin}/charter/${firstCharter.id}#feedback-form`
+      : "";
+
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    const handleClick = (event: MouseEvent) => {
+      if (!menuRef.current) return;
+      if (!menuRef.current.contains(event.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClick);
+    document.addEventListener("keydown", handleKey);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+      document.removeEventListener("keydown", handleKey);
+    };
+  }, [menuOpen]);
 
   const handleLogout = () => {
     logout();
     navigate("/admin/login");
   };
+
+  const isActive = (path: string) => location.pathname === path;
 
 
   return (
@@ -83,37 +133,54 @@ export function AdminLayout() {
             </nav>
           </div>
 
-          {/* User info */}
-          <div className="relative flex flex-shrink-0 items-center gap-3">
+          {/* User menu */}
+          <div className="relative flex flex-shrink-0 items-center gap-2" ref={menuRef}>
             <button
               type="button"
-              disabled={!feedbackUrl}
-              onClick={() => feedbackUrl && window.open(feedbackUrl, "_blank", "noopener,noreferrer")}
-              className="flex items-center gap-2 rounded-full px-3 py-1.5 text-xs text-white/80 transition-colors hover:bg-white/10 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+              onClick={() => setMenuOpen((prev) => !prev)}
+              className="flex items-center gap-2 rounded-full bg-white/10 px-2.5 py-1 text-white transition-colors hover:bg-white/20"
             >
-              <QrCode className="h-4 w-4" />
-              Feedback QR
+              <span className="hidden text-sm capitalize sm:block">
+                {currentUser || "admin"}
+              </span>
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/15">
+                <User className="h-4 w-4 text-white" />
+              </div>
             </button>
-            <Link
-              to="/"
-              className="flex items-center gap-2 rounded-full px-3 py-1.5 text-xs text-white/80 transition-colors hover:bg-white/10 hover:text-white"
-            >
-              <ExternalLink className="h-4 w-4" />
-              Public Site
-            </Link>
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-2 rounded-full px-3 py-1.5 text-xs text-white/80 transition-colors hover:bg-red-500/20 hover:text-white"
-            >
-              <LogOut className="h-4 w-4" />
-              Logout
-            </button>
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/15">
-              <User className="h-4 w-4 text-white" />
-            </div>
-            <span className="hidden text-sm capitalize text-white sm:block">
-              {currentUser || "admin"}
-            </span>
+            {menuOpen && (
+              <div className="absolute right-0 top-12 w-52 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg">
+                <button
+                  type="button"
+                  disabled={!feedbackUrl}
+                  onClick={() => {
+                    if (feedbackUrl) {
+                      window.open(feedbackUrl, "_blank", "noopener,noreferrer");
+                      setMenuOpen(false);
+                    }
+                  }}
+                  className="flex w-full items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <QrCode className="h-4 w-4" />
+                  Feedback QR
+                </button>
+                <Link
+                  to="/"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-100"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                  View Public Site
+                </Link>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="flex w-full items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-100"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Logout
+                </button>
+              </div>
+            )}
           </div>
         </header>
 
