@@ -6,8 +6,10 @@
 
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router";
-import { Shield, Eye, EyeOff, AlertCircle, Lock, User } from "lucide-react";
+import { Eye, EyeOff, AlertCircle, Lock, User } from "lucide-react";
 import { loginWithApi, isAuthenticated } from "../../store/data";
+
+const adminLogoSrc = new URL("../../public/images/header/logo.png", import.meta.url).href;
 
 export function Login() {
   const [username, setUsername] = useState("");
@@ -58,8 +60,14 @@ export function Login() {
     <div className="flex min-h-screen flex-col items-center justify-center bg-slate-100 p-4">
       {/* Header */}
       <div className="mb-8 text-center">
-        <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-900 shadow-md">
-          <Shield className="h-8 w-8 text-white" />
+        <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl">
+          <img
+            src={adminLogoSrc}
+            alt="Calauan City Seal"
+            className="h-9 w-9 object-contain"
+            loading="lazy"
+            decoding="async"
+          />
         </div>
         <h1 className="text-slate-900">Admin Portal</h1>
         <p className="mt-1 text-sm text-slate-500">
@@ -177,22 +185,6 @@ export function Login() {
             </button>
           </form>
 
-          {/* Demo credentials */}
-            <div className="mt-6 rounded-lg border border-slate-200 bg-slate-50 p-4">
-              <p className="mb-2 text-center text-xs text-slate-500">
-              Demo Credentials
-            </p>
-            <div className="flex justify-center gap-6 text-sm">
-              <span className="text-slate-600">
-                Username:{" "}
-                <span className="text-slate-900 font-medium">admin</span>
-              </span>
-              <span className="text-slate-600">
-                Password:{" "}
-                <span className="text-slate-900 font-medium">admin123</span>
-              </span>
-            </div>
-          </div>
         </div>
 
         {/* Back link */}
