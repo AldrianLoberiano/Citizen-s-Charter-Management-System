@@ -5,39 +5,20 @@
  */
 
 import { useState, useEffect } from "react";
-import { Outlet, Link, useNavigate, useLocation } from "react-router";
+import { Outlet, Link, useNavigate } from "react-router";
 import {
-  LayoutDashboard,
-  Building2,
-  FileText,
   LogOut,
-  Menu,
-  X,
   ExternalLink,
-  ChevronRight,
   User,
-  QrCode,
 } from "lucide-react";
-import { isAuthenticated, logout, getAuthUser, getCharters } from "../store/data";
+import { isAuthenticated, logout, getAuthUser } from "../store/data";
 
 const adminLogoSrc = new URL("../../public/images/header/calauan_logo.png", import.meta.url).href;
 const adminHeaderBgSrc = new URL("../../public/images/header/header1.png", import.meta.url).href;
 
-interface NavItem {
-  path: string;
-  label: string;
-  icon: React.ComponentType<{ className?: string }>;
-}
-
-const navItems: NavItem[] = [
-  { path: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { path: "/admin/departments", label: "Departments", icon: Building2 },
-  { path: "/admin/charters", label: "Charters", icon: FileText },
-];
-
 export function AdminLayout() {
+  const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -57,12 +38,6 @@ export function AdminLayout() {
     navigate("/admin/login");
   };
 
-  const isActive = (path: string) => location.pathname === path;
-  const firstCharter = getCharters()[0];
-  const feedbackUrl =
-    typeof window !== "undefined" && firstCharter
-      ? `${window.location.origin}/charter/${firstCharter.id}#feedback-form`
-      : "";
 
   return (
     <div className="flex h-screen overflow-hidden bg-slate-100">
