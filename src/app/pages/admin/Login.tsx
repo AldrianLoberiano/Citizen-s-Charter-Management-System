@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router";
 import { Eye, EyeOff, AlertCircle, Lock, User } from "lucide-react";
 import { loginWithApi, isAuthenticated } from "../../store/data";
+import { syncLocalCacheFromApi } from "../../store/apiSync";
 
 const adminLogoSrc = new URL(
   "../../../public/images/header/logo.png",
@@ -48,8 +49,9 @@ export function Login() {
     // Simulate server response delay
     setTimeout(() => {
       loginWithApi(username.trim(), password)
-        .then((success) => {
+        .then(async (success) => {
           if (success) {
+            await syncLocalCacheFromApi();
             navigate("/admin/dashboard", { replace: true });
             return;
           }
