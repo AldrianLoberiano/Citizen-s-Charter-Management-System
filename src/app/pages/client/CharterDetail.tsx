@@ -491,7 +491,6 @@ export function CharterDetail() {
               </div>
             </div>
 
-                        to={`/department/${department.id}`}
                         className="text-blue-700 hover:underline flex items-center gap-1"
                       >
                         <Building2 className="w-3.5 h-3.5" />
