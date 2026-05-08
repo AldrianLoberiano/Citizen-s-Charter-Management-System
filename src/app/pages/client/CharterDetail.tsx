@@ -491,7 +491,6 @@ export function CharterDetail() {
               </div>
             </div>
 
-                    Department
                   </dt>
                   <dd className="text-slate-700">
                     {department ? (
