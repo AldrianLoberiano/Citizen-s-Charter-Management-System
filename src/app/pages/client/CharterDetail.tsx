@@ -17,7 +17,6 @@ import {
   CheckCircle,
   QrCode,
   MessageSquare,
-  ThumbsUp,
 } from "lucide-react";
 import {
   getCharterById,
