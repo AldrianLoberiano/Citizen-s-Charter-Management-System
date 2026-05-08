@@ -548,7 +548,6 @@ export function CharterDetail() {
               </dl>
             </div>
 
-                href="#"
                 onClick={(e) => {
                   e.preventDefault();
                   window.print();
