@@ -491,7 +491,6 @@ export function CharterDetail() {
               </div>
             </div>
 
-                        </span>
                       </div>
                     ) : (
                       <span className="text-slate-400">No ratings yet</span>
