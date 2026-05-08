@@ -491,7 +491,6 @@ export function CharterDetail() {
               </div>
             </div>
 
-            {/* Charter Details */}
             <div className="bg-white rounded-xl border border-slate-200 p-5">
               <h3 className="text-slate-900 mb-3">Charter Details</h3>
               <dl className="space-y-3 text-sm">
