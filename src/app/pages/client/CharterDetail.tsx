@@ -491,7 +491,6 @@ export function CharterDetail() {
               </div>
             </div>
 
-                    Charter ID
                   </dt>
                   <dd className="text-slate-700">#{charter.id}</dd>
                 </div>
