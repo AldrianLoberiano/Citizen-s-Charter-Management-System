@@ -491,7 +491,6 @@ export function CharterDetail() {
               </div>
             </div>
 
-                  <dt className="text-slate-400 text-xs uppercase tracking-wide mb-0.5">
                     Citizen Ratings
                   </dt>
                   <dd className="text-slate-700">
