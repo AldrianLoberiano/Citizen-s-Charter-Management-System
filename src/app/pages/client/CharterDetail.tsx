@@ -548,7 +548,6 @@ export function CharterDetail() {
               </dl>
             </div>
 
-            {/* Navigation */}
             <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-2">
               {department && (
                 <Link
