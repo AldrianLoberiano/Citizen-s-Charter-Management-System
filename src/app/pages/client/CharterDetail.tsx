@@ -491,7 +491,6 @@ export function CharterDetail() {
               </div>
             </div>
 
-                      <div className="flex items-center gap-1">
                         <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
                         <span>
                           {avgRating} / 5 ({ratings.length} review
