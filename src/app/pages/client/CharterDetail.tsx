@@ -549,7 +549,6 @@ export function CharterDetail() {
             </div>
 
                   <ArrowLeft className="w-4 h-4" />
-                  Back to {department.name}
                 </Link>
               )}
               <Link
