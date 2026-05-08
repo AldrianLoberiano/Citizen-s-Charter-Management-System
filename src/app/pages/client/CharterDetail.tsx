@@ -548,7 +548,6 @@ export function CharterDetail() {
               </dl>
             </div>
 
-                </Link>
               )}
               <Link
                 to="/"
