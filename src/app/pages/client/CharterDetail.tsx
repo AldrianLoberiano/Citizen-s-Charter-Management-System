@@ -492,7 +492,6 @@ export function CharterDetail() {
             </div>
 
                         <span>
-                          {avgRating} / 5 ({ratings.length} review
                           {ratings.length !== 1 ? "s" : ""})
                         </span>
                       </div>
