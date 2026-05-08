@@ -491,7 +491,6 @@ export function CharterDetail() {
               </div>
             </div>
 
-              </dl>
             </div>
 
           </div>
