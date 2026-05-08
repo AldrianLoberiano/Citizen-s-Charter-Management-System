@@ -548,7 +548,6 @@ export function CharterDetail() {
               </dl>
             </div>
 
-                All Departments
               </Link>
               <a
                 href="#"
