@@ -491,7 +491,6 @@ export function CharterDetail() {
               </div>
             </div>
 
-                      <Link
                         to={`/department/${department.id}`}
                         className="text-blue-700 hover:underline flex items-center gap-1"
                       >
