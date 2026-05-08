@@ -548,7 +548,6 @@ export function CharterDetail() {
               </dl>
             </div>
 
-              >
                 <ThumbsUp className="w-4 h-4" />
                 Print this Charter
               </a>
