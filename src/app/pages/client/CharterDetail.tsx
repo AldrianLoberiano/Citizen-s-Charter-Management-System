@@ -491,7 +491,6 @@ export function CharterDetail() {
               </div>
             </div>
 
-              <dl className="space-y-3 text-sm">
                 <div>
                   <dt className="text-slate-400 text-xs uppercase tracking-wide mb-0.5">
                     Department
