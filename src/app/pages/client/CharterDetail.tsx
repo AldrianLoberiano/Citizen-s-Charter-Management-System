@@ -491,7 +491,6 @@ export function CharterDetail() {
               </div>
             </div>
 
-                  <dd className="text-slate-700">
                     {formatDate(charter.created_at)}
                   </dd>
                 </div>
