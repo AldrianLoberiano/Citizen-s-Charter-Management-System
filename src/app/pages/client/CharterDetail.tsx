@@ -16,7 +16,6 @@ import {
   Send,
   CheckCircle,
   QrCode,
-  ArrowLeft,
   MessageSquare,
   ThumbsUp,
 } from "lucide-react";
