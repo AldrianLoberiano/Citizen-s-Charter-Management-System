@@ -548,7 +548,6 @@ export function CharterDetail() {
               </dl>
             </div>
 
-                Print this Charter
               </a>
             </div>
           </div>
