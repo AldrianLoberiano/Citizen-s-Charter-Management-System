@@ -491,7 +491,6 @@ export function CharterDetail() {
               </div>
             </div>
 
-                        <Building2 className="w-3.5 h-3.5" />
                         {department.name}
                       </Link>
                     ) : (
