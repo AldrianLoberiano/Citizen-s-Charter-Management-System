@@ -491,7 +491,6 @@ export function CharterDetail() {
               </div>
             </div>
 
-                  <dd className="text-slate-700">
                     {ratings.length > 0 ? (
                       <div className="flex items-center gap-1">
                         <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
