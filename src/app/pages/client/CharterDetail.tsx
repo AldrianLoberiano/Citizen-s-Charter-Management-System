@@ -491,7 +491,6 @@ export function CharterDetail() {
               </div>
             </div>
 
-                        <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
                         <span>
                           {avgRating} / 5 ({ratings.length} review
                           {ratings.length !== 1 ? "s" : ""})
