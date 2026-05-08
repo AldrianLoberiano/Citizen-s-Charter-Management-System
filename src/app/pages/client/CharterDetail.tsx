@@ -548,7 +548,6 @@ export function CharterDetail() {
               </dl>
             </div>
 
-              >
                 <Building2 className="w-4 h-4" />
                 All Departments
               </Link>
