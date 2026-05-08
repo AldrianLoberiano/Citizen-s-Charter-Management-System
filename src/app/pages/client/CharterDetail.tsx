@@ -491,7 +491,6 @@ export function CharterDetail() {
               </div>
             </div>
 
-                    Citizen Ratings
                   </dt>
                   <dd className="text-slate-700">
                     {ratings.length > 0 ? (
