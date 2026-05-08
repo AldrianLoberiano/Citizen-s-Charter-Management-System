@@ -548,7 +548,6 @@ export function CharterDetail() {
               </dl>
             </div>
 
-                onClick={(e) => {
                   e.preventDefault();
                   window.print();
                 }}
