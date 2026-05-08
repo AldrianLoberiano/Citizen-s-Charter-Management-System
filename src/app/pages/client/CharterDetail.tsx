@@ -491,7 +491,6 @@ export function CharterDetail() {
               </div>
             </div>
 
-                        <span>
                           {ratings.length !== 1 ? "s" : ""})
                         </span>
                       </div>
