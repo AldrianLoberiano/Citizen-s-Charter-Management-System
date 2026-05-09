@@ -21,12 +21,12 @@ import {
 import {
   getCharterById,
   getDepartmentById,
-  getFeedbackByCharter,
+  getCombinedFeedbackByCharter,
   getAverageRating,
   addFeedback,
   formatDate,
   formatDateTime,
-  FeedbackResponse,
+  FeedbackEntry,
 } from "../../store/data";
 
 export function CharterDetail() {
@@ -34,8 +34,8 @@ export function CharterDetail() {
   const charterId = parseInt(id || "0");
 
   const charter = getCharterById(charterId);
-  const [feedbackEntries, setFeedbackEntries] = useState<FeedbackResponse[]>(
-    getFeedbackByCharter(charterId)
+  const [feedbackEntries, setFeedbackEntries] = useState<FeedbackEntry[]>(
+    getCombinedFeedbackByCharter(charterId)
   );
   const [avgRating, setAvgRating] = useState(getAverageRating(charterId));
 
