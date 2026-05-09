@@ -37,7 +37,6 @@ const navItems: NavItem[] = [
 
 export function AdminLayout() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isImporting, setIsImporting] = useState(false);
   const [backupMessage, setBackupMessage] = useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
