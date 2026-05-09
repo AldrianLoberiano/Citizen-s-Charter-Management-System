@@ -21,6 +21,11 @@ export function Feedback() {
   const [charterFilter, setCharterFilter] = useState("all");
   const [ratingFilter, setRatingFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const feedbackFormUrl =
+    "https://docs.google.com/forms/d/e/1FAIpQLSfkaEz1PHp1yvtvrB9hWpa7YuxZE-AD3lT_C9wGocdUM3_Q8Q/viewform";
+  const feedbackQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(
+    feedbackFormUrl
+  )}&bgcolor=ffffff&color=1e3a8a`;
 
   useEffect(() => {
     setRatings(getRatings());
@@ -256,6 +261,19 @@ export function Feedback() {
             >
               Export CSV
             </button>
+            <a
+              href={feedbackFormUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700 transition-colors hover:border-slate-300 hover:text-slate-900"
+            >
+              <img
+                src={feedbackQrUrl}
+                alt="QR code for feedback form"
+                className="h-6 w-6 rounded"
+              />
+              Feedback Form QR
+            </a>
             <button
               type="button"
               onClick={clearFilters}
