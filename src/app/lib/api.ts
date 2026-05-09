@@ -38,6 +38,7 @@ async function upload(path: string, formData: FormData) {
 export const api = {
   getDepartments: () => request("/departments"),
   getCharters: () => request("/charters"),
+  getRatingsAll: () => request("/ratings"),
   getRatings: (charterId: number) => request(`/charters/${charterId}/ratings`),
   getFeedback: () => request("/feedback"),
   getCharterFeedback: (charterId: number) => request(`/charters/${charterId}/feedback`),
