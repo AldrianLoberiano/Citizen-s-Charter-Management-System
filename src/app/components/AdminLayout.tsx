@@ -15,7 +15,7 @@ import {
   QrCode,
   User,
 } from "lucide-react";
-import { isAuthenticated, logout, getAuthUser, getCharters } from "../store/data";
+import { isAuthenticated, logout, getAuthUser } from "../store/data";
 
 const adminLogoSrc = new URL("../../public/images/header/logo.png", import.meta.url).href;
 const adminHeaderBgSrc = new URL("../../public/images/header/header1.png", import.meta.url).href;
@@ -50,11 +50,8 @@ export function AdminLayout() {
   }
 
   const currentUser = getAuthUser();
-  const firstCharter = getCharters()[0];
   const feedbackUrl =
-    typeof window !== "undefined" && firstCharter
-      ? `${window.location.origin}/charter/${firstCharter.id}#feedback-form`
-      : "";
+    "https://docs.google.com/forms/d/e/1FAIpQLSfkaEz1PHp1yvtvrB9hWpa7YuxZE-AD3lT_C9wGocdUM3_Q8Q/viewform";
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -133,6 +130,24 @@ export function AdminLayout() {
                   <span>{label}</span>
                 </Link>
               ))}
+              <button
+                type="button"
+                disabled={!feedbackUrl}
+                onClick={() => {
+                  if (feedbackUrl) {
+                    window.open(feedbackUrl, "_blank", "noopener,noreferrer");
+                  }
+                }}
+                className={
+                  "flex items-center gap-2 rounded-full px-3 py-1.5 text-xs transition-colors " +
+                  (feedbackUrl
+                    ? "bg-white/15 text-white hover:bg-white/20"
+                    : "cursor-not-allowed text-white/40")
+                }
+              >
+                <QrCode className="h-4 w-4" />
+                <span>Feedback QR</span>
+              </button>
             </nav>
           </div>
 
@@ -152,20 +167,6 @@ export function AdminLayout() {
             </button>
             {menuOpen && (
               <div className="absolute right-0 top-12 w-52 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg">
-                <button
-                  type="button"
-                  disabled={!feedbackUrl}
-                  onClick={() => {
-                    if (feedbackUrl) {
-                      window.open(feedbackUrl, "_blank", "noopener,noreferrer");
-                      setMenuOpen(false);
-                    }
-                  }}
-                  className="flex w-full items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  <QrCode className="h-4 w-4" />
-                  Feedback QR
-                </button>
                 <Link
                   to="/"
                   onClick={() => setMenuOpen(false)}
