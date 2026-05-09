@@ -70,7 +70,7 @@ export function Dashboard() {
       value: feedback.length,
       icon: Star,
       bgColor: "bg-purple-700",
-      link: "/admin/dashboard",
+      link: "/admin/feedback",
       description: "Citizen feedback received",
     },
   ];
