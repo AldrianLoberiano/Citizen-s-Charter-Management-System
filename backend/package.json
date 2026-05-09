@@ -3,7 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "server": "node server.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
