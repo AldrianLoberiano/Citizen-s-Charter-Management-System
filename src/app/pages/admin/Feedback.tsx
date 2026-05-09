@@ -4,7 +4,8 @@
  */
 
 import { useEffect, useMemo, useState } from "react";
-import { MessageSquare, Star } from "lucide-react";
+import { ExternalLink, MessageSquare, QrCode, Star } from "lucide-react";
+import { Modal } from "../../components/Modal";
 import {
   getRatings,
   getCharterById,
@@ -21,9 +22,11 @@ export function Feedback() {
   const [charterFilter, setCharterFilter] = useState("all");
   const [ratingFilter, setRatingFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const [isQrOpen, setIsQrOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
   const feedbackFormUrl =
     "https://docs.google.com/forms/d/e/1FAIpQLSfkaEz1PHp1yvtvrB9hWpa7YuxZE-AD3lT_C9wGocdUM3_Q8Q/viewform";
-  const feedbackQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(
+  const feedbackQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(
     feedbackFormUrl
   )}&bgcolor=ffffff&color=1e3a8a`;
 
@@ -144,6 +147,16 @@ export function Feedback() {
     URL.revokeObjectURL(url);
   };
 
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(feedbackFormUrl);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1500);
+    } catch {
+      setCopied(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -261,19 +274,14 @@ export function Feedback() {
             >
               Export CSV
             </button>
-            <a
-              href={feedbackFormUrl}
-              target="_blank"
-              rel="noreferrer"
+            <button
+              type="button"
+              onClick={() => setIsQrOpen(true)}
               className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700 transition-colors hover:border-slate-300 hover:text-slate-900"
             >
-              <img
-                src={feedbackQrUrl}
-                alt="QR code for feedback form"
-                className="h-6 w-6 rounded"
-              />
+              <QrCode className="h-4 w-4" />
               Feedback Form QR
-            </a>
+            </button>
             <button
               type="button"
               onClick={clearFilters}
@@ -349,6 +357,42 @@ export function Feedback() {
           </table>
         </div>
       </div>
+
+      <Modal
+        isOpen={isQrOpen}
+        onClose={() => setIsQrOpen(false)}
+        title="Feedback Form QR"
+        size="sm"
+      >
+        <div className="flex flex-col items-center gap-4 text-center">
+          <img
+            src={feedbackQrUrl}
+            alt="QR code for feedback form"
+            className="h-44 w-44 rounded-lg border border-slate-200 bg-white"
+          />
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <a
+              href={feedbackFormUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 text-sm text-blue-700 hover:text-blue-900"
+            >
+              Open feedback form
+              <ExternalLink className="h-4 w-4" />
+            </a>
+            <button
+              type="button"
+              onClick={handleCopyLink}
+              className="rounded-lg border border-slate-200 px-3 py-1 text-xs text-slate-700 transition-colors hover:border-slate-300 hover:text-slate-900"
+            >
+              {copied ? "Copied" : "Copy link"}
+            </button>
+          </div>
+          <p className="text-xs text-slate-500">
+            Scan the QR code or open the link to submit feedback.
+          </p>
+        </div>
+      </Modal>
     </div>
   );
 }
