@@ -132,19 +132,19 @@ export function AdminLayout() {
                   <span>{label}</span>
                 </Link>
               ))}
+              <button
+                type="button"
+                onClick={() => setIsBackupOpen(true)}
+                className="flex items-center gap-2 rounded-full px-3 py-1.5 text-xs transition-colors bg-white/10 text-white hover:bg-white/20"
+              >
+                <Database className="h-4 w-4" />
+                Backup & Recovery
+              </button>
             </nav>
           </div>
 
           {/* Header actions */}
           <div className="relative flex flex-shrink-0 items-center gap-2" ref={menuRef}>
-            <button
-              type="button"
-              onClick={() => setIsBackupOpen(true)}
-              className="hidden items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs text-white transition-colors hover:bg-white/20 sm:flex"
-            >
-              <Database className="h-4 w-4" />
-              Backup & Recovery
-            </button>
             <button
               type="button"
               onClick={() => setMenuOpen((prev) => !prev)}
