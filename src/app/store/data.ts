@@ -18,6 +18,14 @@ export interface Charter {
   updated_at?: string;
 }
 
+export interface Rating {
+  id: number;
+  charter_id: number;
+  rating: number;
+  comment: string | null;
+  created_at: string;
+}
+
 export interface FeedbackResponse {
   id: number;
   charter_id: number;
@@ -25,13 +33,26 @@ export interface FeedbackResponse {
   email: string | null;
   contact: string | null;
   rating: number;
-  comment: string;
+  comment: string | null;
   created_at: string;
+}
+
+export interface FeedbackEntry {
+  id: number;
+  charter_id: number;
+  name: string | null;
+  email: string | null;
+  contact: string | null;
+  rating: number;
+  comment: string | null;
+  created_at: string;
+  source: "rating" | "feedback";
 }
 
 const STORAGE_KEYS = {
   departments: "ccms_departments",
   charters: "ccms_charters",
+  ratings: "ccms_ratings",
   feedback: "ccms_feedback",
   authUser: "ccms_auth_user",
 } as const;
@@ -88,6 +109,7 @@ const seedCharters: Charter[] = [
 ];
 
 const seedFeedback: FeedbackResponse[] = [];
+const seedRatings: Rating[] = [];
 
 function getAuthUserFromStorage(): string | null {
   if (typeof window === "undefined") return null;
@@ -141,6 +163,7 @@ let departmentsCache = safeRead<Department[]>(
   true
 );
 let chartersCache = safeRead<Charter[]>(STORAGE_KEYS.charters, [], true);
+let ratingsCache = safeRead<Rating[]>(STORAGE_KEYS.ratings, [], true);
 let feedbackCache = safeRead<FeedbackResponse[]>(STORAGE_KEYS.feedback, [], true);
 
 function persistDepartments() {
@@ -149,6 +172,10 @@ function persistDepartments() {
 
 function persistCharters() {
   safeWrite(STORAGE_KEYS.charters, chartersCache, true);
+}
+
+function persistRatings() {
+  safeWrite(STORAGE_KEYS.ratings, ratingsCache, true);
 }
 
 function persistFeedback() {
@@ -163,6 +190,11 @@ export function setDepartments(departments: Department[]) {
 export function setCharters(charters: Charter[]) {
   chartersCache = [...charters];
   persistCharters();
+}
+
+export function setRatings(ratings: Rating[]) {
+  ratingsCache = [...ratings];
+  persistRatings();
 }
 
 export function setFeedback(feedback: FeedbackResponse[]) {
@@ -212,9 +244,11 @@ export async function deleteDepartment(id: number) {
     chartersCache.filter((c) => c.department_id === id).map((c) => c.id)
   );
   chartersCache = chartersCache.filter((c) => c.department_id !== id);
+  ratingsCache = ratingsCache.filter((r) => !removedCharterIds.has(r.charter_id));
   feedbackCache = feedbackCache.filter((r) => !removedCharterIds.has(r.charter_id));
   persistDepartments();
   persistCharters();
+  persistRatings();
   persistFeedback();
 }
 
@@ -272,9 +306,19 @@ export async function updateCharter(
 export async function deleteCharter(id: number) {
   await api.deleteCharter(id);
   chartersCache = chartersCache.filter((charter) => charter.id !== id);
+  ratingsCache = ratingsCache.filter((rating) => rating.charter_id !== id);
   feedbackCache = feedbackCache.filter((rating) => rating.charter_id !== id);
   persistCharters();
+  persistRatings();
   persistFeedback();
+}
+
+export function getRatings(): Rating[] {
+  return [...ratingsCache];
+}
+
+export function getRatingsByCharter(charterId: number): Rating[] {
+  return ratingsCache.filter((rating) => rating.charter_id === charterId);
 }
 
 export function getFeedback(): FeedbackResponse[] {
@@ -283,6 +327,38 @@ export function getFeedback(): FeedbackResponse[] {
 
 export function getFeedbackByCharter(charterId: number): FeedbackResponse[] {
   return feedbackCache.filter((rating) => rating.charter_id === charterId);
+}
+
+export function getCombinedFeedback(): FeedbackEntry[] {
+  const ratingEntries: FeedbackEntry[] = ratingsCache.map((rating) => ({
+    id: rating.id,
+    charter_id: rating.charter_id,
+    name: null,
+    email: null,
+    contact: null,
+    rating: rating.rating,
+    comment: rating.comment ?? null,
+    created_at: rating.created_at,
+    source: "rating",
+  }));
+
+  const feedbackEntries: FeedbackEntry[] = feedbackCache.map((feedback) => ({
+    id: feedback.id,
+    charter_id: feedback.charter_id,
+    name: feedback.name ?? null,
+    email: feedback.email ?? null,
+    contact: feedback.contact ?? null,
+    rating: feedback.rating,
+    comment: feedback.comment ?? null,
+    created_at: feedback.created_at,
+    source: "feedback",
+  }));
+
+  return [...ratingEntries, ...feedbackEntries];
+}
+
+export function getCombinedFeedbackByCharter(charterId: number): FeedbackEntry[] {
+  return getCombinedFeedback().filter((entry) => entry.charter_id === charterId);
 }
 
 export async function addFeedback(data: {
@@ -306,7 +382,7 @@ export async function addFeedback(data: {
 }
 
 export function getAverageRating(charterId: number) {
-  const ratings = getFeedbackByCharter(charterId);
+  const ratings = getCombinedFeedbackByCharter(charterId);
   if (ratings.length === 0) return 0;
   const total = ratings.reduce((sum, rating) => sum + rating.rating, 0);
   return Math.round((total / ratings.length) * 10) / 10;
@@ -349,6 +425,7 @@ export function logout() {
   if (currentUser && typeof window !== "undefined") {
     window.localStorage.removeItem(`${STORAGE_KEYS.departments}:${currentUser}`);
     window.localStorage.removeItem(`${STORAGE_KEYS.charters}:${currentUser}`);
+    window.localStorage.removeItem(`${STORAGE_KEYS.ratings}:${currentUser}`);
     window.localStorage.removeItem(`${STORAGE_KEYS.feedback}:${currentUser}`);
   }
   safeWrite(STORAGE_KEYS.authUser, null);
