@@ -14,8 +14,10 @@ import {
   ExternalLink,
   User,
   MessageSquare,
+  Database,
 } from "lucide-react";
 import { isAuthenticated, logout, getAuthUser } from "../store/data";
+import { Modal } from "./Modal";
 
 const adminLogoSrc = new URL("../../public/images/header/logo.png", import.meta.url).href;
 const adminHeaderBgSrc = new URL("../../public/images/header/header1.png", import.meta.url).href;
@@ -35,6 +37,7 @@ const navItems: NavItem[] = [
 
 export function AdminLayout() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isBackupOpen, setIsBackupOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const menuRef = useRef<HTMLDivElement | null>(null);
@@ -132,8 +135,16 @@ export function AdminLayout() {
             </nav>
           </div>
 
-          {/* User menu */}
+          {/* Header actions */}
           <div className="relative flex flex-shrink-0 items-center gap-2" ref={menuRef}>
+            <button
+              type="button"
+              onClick={() => setIsBackupOpen(true)}
+              className="hidden items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs text-white transition-colors hover:bg-white/20 sm:flex"
+            >
+              <Database className="h-4 w-4" />
+              Backup & Recovery
+            </button>
             <button
               type="button"
               onClick={() => setMenuOpen((prev) => !prev)}
@@ -168,6 +179,31 @@ export function AdminLayout() {
             )}
           </div>
         </header>
+
+        <Modal
+          isOpen={isBackupOpen}
+          onClose={() => setIsBackupOpen(false)}
+          title="Backup & Recovery"
+          size="md"
+        >
+          <div className="space-y-4 text-sm text-slate-600">
+            <div>
+              <p className="text-slate-900">Backup (mysqldump)</p>
+              <pre className="mt-2 rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700">
+mysqldump -u root -p ccms_db &gt; backup_ccms_db.sql
+              </pre>
+            </div>
+            <div>
+              <p className="text-slate-900">Restore</p>
+              <pre className="mt-2 rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700">
+mysql -u root -p ccms_db &lt; backup_ccms_db.sql
+              </pre>
+            </div>
+            <p className="text-xs text-slate-500">
+              Run these commands in a local terminal on the machine hosting MySQL.
+            </p>
+          </div>
+        </Modal>
 
         {/* Page Content */}
         <main className="flex-1 min-h-0 overflow-auto p-4 sm:p-6">
