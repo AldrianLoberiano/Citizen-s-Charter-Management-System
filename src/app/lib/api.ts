@@ -39,6 +39,8 @@ export const api = {
   getDepartments: () => request("/departments"),
   getCharters: () => request("/charters"),
   getRatings: (charterId: number) => request(`/charters/${charterId}/ratings`),
+  getFeedback: () => request("/feedback"),
+  getCharterFeedback: (charterId: number) => request(`/charters/${charterId}/feedback`),
   login: (username: string, password: string) =>
     request("/auth/login", {
       method: "POST",
@@ -81,6 +83,20 @@ export const api = {
   deleteCharter: (id: number) => request(`/charters/${id}`, { method: "DELETE" }),
   addRating: (charterId: number, payload: { rating: number; comment: string }) =>
     request(`/charters/${charterId}/ratings`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  addFeedback: (
+    charterId: number,
+    payload: {
+      name: string;
+      email: string;
+      contact: string;
+      rating: number;
+      comment: string;
+    }
+  ) =>
+    request(`/charters/${charterId}/feedback`, {
       method: "POST",
       body: JSON.stringify(payload),
     }),
