@@ -7,17 +7,17 @@ import { useEffect, useMemo, useState } from "react";
 import { ExternalLink, MessageSquare, QrCode, Star } from "lucide-react";
 import { Modal } from "../../components/Modal";
 import {
-  getRatings,
+  getFeedback,
   getCharterById,
   getDepartmentById,
   getCharters,
   getDepartments,
   formatDateTime,
-  Rating,
+  FeedbackResponse,
 } from "../../store/data";
 
 export function Feedback() {
-  const [ratings, setRatings] = useState<Rating[]>(getRatings());
+  const [ratings, setRatings] = useState<FeedbackResponse[]>(getFeedback());
   const [departmentFilter, setDepartmentFilter] = useState("all");
   const [charterFilter, setCharterFilter] = useState("all");
   const [ratingFilter, setRatingFilter] = useState("all");
@@ -31,7 +31,7 @@ export function Feedback() {
   )}&bgcolor=ffffff&color=1e3a8a`;
 
   useEffect(() => {
-    setRatings(getRatings());
+    setRatings(getFeedback());
   }, []);
 
   const departments = useMemo(() => getDepartments(), []);
@@ -78,6 +78,8 @@ export function Feedback() {
       if (normalizedSearch) {
         const haystack = `${charter?.title ?? ""} ${department?.name ?? ""} ${
           rating.comment ?? ""
+        } ${rating.name ?? ""} ${rating.email ?? ""} ${
+          rating.contact ?? ""
         }`.toLowerCase();
         if (!haystack.includes(normalizedSearch)) {
           return false;
@@ -108,6 +110,9 @@ export function Feedback() {
       return {
         charter: charter?.title ?? "Unknown charter",
         department: department?.name ?? "—",
+        name: rating.name ?? "",
+        email: rating.email ?? "",
+        contact: rating.contact ?? "",
         rating: rating.rating,
         comment: rating.comment?.trim() ?? "",
         date: formatDateTime(rating.created_at),
@@ -122,12 +127,24 @@ export function Feedback() {
       return stringValue;
     };
 
-    const header = ["Charter", "Department", "Rating", "Comment", "Date"].join(",");
+    const header = [
+      "Charter",
+      "Department",
+      "Name",
+      "Email",
+      "Contact",
+      "Rating",
+      "Comment",
+      "Date",
+    ].join(",");
     const body = rows
       .map((row) =>
         [
           escapeValue(row.charter),
           escapeValue(row.department),
+          escapeValue(row.name),
+          escapeValue(row.email),
+          escapeValue(row.contact),
           escapeValue(row.rating),
           escapeValue(row.comment),
           escapeValue(row.date),
@@ -163,12 +180,12 @@ export function Feedback() {
         <div>
           <h1 className="text-slate-900">Feedback</h1>
           <p className="mt-0.5 text-sm text-slate-500">
-            Citizen ratings and comments submitted per charter.
+            Citizen feedback responses submitted per charter.
           </p>
         </div>
         <div className="flex items-center gap-2 text-sm text-slate-500">
           <MessageSquare className="h-4 w-4" />
-          {summary.total} total ratings
+          {summary.total} total responses
         </div>
       </div>
 
@@ -184,7 +201,7 @@ export function Feedback() {
         <div className="rounded-2xl border border-slate-200 bg-white p-5">
           <p className="text-xs uppercase tracking-wide text-slate-400">Total Feedback</p>
           <div className="mt-3 text-2xl text-slate-900">{summary.total}</div>
-          <p className="mt-1 text-sm text-slate-500">All submitted ratings</p>
+          <p className="mt-1 text-sm text-slate-500">All submitted responses</p>
         </div>
       </div>
 
@@ -192,7 +209,7 @@ export function Feedback() {
         <div className="border-b border-slate-200 px-6 py-4">
           <h2 className="text-slate-900">Latest Feedback</h2>
           <p className="mt-0.5 text-xs text-slate-400">
-            Showing {filteredRatings.length} of {sortedRatings.length} rating
+            Showing {filteredRatings.length} of {sortedRatings.length} response
             {sortedRatings.length === 1 ? "" : "s"}
           </p>
         </div>
@@ -261,7 +278,7 @@ export function Feedback() {
                 type="text"
                 value={searchTerm}
                 onChange={(event) => setSearchTerm(event.target.value)}
-                placeholder="Search charter, department, or comment"
+                placeholder="Search charter, department, name, or comment"
                 className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -302,6 +319,15 @@ export function Feedback() {
                 <th className="hidden px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 md:table-cell">
                   Department
                 </th>
+                <th className="hidden px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 lg:table-cell">
+                  Name
+                </th>
+                <th className="hidden px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 lg:table-cell">
+                  Email
+                </th>
+                <th className="hidden px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 lg:table-cell">
+                  Contact
+                </th>
                 <th className="px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500">
                   Rating
                 </th>
@@ -328,6 +354,15 @@ export function Feedback() {
                     <td className="hidden px-6 py-3.5 text-sm text-slate-500 md:table-cell">
                       {department?.name || "—"}
                     </td>
+                    <td className="hidden px-6 py-3.5 text-sm text-slate-500 lg:table-cell">
+                      {rating.name || "—"}
+                    </td>
+                    <td className="hidden px-6 py-3.5 text-sm text-slate-500 lg:table-cell">
+                      {rating.email || "—"}
+                    </td>
+                    <td className="hidden px-6 py-3.5 text-sm text-slate-500 lg:table-cell">
+                      {rating.contact || "—"}
+                    </td>
                     <td className="px-6 py-3.5">
                       <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-xs text-amber-700">
                         <Star className="h-3 w-3" />
@@ -346,7 +381,7 @@ export function Feedback() {
               {filteredRatings.length === 0 && (
                 <tr>
                   <td
-                    colSpan={5}
+                    colSpan={8}
                     className="px-6 py-10 text-center text-sm text-slate-400"
                   >
                     No feedback has been submitted yet.
