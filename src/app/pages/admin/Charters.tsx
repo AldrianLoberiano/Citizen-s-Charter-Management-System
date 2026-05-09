@@ -602,7 +602,7 @@ export function Charters() {
               }`}
             />
             <p className="text-slate-400 text-xs mt-1">
-              {formData.content.length} characters � Use line breaks for
+              {formData.content.length} characters - Use line breaks for
               requirements and steps
             </p>
             {formErrors.content && (
