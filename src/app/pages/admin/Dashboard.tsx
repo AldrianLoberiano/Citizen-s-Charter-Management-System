@@ -18,19 +18,19 @@ import {
   getDepartments,
   getCharters,
   getDepartmentById,
-  getRatings,
+  getFeedback,
   formatDate,
 } from "../../store/data";
 
 export function Dashboard() {
   const [departments, setDepartments] = useState(getDepartments());
   const [charters, setCharters] = useState(getCharters());
-  const [ratings, setRatings] = useState(getRatings());
+  const [feedback, setFeedback] = useState(getFeedback());
 
   useEffect(() => {
     setDepartments(getDepartments());
     setCharters(getCharters());
-    setRatings(getRatings());
+    setFeedback(getFeedback());
   }, []);
 
   const recentCharters = [...charters]
@@ -67,11 +67,11 @@ export function Dashboard() {
     },
     {
       label: "Total Feedback",
-      value: ratings.length,
+      value: feedback.length,
       icon: Star,
       bgColor: "bg-purple-700",
       link: "/admin/dashboard",
-      description: "Citizen ratings received",
+      description: "Citizen feedback received",
     },
   ];
 
