@@ -84,7 +84,6 @@ export function AdminLayout() {
     navigate("/admin/login");
   };
 
-  const handleExportBackup = async () => {
     try {
       setBackupMessage(null);
       setIsExporting(true);
