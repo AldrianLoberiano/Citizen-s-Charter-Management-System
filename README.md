@@ -2,6 +2,14 @@
 
 Citizen's Charter Management System is a React + Vite frontend with an Express + MySQL backend.
 
+## Recent Updates
+
+- New in-app feedback flow with name, email, contact, rating, and comment fields.
+- Admin Feedback page now mixes legacy ratings + QR/form responses in one list.
+- Filters, CSV export, QR modal with copy link, and charts (bar + pie) added in admin.
+- QR code now points to the in-app feedback form instead of Google Forms.
+- Client Charter Detail includes a back button to All Charters.
+
 ## Prerequisites
 
 - Node.js 18+
@@ -160,7 +168,7 @@ Backend `backend/.env` can override the defaults used by `backend/server.js` and
 
 ## API Behavior
 
-The frontend syncs with the backend API and can fall back to local storage when the API is unavailable. Main API routes include departments, charters, ratings, authentication, and charter file uploads.
+The frontend syncs with the backend API and can fall back to local storage when the API is unavailable. Main API routes include departments, charters, ratings, feedback responses, authentication, and charter file uploads.
 
 ## Upload Storage
 
