@@ -46,12 +46,12 @@ export function Feedback() {
   const [isQrOpen, setIsQrOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
+  const departments = useMemo(() => getDepartments(), []);
+  const charters = useMemo(() => getCharters(), []);
+
   useEffect(() => {
     setRatings(getCombinedFeedback());
   }, []);
-
-  const departments = useMemo(() => getDepartments(), []);
-  const charters = useMemo(() => getCharters(), []);
 
   const feedbackFormUrl =
     typeof window !== "undefined" && charters.length > 0
