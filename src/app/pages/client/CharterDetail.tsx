@@ -88,6 +88,13 @@ export function CharterDetail() {
 
   const viewerType = getViewerType(attachmentUrl);
   const resolvedAttachmentUrl = resolveFileUrl(attachmentUrl);
+  const canUseOfficeViewer =
+    viewerType === "excel" && resolvedAttachmentUrl.startsWith("https://");
+  const officeViewerUrl = canUseOfficeViewer
+    ? `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(
+        resolvedAttachmentUrl
+      )}`
+    : "";
 
   const MAX_PREVIEW_ROWS = 60;
   const MAX_PREVIEW_COLS = 10;
@@ -340,7 +347,14 @@ export function CharterDetail() {
                 </button>
               </div>
               <div className="bg-white p-3">
-                {viewerType === "excel" && (
+                {viewerType === "excel" && canUseOfficeViewer && (
+                  <iframe
+                    src={officeViewerUrl}
+                    title={`${charter.title} Excel preview`}
+                    className="h-[720px] w-full rounded-lg border border-slate-200 bg-white"
+                  />
+                )}
+                {viewerType === "excel" && !canUseOfficeViewer && (
                   <div className="space-y-3">
                     <div className="flex items-center justify-between text-xs text-slate-500">
                       <span>Sheet: {excelSheet || "Sheet1"}</span>
