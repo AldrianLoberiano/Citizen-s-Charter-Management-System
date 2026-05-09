@@ -2,9 +2,11 @@ import { api } from "../lib/api";
 import {
   getDepartments,
   getCharters,
+  getRatings,
   getFeedback,
   setDepartments,
   setCharters,
+  setRatings,
   setFeedback,
 } from "./data";
 
@@ -18,11 +20,16 @@ export async function syncLocalCacheFromApi(): Promise<void> {
     setDepartments(departments);
     setCharters(charters);
 
-    const feedback = await api.getFeedback();
+    const [ratings, feedback] = await Promise.all([
+      api.getRatingsAll(),
+      api.getFeedback(),
+    ]);
+    setRatings(ratings);
     setFeedback(feedback);
   } catch {
     setDepartments(getDepartments());
     setCharters(getCharters());
+    setRatings(getRatings());
     setFeedback(getFeedback());
   }
 }
