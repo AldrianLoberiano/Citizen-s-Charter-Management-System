@@ -32,6 +32,7 @@ const navItems: NavItem[] = [
   { path: "/admin/departments", label: "Departments", icon: Building2 },
   { path: "/admin/charters", label: "Charters", icon: FileText },
   { path: "/admin/feedback", label: "Feedback", icon: MessageSquare },
+  { path: "/admin/backup", label: "Backup & Recovery", icon: Database },
 ];
 
 export function AdminLayout() {
