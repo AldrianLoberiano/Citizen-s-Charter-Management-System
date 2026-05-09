@@ -18,19 +18,19 @@ import {
   getDepartments,
   getCharters,
   getDepartmentById,
-  getFeedback,
+  getCombinedFeedback,
   formatDate,
 } from "../../store/data";
 
 export function Dashboard() {
   const [departments, setDepartments] = useState(getDepartments());
   const [charters, setCharters] = useState(getCharters());
-  const [feedback, setFeedback] = useState(getFeedback());
+  const [feedback, setFeedback] = useState(getCombinedFeedback());
 
   useEffect(() => {
     setDepartments(getDepartments());
     setCharters(getCharters());
-    setFeedback(getFeedback());
+    setFeedback(getCombinedFeedback());
   }, []);
 
   const recentCharters = [...charters]
