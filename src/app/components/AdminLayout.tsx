@@ -84,7 +84,6 @@ export function AdminLayout() {
     navigate("/admin/login");
   };
 
-      setBackupMessage(null);
       setIsExporting(true);
       const blob = await api.downloadBackup();
       const url = URL.createObjectURL(blob);
