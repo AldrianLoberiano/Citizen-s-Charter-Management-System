@@ -492,7 +492,6 @@ export function CharterDetail() {
                   alt="QR Code for the citizen feedback form"
                   className="w-40 h-40 border border-slate-200 rounded-lg bg-white"
                 />
-                  className="text-xs text-blue-700 hover:underline break-all text-center"
                 >
                   {feedbackUrl}
                 </a>
