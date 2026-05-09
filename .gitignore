@@ -5,3 +5,12 @@
 node_modules
 *.sql
 backend/.env
+.env
+.env.*
+*.log
+uploads/
+backups/
+*.pem
+*.key
+*.pfx
+*.crt
