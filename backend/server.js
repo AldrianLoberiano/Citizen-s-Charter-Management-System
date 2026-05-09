@@ -8,6 +8,7 @@ import fs from "fs";
 import { spawn } from "child_process";
 import multer from "multer";
 import { pool } from "./db.js";
+import os from "os";
 
 dotenv.config();
 
@@ -27,6 +28,8 @@ const uploadsDir = path.join(__dirname, "../uploads/charters");
 fs.mkdirSync(uploadsDir, { recursive: true });
 const previewsDir = path.join(uploadsDir, "previews");
 fs.mkdirSync(previewsDir, { recursive: true });
+const backupsDir = path.join(__dirname, "../uploads/backups");
+fs.mkdirSync(backupsDir, { recursive: true });
 
 const libreOfficeCandidates = [
   process.env.LIBREOFFICE_PATH,
@@ -106,6 +109,44 @@ const upload = multer({
     callback(null, true);
   },
 });
+
+const sqlStorage = multer.diskStorage({
+  destination: (_req, _file, callback) => {
+    callback(null, backupsDir);
+  },
+  filename: (_req, file, callback) => {
+    const safeBase = `${Date.now()}-${file.originalname}`.replace(/[^a-zA-Z0-9._-]/g, "_");
+    callback(null, safeBase);
+  },
+});
+
+const sqlUpload = multer({
+  storage: sqlStorage,
+  limits: { fileSize: 25 * 1024 * 1024 },
+  fileFilter: (_req, file, callback) => {
+    const allowed = ["application/sql", "text/plain", "application/octet-stream"];
+    const isSql = file.originalname.toLowerCase().endsWith(".sql");
+    if (!isSql && !allowed.includes(file.mimetype)) {
+      callback(new Error("Only .sql files are allowed."));
+      return;
+    }
+    callback(null, true);
+  },
+});
+
+const getDbArgs = () => {
+  const dbHost = process.env.DB_HOST || "127.0.0.1";
+  const dbPort = process.env.DB_PORT || "3306";
+  const dbUser = process.env.DB_USER || "root";
+  const dbPassword = process.env.DB_PASSWORD || "";
+  const dbName = process.env.DB_NAME || "ccms_db";
+
+  const baseArgs = ["--host", dbHost, "--port", String(dbPort), "--user", dbUser];
+  if (dbPassword) {
+    baseArgs.push(`--password=${dbPassword}`);
+  }
+  return { baseArgs, dbName };
+};
 
 app.use(
   cors({
@@ -206,6 +247,68 @@ app.route("/api/previews/excel").get(async (req, res) => {
 
 app.get("/api/health", (_req, res) => {
   res.json({ ok: true });
+});
+
+app.get("/api/admin/backup", (_req, res) => {
+  const { baseArgs, dbName } = getDbArgs();
+  const filename = `backup_${new Date().toISOString().slice(0, 10)}.sql`;
+
+  res.setHeader("Content-Type", "application/sql");
+  res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+
+  const child = spawn("mysqldump", [...baseArgs, dbName], { windowsHide: true });
+
+  child.stdout.pipe(res);
+
+  let stderr = "";
+  child.stderr.on("data", (chunk) => {
+    stderr += chunk.toString();
+  });
+
+  child.on("error", (error) => {
+    res.status(500).send(error.message || "Failed to start mysqldump.");
+  });
+
+  child.on("close", (code) => {
+    if (code === 0) return;
+    if (!res.headersSent) {
+      res.status(500).send(stderr || `mysqldump exited with code ${code}`);
+    }
+  });
+});
+
+app.post("/api/admin/restore", sqlUpload.single("file"), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ message: "No SQL file uploaded" });
+  }
+
+  const { baseArgs, dbName } = getDbArgs();
+  const mysqlArgs = [...baseArgs, dbName];
+  const child = spawn("mysql", mysqlArgs, { windowsHide: true });
+  const input = fs.createReadStream(req.file.path);
+  let stderr = "";
+
+  input.on("error", (error) => {
+    res.status(500).json({ message: error.message || "Failed to read SQL file." });
+  });
+
+  child.stderr.on("data", (chunk) => {
+    stderr += chunk.toString();
+  });
+
+  child.on("error", (error) => {
+    res.status(500).json({ message: error.message || "Failed to start mysql." });
+  });
+
+  child.on("close", (code) => {
+    fs.unlink(req.file.path, () => {});
+    if (code === 0) {
+      return res.json({ ok: true });
+    }
+    return res.status(500).json({ message: stderr || `mysql exited with code ${code}` });
+  });
+
+  input.pipe(child.stdin);
 });
 
 app.get("/api/departments", async (_req, res) => {
