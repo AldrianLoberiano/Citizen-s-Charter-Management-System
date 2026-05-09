@@ -505,16 +505,15 @@ export function Feedback() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {filteredRatings.map((rating, index) => {
+              {filteredRatings.map((rating) => {
                 const charter = getCharterById(rating.charter_id);
                 const department = charter
                   ? getDepartmentById(charter.department_id)
                   : undefined;
-                const rowKey = `${rating.source}-${rating.id}-${rating.charter_id}-${rating.created_at ?? ""}-${index}`;
 
                 return (
                   <tr
-                    key={rowKey}
+                    key={rating.uid}
                     className="transition-colors hover:bg-slate-50"
                   >
                     <td className="px-6 py-3.5 text-sm text-slate-900">
