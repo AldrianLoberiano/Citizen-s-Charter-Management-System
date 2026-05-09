@@ -84,7 +84,6 @@ export function AdminLayout() {
     navigate("/admin/login");
   };
 
-      link.href = url;
       link.download = `backup_ccms_db_${new Date().toISOString().slice(0, 10)}.sql`;
       document.body.appendChild(link);
       link.click();
