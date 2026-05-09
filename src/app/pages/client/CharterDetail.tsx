@@ -4,7 +4,7 @@
  * and citizen feedback/rating system
  */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams, Navigate } from "react-router";
 import {
   ChevronRight,
@@ -18,6 +18,7 @@ import {
   QrCode,
   MessageSquare,
 } from "lucide-react";
+import * as XLSX from "xlsx";
 import {
   getCharterById,
   getDepartmentById,
@@ -87,9 +88,14 @@ export function CharterDetail() {
 
   const viewerType = getViewerType(attachmentUrl);
   const resolvedAttachmentUrl = resolveFileUrl(attachmentUrl);
-  const officeViewerUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(
-    resolvedAttachmentUrl
-  )}`;
+
+  const MAX_PREVIEW_ROWS = 60;
+  const MAX_PREVIEW_COLS = 10;
+  const [excelRows, setExcelRows] = useState<string[][]>([]);
+  const [excelSheet, setExcelSheet] = useState("");
+  const [excelError, setExcelError] = useState("");
+  const [excelLoading, setExcelLoading] = useState(false);
+  const [excelTruncated, setExcelTruncated] = useState(false);
 
   // Format content with line breaks preserved
   const formattedContent = charter.content.split("\n").map((line, idx) => {
@@ -133,8 +139,66 @@ export function CharterDetail() {
     );
   });
 
+  useEffect(() => {
+    if (viewerType !== "excel") return;
+
+    let cancelled = false;
+    const loadExcelPreview = async () => {
+      setExcelLoading(true);
+      setExcelError("");
+      setExcelRows([]);
+      setExcelSheet("");
+      setExcelTruncated(false);
+
+      try {
+        const response = await fetch(resolvedAttachmentUrl);
+        if (!response.ok) {
+          throw new Error(`Failed to load file (${response.status}).`);
+        }
+        const data = await response.arrayBuffer();
+        const workbook = XLSX.read(data, { type: "array" });
+        const sheetName = workbook.SheetNames[0] || "Sheet1";
+        const sheet = workbook.Sheets[sheetName];
+        const rows = XLSX.utils.sheet_to_json(sheet, {
+          header: 1,
+          blankrows: false,
+        }) as Array<Array<string | number | boolean | Date | null>>;
+        const truncatedRows = rows.slice(0, MAX_PREVIEW_ROWS).map((row) =>
+          row
+            .slice(0, MAX_PREVIEW_COLS)
+            .map((cell) => (cell === null || cell === undefined ? "" : String(cell)))
+        );
+        const truncated =
+          rows.length > MAX_PREVIEW_ROWS ||
+          rows.some((row) => row.length > MAX_PREVIEW_COLS);
+
+        if (!cancelled) {
+          setExcelRows(truncatedRows);
+          setExcelSheet(sheetName);
+          setExcelTruncated(truncated);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setExcelError(
+            error instanceof Error ? error.message : "Failed to load Excel file."
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setExcelLoading(false);
+        }
+      }
+    };
+
+    loadExcelPreview();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [viewerType, resolvedAttachmentUrl]);
+
   const handleDownload = () => {
-    window.open(attachmentUrl, "_blank", "noopener,noreferrer");
+    window.open(resolvedAttachmentUrl, "_blank", "noopener,noreferrer");
   };
 
   // Submit rating
@@ -277,11 +341,50 @@ export function CharterDetail() {
               </div>
               <div className="bg-white p-3">
                 {viewerType === "excel" && (
-                  <iframe
-                    src={officeViewerUrl}
-                    title={`${charter.title} Excel preview`}
-                    className="h-[720px] w-full rounded-lg border border-slate-200 bg-white"
-                  />
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between text-xs text-slate-500">
+                      <span>Sheet: {excelSheet || "Sheet1"}</span>
+                      {excelTruncated && (
+                        <span>
+                          Showing first {MAX_PREVIEW_ROWS} rows and {MAX_PREVIEW_COLS} columns
+                        </span>
+                      )}
+                    </div>
+                    {excelLoading && (
+                      <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
+                        Loading Excel preview...
+                      </div>
+                    )}
+                    {!excelLoading && excelError && (
+                      <div className="rounded-lg border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
+                        {excelError}
+                      </div>
+                    )}
+                    {!excelLoading && !excelError && (
+                      <div className="max-h-[70vh] overflow-auto rounded-lg border border-slate-200">
+                        {excelRows.length === 0 ? (
+                          <div className="p-6 text-sm text-slate-500">No data to display.</div>
+                        ) : (
+                          <table className="min-w-full border-collapse text-left text-xs">
+                            <tbody>
+                              {excelRows.map((row, rowIndex) => (
+                                <tr key={`row-${rowIndex}`} className="odd:bg-white even:bg-slate-50">
+                                  {row.map((cell, cellIndex) => (
+                                    <td
+                                      key={`cell-${rowIndex}-${cellIndex}`}
+                                      className="whitespace-nowrap border-b border-slate-200 px-3 py-2 text-slate-700"
+                                    >
+                                      {cell}
+                                    </td>
+                                  ))}
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 )}
                 {viewerType === "pdf" && (
                   <iframe
