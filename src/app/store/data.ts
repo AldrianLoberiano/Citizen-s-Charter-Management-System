@@ -38,6 +38,7 @@ export interface FeedbackResponse {
 }
 
 export interface FeedbackEntry {
+  uid: string;
   id: number;
   charter_id: number;
   name: string | null;
@@ -329,8 +330,23 @@ export function getFeedbackByCharter(charterId: number): FeedbackResponse[] {
   return feedbackCache.filter((rating) => rating.charter_id === charterId);
 }
 
+function createFeedbackUid(entry: {
+  source: "rating" | "feedback";
+  id: number;
+  charter_id: number;
+  created_at?: string;
+}) {
+  return `${entry.source}-${entry.id}-${entry.charter_id}-${entry.created_at ?? ""}`;
+}
+
 export function getCombinedFeedback(): FeedbackEntry[] {
   const ratingEntries: FeedbackEntry[] = ratingsCache.map((rating) => ({
+    uid: createFeedbackUid({
+      source: "rating",
+      id: rating.id,
+      charter_id: rating.charter_id,
+      created_at: rating.created_at,
+    }),
     id: rating.id,
     charter_id: rating.charter_id,
     name: null,
@@ -343,6 +359,12 @@ export function getCombinedFeedback(): FeedbackEntry[] {
   }));
 
   const feedbackEntries: FeedbackEntry[] = feedbackCache.map((feedback) => ({
+    uid: createFeedbackUid({
+      source: "feedback",
+      id: feedback.id,
+      charter_id: feedback.charter_id,
+      created_at: feedback.created_at,
+    }),
     id: feedback.id,
     charter_id: feedback.charter_id,
     name: feedback.name ?? null,
