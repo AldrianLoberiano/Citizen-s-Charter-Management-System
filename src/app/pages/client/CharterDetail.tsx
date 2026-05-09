@@ -534,6 +534,13 @@ export function CharterDetail() {
 
           {/* Sidebar */}
           <div className="space-y-5">
+            <Link
+              to="/"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-700 transition-colors hover:border-slate-300 hover:text-slate-900"
+            >
+              <FileText className="h-4 w-4" />
+              All Charters
+            </Link>
             {/* QR Code */}
             <div className="bg-white rounded-xl border border-slate-200 p-5">
               <h3 className="text-slate-900 mb-3 flex items-center gap-2">
