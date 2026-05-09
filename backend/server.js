@@ -322,6 +322,52 @@ app.post("/api/charters/:id/ratings", async (req, res) => {
   res.status(201).json(rows[0]);
 });
 
+app.get("/api/feedback", async (_req, res) => {
+  const [rows] = await pool.query(
+    "SELECT * FROM feedback_responses ORDER BY created_at DESC, id DESC"
+  );
+  res.json(rows);
+});
+
+app.get("/api/charters/:id/feedback", async (req, res) => {
+  const [rows] = await pool.query(
+    "SELECT * FROM feedback_responses WHERE charter_id = ? ORDER BY created_at DESC, id DESC",
+    [req.params.id]
+  );
+  res.json(rows);
+});
+
+app.post("/api/charters/:id/feedback", async (req, res) => {
+  const {
+    name = "",
+    email = "",
+    contact = "",
+    rating,
+    comment = "",
+  } = req.body || {};
+  const parsedRating = Number(rating);
+  if (!parsedRating || parsedRating < 1 || parsedRating > 5) {
+    return res.status(400).json({ message: "Rating must be between 1 and 5" });
+  }
+
+  const [result] = await pool.query(
+    "INSERT INTO feedback_responses (charter_id, name, email, contact, rating, comment) VALUES (?, ?, ?, ?, ?, ?)",
+    [
+      req.params.id,
+      String(name).trim() || null,
+      String(email).trim() || null,
+      String(contact).trim() || null,
+      parsedRating,
+      String(comment).trim() || null,
+    ]
+  );
+  const [rows] = await pool.query(
+    "SELECT * FROM feedback_responses WHERE id = ?",
+    [result.insertId]
+  );
+  res.status(201).json(rows[0]);
+});
+
 app.post("/api/auth/login", async (req, res) => {
   const { username, password } = req.body || {};
   if (!username || !password) {
