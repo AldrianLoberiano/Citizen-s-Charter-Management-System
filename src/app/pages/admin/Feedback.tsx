@@ -24,6 +24,14 @@ export function Feedback() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isQrOpen, setIsQrOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    setRatings(getFeedback());
+  }, []);
+
+  const departments = useMemo(() => getDepartments(), []);
+  const charters = useMemo(() => getCharters(), []);
+
   const feedbackFormUrl =
     typeof window !== "undefined" && charters.length > 0
       ? `${window.location.origin}/charter/${charters[0].id}#feedback-form`
@@ -33,13 +41,6 @@ export function Feedback() {
         feedbackFormUrl
       )}&bgcolor=ffffff&color=1e3a8a`
     : "";
-
-  useEffect(() => {
-    setRatings(getFeedback());
-  }, []);
-
-  const departments = useMemo(() => getDepartments(), []);
-  const charters = useMemo(() => getCharters(), []);
 
   const sortedRatings = useMemo(() => {
     return [...ratings].sort(
