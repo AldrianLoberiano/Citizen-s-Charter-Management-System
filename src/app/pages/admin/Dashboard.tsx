@@ -22,6 +22,7 @@ import {
   getCombinedFeedback,
   formatDate,
 } from "../../store/data";
+import { Modal } from "../../components/Modal";
 
 export function Dashboard() {
   const [departments, setDepartments] = useState(getDepartments());
