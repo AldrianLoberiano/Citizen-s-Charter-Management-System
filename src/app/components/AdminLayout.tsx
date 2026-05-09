@@ -17,7 +17,6 @@ import {
   Database,
 } from "lucide-react";
 import { isAuthenticated, logout, getAuthUser } from "../store/data";
-import { Modal } from "./Modal";
 
 const adminLogoSrc = new URL("../../public/images/header/logo.png", import.meta.url).href;
 const adminHeaderBgSrc = new URL("../../public/images/header/header1.png", import.meta.url).href;
