@@ -2,10 +2,10 @@ import { api } from "../lib/api";
 import {
   getDepartments,
   getCharters,
-  getRatings,
+  getFeedback,
   setDepartments,
   setCharters,
-  setRatings,
+  setFeedback,
 } from "./data";
 
 export async function syncLocalCacheFromApi(): Promise<void> {
@@ -18,17 +18,11 @@ export async function syncLocalCacheFromApi(): Promise<void> {
     setDepartments(departments);
     setCharters(charters);
 
-    const ratingsByCharter = await Promise.all(
-      charters.map(async (charter: { id: number }) => ({
-        charterId: charter.id,
-        ratings: await api.getRatings(charter.id),
-      }))
-    );
-
-    setRatings(ratingsByCharter.flatMap((item) => item.ratings));
+    const feedback = await api.getFeedback();
+    setFeedback(feedback);
   } catch {
     setDepartments(getDepartments());
     setCharters(getCharters());
-    setRatings(getRatings());
+    setFeedback(getFeedback());
   }
 }
