@@ -9,16 +9,25 @@ import {
   getRatings,
   getCharterById,
   getDepartmentById,
+  getCharters,
+  getDepartments,
   formatDateTime,
   Rating,
 } from "../../store/data";
 
 export function Feedback() {
   const [ratings, setRatings] = useState<Rating[]>(getRatings());
+  const [departmentFilter, setDepartmentFilter] = useState("all");
+  const [charterFilter, setCharterFilter] = useState("all");
+  const [ratingFilter, setRatingFilter] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     setRatings(getRatings());
   }, []);
+
+  const departments = useMemo(() => getDepartments(), []);
+  const charters = useMemo(() => getCharters(), []);
 
   const sortedRatings = useMemo(() => {
     return [...ratings].sort(
@@ -34,6 +43,101 @@ export function Feedback() {
     const average = Math.round((total / ratings.length) * 10) / 10;
     return { total: ratings.length, average };
   }, [ratings]);
+
+  const filteredRatings = useMemo(() => {
+    const normalizedSearch = searchTerm.trim().toLowerCase();
+    return sortedRatings.filter((rating) => {
+      const charter = getCharterById(rating.charter_id);
+      const department = charter
+        ? getDepartmentById(charter.department_id)
+        : undefined;
+
+      if (
+        departmentFilter !== "all" &&
+        String(department?.id ?? "") !== departmentFilter
+      ) {
+        return false;
+      }
+
+      if (charterFilter !== "all" && String(charter?.id ?? "") !== charterFilter) {
+        return false;
+      }
+
+      if (ratingFilter !== "all" && String(rating.rating) !== ratingFilter) {
+        return false;
+      }
+
+      if (normalizedSearch) {
+        const haystack = `${charter?.title ?? ""} ${department?.name ?? ""} ${
+          rating.comment ?? ""
+        }`.toLowerCase();
+        if (!haystack.includes(normalizedSearch)) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  }, [
+    sortedRatings,
+    departmentFilter,
+    charterFilter,
+    ratingFilter,
+    searchTerm,
+  ]);
+
+  const clearFilters = () => {
+    setDepartmentFilter("all");
+    setCharterFilter("all");
+    setRatingFilter("all");
+    setSearchTerm("");
+  };
+
+  const handleExportCsv = () => {
+    const rows = filteredRatings.map((rating) => {
+      const charter = getCharterById(rating.charter_id);
+      const department = charter ? getDepartmentById(charter.department_id) : undefined;
+      return {
+        charter: charter?.title ?? "Unknown charter",
+        department: department?.name ?? "—",
+        rating: rating.rating,
+        comment: rating.comment?.trim() ?? "",
+        date: formatDateTime(rating.created_at),
+      };
+    });
+
+    const escapeValue = (value: string | number) => {
+      const stringValue = String(value ?? "");
+      if (/[",\n]/.test(stringValue)) {
+        return `"${stringValue.replace(/"/g, '""')}"`;
+      }
+      return stringValue;
+    };
+
+    const header = ["Charter", "Department", "Rating", "Comment", "Date"].join(",");
+    const body = rows
+      .map((row) =>
+        [
+          escapeValue(row.charter),
+          escapeValue(row.department),
+          escapeValue(row.rating),
+          escapeValue(row.comment),
+          escapeValue(row.date),
+        ].join(",")
+      )
+      .join("\n");
+
+    const csv = `${header}\n${body}`;
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `feedback_${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="space-y-6">
@@ -70,8 +174,96 @@ export function Feedback() {
         <div className="border-b border-slate-200 px-6 py-4">
           <h2 className="text-slate-900">Latest Feedback</h2>
           <p className="mt-0.5 text-xs text-slate-400">
-            Showing {sortedRatings.length} rating{sortedRatings.length === 1 ? "" : "s"}
+            Showing {filteredRatings.length} of {sortedRatings.length} rating
+            {sortedRatings.length === 1 ? "" : "s"}
           </p>
+        </div>
+
+        <div className="border-b border-slate-200 bg-slate-50 px-6 py-4">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-5">
+            <div>
+              <label className="text-xs uppercase tracking-wide text-slate-400">
+                Department
+              </label>
+              <select
+                value={departmentFilter}
+                onChange={(event) => setDepartmentFilter(event.target.value)}
+                className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="all">All departments</option>
+                {departments.map((dept) => (
+                  <option key={dept.id} value={String(dept.id)}>
+                    {dept.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="text-xs uppercase tracking-wide text-slate-400">
+                Charter
+              </label>
+              <select
+                value={charterFilter}
+                onChange={(event) => setCharterFilter(event.target.value)}
+                className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="all">All charters</option>
+                {charters.map((charter) => (
+                  <option key={charter.id} value={String(charter.id)}>
+                    {charter.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="text-xs uppercase tracking-wide text-slate-400">
+                Rating
+              </label>
+              <select
+                value={ratingFilter}
+                onChange={(event) => setRatingFilter(event.target.value)}
+                className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="all">All ratings</option>
+                {[5, 4, 3, 2, 1].map((value) => (
+                  <option key={value} value={String(value)}>
+                    {value} star{value === 1 ? "" : "s"}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="md:col-span-2 xl:col-span-2">
+              <label className="text-xs uppercase tracking-wide text-slate-400">
+                Search
+              </label>
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
+                placeholder="Search charter, department, or comment"
+                className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+          </div>
+          <div className="mt-3 flex flex-wrap items-center justify-end gap-3">
+            <button
+              type="button"
+              onClick={handleExportCsv}
+              className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700 transition-colors hover:border-slate-300 hover:text-slate-900"
+            >
+              Export CSV
+            </button>
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="text-xs text-slate-500 transition-colors hover:text-slate-900"
+            >
+              Clear filters
+            </button>
+          </div>
         </div>
 
         <div className="overflow-x-auto">
@@ -96,7 +288,7 @@ export function Feedback() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {sortedRatings.map((rating) => {
+              {filteredRatings.map((rating) => {
                 const charter = getCharterById(rating.charter_id);
                 const department = charter
                   ? getDepartmentById(charter.department_id)
@@ -125,7 +317,7 @@ export function Feedback() {
                   </tr>
                 );
               })}
-              {sortedRatings.length === 0 && (
+              {filteredRatings.length === 0 && (
                 <tr>
                   <td
                     colSpan={5}
