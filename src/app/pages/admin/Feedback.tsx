@@ -512,7 +512,10 @@ export function Feedback() {
                   : undefined;
 
                 return (
-                  <tr key={rating.id} className="transition-colors hover:bg-slate-50">
+                  <tr
+                    key={`${rating.source}-${rating.id}`}
+                    className="transition-colors hover:bg-slate-50"
+                  >
                     <td className="px-6 py-3.5 text-sm text-slate-900">
                       {charter?.title || "Unknown charter"}
                     </td>
