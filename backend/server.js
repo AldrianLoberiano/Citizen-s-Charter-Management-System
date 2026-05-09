@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
+import { spawn } from "child_process";
 import multer from "multer";
 import { pool } from "./db.js";
 
@@ -24,6 +25,60 @@ const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
 
 const uploadsDir = path.join(__dirname, "../uploads/charters");
 fs.mkdirSync(uploadsDir, { recursive: true });
+const previewsDir = path.join(uploadsDir, "previews");
+fs.mkdirSync(previewsDir, { recursive: true });
+
+const libreOfficeCandidates = [
+  process.env.LIBREOFFICE_PATH,
+  "C:\\Program Files\\LibreOffice\\program\\soffice.exe",
+  "C:\\Program Files (x86)\\LibreOffice\\program\\soffice.exe",
+  "/usr/bin/soffice",
+  "/usr/local/bin/soffice",
+  "/snap/bin/libreoffice",
+].filter(Boolean);
+
+const findLibreOffice = () => libreOfficeCandidates.find((candidate) => fs.existsSync(candidate));
+
+const resolveUploadPath = (filePath) => {
+  const normalized = filePath.trim();
+  if (!normalized || normalized.startsWith("http://") || normalized.startsWith("https://")) {
+    return null;
+  }
+  const relative = normalized.startsWith("/") ? normalized.slice(1) : normalized;
+  const resolved = path.resolve(__dirname, "../", relative);
+  const uploadsRoot = path.resolve(uploadsDir) + path.sep;
+  if (!resolved.startsWith(uploadsRoot)) return null;
+  return resolved;
+};
+
+const convertExcelToPdf = (inputPath, outputDir) =>
+  new Promise((resolve, reject) => {
+    const libreOffice = findLibreOffice();
+    if (!libreOffice) {
+      reject(new Error("LibreOffice is not installed on the server."));
+      return;
+    }
+
+    const args = ["--headless", "--norestore", "--convert-to", "pdf", "--outdir", outputDir, inputPath];
+    const child = spawn(libreOffice, args, { windowsHide: true });
+    let stderr = "";
+
+    child.stderr.on("data", (chunk) => {
+      stderr += chunk.toString();
+    });
+
+    child.on("error", (error) => {
+      reject(error);
+    });
+
+    child.on("close", (code) => {
+      if (code === 0) {
+        resolve();
+        return;
+      }
+      reject(new Error(stderr || `LibreOffice exited with code ${code}`));
+    });
+  });
 
 const storage = multer.diskStorage({
   destination: (_req, _file, callback) => {
@@ -77,6 +132,76 @@ app.post("/api/uploads/charters", upload.single("file"), (req, res) => {
     mime_type: req.file.mimetype,
     size: req.file.size,
   });
+});
+
+app.route("/api/previews/excel").get(async (req, res) => {
+  const fileParam = typeof req.query.file === "string" ? req.query.file : "";
+  if (!fileParam) {
+    return res.status(400).json({ message: "Missing file parameter." });
+  }
+
+  const inputPath = resolveUploadPath(fileParam);
+  if (!inputPath || !/\.xlsx?$/.test(inputPath)) {
+    return res.status(400).json({ message: "Invalid Excel file path." });
+  }
+
+  if (!fs.existsSync(inputPath)) {
+    return res.status(404).json({ message: "File not found." });
+  }
+
+  const baseName = path.basename(inputPath, path.extname(inputPath));
+  const pdfPath = path.join(previewsDir, `${baseName}.pdf`);
+
+  try {
+    const inputStat = fs.statSync(inputPath);
+    const pdfExists = fs.existsSync(pdfPath);
+    const pdfIsFresh = pdfExists && fs.statSync(pdfPath).mtimeMs >= inputStat.mtimeMs;
+
+    if (!pdfIsFresh) {
+      await convertExcelToPdf(inputPath, previewsDir);
+    }
+
+    if (!fs.existsSync(pdfPath)) {
+      return res.status(500).json({ message: "Failed to generate preview." });
+    }
+
+    res.setHeader("Content-Type", "application/pdf");
+    return res.sendFile(pdfPath);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to generate preview.";
+    return res.status(500).json({ message });
+  }
+}).head(async (req, res) => {
+  const fileParam = typeof req.query.file === "string" ? req.query.file : "";
+  if (!fileParam) {
+    return res.status(400).end();
+  }
+  const inputPath = resolveUploadPath(fileParam);
+  if (!inputPath || !/\.xlsx?$/.test(inputPath)) {
+    return res.status(400).end();
+  }
+  if (!fs.existsSync(inputPath)) {
+    return res.status(404).end();
+  }
+
+  const baseName = path.basename(inputPath, path.extname(inputPath));
+  const pdfPath = path.join(previewsDir, `${baseName}.pdf`);
+
+  try {
+    const inputStat = fs.statSync(inputPath);
+    const pdfExists = fs.existsSync(pdfPath);
+    const pdfIsFresh = pdfExists && fs.statSync(pdfPath).mtimeMs >= inputStat.mtimeMs;
+    if (!pdfIsFresh) {
+      await convertExcelToPdf(inputPath, previewsDir);
+    }
+    if (!fs.existsSync(pdfPath)) {
+      return res.status(500).end();
+    }
+    res.setHeader("Content-Type", "application/pdf");
+    return res.status(200).end();
+  } catch (_error) {
+    return res.status(500).end();
+  }
 });
 
 app.get("/api/health", (_req, res) => {
