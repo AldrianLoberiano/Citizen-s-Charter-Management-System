@@ -135,7 +135,7 @@ export function AdminLayout() {
               <button
                 type="button"
                 onClick={() => setIsBackupOpen(true)}
-                className="flex items-center gap-2 rounded-full px-3 py-1.5 text-xs transition-colors bg-white/10 text-white hover:bg-white/20"
+                className="flex items-center gap-2 rounded-full px-3 py-1.5 text-xs text-white/80 transition-colors hover:bg-white/10 hover:text-white"
               >
                 <Database className="h-4 w-4" />
                 Backup & Recovery
@@ -188,15 +188,21 @@ export function AdminLayout() {
         >
           <div className="space-y-4 text-sm text-slate-600">
             <div>
-              <p className="text-slate-900">Backup (mysqldump)</p>
+              <p className="text-slate-900">Export / Backup (mysqldump)</p>
               <pre className="mt-2 rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700">
 mysqldump -u root -p ccms_db &gt; backup_ccms_db.sql
               </pre>
             </div>
             <div>
-              <p className="text-slate-900">Restore</p>
+              <p className="text-slate-900">Import / Restore</p>
               <pre className="mt-2 rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700">
 mysql -u root -p ccms_db &lt; backup_ccms_db.sql
+              </pre>
+            </div>
+            <div>
+              <p className="text-slate-900">Export to a custom file name</p>
+              <pre className="mt-2 rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700">
+mysqldump -u root -p ccms_db &gt; backup_ccms_db_YYYYMMDD.sql
               </pre>
             </div>
             <p className="text-xs text-slate-500">
