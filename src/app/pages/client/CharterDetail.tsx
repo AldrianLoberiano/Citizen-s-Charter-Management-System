@@ -21,12 +21,12 @@ import {
 import {
   getCharterById,
   getDepartmentById,
-  getRatingsByCharter,
+  getFeedbackByCharter,
   getAverageRating,
-  addRating,
+  addFeedback,
   formatDate,
   formatDateTime,
-  Rating,
+  FeedbackResponse,
 } from "../../store/data";
 
 export function CharterDetail() {
@@ -34,15 +34,18 @@ export function CharterDetail() {
   const charterId = parseInt(id || "0");
 
   const charter = getCharterById(charterId);
-  const [ratings, setRatings] = useState<Rating[]>(
-    getRatingsByCharter(charterId)
+  const [feedbackEntries, setFeedbackEntries] = useState<FeedbackResponse[]>(
+    getFeedbackByCharter(charterId)
   );
   const [avgRating, setAvgRating] = useState(getAverageRating(charterId));
 
-  // Rating form state
+  // Feedback form state
   const [hoverStar, setHoverStar] = useState(0);
   const [selectedStar, setSelectedStar] = useState(0);
   const [comment, setComment] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [contact, setContact] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState("");
 
@@ -143,10 +146,15 @@ export function CharterDetail() {
     window.open(resolvedAttachmentUrl, "_blank", "noopener,noreferrer");
   };
 
-  // Submit rating
+  // Submit feedback
   const handleSubmitRating = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitError("");
+
+    if (!name.trim()) {
+      setSubmitError("Please enter your name before submitting.");
+      return;
+    }
 
     if (selectedStar === 0) {
       setSubmitError("Please select a star rating before submitting.");
@@ -154,14 +162,17 @@ export function CharterDetail() {
     }
 
     try {
-      const newRating = await addRating({
+      const newRating = await addFeedback({
         charter_id: charterId,
+        name: name.trim(),
+        email: email.trim(),
+        contact: contact.trim(),
         rating: selectedStar,
         comment: comment.trim(),
       });
 
-      const updatedRatings = [...ratings, newRating];
-      setRatings(updatedRatings);
+      const updatedRatings = [...feedbackEntries, newRating];
+      setFeedbackEntries(updatedRatings);
       setAvgRating(
         Math.round(
           (updatedRatings.reduce((a, r) => a + r.rating, 0) /
@@ -169,6 +180,10 @@ export function CharterDetail() {
             10
         ) / 10
       );
+      setName("");
+      setEmail("");
+      setContact("");
+      setComment("");
       setSubmitted(true);
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : "Failed to submit rating.");
@@ -219,11 +234,11 @@ export function CharterDetail() {
                   <Clock className="h-4 w-4" />
                   Published {formatDate(charter.created_at)}
                 </div>
-                {ratings.length > 0 && (
+                {feedbackEntries.length > 0 && (
                   <div className="flex items-center gap-1 text-sm text-amber-600">
                     <Star className="h-4 w-4 fill-amber-500 text-amber-500" />
-                    {avgRating} ({ratings.length} review
-                    {ratings.length !== 1 ? "s" : ""})
+                    {avgRating} ({feedbackEntries.length} review
+                    {feedbackEntries.length !== 1 ? "s" : ""})
                   </div>
                 )}
               </div>
@@ -330,6 +345,45 @@ export function CharterDetail() {
                 </div>
               ) : (
                 <form onSubmit={handleSubmitRating} className="space-y-4">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div>
+                      <label className="mb-1.5 block text-sm text-slate-700">
+                        Full name
+                      </label>
+                      <input
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="Your name"
+                        maxLength={150}
+                        className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1.5 block text-sm text-slate-700">
+                        Email (optional)
+                      </label>
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="you@email.com"
+                        maxLength={190}
+                        className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1.5 block text-sm text-slate-700">
+                        Contact number (optional)
+                      </label>
+                      <input
+                        value={contact}
+                        onChange={(e) => setContact(e.target.value)}
+                        placeholder="0917 123 4567"
+                        maxLength={50}
+                        className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                  </div>
                   {/* Star Rating */}
                   <div>
                     <label className="mb-2 block text-sm text-slate-700">
@@ -394,12 +448,12 @@ export function CharterDetail() {
                 </form>
               )}
 
-              {/* Existing Ratings */}
-              {ratings.length > 0 && (
+              {/* Existing Feedback */}
+              {feedbackEntries.length > 0 && (
                 <div className="mt-6 pt-6 border-t border-slate-100 space-y-4">
                   <div className="flex items-center justify-between">
                     <h3 className="text-slate-700">
-                      Reviews ({ratings.length})
+                      Reviews ({feedbackEntries.length})
                     </h3>
                     <div className="flex items-center gap-1 text-amber-500">
                       <Star className="w-4 h-4 fill-amber-500" />
@@ -410,12 +464,12 @@ export function CharterDetail() {
                   {/* Rating distribution */}
                   <div className="space-y-1.5">
                     {[5, 4, 3, 2, 1].map((star) => {
-                      const count = ratings.filter(
+                      const count = feedbackEntries.filter(
                         (r) => r.rating === star
                       ).length;
                       const pct =
-                        ratings.length > 0
-                          ? Math.round((count / ratings.length) * 100)
+                        feedbackEntries.length > 0
+                          ? Math.round((count / feedbackEntries.length) * 100)
                           : 0;
                       return (
                         <div
@@ -440,7 +494,7 @@ export function CharterDetail() {
 
                   {/* Comment list */}
                   <div className="space-y-3 mt-4">
-                    {ratings
+                    {feedbackEntries
                       .filter((r) => r.comment)
                       .slice(-5)
                       .reverse()
@@ -462,6 +516,9 @@ export function CharterDetail() {
                                 />
                               ))}
                             </div>
+                            <span className="text-slate-600 text-xs">
+                              {r.name || "Anonymous"}
+                            </span>
                             <span className="text-slate-400 text-xs">
                               {formatDateTime(r.created_at)}
                             </span>
