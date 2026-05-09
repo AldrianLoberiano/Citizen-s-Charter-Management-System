@@ -7,6 +7,7 @@
 import { useState } from "react";
 import { Link, useParams, Navigate } from "react-router";
 import {
+  ArrowLeft,
   ChevronRight,
   Building2,
   FileText,
@@ -538,8 +539,8 @@ export function CharterDetail() {
               to="/"
               className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-700 transition-colors hover:border-slate-300 hover:text-slate-900"
             >
-              <FileText className="h-4 w-4" />
-              All Charters
+              <ArrowLeft className="h-4 w-4" />
+              Back to All Departments
             </Link>
             {/* QR Code */}
             <div className="bg-white rounded-xl border border-slate-200 p-5">
