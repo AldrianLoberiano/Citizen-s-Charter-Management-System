@@ -25,10 +25,14 @@ export function Feedback() {
   const [isQrOpen, setIsQrOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const feedbackFormUrl =
-    "https://docs.google.com/forms/d/e/1FAIpQLSfkaEz1PHp1yvtvrB9hWpa7YuxZE-AD3lT_C9wGocdUM3_Q8Q/viewform";
-  const feedbackQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(
-    feedbackFormUrl
-  )}&bgcolor=ffffff&color=1e3a8a`;
+    typeof window !== "undefined" && charters.length > 0
+      ? `${window.location.origin}/charter/${charters[0].id}#feedback-form`
+      : "";
+  const feedbackQrUrl = feedbackFormUrl
+    ? `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(
+        feedbackFormUrl
+      )}&bgcolor=ffffff&color=1e3a8a`
+    : "";
 
   useEffect(() => {
     setRatings(getFeedback());
@@ -294,6 +298,7 @@ export function Feedback() {
             <button
               type="button"
               onClick={() => setIsQrOpen(true)}
+              disabled={!feedbackFormUrl}
               className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700 transition-colors hover:border-slate-300 hover:text-slate-900"
             >
               <QrCode className="h-4 w-4" />
@@ -400,32 +405,38 @@ export function Feedback() {
         size="sm"
       >
         <div className="flex flex-col items-center gap-4 text-center">
-          <img
-            src={feedbackQrUrl}
-            alt="QR code for feedback form"
-            className="h-44 w-44 rounded-lg border border-slate-200 bg-white"
-          />
-          <div className="flex flex-wrap items-center justify-center gap-3">
-            <a
-              href={feedbackFormUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-2 text-sm text-blue-700 hover:text-blue-900"
-            >
-              Open feedback form
-              <ExternalLink className="h-4 w-4" />
-            </a>
-            <button
-              type="button"
-              onClick={handleCopyLink}
-              className="rounded-lg border border-slate-200 px-3 py-1 text-xs text-slate-700 transition-colors hover:border-slate-300 hover:text-slate-900"
-            >
-              {copied ? "Copied" : "Copy link"}
-            </button>
-          </div>
-          <p className="text-xs text-slate-500">
-            Scan the QR code or open the link to submit feedback.
-          </p>
+          {feedbackQrUrl ? (
+            <>
+              <img
+                src={feedbackQrUrl}
+                alt="QR code for feedback form"
+                className="h-44 w-44 rounded-lg border border-slate-200 bg-white"
+              />
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <a
+                  href={feedbackFormUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 text-sm text-blue-700 hover:text-blue-900"
+                >
+                  Open feedback form
+                  <ExternalLink className="h-4 w-4" />
+                </a>
+                <button
+                  type="button"
+                  onClick={handleCopyLink}
+                  className="rounded-lg border border-slate-200 px-3 py-1 text-xs text-slate-700 transition-colors hover:border-slate-300 hover:text-slate-900"
+                >
+                  {copied ? "Copied" : "Copy link"}
+                </button>
+              </div>
+              <p className="text-xs text-slate-500">
+                Scan the QR code or open the link to submit feedback.
+              </p>
+            </>
+          ) : (
+            <p className="text-sm text-slate-500">No charter available for QR.</p>
+          )}
         </div>
       </Modal>
     </div>
