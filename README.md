@@ -106,6 +106,44 @@ Start the frontend in another terminal:
 
 The frontend runs on `http://localhost:5173` and the backend runs on `http://localhost:4000` by default.
 
+## Localhost Deployment (Local Only)
+
+Use these steps to run the system locally on `localhost` without any public hosting.
+
+1. Start MySQL locally (XAMPP or MySQL service).
+2. Create and seed the database:
+   `mysql -u root -p < database/ccms_mysql.sql`
+3. (Optional) Create `backend/.env` if you need custom ports or DB credentials:
+   - `PORT=4000`
+   - `CORS_ORIGIN=http://localhost:5173`
+   - `DB_HOST=127.0.0.1`
+   - `DB_PORT=3306`
+   - `DB_USER=root`
+   - `DB_PASSWORD=`
+   - `DB_NAME=ccms_db`
+4. Install dependencies:
+   - Frontend: `npm install`
+   - Backend: `cd backend && npm install`
+5. Start the backend API:
+   `npm run server`
+6. Start the frontend (new terminal):
+   `npm run dev`
+7. Open the app:
+   - Frontend: `http://localhost:5173`
+   - Backend: `http://localhost:4000`
+
+Notes:
+
+- This setup is for local development only and is not exposed outside your machine.
+- If you change the frontend port, update `CORS_ORIGIN` in `backend/.env`.
+
+## Troubleshooting (Localhost)
+
+- Backend won’t start: verify MySQL is running and credentials in `backend/.env` match.
+- CORS error in browser: ensure `CORS_ORIGIN` matches the frontend URL.
+- Frontend shows no data: confirm `http://localhost:4000/api/health` returns `{ "ok": true }`.
+- File uploads fail: ensure `uploads/charters/` exists and is writable.
+
 ## Environment Variables
 
 Backend `backend/.env` can override the defaults used by `backend/server.js` and `backend/db.js`:
@@ -135,4 +173,4 @@ Uploaded files are stored on disk in `uploads/charters/`. The backend returns an
 
 ## Database Notes
 
-The imported SQL file creates the `ccms_db` database with `departments`, `charters`, and `ratings` tables plus seed data for initial testing.
+The imported SQL file creates the `ccms_db` database with `departments`, `charters`, `ratings`, and `feedback_responses` tables plus seed data for initial testing.
