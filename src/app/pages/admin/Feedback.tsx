@@ -7,17 +7,17 @@ import { useEffect, useMemo, useState } from "react";
 import { ExternalLink, MessageSquare, QrCode, Star } from "lucide-react";
 import { Modal } from "../../components/Modal";
 import {
-  getFeedback,
+  getCombinedFeedback,
   getCharterById,
   getDepartmentById,
   getCharters,
   getDepartments,
   formatDateTime,
-  FeedbackResponse,
+  FeedbackEntry,
 } from "../../store/data";
 
 export function Feedback() {
-  const [ratings, setRatings] = useState<FeedbackResponse[]>(getFeedback());
+  const [ratings, setRatings] = useState<FeedbackEntry[]>(getCombinedFeedback());
   const [departmentFilter, setDepartmentFilter] = useState("all");
   const [charterFilter, setCharterFilter] = useState("all");
   const [ratingFilter, setRatingFilter] = useState("all");
@@ -26,7 +26,7 @@ export function Feedback() {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    setRatings(getFeedback());
+    setRatings(getCombinedFeedback());
   }, []);
 
   const departments = useMemo(() => getDepartments(), []);
@@ -85,7 +85,7 @@ export function Feedback() {
           rating.comment ?? ""
         } ${rating.name ?? ""} ${rating.email ?? ""} ${
           rating.contact ?? ""
-        }`.toLowerCase();
+        } ${rating.source}`.toLowerCase();
         if (!haystack.includes(normalizedSearch)) {
           return false;
         }
@@ -118,6 +118,7 @@ export function Feedback() {
         name: rating.name ?? "",
         email: rating.email ?? "",
         contact: rating.contact ?? "",
+        source: rating.source === "feedback" ? "QR/Form" : "Rating",
         rating: rating.rating,
         comment: rating.comment?.trim() ?? "",
         date: formatDateTime(rating.created_at),
@@ -138,6 +139,7 @@ export function Feedback() {
       "Name",
       "Email",
       "Contact",
+      "Source",
       "Rating",
       "Comment",
       "Date",
@@ -150,6 +152,7 @@ export function Feedback() {
           escapeValue(row.name),
           escapeValue(row.email),
           escapeValue(row.contact),
+          escapeValue(row.source),
           escapeValue(row.rating),
           escapeValue(row.comment),
           escapeValue(row.date),
@@ -334,6 +337,9 @@ export function Feedback() {
                 <th className="hidden px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 lg:table-cell">
                   Contact
                 </th>
+                <th className="hidden px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 lg:table-cell">
+                  Source
+                </th>
                 <th className="px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500">
                   Rating
                 </th>
@@ -369,6 +375,9 @@ export function Feedback() {
                     <td className="hidden px-6 py-3.5 text-sm text-slate-500 lg:table-cell">
                       {rating.contact || "—"}
                     </td>
+                    <td className="hidden px-6 py-3.5 text-sm text-slate-500 lg:table-cell">
+                      {rating.source === "feedback" ? "QR/Form" : "Rating"}
+                    </td>
                     <td className="px-6 py-3.5">
                       <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-xs text-amber-700">
                         <Star className="h-3 w-3" />
@@ -387,7 +396,7 @@ export function Feedback() {
               {filteredRatings.length === 0 && (
                 <tr>
                   <td
-                    colSpan={8}
+                    colSpan={9}
                     className="px-6 py-10 text-center text-sm text-slate-400"
                   >
                     No feedback has been submitted yet.
