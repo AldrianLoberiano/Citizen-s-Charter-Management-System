@@ -12,8 +12,8 @@ import {
   FileText,
   LogOut,
   ExternalLink,
-  QrCode,
   User,
+  MessageSquare,
 } from "lucide-react";
 import { isAuthenticated, logout, getAuthUser } from "../store/data";
 
@@ -30,6 +30,7 @@ const navItems: NavItem[] = [
   { path: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { path: "/admin/departments", label: "Departments", icon: Building2 },
   { path: "/admin/charters", label: "Charters", icon: FileText },
+  { path: "/admin/feedback", label: "Feedback", icon: MessageSquare },
 ];
 
 export function AdminLayout() {
@@ -50,8 +51,6 @@ export function AdminLayout() {
   }
 
   const currentUser = getAuthUser();
-  const feedbackUrl =
-    "https://docs.google.com/forms/d/e/1FAIpQLSfkaEz1PHp1yvtvrB9hWpa7YuxZE-AD3lT_C9wGocdUM3_Q8Q/viewform";
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -130,24 +129,6 @@ export function AdminLayout() {
                   <span>{label}</span>
                 </Link>
               ))}
-              <button
-                type="button"
-                disabled={!feedbackUrl}
-                onClick={() => {
-                  if (feedbackUrl) {
-                    window.open(feedbackUrl, "_blank", "noopener,noreferrer");
-                  }
-                }}
-                className={
-                  "flex items-center gap-2 rounded-full px-3 py-1.5 text-xs transition-colors " +
-                  (feedbackUrl
-                    ? "bg-white/15 text-white hover:bg-white/20"
-                    : "cursor-not-allowed text-white/40")
-                }
-              >
-                <QrCode className="h-4 w-4" />
-                <span>Feedback QR</span>
-              </button>
             </nav>
           </div>
 
