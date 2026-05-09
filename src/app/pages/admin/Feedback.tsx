@@ -16,6 +16,27 @@ import {
   FeedbackEntry,
 } from "../../store/data";
 
+function polarToCartesian(centerX: number, centerY: number, radius: number, angle: number) {
+  const angleInRadians = ((angle - 90) * Math.PI) / 180;
+  return {
+    x: centerX + radius * Math.cos(angleInRadians),
+    y: centerY + radius * Math.sin(angleInRadians),
+  };
+}
+
+function describeArc(
+  centerX: number,
+  centerY: number,
+  radius: number,
+  startAngle: number,
+  endAngle: number
+) {
+  const start = polarToCartesian(centerX, centerY, radius, endAngle);
+  const end = polarToCartesian(centerX, centerY, radius, startAngle);
+  const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
+  return `M ${centerX} ${centerY} L ${start.x} ${start.y} A ${radius} ${radius} 0 ${largeArcFlag} 0 ${end.x} ${end.y} Z`;
+}
+
 export function Feedback() {
   const [ratings, setRatings] = useState<FeedbackEntry[]>(getCombinedFeedback());
   const [departmentFilter, setDepartmentFilter] = useState("all");
@@ -56,6 +77,51 @@ export function Feedback() {
     const average = Math.round((total / ratings.length) * 10) / 10;
     return { total: ratings.length, average };
   }, [ratings]);
+
+  const ratingBreakdown = useMemo(() => {
+    return [5, 4, 3, 2, 1].map((value) => {
+      const count = ratings.filter((entry) => entry.rating === value).length;
+      const pct = summary.total > 0 ? Math.round((count / summary.total) * 100) : 0;
+      return { value, count, pct };
+    });
+  }, [ratings, summary.total]);
+
+  const sourceBreakdown = useMemo(() => {
+    const ratingCount = ratings.filter((entry) => entry.source === "rating").length;
+    const feedbackCount = ratings.filter((entry) => entry.source === "feedback").length;
+    const total = summary.total || 1;
+    return [
+      {
+        label: "Legacy ratings",
+        count: ratingCount,
+        pct: Math.round((ratingCount / total) * 100),
+        color: "#475569",
+      },
+      {
+        label: "QR / form",
+        count: feedbackCount,
+        pct: Math.round((feedbackCount / total) * 100),
+        color: "#059669",
+      },
+    ];
+  }, [ratings, summary.total]);
+
+  const sourceSlices = useMemo(() => {
+    let currentAngle = 0;
+    return sourceBreakdown.map((item) => {
+      const sliceAngle = (item.pct / 100) * 360;
+      const startAngle = currentAngle;
+      const endAngle = currentAngle + sliceAngle;
+      const midAngle = startAngle + sliceAngle / 2;
+      currentAngle = endAngle;
+      return {
+        ...item,
+        startAngle,
+        endAngle,
+        midAngle,
+      };
+    });
+  }, [sourceBreakdown]);
 
   const filteredRatings = useMemo(() => {
     const normalizedSearch = searchTerm.trim().toLowerCase();
@@ -210,6 +276,93 @@ export function Feedback() {
           <p className="text-xs uppercase tracking-wide text-slate-400">Total Feedback</p>
           <div className="mt-3 text-2xl text-slate-900">{summary.total}</div>
           <p className="mt-1 text-sm text-slate-500">All submitted responses</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <div className="rounded-2xl border border-slate-200 bg-white p-5">
+          <div className="flex items-center justify-between">
+            <h3 className="text-slate-900">Rating Breakdown</h3>
+            <span className="text-xs text-slate-400">% of total</span>
+          </div>
+          <div className="mt-4">
+            <svg viewBox="0 0 360 180" className="h-40 w-full">
+              <line x1="30" y1="150" x2="330" y2="150" stroke="#e2e8f0" />
+              {ratingBreakdown.map((item, index) => {
+                const barWidth = 44;
+                const gap = 16;
+                const x = 30 + index * (barWidth + gap);
+                const barHeight = Math.max(6, (item.pct / 100) * 110);
+                const y = 150 - barHeight;
+                return (
+                  <g key={item.value}>
+                    <rect
+                      x={x}
+                      y={y}
+                      width={barWidth}
+                      height={barHeight}
+                      rx={6}
+                      fill="#f59e0b"
+                    />
+                    <text x={x + barWidth / 2} y={170} textAnchor="middle" fontSize="11" fill="#64748b">
+                      {item.value}★
+                    </text>
+                    <text x={x + barWidth / 2} y={y - 6} textAnchor="middle" fontSize="10" fill="#94a3b8">
+                      {item.pct}%
+                    </text>
+                  </g>
+                );
+              })}
+            </svg>
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-slate-200 bg-white p-5">
+          <div className="flex items-center justify-between">
+            <h3 className="text-slate-900">Source Breakdown</h3>
+            <span className="text-xs text-slate-400">% of total</span>
+          </div>
+          <div className="mt-4 flex flex-col items-center gap-4 sm:flex-row sm:items-start">
+            <svg viewBox="0 0 120 120" className="h-36 w-36">
+              <circle cx="60" cy="60" r="56" fill="#f1f5f9" />
+              {sourceSlices.map((slice) => (
+                <g key={slice.label}>
+                  <path
+                    d={describeArc(60, 60, 56, slice.startAngle, slice.endAngle)}
+                    fill={slice.color}
+                  />
+                  {slice.pct > 0 && (
+                    <text
+                      x={polarToCartesian(60, 60, 34, slice.midAngle).x}
+                      y={polarToCartesian(60, 60, 34, slice.midAngle).y}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                      fontSize="9"
+                      fill="#ffffff"
+                    >
+                      {slice.pct}%
+                    </text>
+                  )}
+                </g>
+              ))}
+            </svg>
+            <div className="w-full space-y-2">
+              {sourceBreakdown.map((item) => (
+                <div key={item.label} className="flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-2 text-slate-600">
+                    <span
+                      className="h-2.5 w-2.5 rounded-full"
+                      style={{ backgroundColor: item.color }}
+                    />
+                    {item.label}
+                  </div>
+                  <span className="text-xs text-slate-500">
+                    {item.count} ({item.pct}%)
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
