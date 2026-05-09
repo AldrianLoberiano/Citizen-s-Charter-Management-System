@@ -510,10 +510,11 @@ export function Feedback() {
                 const department = charter
                   ? getDepartmentById(charter.department_id)
                   : undefined;
+                const rowKey = `${rating.source}-${rating.id}-${rating.charter_id}-${rating.created_at ?? ""}-${index}`;
 
                 return (
                   <tr
-                    key={`${rating.source}-${rating.id}-${rating.created_at}-${index}`}
+                    key={rowKey}
                     className="transition-colors hover:bg-slate-50"
                   >
                     <td className="px-6 py-3.5 text-sm text-slate-900">
