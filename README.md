@@ -152,6 +152,21 @@ Notes:
 - Frontend shows no data: confirm `http://localhost:4000/api/health` returns `{ "ok": true }`.
 - File uploads fail: ensure `uploads/charters/` exists and is writable.
 
+## Database Backup and Recovery (Localhost)
+
+Create a backup (dump) of the local database:
+
+`mysqldump -u root -p ccms_db > backup_ccms_db.sql`
+
+Restore from a backup file:
+
+`mysql -u root -p ccms_db < backup_ccms_db.sql`
+
+Tips:
+
+- Store backups outside the project folder.
+- Use a timestamped filename: `backup_ccms_db_YYYYMMDD.sql`.
+
 ## Environment Variables
 
 Backend `backend/.env` can override the defaults used by `backend/server.js` and `backend/db.js`:
