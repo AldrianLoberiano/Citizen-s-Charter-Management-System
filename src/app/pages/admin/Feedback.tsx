@@ -514,7 +514,7 @@ export function Feedback() {
                 return (
                   <tr
                     key={rating.uid}
-                    className="transition-colors hover:bg-slate-50"
+                    className="transition-colors hover:bg-slate-50 dark:hover:bg-slate-900/50"
                   >
                     <td className="px-6 py-3.5 text-sm text-slate-900">
                       {charter?.title || "Unknown charter"}
@@ -535,8 +535,8 @@ export function Feedback() {
                       {rating.source === "feedback" ? "QR/Form" : "Rating"}
                     </td>
                     <td className="px-6 py-3.5">
-                      <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-xs text-amber-700">
-                        <Star className="h-3 w-3" />
+                      <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-xs text-amber-700 dark:border-amber-400/40 dark:bg-amber-400/10 dark:text-amber-200">
+                        <Star className="h-3 w-3 fill-amber-500 text-amber-600 dark:fill-amber-300 dark:text-amber-300" />
                         {rating.rating}
                       </span>
                     </td>
