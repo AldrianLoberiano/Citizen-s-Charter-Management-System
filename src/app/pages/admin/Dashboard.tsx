@@ -103,7 +103,7 @@ export function Dashboard() {
           <Link
             key={stat.label}
             to={stat.link}
-            className="group flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 transition-all hover:border-slate-300 hover:shadow-sm"
+            className="group flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 transition-all hover:border-slate-300 hover:shadow-sm hover:bg-slate-50 dark:hover:bg-blue-900/70"
           >
             <div
               className="flex-shrink-0 rounded-xl bg-slate-900 p-3 transition-opacity group-hover:opacity-90"
