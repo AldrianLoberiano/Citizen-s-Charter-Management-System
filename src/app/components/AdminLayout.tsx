@@ -84,7 +84,6 @@ export function AdminLayout() {
     navigate("/admin/login");
   };
 
-      const message = error instanceof Error ? error.message : "Failed to import backup.";
       setBackupMessage(message);
     } finally {
       setIsImporting(false);
