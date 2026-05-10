@@ -84,7 +84,6 @@ export function AdminLayout() {
     navigate("/admin/login");
   };
 
-    try {
       setBackupMessage(null);
       setIsImporting(true);
       await api.restoreBackup(file);
