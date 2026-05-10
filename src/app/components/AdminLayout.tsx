@@ -85,7 +85,6 @@ export function AdminLayout() {
   };
 
       setBackupMessage(null);
-      setIsImporting(true);
       await api.restoreBackup(file);
       setBackupMessage("Backup imported successfully.");
     } catch (error) {
