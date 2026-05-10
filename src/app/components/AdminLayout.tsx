@@ -84,7 +84,6 @@ export function AdminLayout() {
     navigate("/admin/login");
   };
 
-      setBackupMessage(message);
     } finally {
       setIsImporting(false);
     }
