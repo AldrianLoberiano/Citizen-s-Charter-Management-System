@@ -84,7 +84,6 @@ export function AdminLayout() {
     navigate("/admin/login");
   };
 
-      document.body.removeChild(link);
       URL.revokeObjectURL(url);
     } catch (error) {
       const message = error instanceof Error ? error.message : "Failed to export backup.";
