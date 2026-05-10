@@ -131,7 +131,6 @@ export function AdminLayout() {
                   <span>{label}</span>
                 </Link>
               ))}
-              <button
                 type="button"
                 onClick={() => setIsBackupOpen(true)}
                 className="flex items-center gap-2 rounded-full px-3 py-1.5 text-xs text-white/80 transition-colors hover:bg-white/10 hover:text-white"
