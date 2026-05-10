@@ -22,12 +22,10 @@ import {
   getCombinedFeedback,
   formatDate,
 } from "../../store/data";
-import { Modal } from "../../components/Modal";
 
 export function Dashboard() {
   const [departments, setDepartments] = useState(getDepartments());
   const [charters, setCharters] = useState(getCharters());
-  const [isBackupOpen, setIsBackupOpen] = useState(false);
   const [feedback, setFeedback] = useState(getCombinedFeedback());
 
   useEffect(() => {
@@ -241,9 +239,8 @@ export function Dashboard() {
           </div>
           <ArrowRight className="h-4 w-4 text-slate-400 transition-colors group-hover:text-slate-700" />
         </Link>
-        <button
-          type="button"
-          onClick={() => setIsBackupOpen(true)}
+        <Link
+          to="/admin/backup"
           className="group flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-5 text-left transition-all hover:border-slate-300 hover:shadow-sm"
         >
           <div className="flex items-center gap-3">
@@ -254,33 +251,8 @@ export function Dashboard() {
             </div>
           </div>
           <ArrowRight className="h-4 w-4 text-slate-400 transition-colors group-hover:text-slate-700" />
-        </button>
+        </Link>
       </div>
-
-      <Modal
-        isOpen={isBackupOpen}
-        onClose={() => setIsBackupOpen(false)}
-        title="Backup & Recovery"
-        size="md"
-      >
-        <div className="space-y-4 text-sm text-slate-600">
-          <div>
-            <p className="text-slate-900">Backup (mysqldump)</p>
-            <pre className="mt-2 rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700">
-mysqldump -u root -p ccms_db &gt; backup_ccms_db.sql
-            </pre>
-          </div>
-          <div>
-            <p className="text-slate-900">Restore</p>
-            <pre className="mt-2 rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700">
-mysql -u root -p ccms_db &lt; backup_ccms_db.sql
-            </pre>
-          </div>
-          <p className="text-xs text-slate-500">
-            Run these commands in a local terminal on the machine hosting MySQL.
-          </p>
-        </div>
-      </Modal>
     </div>
   );
 }
