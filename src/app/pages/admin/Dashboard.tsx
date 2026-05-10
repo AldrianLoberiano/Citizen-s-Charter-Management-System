@@ -160,7 +160,7 @@ export function Dashboard() {
               {recentCharters.map((charter) => {
                 const dept = getDepartmentById(charter.department_id);
                 return (
-                  <tr key={charter.id} className="transition-colors hover:bg-slate-50">
+                  <tr key={charter.id} className="transition-colors hover:bg-slate-50 dark:hover:bg-slate-900/50">
                     <td className="px-6 py-3.5">
                       <div className="flex items-center gap-2">
                         <FileText className="h-4 w-4 flex-shrink-0 text-slate-400" />
