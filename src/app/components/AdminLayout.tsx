@@ -106,7 +106,7 @@ export function AdminLayout() {
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden min-h-0">
         {/* Top Header Bar */}
         <header
-          className="relative flex flex-shrink-0 items-center gap-4 border-b border-slate-200 bg-white px-4 py-3 shadow-sm"
+          className="relative flex flex-shrink-0 items-center gap-4 bg-white px-4 py-3 shadow-sm"
           style={{
             backgroundImage: `url(${adminHeaderBgSrc})`,
             backgroundSize: "cover",
