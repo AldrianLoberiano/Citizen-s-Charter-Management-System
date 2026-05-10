@@ -85,7 +85,6 @@ export function AdminLayout() {
   };
 
       const message = error instanceof Error ? error.message : "Failed to export backup.";
-      setBackupMessage(message);
     } finally {
       setIsExporting(false);
     }
