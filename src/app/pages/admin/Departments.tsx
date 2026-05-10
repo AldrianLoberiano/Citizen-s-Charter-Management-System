@@ -227,7 +227,7 @@ export function Departments() {
                 return (
                   <tr
                     key={dept.id}
-                    className="hover:bg-slate-50 transition-colors"
+                    className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors"
                   >
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-2.5">
@@ -366,7 +366,7 @@ export function Departments() {
             <button
               type="button"
               onClick={() => setFormModalOpen(false)}
-              className="px-4 py-2 text-sm text-slate-600 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors"
+              className="px-4 py-2 text-sm text-slate-600 border border-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-colors"
             >
               Cancel
             </button>
@@ -410,7 +410,7 @@ export function Departments() {
           <div className="flex justify-end gap-3">
             <button
               onClick={() => setDeleteModalOpen(false)}
-              className="px-4 py-2 text-sm text-slate-600 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors"
+              className="px-4 py-2 text-sm text-slate-600 border border-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-colors"
             >
               Cancel
             </button>
