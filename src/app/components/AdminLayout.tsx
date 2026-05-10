@@ -84,7 +84,6 @@ export function AdminLayout() {
     navigate("/admin/login");
   };
 
-  const handleImportBackup = async (file?: File | null) => {
     if (!file) return;
     try {
       setBackupMessage(null);
