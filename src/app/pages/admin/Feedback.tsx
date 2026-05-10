@@ -514,7 +514,7 @@ export function Feedback() {
                 return (
                   <tr
                     key={rating.uid}
-                    className="transition-colors hover:bg-slate-50 dark:hover:bg-slate-900/50"
+                    className="transition-colors hover:bg-slate-50 dark:hover:bg-blue-900/50"
                   >
                     <td className="px-6 py-3.5 text-sm text-slate-900">
                       {charter?.title || "Unknown charter"}
