@@ -84,7 +84,6 @@ export function AdminLayout() {
     navigate("/admin/login");
   };
 
-      setBackupMessage(null);
       await api.restoreBackup(file);
       setBackupMessage("Backup imported successfully.");
     } catch (error) {
