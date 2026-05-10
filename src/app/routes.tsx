@@ -12,6 +12,7 @@ import { Dashboard } from "./pages/admin/Dashboard";
 import { Departments } from "./pages/admin/Departments";
 import { Charters } from "./pages/admin/Charters";
 import { Feedback } from "./pages/admin/Feedback";
+import { BackupRecovery } from "./pages/admin/BackupRecovery";
 import { Home } from "./pages/client/Home";
 import { DepartmentPage } from "./pages/client/DepartmentPage";
 import { CharterDetail } from "./pages/client/CharterDetail";
@@ -73,6 +74,10 @@ export const router = createBrowserRouter([
       {
         path: "feedback",
         Component: Feedback,
+      },
+      {
+        path: "backup",
+        Component: BackupRecovery,
       },
     ],
   },
