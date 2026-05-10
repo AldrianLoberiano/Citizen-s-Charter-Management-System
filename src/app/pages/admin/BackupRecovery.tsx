@@ -78,7 +78,7 @@ export function BackupRecovery() {
             type="button"
             onClick={handleExport}
             disabled={isExporting}
-            className="mt-4 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 transition-colors hover:border-slate-300 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-60"
+            className="mt-4 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 transition-colors hover:border-slate-300 hover:text-slate-900 hover:bg-slate-50 active:bg-slate-100 dark:hover:bg-blue-900/40 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isExporting ? "Exporting..." : "Export SQL"}
           </button>
@@ -98,7 +98,7 @@ export function BackupRecovery() {
             type="file"
             accept=".sql"
             onChange={(event) => handleImport(event.target.files?.[0])}
-            className="mt-4 block w-full text-xs text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-white file:px-4 file:py-2 file:text-xs file:text-slate-700 file:shadow-sm file:hover:bg-slate-100"
+            className="mt-4 block w-full text-xs text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-white file:px-4 file:py-2 file:text-xs file:text-slate-700 file:shadow-sm file:hover:bg-slate-100 file:active:bg-slate-200 dark:file:hover:bg-blue-900/40"
           />
           {isImporting && (
             <p className="mt-2 text-xs text-slate-500">Importing backup...</p>
