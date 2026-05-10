@@ -84,7 +84,6 @@ export function AdminLayout() {
     navigate("/admin/login");
   };
 
-      link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
     } catch (error) {
