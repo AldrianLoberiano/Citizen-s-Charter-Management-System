@@ -15,6 +15,8 @@ import {
   User,
   MessageSquare,
   Database,
+  Moon,
+  Sun,
 } from "lucide-react";
 import { isAuthenticated, logout, getAuthUser } from "../store/data";
 
@@ -37,6 +39,11 @@ const navItems: NavItem[] = [
 
 export function AdminLayout() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window === "undefined") return false;
+    const stored = window.localStorage.getItem("ccms_admin_theme");
+    return stored ? stored === "dark" : false;
+  });
   const navigate = useNavigate();
   const location = useLocation();
   const menuRef = useRef<HTMLDivElement | null>(null);
@@ -47,6 +54,12 @@ export function AdminLayout() {
       navigate("/admin/login", { replace: true });
     }
   }, [navigate]);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    document.documentElement.classList.toggle("dark", isDark);
+    window.localStorage.setItem("ccms_admin_theme", isDark ? "dark" : "light");
+  }, [isDark]);
 
   if (!isAuthenticated()) {
     return null;
@@ -88,7 +101,7 @@ export function AdminLayout() {
 
 
   return (
-    <div className="flex h-screen overflow-hidden bg-slate-100">
+    <div className="flex h-screen overflow-hidden bg-slate-100 dark:bg-slate-950 dark:text-white">
       {/* Main Content Area */}
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden min-h-0">
         {/* Top Header Bar */}
@@ -150,6 +163,14 @@ export function AdminLayout() {
             </button>
             {menuOpen && (
               <div className="absolute right-0 top-12 w-52 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg">
+                <button
+                  type="button"
+                  onClick={() => setIsDark((prev) => !prev)}
+                  className="flex w-full items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-100"
+                >
+                  {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                  {isDark ? "Light theme" : "Dark theme"}
+                </button>
                 <Link
                   to="/"
                   onClick={() => setMenuOpen(false)}
@@ -173,7 +194,7 @@ export function AdminLayout() {
 
 
         {/* Page Content */}
-        <main className="flex-1 min-h-0 overflow-auto p-4 sm:p-6">
+        <main className="flex-1 min-h-0 overflow-auto p-4 sm:p-6 dark:text-white dark:[&_h1]:text-white dark:[&_h2]:text-white dark:[&_h3]:text-white dark:[&_p]:text-slate-200 dark:[&_span]:text-slate-200 dark:[&_label]:text-slate-200 dark:[&_th]:text-slate-200 dark:[&_td]:text-slate-200">
           <Outlet />
         </main>
       </div>
