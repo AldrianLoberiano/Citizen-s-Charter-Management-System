@@ -84,7 +84,6 @@ export function AdminLayout() {
     navigate("/admin/login");
   };
 
-  };
 
   const isActive = (path: string) => location.pathname === path;
 
