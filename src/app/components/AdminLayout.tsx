@@ -84,7 +84,6 @@ export function AdminLayout() {
     navigate("/admin/login");
   };
 
-    } finally {
       setIsImporting(false);
     }
   };
