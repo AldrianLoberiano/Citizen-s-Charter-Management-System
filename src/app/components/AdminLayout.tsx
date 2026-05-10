@@ -194,7 +194,7 @@ export function AdminLayout() {
 
 
         {/* Page Content */}
-        <main className="flex-1 min-h-0 overflow-auto p-4 sm:p-6 dark:text-white dark:[&_h1]:text-white dark:[&_h2]:text-white dark:[&_h3]:text-white dark:[&_p]:text-slate-200 dark:[&_span]:text-slate-200 dark:[&_label]:text-slate-200 dark:[&_th]:text-slate-200 dark:[&_td]:text-slate-200">
+        <main className="flex-1 min-h-0 overflow-auto p-4 sm:p-6 dark:text-white dark:[&_h1]:text-white dark:[&_h2]:text-white dark:[&_h3]:text-white dark:[&_p]:text-slate-200 dark:[&_span]:text-slate-200 dark:[&_label]:text-slate-200 dark:[&_th]:text-slate-200 dark:[&_td]:text-slate-200 dark:[&_.bg-white]:bg-slate-900 dark:[&_.bg-slate-50]:bg-slate-800/80 dark:[&_.bg-slate-100]:bg-slate-800 dark:[&_.border-slate-200]:border-slate-700 dark:[&_.border-slate-100]:border-slate-800 dark:[&_.text-slate-900]:text-white dark:[&_.text-slate-700]:text-slate-200 dark:[&_.text-slate-600]:text-slate-300 dark:[&_.text-slate-500]:text-slate-300 dark:[&_.text-slate-400]:text-slate-400 dark:[&_.text-slate-300]:text-slate-500">
           <Outlet />
         </main>
       </div>
