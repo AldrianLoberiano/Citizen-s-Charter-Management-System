@@ -131,13 +131,6 @@ export function AdminLayout() {
                   <span>{label}</span>
                 </Link>
               ))}
-                type="button"
-                onClick={() => setIsBackupOpen(true)}
-                className="flex items-center gap-2 rounded-full px-3 py-1.5 text-xs text-white/80 transition-colors hover:bg-white/10 hover:text-white"
-              >
-                <Database className="h-4 w-4" />
-                Backup & Recovery
-              </button>
             </nav>
           </div>
 
@@ -178,70 +171,6 @@ export function AdminLayout() {
           </div>
         </header>
 
-        <Modal
-          isOpen={isBackupOpen}
-          onClose={() => setIsBackupOpen(false)}
-          title="Backup & Recovery"
-          size="md"
-        >
-          <div className="space-y-4 text-sm text-slate-600">
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-              <p className="text-sm text-slate-700">Export / Backup</p>
-              <p className="mt-1 text-xs text-slate-500">
-                Download a SQL backup of the current database.
-              </p>
-              <button
-                type="button"
-                onClick={handleExportBackup}
-                disabled={isExporting}
-                className="mt-3 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700 transition-colors hover:border-slate-300 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {isExporting ? "Exporting..." : "Export SQL"}
-              </button>
-            </div>
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-              <p className="text-sm text-slate-700">Import / Restore</p>
-              <p className="mt-1 text-xs text-slate-500">
-                Upload a .sql backup to restore the database.
-              </p>
-              <input
-                type="file"
-                accept=".sql"
-                onChange={(event) => handleImportBackup(event.target.files?.[0])}
-                className="mt-3 block w-full text-xs text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-white file:px-3 file:py-1.5 file:text-xs file:text-slate-700 file:shadow-sm file:hover:bg-slate-100"
-              />
-              {isImporting && (
-                <p className="mt-2 text-xs text-slate-500">Importing backup...</p>
-              )}
-            </div>
-            <div>
-              <p className="text-slate-900">Export / Backup (mysqldump)</p>
-              <pre className="mt-2 rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700">
-mysqldump -u root -p ccms_db &gt; backup_ccms_db.sql
-              </pre>
-            </div>
-            <div>
-              <p className="text-slate-900">Import / Restore</p>
-              <pre className="mt-2 rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700">
-mysql -u root -p ccms_db &lt; backup_ccms_db.sql
-              </pre>
-            </div>
-            <div>
-              <p className="text-slate-900">Export to a custom file name</p>
-              <pre className="mt-2 rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700">
-mysqldump -u root -p ccms_db &gt; backup_ccms_db_YYYYMMDD.sql
-              </pre>
-            </div>
-            {backupMessage && (
-              <p className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs text-slate-600">
-                {backupMessage}
-              </p>
-            )}
-            <p className="text-xs text-slate-500">
-              Run these commands in a local terminal on the machine hosting MySQL.
-            </p>
-          </div>
-        </Modal>
 
         {/* Page Content */}
         <main className="flex-1 min-h-0 overflow-auto p-4 sm:p-6">
