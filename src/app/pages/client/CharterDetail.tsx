@@ -291,7 +291,7 @@ export function CharterDetail() {
                 <button
                   type="button"
                   onClick={handleDownload}
-                  className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-600 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/80"
+                  className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-600 transition-colors hover:bg-slate-50 dark:hover:bg-blue-900/40"
                 >
                   <ExternalLink className="h-4 w-4" />
                   View Full Page
