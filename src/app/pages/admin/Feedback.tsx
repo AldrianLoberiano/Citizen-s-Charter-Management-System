@@ -618,6 +618,7 @@ export function Feedback() {
               </div>
               <div>
                 <p className="text-xs uppercase tracking-wide text-slate-400">Contact</p>
+                <p className="text-slate-900">{selectedFeedback.contact || "—"}</p>
       <Modal
         isOpen={isQrOpen}
         onClose={() => setIsQrOpen(false)}
