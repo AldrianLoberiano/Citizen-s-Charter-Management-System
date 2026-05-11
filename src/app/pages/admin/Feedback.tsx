@@ -642,6 +642,7 @@ export function Feedback() {
               </div>
             </div>
             <div>
+              <p className="text-slate-900">
       <Modal
         isOpen={isQrOpen}
         onClose={() => setIsQrOpen(false)}
