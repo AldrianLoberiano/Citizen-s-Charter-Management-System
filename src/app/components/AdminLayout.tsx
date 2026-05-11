@@ -96,6 +96,7 @@ export function AdminLayout() {
     };
   }, [menuOpen]);
 
+  useEffect(() => {
   const handleLogout = () => {
     logout();
     navigate("/admin/login");
