@@ -198,6 +198,7 @@ export function AdminLayout() {
               aria-expanded={mobileNavOpen}
             >
               {mobileNavOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
             <button
               type="button"
               onClick={() => setMenuOpen((prev) => !prev)}
