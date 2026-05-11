@@ -250,6 +250,7 @@ export function Feedback() {
   };
 
   const selectedCharter = selectedFeedback
+    ? getCharterById(selectedFeedback.charter_id)
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
