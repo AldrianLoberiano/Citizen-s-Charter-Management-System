@@ -127,6 +127,7 @@ export function AdminLayout() {
   useEffect(() => {
     setMobileNavOpen(false);
   }, [location.pathname]);
+
   const handleLogout = () => {
     logout();
     navigate("/admin/login");
