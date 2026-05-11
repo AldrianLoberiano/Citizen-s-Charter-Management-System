@@ -501,7 +501,7 @@ export function CharterDetail() {
                       .reverse()
                       .map((r) => (
                         <div
-                          key={r.id}
+                          key={r.uid}
                           className="p-3 bg-slate-50 rounded-lg border border-slate-100"
                         >
                           <div className="flex items-center gap-2 mb-1.5">
