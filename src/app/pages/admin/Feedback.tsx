@@ -572,6 +572,7 @@ export function Feedback() {
                         type="button"
                         onClick={() => setSelectedFeedback(rating)}
                         className="text-xs text-blue-700 transition-colors hover:text-blue-900"
+                      >
                   </tr>
                 );
               })}
