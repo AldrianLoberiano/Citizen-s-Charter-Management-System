@@ -105,6 +105,7 @@ export function AdminLayout() {
         setMobileNavOpen(false);
       }
     };
+
   const handleLogout = () => {
     logout();
     navigate("/admin/login");
