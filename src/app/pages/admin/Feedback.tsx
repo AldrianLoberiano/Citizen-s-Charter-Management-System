@@ -582,6 +582,7 @@ export function Feedback() {
               {filteredRatings.length === 0 && (
                 <tr>
                   <td
+                    colSpan={10}
                     className="px-6 py-10 text-center text-sm text-slate-400"
                   >
                     No feedback has been submitted yet.
