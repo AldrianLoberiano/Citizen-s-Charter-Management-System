@@ -197,6 +197,7 @@ export function AdminLayout() {
               aria-label="Toggle navigation"
               aria-expanded={mobileNavOpen}
             >
+              {mobileNavOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             <button
               type="button"
               onClick={() => setMenuOpen((prev) => !prev)}
