@@ -573,6 +573,7 @@ export function Feedback() {
                         onClick={() => setSelectedFeedback(rating)}
                         className="text-xs text-blue-700 transition-colors hover:text-blue-900"
                       >
+                        View
                   </tr>
                 );
               })}
