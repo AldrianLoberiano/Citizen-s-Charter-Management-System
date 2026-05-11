@@ -104,14 +104,14 @@ export function ClientLayout() {
         )}
       </div>
       {/* Top announcement bar */}
-      <div className="border-b border-slate-800 bg-slate-950 px-4 py-2 text-center text-xs text-slate-200">
+      <div className="bg-slate-950 px-4 py-2 text-center text-xs text-slate-200">
         Official Website of the Local Government Unit — For inquiries, contact
         the Information Officer
       </div>
 
       {/* Main Navigation Header */}
       <header
-        className="sticky top-0 z-40 border-b border-slate-200 bg-gradient-to-r from-slate-900 via-purple-950 to-slate-900 shadow-sm"
+        className="sticky top-0 z-40 bg-gradient-to-r from-slate-900 via-purple-950 to-slate-900 shadow-none sm:shadow-sm"
         style={{
           backgroundImage: `url(${clientHeaderBgSrc})`,
           backgroundSize: "cover",
@@ -147,7 +147,7 @@ export function ClientLayout() {
       </main>
 
       {/* Footer */}
-      <footer className="mt-auto border-t border-slate-200 bg-white text-slate-600">
+      <footer className="mt-auto bg-white text-slate-600">
         <div className="mx-auto w-full px-6 py-10 sm:px-10 lg:px-16">
           <div className="grid grid-cols-1 items-start gap-8 md:grid-cols-[1.25fr_1fr]">
             {/* About */}
