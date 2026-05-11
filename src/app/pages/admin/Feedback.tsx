@@ -275,6 +275,7 @@ export function Feedback() {
             View Feedback (GForm)
           </a>
           <div className="flex items-center gap-2 text-sm text-slate-500">
+            <MessageSquare className="h-4 w-4" />
         </div>
       </div>
 
