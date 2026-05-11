@@ -120,6 +120,7 @@ export function AdminLayout() {
 
     return () => {
       document.removeEventListener("mousedown", handleClick);
+      document.removeEventListener("keydown", handleKey);
   const handleLogout = () => {
     logout();
     navigate("/admin/login");
