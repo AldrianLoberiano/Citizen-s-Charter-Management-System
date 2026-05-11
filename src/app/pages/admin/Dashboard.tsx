@@ -86,7 +86,6 @@ export function Dashboard() {
             Overview of the Calauan Citizen's Charter Management System
           </p>
         </div>
-        <div className="flex items-center gap-1 text-sm text-slate-400">
           <Clock className="h-4 w-4" />
           {new Date().toLocaleDateString("en-PH", {
             weekday: "long",
