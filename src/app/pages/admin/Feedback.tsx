@@ -640,6 +640,7 @@ export function Feedback() {
                   {formatDateTime(selectedFeedback.created_at)}
                 </p>
               </div>
+            </div>
       <Modal
         isOpen={isQrOpen}
         onClose={() => setIsQrOpen(false)}
