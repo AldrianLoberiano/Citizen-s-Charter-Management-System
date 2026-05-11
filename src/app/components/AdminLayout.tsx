@@ -110,6 +110,7 @@ export function AdminLayout() {
     const handleKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setMobileNavOpen(false);
+      }
   const handleLogout = () => {
     logout();
     navigate("/admin/login");
