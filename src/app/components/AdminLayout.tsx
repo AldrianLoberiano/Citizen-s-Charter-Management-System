@@ -107,6 +107,7 @@ export function AdminLayout() {
       }
     };
 
+    const handleKey = (event: KeyboardEvent) => {
   const handleLogout = () => {
     logout();
     navigate("/admin/login");
