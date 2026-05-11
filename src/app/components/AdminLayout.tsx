@@ -121,6 +121,7 @@ export function AdminLayout() {
     return () => {
       document.removeEventListener("mousedown", handleClick);
       document.removeEventListener("keydown", handleKey);
+    };
   }, [mobileNavOpen]);
   const handleLogout = () => {
     logout();
