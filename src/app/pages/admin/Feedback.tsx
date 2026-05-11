@@ -265,6 +265,7 @@ export function Feedback() {
             Citizen feedback responses submitted per charter.
           </p>
         </div>
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
         </div>
       </div>
 
