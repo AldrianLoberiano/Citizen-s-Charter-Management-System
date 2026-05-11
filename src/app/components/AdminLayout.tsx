@@ -104,6 +104,7 @@ export function AdminLayout() {
       if (!mobileNavRef.current.contains(event.target as Node)) {
         setMobileNavOpen(false);
       }
+    };
   const handleLogout = () => {
     logout();
     navigate("/admin/login");
