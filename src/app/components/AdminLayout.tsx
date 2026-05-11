@@ -114,6 +114,7 @@ export function AdminLayout() {
     };
 
     document.addEventListener("mousedown", handleClick);
+    document.addEventListener("keydown", handleKey);
   const handleLogout = () => {
     logout();
     navigate("/admin/login");
