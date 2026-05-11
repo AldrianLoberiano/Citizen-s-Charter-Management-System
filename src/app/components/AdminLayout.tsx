@@ -193,6 +193,7 @@ export function AdminLayout() {
             <button
               type="button"
               onClick={() => setMobileNavOpen((prev) => !prev)}
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 sm:hidden"
             <button
               type="button"
               onClick={() => setMenuOpen((prev) => !prev)}
