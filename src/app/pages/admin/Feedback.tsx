@@ -602,6 +602,7 @@ export function Feedback() {
       >
         {selectedFeedback ? (
           <div className="space-y-3 text-sm text-slate-600">
+            <div>
       <Modal
         isOpen={isQrOpen}
         onClose={() => setIsQrOpen(false)}
