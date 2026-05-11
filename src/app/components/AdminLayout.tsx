@@ -191,6 +191,7 @@ export function AdminLayout() {
           {/* Header actions */}
           <div className="relative flex flex-shrink-0 items-center gap-2" ref={menuRef}>
             <button
+            <button
               type="button"
               onClick={() => setMenuOpen((prev) => !prev)}
               className="flex items-center gap-2 rounded-full bg-white/10 px-2.5 py-1 text-white transition-colors hover:bg-white/20"
