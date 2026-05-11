@@ -520,6 +520,7 @@ export function Feedback() {
                 <th className="px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500">
                   Date
                 </th>
+                <th className="px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500">
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
