@@ -167,7 +167,6 @@ export function ClientLayout() {
             </div>
 
             {/* Contact */}
-              <h4 className="mb-3 text-slate-900 md:text-right">Contact Information</h4>
               <ul className="space-y-2 text-sm text-slate-500 md:flex md:flex-col md:items-end">
                 <li className="flex items-start gap-2 md:justify-end">
                   <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-slate-400" />
