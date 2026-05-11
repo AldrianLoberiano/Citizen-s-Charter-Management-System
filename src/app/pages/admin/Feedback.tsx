@@ -646,6 +646,7 @@ export function Feedback() {
               <p className="text-slate-900">
                 {selectedFeedback.comment?.trim() || "—"}
               </p>
+            </div>
       <Modal
         isOpen={isQrOpen}
         onClose={() => setIsQrOpen(false)}
