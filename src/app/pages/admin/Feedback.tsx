@@ -623,6 +623,7 @@ export function Feedback() {
               <div>
                 <p className="text-xs uppercase tracking-wide text-slate-400">Email</p>
                 <p className="text-slate-900">{selectedFeedback.email || "—"}</p>
+              </div>
       <Modal
         isOpen={isQrOpen}
         onClose={() => setIsQrOpen(false)}
