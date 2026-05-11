@@ -98,6 +98,7 @@ export function AdminLayout() {
 
   useEffect(() => {
     if (!mobileNavOpen) return;
+
   const handleLogout = () => {
     logout();
     navigate("/admin/login");
