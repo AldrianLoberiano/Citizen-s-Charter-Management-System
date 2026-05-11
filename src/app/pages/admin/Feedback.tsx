@@ -265,7 +265,6 @@ export function Feedback() {
             Citizen feedback responses submitted per charter.
           </p>
         </div>
-        <div className="flex items-center gap-2 text-sm text-slate-500">
           <MessageSquare className="h-4 w-4" />
           {summary.total} total responses
         </div>
