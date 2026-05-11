@@ -612,6 +612,7 @@ export function Feedback() {
               </p>
             </div>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div>
       <Modal
         isOpen={isQrOpen}
         onClose={() => setIsQrOpen(false)}
