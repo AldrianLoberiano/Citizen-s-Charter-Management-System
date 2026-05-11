@@ -597,6 +597,7 @@ export function Feedback() {
       <Modal
         isOpen={Boolean(selectedFeedback)}
         onClose={() => setSelectedFeedback(null)}
+        title="Feedback Details"
       <Modal
         isOpen={isQrOpen}
         onClose={() => setIsQrOpen(false)}
