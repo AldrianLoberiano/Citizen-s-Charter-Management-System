@@ -647,6 +647,7 @@ export function Feedback() {
                 {selectedFeedback.comment?.trim() || "—"}
               </p>
             </div>
+          </div>
       <Modal
         isOpen={isQrOpen}
         onClose={() => setIsQrOpen(false)}
