@@ -610,6 +610,7 @@ export function Feedback() {
               <p className="text-xs text-slate-400">
                 {selectedDepartment?.name || "—"}
               </p>
+            </div>
       <Modal
         isOpen={isQrOpen}
         onClose={() => setIsQrOpen(false)}
