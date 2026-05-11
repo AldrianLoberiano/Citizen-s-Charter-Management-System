@@ -575,6 +575,7 @@ export function Feedback() {
                       >
                         View
                       </button>
+                    </td>
                   </tr>
                 );
               })}
