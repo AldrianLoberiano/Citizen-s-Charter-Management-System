@@ -192,6 +192,7 @@ export function AdminLayout() {
           <div className="relative flex flex-shrink-0 items-center gap-2" ref={menuRef}>
             <button
               type="button"
+              onClick={() => setMobileNavOpen((prev) => !prev)}
             <button
               type="button"
               onClick={() => setMenuOpen((prev) => !prev)}
