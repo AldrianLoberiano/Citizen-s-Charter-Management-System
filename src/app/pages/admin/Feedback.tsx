@@ -570,6 +570,7 @@ export function Feedback() {
                     <td className="px-6 py-3.5">
                       <button
                         type="button"
+                        onClick={() => setSelectedFeedback(rating)}
                   </tr>
                 );
               })}
