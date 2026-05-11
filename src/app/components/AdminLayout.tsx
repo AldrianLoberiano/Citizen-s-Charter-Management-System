@@ -18,6 +18,7 @@ import {
   Moon,
   Sun,
   Menu,
+  X,
 } from "lucide-react";
 import { isAuthenticated, logout, getAuthUser } from "../store/data";
 
