@@ -603,6 +603,7 @@ export function Feedback() {
         {selectedFeedback ? (
           <div className="space-y-3 text-sm text-slate-600">
             <div>
+              <p className="text-xs uppercase tracking-wide text-slate-400">Charter</p>
       <Modal
         isOpen={isQrOpen}
         onClose={() => setIsQrOpen(false)}
