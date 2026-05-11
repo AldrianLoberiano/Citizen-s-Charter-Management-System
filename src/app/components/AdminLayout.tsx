@@ -70,6 +70,7 @@ export function AdminLayout() {
   }
 
   const currentUser = getAuthUser();
+  const displayName = currentUser ? currentUser.split("@")[0] : "Admin";
 
   useEffect(() => {
     if (!menuOpen) return;
