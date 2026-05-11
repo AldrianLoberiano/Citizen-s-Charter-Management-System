@@ -522,6 +522,7 @@ export function Feedback() {
                 </th>
                 <th className="px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500">
                   Action
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
