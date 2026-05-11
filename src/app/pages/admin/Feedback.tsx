@@ -641,6 +641,7 @@ export function Feedback() {
                 </p>
               </div>
             </div>
+            <div>
       <Modal
         isOpen={isQrOpen}
         onClose={() => setIsQrOpen(false)}
