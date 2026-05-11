@@ -123,6 +123,7 @@ export function AdminLayout() {
       document.removeEventListener("keydown", handleKey);
     };
   }, [mobileNavOpen]);
+
   const handleLogout = () => {
     logout();
     navigate("/admin/login");
