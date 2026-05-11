@@ -600,6 +600,7 @@ export function Feedback() {
         title="Feedback Details"
         size="sm"
       >
+        {selectedFeedback ? (
       <Modal
         isOpen={isQrOpen}
         onClose={() => setIsQrOpen(false)}
