@@ -101,6 +101,7 @@ export function AdminLayout() {
 
     const handleClick = (event: MouseEvent) => {
       if (!mobileNavRef.current) return;
+      if (!mobileNavRef.current.contains(event.target as Node)) {
   const handleLogout = () => {
     logout();
     navigate("/admin/login");
