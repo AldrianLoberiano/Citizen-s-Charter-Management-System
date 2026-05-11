@@ -568,6 +568,7 @@ export function Feedback() {
                       {formatDateTime(rating.created_at)}
                     </td>
                     <td className="px-6 py-3.5">
+                      <button
                   </tr>
                 );
               })}
