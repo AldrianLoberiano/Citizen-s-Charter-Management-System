@@ -124,6 +124,7 @@ export function AdminLayout() {
     };
   }, [mobileNavOpen]);
 
+  useEffect(() => {
   const handleLogout = () => {
     logout();
     navigate("/admin/login");
