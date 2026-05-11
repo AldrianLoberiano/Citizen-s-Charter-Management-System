@@ -130,6 +130,7 @@ export function AdminLayout() {
 
   const handleLogout = () => {
     setLogoutOpen(true);
+  };
     logout();
     navigate("/admin/login");
   };
