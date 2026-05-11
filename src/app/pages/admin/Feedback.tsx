@@ -639,6 +639,7 @@ export function Feedback() {
                 <p className="text-slate-900">
                   {formatDateTime(selectedFeedback.created_at)}
                 </p>
+              </div>
       <Modal
         isOpen={isQrOpen}
         onClose={() => setIsQrOpen(false)}
