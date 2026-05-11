@@ -574,6 +574,7 @@ export function Feedback() {
                         className="text-xs text-blue-700 transition-colors hover:text-blue-900"
                       >
                         View
+                      </button>
                   </tr>
                 );
               })}
