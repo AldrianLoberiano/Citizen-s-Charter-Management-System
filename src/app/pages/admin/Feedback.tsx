@@ -631,6 +631,7 @@ export function Feedback() {
                 </p>
               </div>
               <div>
+                <p className="text-xs uppercase tracking-wide text-slate-400">Rating</p>
       <Modal
         isOpen={isQrOpen}
         onClose={() => setIsQrOpen(false)}
