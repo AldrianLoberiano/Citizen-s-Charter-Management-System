@@ -567,6 +567,7 @@ export function Feedback() {
                     <td className="px-6 py-3.5 text-sm text-slate-500">
                       {formatDateTime(rating.created_at)}
                     </td>
+                    <td className="px-6 py-3.5">
                   </tr>
                 );
               })}
