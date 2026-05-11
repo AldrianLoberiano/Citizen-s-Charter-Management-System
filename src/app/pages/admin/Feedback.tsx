@@ -569,6 +569,7 @@ export function Feedback() {
                     </td>
                     <td className="px-6 py-3.5">
                       <button
+                        type="button"
                   </tr>
                 );
               })}
