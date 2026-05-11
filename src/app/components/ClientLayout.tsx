@@ -167,6 +167,7 @@ export function ClientLayout() {
             </div>
 
             {/* Contact */}
+            <div>
               <h4 className="mb-3 text-slate-900">Contact Information</h4>
               <ul className="space-y-2 text-sm text-slate-500 flex flex-col items-end">
                 <li className="flex flex-row-reverse items-start gap-2 justify-end text-right">
