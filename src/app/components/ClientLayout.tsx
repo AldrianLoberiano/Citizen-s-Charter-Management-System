@@ -172,7 +172,6 @@ export function ClientLayout() {
               <ul className="space-y-2 text-sm text-slate-500">
                 <li className="flex items-start gap-2">
                   <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-slate-400" />
-                  <span className="text-right">Municipal Hall, Poblacion, Municipality</span>
                 </li>
                 <li className="flex flex-row-reverse items-center gap-2 justify-end text-right">
                   <Phone className="h-4 w-4 flex-shrink-0 text-slate-400" />
