@@ -113,6 +113,7 @@ export function AdminLayout() {
       }
     };
 
+    document.addEventListener("mousedown", handleClick);
   const handleLogout = () => {
     logout();
     navigate("/admin/login");
