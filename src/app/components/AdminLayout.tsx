@@ -50,6 +50,7 @@ export function AdminLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const menuRef = useRef<HTMLDivElement | null>(null);
+  const mobileNavRef = useRef<HTMLDivElement | null>(null);
 
   // Redirect to login if not authenticated
   useEffect(() => {
