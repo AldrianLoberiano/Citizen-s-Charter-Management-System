@@ -212,7 +212,7 @@ export function Dashboard() {
       </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <Link
           to="/admin/departments"
           className="group flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-5 transition-all hover:border-slate-300 hover:shadow-sm"
@@ -248,6 +248,19 @@ export function Dashboard() {
             <div>
               <p className="text-slate-900">Backup & Recovery</p>
               <p className="text-xs text-slate-400">Manage backup and recovery options</p>
+            </div>
+          </div>
+          <ArrowRight className="h-4 w-4 text-slate-400 transition-colors group-hover:text-slate-700" />
+        </Link>
+        <Link
+          to="/admin/feedback"
+          className="group flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-5 transition-all hover:border-slate-300 hover:shadow-sm"
+        >
+          <div className="flex items-center gap-3">
+            <Star className="h-5 w-5 text-slate-700" />
+            <div>
+              <p className="text-slate-900">View Feedback</p>
+              <p className="text-xs text-slate-400">Review client ratings and comments</p>
             </div>
           </div>
           <ArrowRight className="h-4 w-4 text-slate-400 transition-colors group-hover:text-slate-700" />
