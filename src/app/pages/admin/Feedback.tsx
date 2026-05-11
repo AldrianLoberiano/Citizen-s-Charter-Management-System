@@ -45,6 +45,7 @@ export function Feedback() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isQrOpen, setIsQrOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [selectedFeedback, setSelectedFeedback] = useState<FeedbackEntry | null>(null);
 
   const departments = useMemo(() => getDepartments(), []);
   const charters = useMemo(() => getCharters(), []);
