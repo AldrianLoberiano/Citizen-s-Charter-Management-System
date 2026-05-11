@@ -642,6 +642,7 @@ export function Feedback() {
               </div>
             </div>
             <div>
+              <p className="text-xs uppercase tracking-wide text-slate-400">Comment</p>
               <p className="text-slate-900">
       <Modal
         isOpen={isQrOpen}
