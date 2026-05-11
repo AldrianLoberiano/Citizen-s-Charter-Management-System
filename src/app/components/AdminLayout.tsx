@@ -129,6 +129,7 @@ export function AdminLayout() {
   }, [location.pathname]);
 
   const handleLogout = () => {
+    setLogoutOpen(true);
     logout();
     navigate("/admin/login");
   };
