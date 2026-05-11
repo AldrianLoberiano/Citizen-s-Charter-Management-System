@@ -595,6 +595,7 @@ export function Feedback() {
       </div>
 
       <Modal
+      <Modal
         isOpen={isQrOpen}
         onClose={() => setIsQrOpen(false)}
         title="Feedback Form QR"
