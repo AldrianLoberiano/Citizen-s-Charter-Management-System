@@ -204,8 +204,8 @@ export function AdminLayout() {
               onClick={() => setMenuOpen((prev) => !prev)}
               className="flex items-center gap-2 rounded-full bg-white/10 px-2.5 py-1 text-white transition-colors hover:bg-white/20"
             >
-              <span className="hidden text-sm capitalize sm:block">
-                {currentUser || "admin"}
+              <span className="hidden text-sm sm:block">
+                {displayName}
               </span>
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/15">
                 <User className="h-4 w-4 text-white" />
@@ -240,6 +240,32 @@ export function AdminLayout() {
               </div>
             )}
           </div>
+
+          {mobileNavOpen && (
+            <div
+              ref={mobileNavRef}
+              className="absolute left-0 right-0 top-full z-30 border-t border-slate-200 bg-white/95 px-4 py-3 shadow-lg backdrop-blur-sm sm:hidden"
+            >
+              <nav className="flex flex-col gap-2">
+                {navItems.map(({ path, label, icon: Icon }) => (
+                  <Link
+                    key={path}
+                    to={path}
+                    onClick={() => setMobileNavOpen(false)}
+                    className={
+                      `flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors ` +
+                      (isActive(path)
+                        ? "bg-slate-200 text-slate-900"
+                        : "text-slate-700 hover:bg-slate-100")
+                    }
+                  >
+                    <Icon className="h-4 w-4" />
+                    <span>{label}</span>
+                  </Link>
+                ))}
+              </nav>
+            </div>
+          )}
         </header>
 
 
@@ -248,6 +274,35 @@ export function AdminLayout() {
           <Outlet />
         </main>
       </div>
+
+      <Modal
+        isOpen={logoutOpen}
+        onClose={() => setLogoutOpen(false)}
+        title="Confirm Logout"
+        size="sm"
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-slate-600">
+            Are you sure you want to logout?
+          </p>
+          <div className="flex justify-end gap-2">
+            <button
+              type="button"
+              onClick={() => setLogoutOpen(false)}
+              className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs text-slate-700 transition-colors hover:border-slate-300 hover:text-slate-900"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={confirmLogout}
+              className="rounded-lg bg-red-600 px-3 py-1.5 text-xs text-white transition-colors hover:bg-red-700"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
