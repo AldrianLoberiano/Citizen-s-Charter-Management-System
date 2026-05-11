@@ -605,6 +605,7 @@ export function Feedback() {
             <div>
               <p className="text-xs uppercase tracking-wide text-slate-400">Charter</p>
               <p className="text-slate-900">
+                {selectedCharter?.title || "Unknown charter"}
       <Modal
         isOpen={isQrOpen}
         onClose={() => setIsQrOpen(false)}
