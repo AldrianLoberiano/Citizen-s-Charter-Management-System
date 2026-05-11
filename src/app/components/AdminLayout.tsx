@@ -191,6 +191,7 @@ export function AdminLayout() {
           {/* Header actions */}
           <div className="relative flex flex-shrink-0 items-center gap-2" ref={menuRef}>
             <button
+              type="button"
             <button
               type="button"
               onClick={() => setMenuOpen((prev) => !prev)}
