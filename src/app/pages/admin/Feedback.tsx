@@ -266,7 +266,6 @@ export function Feedback() {
           </p>
         </div>
           <MessageSquare className="h-4 w-4" />
-          {summary.total} total responses
         </div>
       </div>
 
