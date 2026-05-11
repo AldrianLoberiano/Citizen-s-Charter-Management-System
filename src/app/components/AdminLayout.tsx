@@ -132,6 +132,7 @@ export function AdminLayout() {
     setLogoutOpen(true);
   };
 
+  const confirmLogout = () => {
     logout();
     navigate("/admin/login");
   };
