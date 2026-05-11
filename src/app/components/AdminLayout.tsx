@@ -43,6 +43,7 @@ const navItems: NavItem[] = [
 export function AdminLayout() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [logoutOpen, setLogoutOpen] = useState(false);
   const [isDark, setIsDark] = useState(() => {
     if (typeof window === "undefined") return false;
     const stored = window.localStorage.getItem("ccms_admin_theme");
