@@ -614,6 +614,7 @@ export function Feedback() {
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
                 <p className="text-xs uppercase tracking-wide text-slate-400">Name</p>
+                <p className="text-slate-900">{selectedFeedback.name || "—"}</p>
       <Modal
         isOpen={isQrOpen}
         onClose={() => setIsQrOpen(false)}
