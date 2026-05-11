@@ -155,6 +155,7 @@ export function ClientLayout() {
               <div className="mb-3 flex items-center gap-2">
                 <Shield className="h-5 w-5 text-slate-900" />
                 <span className="text-slate-900 leading-none">
+                  Calauan Citizen's Charter
               </div>
               <p className="text-sm leading-relaxed text-slate-500">
                 The Calauan Citizen's Charter is a document that communicates, in simple
