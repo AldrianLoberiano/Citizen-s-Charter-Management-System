@@ -606,6 +606,7 @@ export function Feedback() {
               <p className="text-xs uppercase tracking-wide text-slate-400">Charter</p>
               <p className="text-slate-900">
                 {selectedCharter?.title || "Unknown charter"}
+              </p>
               <p className="text-xs text-slate-400">
       <Modal
         isOpen={isQrOpen}
