@@ -168,6 +168,7 @@ export function ClientLayout() {
 
             {/* Contact */}
             <div className="text-right">
+              <h4 className="mb-3 text-slate-900">Contact Information</h4>
                   <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-slate-400" />
                   <span>Municipal Hall, Poblacion, Municipality</span>
                 </li>
