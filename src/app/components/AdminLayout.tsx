@@ -20,6 +20,7 @@ import {
   Menu,
   X,
 } from "lucide-react";
+import { Modal } from "./Modal";
 import { isAuthenticated, logout, getAuthUser } from "../store/data";
 
 const adminLogoSrc = new URL("../../public/images/header/logo.png", import.meta.url).href;
