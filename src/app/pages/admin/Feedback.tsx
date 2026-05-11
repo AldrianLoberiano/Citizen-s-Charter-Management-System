@@ -271,6 +271,7 @@ export function Feedback() {
             target="_blank"
             rel="noreferrer"
             className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-1.5 text-xs text-slate-700 transition hover:border-slate-300 hover:text-slate-900"
+          >
         </div>
       </div>
 
