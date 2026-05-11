@@ -265,7 +265,6 @@ export function Feedback() {
             Citizen feedback responses submitted per charter.
           </p>
         </div>
-          <MessageSquare className="h-4 w-4" />
         </div>
       </div>
 
