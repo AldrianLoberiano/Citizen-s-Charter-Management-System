@@ -627,6 +627,7 @@ export function Feedback() {
               <div>
                 <p className="text-xs uppercase tracking-wide text-slate-400">Source</p>
                 <p className="text-slate-900">
+                  {selectedFeedback.source === "feedback" ? "QR/Form" : "Rating"}
       <Modal
         isOpen={isQrOpen}
         onClose={() => setIsQrOpen(false)}
