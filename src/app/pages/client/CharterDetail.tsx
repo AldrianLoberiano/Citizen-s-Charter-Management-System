@@ -288,7 +288,6 @@ export function CharterDetail() {
                 </button>
               </div>
               <div className="bg-white p-3">
-                    download it.
                   </div>
                 )}
                 {viewerType === "pdf" && (
