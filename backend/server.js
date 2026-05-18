@@ -28,7 +28,6 @@ fs.mkdirSync(uploadsDir, { recursive: true });
 const backupsDir = path.join(__dirname, "../uploads/backups");
 fs.mkdirSync(backupsDir, { recursive: true });
 
-
 const resolveUploadPath = (filePath) => {
   const normalized = filePath.trim();
   if (!normalized || normalized.startsWith("http://") || normalized.startsWith("https://")) {
