@@ -117,7 +117,6 @@ app.post("/api/uploads/charters", upload.single("file"), (req, res) => {
 });
 
     return res.status(400).json({ message: "Missing file parameter." });
-  }
 
   const inputPath = resolveUploadPath(fileParam);
   if (!inputPath || !/\.xlsx?$/.test(inputPath)) {
