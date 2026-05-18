@@ -117,7 +117,6 @@ app.post("/api/uploads/charters", upload.single("file"), (req, res) => {
 });
 
 
-  if (!inputPath || !/\.xlsx?$/.test(inputPath)) {
     return res.status(400).end();
   }
   if (!fs.existsSync(inputPath)) {
