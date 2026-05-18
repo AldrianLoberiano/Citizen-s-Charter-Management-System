@@ -133,7 +133,6 @@ export function CharterDetail() {
     );
   });
 
-
   const handleDownload = () => {
     window.open(resolvedAttachmentUrl, "_blank", "noopener,noreferrer");
   };
