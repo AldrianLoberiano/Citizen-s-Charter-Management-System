@@ -28,7 +28,6 @@ fs.mkdirSync(uploadsDir, { recursive: true });
 const backupsDir = path.join(__dirname, "../uploads/backups");
 fs.mkdirSync(backupsDir, { recursive: true });
 
-  new Promise((resolve, reject) => {
     const libreOffice = findLibreOffice();
     if (!libreOffice) {
       reject(new Error("LibreOffice is not installed on the server."));
