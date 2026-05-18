@@ -28,7 +28,6 @@ fs.mkdirSync(uploadsDir, { recursive: true });
 const backupsDir = path.join(__dirname, "../uploads/backups");
 fs.mkdirSync(backupsDir, { recursive: true });
 
-const convertExcelToPdf = (inputPath, outputDir) =>
   new Promise((resolve, reject) => {
     const libreOffice = findLibreOffice();
     if (!libreOffice) {
