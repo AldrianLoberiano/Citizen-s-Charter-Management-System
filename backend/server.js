@@ -117,8 +117,6 @@ app.post("/api/uploads/charters", upload.single("file"), (req, res) => {
 });
 
 
-  const pdfPath = path.join(previewsDir, `${baseName}.pdf`);
-
   try {
     const inputStat = fs.statSync(inputPath);
     const pdfExists = fs.existsSync(pdfPath);
