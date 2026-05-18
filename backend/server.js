@@ -117,7 +117,6 @@ app.post("/api/uploads/charters", upload.single("file"), (req, res) => {
 });
 
 
-    return res.status(500).json({ message });
   }
 }).head(async (req, res) => {
   const fileParam = typeof req.query.file === "string" ? req.query.file : "";
