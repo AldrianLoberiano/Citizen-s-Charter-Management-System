@@ -288,7 +288,6 @@ export function CharterDetail() {
                 </button>
               </div>
               <div className="bg-white p-3">
-                  <div className="p-4 text-sm text-slate-500">
                     Excel preview is not available for this file. Use View Full Page to
                     download it.
                   </div>
