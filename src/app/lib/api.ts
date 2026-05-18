@@ -48,7 +48,7 @@ export const api = {
   getDepartments: () => request("/departments"),
   getCharters: () => request("/charters"),
   getRatingsAll: () => request("/ratings"),
-  getRatings: (charterId: number) => request(`/charters/${charterId}/ratings`),
+  getRatings: (charterId: number) => request(`/charters/${charterId}/ratings`),   
   getFeedback: () => request("/feedback"),
   getCharterFeedback: (charterId: number) => request(`/charters/${charterId}/feedback`),
   login: (username: string, password: string) =>
@@ -122,3 +122,4 @@ export const api = {
     return upload("/admin/restore", formData);
   },
 };
+
