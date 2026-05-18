@@ -28,7 +28,6 @@ fs.mkdirSync(uploadsDir, { recursive: true });
 const backupsDir = path.join(__dirname, "../uploads/backups");
 fs.mkdirSync(backupsDir, { recursive: true });
 
-  if (!normalized || normalized.startsWith("http://") || normalized.startsWith("https://")) {
     return null;
   }
   const relative = normalized.startsWith("/") ? normalized.slice(1) : normalized;
