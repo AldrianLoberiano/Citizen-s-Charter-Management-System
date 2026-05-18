@@ -343,8 +343,8 @@ export function Charters() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-slate-900">Charters</h1>
-          <p className="text-slate-500 text-sm mt-0.5">
+          <h1 className="text-slate-900 dark:text-slate-100">Charters</h1>
+          <p className="text-slate-500 dark:text-slate-300 text-sm mt-0.5">
             {charters.length} charter{charters.length !== 1 ? "s" : ""} in the
             system
           </p>
