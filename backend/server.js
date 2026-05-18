@@ -117,7 +117,6 @@ app.post("/api/uploads/charters", upload.single("file"), (req, res) => {
 });
 
 
-
   const baseName = path.basename(inputPath, path.extname(inputPath));
   const pdfPath = path.join(previewsDir, `${baseName}.pdf`);
 
