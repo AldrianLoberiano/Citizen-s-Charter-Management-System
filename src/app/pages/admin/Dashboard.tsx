@@ -81,12 +81,12 @@ export function Dashboard() {
       {/* Page Title */}
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-slate-900">Dashboard</h1>
-          <p className="mt-0.5 text-sm text-slate-500">
+          <h1 className="text-slate-900 dark:text-slate-100">Dashboard</h1>
+          <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-300">
             Overview of the Calauan Citizen's Charter Management System
           </p>
         </div>
-        <div className="flex items-center gap-1 text-sm text-slate-400">
+          <div className="flex items-center gap-1 text-sm text-slate-400 dark:text-slate-300">
           <Clock className="h-4 w-4" />
           {new Date().toLocaleDateString("en-PH", {
             weekday: "long",
@@ -103,7 +103,7 @@ export function Dashboard() {
           <Link
             key={stat.label}
             to={stat.link}
-            className="group flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 transition-all hover:border-slate-300 hover:shadow-sm hover:bg-slate-50 dark:hover:bg-blue-900/70"
+            className="group flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 transition-all hover:border-slate-300 hover:shadow-sm hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800"
           >
             <div
               className="flex-shrink-0 rounded-xl bg-slate-900 p-3 transition-opacity group-hover:opacity-90"
@@ -111,9 +111,9 @@ export function Dashboard() {
               <stat.icon className="h-6 w-6 text-white" />
             </div>
             <div className="min-w-0">
-              <p className="truncate text-xs text-slate-500">{stat.label}</p>
-              <p className="text-2xl text-slate-900">{stat.value}</p>
-              <p className="truncate text-xs text-slate-400">
+              <p className="truncate text-xs text-slate-500 dark:text-slate-300">{stat.label}</p>
+              <p className="text-2xl text-slate-900 dark:text-slate-100">{stat.value}</p>
+              <p className="truncate text-xs text-slate-400 dark:text-slate-400">
                 {stat.description}
               </p>
             </div>
@@ -122,17 +122,17 @@ export function Dashboard() {
       </div>
 
       {/* Recent Charters Table */}
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-        <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4">
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
+        <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4 dark:border-slate-800">
           <div>
-            <h2 className="text-slate-900">Recent Charters</h2>
-            <p className="mt-0.5 text-xs text-slate-400">
+            <h2 className="text-slate-900 dark:text-slate-100">Recent Charters</h2>
+            <p className="mt-0.5 text-xs text-slate-400 dark:text-slate-400">
               Last {recentCharters.length} added or updated charters
             </p>
           </div>
           <Link
             to="/admin/charters"
-            className="flex items-center gap-1 text-sm text-slate-700 transition-colors hover:text-slate-950"
+            className="flex items-center gap-1 text-sm text-slate-700 transition-colors hover:text-slate-950 dark:text-slate-200 dark:hover:text-white"
           >
             View all <ChevronRight className="h-4 w-4" />
           </Link>
@@ -141,49 +141,49 @@ export function Dashboard() {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-100 bg-slate-50">
+              <tr className="border-b border-slate-100 bg-slate-50 dark:border-slate-800 dark:bg-slate-950">
                 <th className="px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500">
                   Charter Title
                 </th>
-                <th className="hidden px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 md:table-cell">
+                <th className="hidden px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 dark:text-slate-300 md:table-cell">
                   Department
                 </th>
-                <th className="hidden px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 sm:table-cell">
+                <th className="hidden px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 dark:text-slate-300 sm:table-cell">
                   Date Added
                 </th>
-                <th className="w-24 px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500">
+                <th className="w-24 px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 dark:text-slate-300">
                   File
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
               {recentCharters.map((charter) => {
                 const dept = getDepartmentById(charter.department_id);
                 return (
-                  <tr key={charter.id} className="transition-colors hover:bg-slate-50 dark:hover:bg-blue-900/50">
+                  <tr key={charter.id} className="transition-colors hover:bg-slate-50 dark:hover:bg-slate-800">
                     <td className="px-6 py-3.5">
                       <div className="flex items-center gap-2">
-                        <FileText className="h-4 w-4 flex-shrink-0 text-slate-400" />
-                        <span className="text-sm text-slate-900">
+                        <FileText className="h-4 w-4 flex-shrink-0 text-slate-400 dark:text-slate-500" />
+                        <span className="text-sm text-slate-900 dark:text-slate-100">
                           {charter.title}
                         </span>
                       </div>
                     </td>
-                    <td className="hidden px-6 py-3.5 text-sm text-slate-500 md:table-cell">
+                    <td className="hidden px-6 py-3.5 text-sm text-slate-500 dark:text-slate-300 md:table-cell">
                       {dept?.name || (
                         <span className="text-red-400">Unknown</span>
                       )}
                     </td>
-                    <td className="hidden px-6 py-3.5 text-sm text-slate-500 sm:table-cell">
+                    <td className="hidden px-6 py-3.5 text-sm text-slate-500 dark:text-slate-300 sm:table-cell">
                       {formatDate(charter.created_at)}
                     </td>
                     <td className="px-6 py-3.5">
                       {charter.file_path ? (
-                        <span className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-100 px-2 py-0.5 text-xs text-slate-600">
+                        <span className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-100 px-2 py-0.5 text-xs text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
                           <Paperclip className="h-3 w-3" /> Attached
                         </span>
                       ) : (
-                        <span className="text-xs text-slate-300">—</span>
+                        <span className="text-xs text-slate-300 dark:text-slate-500">—</span>
                       )}
                     </td>
                   </tr>
@@ -193,12 +193,12 @@ export function Dashboard() {
                 <tr>
                   <td
                     colSpan={4}
-                    className="px-6 py-12 text-center text-sm text-slate-400"
+                    className="px-6 py-12 text-center text-sm text-slate-400 dark:text-slate-400"
                   >
                     No charters have been added yet.{" "}
                     <Link
                       to="/admin/charters"
-                      className="text-slate-700 transition-colors hover:text-slate-950"
+                      className="text-slate-700 transition-colors hover:text-slate-950 dark:text-slate-200 dark:hover:text-white"
                     >
                       Add the first charter
                     </Link>
