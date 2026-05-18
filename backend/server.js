@@ -116,7 +116,6 @@ app.post("/api/uploads/charters", upload.single("file"), (req, res) => {
   });
 });
 
-app.route("/api/previews/excel").get(async (req, res) => {
   const fileParam = typeof req.query.file === "string" ? req.query.file : "";
   if (!fileParam) {
     return res.status(400).json({ message: "Missing file parameter." });
