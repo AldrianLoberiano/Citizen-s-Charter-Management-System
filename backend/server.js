@@ -28,7 +28,6 @@ fs.mkdirSync(uploadsDir, { recursive: true });
 const backupsDir = path.join(__dirname, "../uploads/backups");
 fs.mkdirSync(backupsDir, { recursive: true });
 
-      return;
 
     const args = ["--headless", "--norestore", "--convert-to", "pdf", "--outdir", outputDir, inputPath];
     const child = spawn(libreOffice, args, { windowsHide: true });
