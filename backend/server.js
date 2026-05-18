@@ -8,7 +8,6 @@ import fs from "fs";
 import { spawn } from "child_process";
 import multer from "multer";
 import { pool } from "./db.js";
-import os from "os";
 
 dotenv.config();
 
