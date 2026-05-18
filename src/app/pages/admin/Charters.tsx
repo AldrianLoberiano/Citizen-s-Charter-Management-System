@@ -5,7 +5,6 @@
  */
 
 import { useState, useCallback } from "react";
-import * as XLSX from "xlsx";
 import {
   Plus,
   Search,
