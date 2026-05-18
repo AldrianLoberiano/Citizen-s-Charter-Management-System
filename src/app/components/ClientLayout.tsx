@@ -4,6 +4,7 @@
  */
 
 import { Outlet, Link, useLocation } from "react-router";
+import { Shield, Phone, Facebook, MapPin, ArrowUp } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const clientLogoSrc = new URL("../../public/images/header/logo.png", import.meta.url).href;
