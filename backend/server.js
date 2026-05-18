@@ -117,7 +117,6 @@ app.post("/api/uploads/charters", upload.single("file"), (req, res) => {
 });
 
 
-      await convertExcelToPdf(inputPath, previewsDir);
     }
 
     if (!fs.existsSync(pdfPath)) {
