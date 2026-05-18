@@ -418,7 +418,7 @@ export function Charters() {
                           <Paperclip className="w-3.5 h-3.5 text-white" />
                         </button>
                       ) : (
-                        <span className="text-slate-300 text-sm">�</span>
+                        <span className="text-slate-300 text-sm">No attachment</span>
                       )}
                     </td>
                     <td className="px-5 py-4">
