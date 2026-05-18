@@ -133,7 +133,6 @@ export function CharterDetail() {
     );
   });
 
-    ? attachmentUrl
     : attachmentUrl.startsWith("uploads/")
       ? `/${attachmentUrl}`
       : "";
