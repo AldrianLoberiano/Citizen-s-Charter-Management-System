@@ -288,7 +288,6 @@ export function CharterDetail() {
                 </button>
               </div>
               <div className="bg-white p-3">
-                    title={`${charter.title} Excel preview`}
                     className="h-[720px] w-full rounded-lg border border-slate-200 bg-white"
                   />
                 )}
