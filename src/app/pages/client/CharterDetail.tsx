@@ -272,6 +272,7 @@ export function CharterDetail() {
               <div className="flex items-center justify-between gap-3 border-b border-slate-200 px-4 py-3">
                 <div>
                   <h3 className="text-slate-900">
+                    {viewerType === "pdf" ? "PDF Viewer" : "Attachment Viewer"}
                   </h3>
                   <p className="text-xs text-slate-500">
                     View the attached charter document
