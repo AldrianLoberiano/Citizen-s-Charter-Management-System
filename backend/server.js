@@ -117,7 +117,6 @@ app.post("/api/uploads/charters", upload.single("file"), (req, res) => {
 });
 
 
-});
 
 app.get("/api/health", (_req, res) => {
   res.json({ ok: true });
