@@ -133,7 +133,6 @@ export function CharterDetail() {
     );
   });
 
-      ? `/${attachmentUrl}`
       : "";
   const excelPreviewUrl = normalizedAttachmentPath
     ? `${FILE_BASE}/api/previews/excel?file=${encodeURIComponent(normalizedAttachmentPath)}`
