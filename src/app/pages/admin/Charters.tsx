@@ -37,7 +37,6 @@ const FILE_BASE = (import.meta.env.VITE_API_URL || "http://localhost:4000/api").
   /\/api$/,
   ""
 );
-const MAX_PREVIEW_ROWS = 200;
 const MAX_PREVIEW_COLS = 20;
 
 type ViewerType = "pdf" | "excel" | "unknown";
