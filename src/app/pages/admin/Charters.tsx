@@ -412,7 +412,9 @@ export function Charters() {
                         <button
                           type="button"
                           title="View attachment"
-                          onClick={() => openViewer(charter.file_path)}
+                          onClick={() => {
+                            if (charter.file_path) openViewer(charter.file_path);
+                          }}
                           className="inline-flex items-center justify-center w-7 h-7 bg-violet-900 rounded-lg hover:bg-violet-950 transition-colors"
                         >
                           <Paperclip className="w-3.5 h-3.5 text-white" />
