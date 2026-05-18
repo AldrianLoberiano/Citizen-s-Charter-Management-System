@@ -117,7 +117,6 @@ app.post("/api/uploads/charters", upload.single("file"), (req, res) => {
 });
 
 
-    }
 
     if (!fs.existsSync(pdfPath)) {
       return res.status(500).json({ message: "Failed to generate preview." });
