@@ -28,7 +28,6 @@ fs.mkdirSync(uploadsDir, { recursive: true });
 const backupsDir = path.join(__dirname, "../uploads/backups");
 fs.mkdirSync(backupsDir, { recursive: true });
 
-  "/usr/bin/soffice",
   "/usr/local/bin/soffice",
   "/snap/bin/libreoffice",
 ].filter(Boolean);
