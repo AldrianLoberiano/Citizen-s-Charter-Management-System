@@ -133,7 +133,6 @@ export function CharterDetail() {
     );
   });
 
-    : attachmentUrl.startsWith("uploads/")
       ? `/${attachmentUrl}`
       : "";
   const excelPreviewUrl = normalizedAttachmentPath
