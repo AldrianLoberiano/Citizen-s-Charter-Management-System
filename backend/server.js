@@ -28,7 +28,6 @@ fs.mkdirSync(uploadsDir, { recursive: true });
 const backupsDir = path.join(__dirname, "../uploads/backups");
 fs.mkdirSync(backupsDir, { recursive: true });
 
-  const uploadsRoot = path.resolve(uploadsDir) + path.sep;
   if (!resolved.startsWith(uploadsRoot)) return null;
   return resolved;
 };
