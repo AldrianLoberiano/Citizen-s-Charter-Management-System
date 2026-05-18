@@ -288,7 +288,6 @@ export function CharterDetail() {
                 </button>
               </div>
               <div className="bg-white p-3">
-                  />
                 )}
                 {viewerType === "excel" && !excelPreviewUrl && (
                   <div className="p-4 text-sm text-slate-500">
