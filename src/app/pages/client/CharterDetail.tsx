@@ -80,6 +80,7 @@ export function CharterDetail() {
     return `${FILE_BASE}/${filePath}`;
   };
 
+  type ViewerType = "pdf" | "unknown";
 
   const getViewerType = (filePath: string): ViewerType => {
     const lower = filePath.toLowerCase();
