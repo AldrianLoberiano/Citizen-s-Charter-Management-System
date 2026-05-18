@@ -117,7 +117,6 @@ app.post("/api/uploads/charters", upload.single("file"), (req, res) => {
 });
 
 
-    const pdfIsFresh = pdfExists && fs.statSync(pdfPath).mtimeMs >= inputStat.mtimeMs;
     if (!pdfIsFresh) {
       await convertExcelToPdf(inputPath, previewsDir);
     }
