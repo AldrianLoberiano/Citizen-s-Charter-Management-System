@@ -28,7 +28,6 @@ fs.mkdirSync(uploadsDir, { recursive: true });
 const backupsDir = path.join(__dirname, "../uploads/backups");
 fs.mkdirSync(backupsDir, { recursive: true });
 
-    const child = spawn(libreOffice, args, { windowsHide: true });
     let stderr = "";
 
     child.stderr.on("data", (chunk) => {
