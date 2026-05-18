@@ -37,12 +37,11 @@ const FILE_BASE = (import.meta.env.VITE_API_URL || "http://localhost:4000/api").
   /\/api$/,
   ""
 );
-type ViewerType = "pdf" | "excel" | "unknown";
+type ViewerType = "pdf" | "unknown";
 
 const getViewerType = (filePath: string): ViewerType => {
   const lower = filePath.toLowerCase();
   if (lower.endsWith(".pdf")) return "pdf";
-  if (lower.endsWith(".xlsx") || lower.endsWith(".xls")) return "excel";
   return "unknown";
 };
 
@@ -82,11 +81,7 @@ export function Charters() {
   const [viewerOpen, setViewerOpen] = useState(false);
   const [viewerFilePath, setViewerFilePath] = useState("");
   const [viewerType, setViewerType] = useState<ViewerType>("unknown");
-  const [viewerRows, setViewerRows] = useState<string[][]>([]);
-  const [viewerSheet, setViewerSheet] = useState("");
-  const [viewerLoading, setViewerLoading] = useState(false);
   const [viewerError, setViewerError] = useState<string | null>(null);
-  const [viewerTruncated, setViewerTruncated] = useState(false);
 
   // Form
   const [formData, setFormData] = useState<FormData>(emptyForm);
@@ -153,11 +148,7 @@ export function Charters() {
     setViewerOpen(false);
     setViewerFilePath("");
     setViewerType("unknown");
-    setViewerRows([]);
-    setViewerSheet("");
-    setViewerLoading(false);
     setViewerError(null);
-    setViewerTruncated(false);
   };
 
   const openViewer = async (filePath: string) => {
@@ -165,49 +156,10 @@ export function Charters() {
     setViewerOpen(true);
     setViewerFilePath(filePath);
     setViewerType(type);
-    setViewerRows([]);
-    setViewerSheet("");
     setViewerError(null);
-    setViewerTruncated(false);
 
     if (type === "unknown") {
       setViewerError("Preview is not available for this file type.");
-      return;
-    }
-
-    if (type === "excel") {
-      setViewerLoading(true);
-      try {
-        const response = await fetch(resolveFileUrl(filePath));
-        if (!response.ok) {
-          throw new Error(`Failed to load file (${response.status}).`);
-        }
-        const data = await response.arrayBuffer();
-        const workbook = XLSX.read(data, { type: "array" });
-        const sheetName = workbook.SheetNames[0] || "Sheet1";
-        const sheet = workbook.Sheets[sheetName];
-        const rows = XLSX.utils.sheet_to_json(sheet, {
-          header: 1,
-          blankrows: false,
-        }) as Array<Array<string | number | boolean | Date | null>>;
-        const truncatedRows = rows.slice(0, MAX_PREVIEW_ROWS).map((row) =>
-          row
-            .slice(0, MAX_PREVIEW_COLS)
-            .map((cell) => (cell === null || cell === undefined ? "" : String(cell)))
-        );
-        const truncated =
-          rows.length > MAX_PREVIEW_ROWS ||
-          rows.some((row) => row.length > MAX_PREVIEW_COLS);
-        setViewerRows(truncatedRows);
-        setViewerSheet(sheetName);
-        setViewerTruncated(truncated);
-      } catch (error) {
-        setViewerError(
-          error instanceof Error ? error.message : "Failed to load Excel file."
-        );
-      } finally {
-        setViewerLoading(false);
-      }
     }
   };
 
@@ -235,16 +187,12 @@ export function Charters() {
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Validate file type: accept Excel and PDF files only
-      const allowed = [
-        "application/vnd.ms-excel",
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        "application/pdf",
-      ];
+      // Validate file type: accept PDF files only
+      const allowed = ["application/pdf"];
       if (!allowed.includes(file.type)) {
         setFormErrors((p) => ({
           ...p,
-          file_path: "Only Excel files (.xls, .xlsx) and PDF are allowed.",
+          file_path: "Only PDF files are allowed.",
         }));
         return;
       }
@@ -613,7 +561,7 @@ export function Charters() {
           <div>
             <label className="block text-slate-700 mb-1.5 text-sm">
               Attachment{" "}
-              <span className="text-slate-400 text-xs">(Excel or PDF, max 5MB)</span>
+              <span className="text-slate-400 text-xs">(PDF only, max 5MB)</span>
             </label>
             <div className="border-2 border-dashed border-slate-300 rounded-lg p-4 hover:border-slate-400 transition-colors">
               {formData.file_path ? (
@@ -638,10 +586,10 @@ export function Charters() {
                   <span className="text-slate-500 text-sm">
                     {uploadingFile ? "Uploading file..." : "Click to upload or drag and drop"}
                   </span>
-                  <span className="text-slate-400 text-xs">XLS, XLSX, PDF</span>
+                  <span className="text-slate-400 text-xs">PDF</span>
                   <input
                     type="file"
-                    accept=".xls,.xlsx,.pdf"
+                    accept=".pdf"
                     onChange={handleFileChange}
                     className="hidden"
                     disabled={uploadingFile}
@@ -686,56 +634,16 @@ export function Charters() {
         title="Attachment Viewer"
         size="xl"
       >
-        {viewerLoading && (
-          <div className="text-sm text-slate-500">Loading attachment...</div>
-        )}
-        {!viewerLoading && viewerError && (
+        {viewerError && (
           <div className="text-sm text-red-600">{viewerError}</div>
         )}
-        {!viewerLoading && !viewerError && viewerType === "pdf" && (
+        {!viewerError && viewerType === "pdf" && (
           <div className="h-[70vh]">
             <iframe
               title="PDF Preview"
               src={resolveFileUrl(viewerFilePath)}
               className="h-full w-full rounded-lg border border-slate-200"
             />
-          </div>
-        )}
-        {!viewerLoading && !viewerError && viewerType === "excel" && (
-          <div className="space-y-3">
-            <div className="flex items-center justify-between text-xs text-slate-500">
-              <span>Sheet: {viewerSheet || "Sheet1"}</span>
-              {viewerTruncated && (
-                <span>
-                  Showing first {MAX_PREVIEW_ROWS} rows and {MAX_PREVIEW_COLS} columns
-                </span>
-              )}
-            </div>
-            <div className="max-h-[70vh] overflow-auto rounded-lg border border-slate-200">
-              {viewerRows.length === 0 ? (
-                <div className="p-6 text-sm text-slate-500">No data to display.</div>
-              ) : (
-                <table className="min-w-full text-sm">
-                  <tbody>
-                    {viewerRows.map((row, rowIndex) => (
-                      <tr
-                        key={`row-${rowIndex}`}
-                        className={rowIndex % 2 === 0 ? "bg-white" : "bg-slate-50"}
-                      >
-                        {row.map((cell, cellIndex) => (
-                          <td
-                            key={`cell-${rowIndex}-${cellIndex}`}
-                            className="whitespace-nowrap border-b border-slate-200 px-3 py-2 text-slate-700"
-                          >
-                            {cell}
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
-            </div>
           </div>
         )}
       </Modal>
