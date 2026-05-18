@@ -133,7 +133,6 @@ export function CharterDetail() {
     );
   });
 
-  const normalizedAttachmentPath = attachmentUrl.startsWith("/")
     ? attachmentUrl
     : attachmentUrl.startsWith("uploads/")
       ? `/${attachmentUrl}`
