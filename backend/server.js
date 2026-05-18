@@ -117,7 +117,6 @@ app.post("/api/uploads/charters", upload.single("file"), (req, res) => {
 });
 
 
-
     res.setHeader("Content-Type", "application/pdf");
     return res.sendFile(pdfPath);
   } catch (error) {
