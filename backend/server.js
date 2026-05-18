@@ -117,7 +117,6 @@ app.post("/api/uploads/charters", upload.single("file"), (req, res) => {
 });
 
 
-    return res.status(404).json({ message: "File not found." });
   }
 
   const baseName = path.basename(inputPath, path.extname(inputPath));
