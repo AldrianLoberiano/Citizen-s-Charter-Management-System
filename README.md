@@ -189,11 +189,6 @@ The frontend syncs with the backend API and can fall back to local storage when 
 
 Uploaded files are stored on disk in `uploads/charters/`. The backend returns and stores relative paths such as `uploads/charters/document.pdf`.
 
-## Default Admin Login
-
-- Username: `admin`
-- Password: `admin123`
-
 ## Database Notes
 
 The imported SQL file creates the `ccms_db` database with `departments`, `charters`, `ratings`, and `feedback_responses` tables plus seed data for initial testing.
