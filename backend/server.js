@@ -28,7 +28,6 @@ fs.mkdirSync(uploadsDir, { recursive: true });
 const backupsDir = path.join(__dirname, "../uploads/backups");
 fs.mkdirSync(backupsDir, { recursive: true });
 
-  "C:\\Program Files\\LibreOffice\\program\\soffice.exe",
   "C:\\Program Files (x86)\\LibreOffice\\program\\soffice.exe",
   "/usr/bin/soffice",
   "/usr/local/bin/soffice",
