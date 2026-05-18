@@ -117,7 +117,6 @@ app.post("/api/uploads/charters", upload.single("file"), (req, res) => {
 });
 
 
-  if (!fileParam) {
     return res.status(400).end();
   }
   const inputPath = resolveUploadPath(fileParam);
