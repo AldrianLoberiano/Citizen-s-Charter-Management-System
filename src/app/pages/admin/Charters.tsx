@@ -516,6 +516,7 @@ export function Charters() {
               onChange={(e) =>
                 setFormData((p) => ({ ...p, title: e.target.value }))
               }
+              placeholder="e.g., BPLO Citizen's Charter"
               className={`w-full px-4 py-2.5 border rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-slate-300 ${
                 formErrors.title ? "border-red-400" : "border-slate-300"
               }`}
