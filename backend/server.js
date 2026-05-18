@@ -28,7 +28,6 @@ fs.mkdirSync(uploadsDir, { recursive: true });
 const backupsDir = path.join(__dirname, "../uploads/backups");
 fs.mkdirSync(backupsDir, { recursive: true });
 
-  "/snap/bin/libreoffice",
 ].filter(Boolean);
 
 const findLibreOffice = () => libreOfficeCandidates.find((candidate) => fs.existsSync(candidate));
