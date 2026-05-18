@@ -28,7 +28,6 @@ fs.mkdirSync(uploadsDir, { recursive: true });
 const backupsDir = path.join(__dirname, "../uploads/backups");
 fs.mkdirSync(backupsDir, { recursive: true });
 
-    child.stderr.on("data", (chunk) => {
       stderr += chunk.toString();
     });
 
