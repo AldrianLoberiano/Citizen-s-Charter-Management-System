@@ -1,6 +1,5 @@
 # Calauans Citizen's Charter Management System
 
-Citizen's Charter Management System is a React + Vite frontend with an Express + MySQL backend.
 
 ## Recent Updates
 
