@@ -117,7 +117,6 @@ app.post("/api/uploads/charters", upload.single("file"), (req, res) => {
 });
 
 
-  } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to generate preview.";
     return res.status(500).json({ message });
   }
