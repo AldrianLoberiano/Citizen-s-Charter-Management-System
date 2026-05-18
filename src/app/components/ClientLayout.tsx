@@ -175,7 +175,6 @@ export function ClientLayout() {
                   <span>Municipal Hall, Calauan, Municipality</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <span>(000) 000-0000</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <Facebook className="h-4 w-4 flex-shrink-0 text-slate-400" />
