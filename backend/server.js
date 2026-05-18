@@ -29,7 +29,6 @@ const backupsDir = path.join(__dirname, "../uploads/backups");
 fs.mkdirSync(backupsDir, { recursive: true });
 
 
-const findLibreOffice = () => libreOfficeCandidates.find((candidate) => fs.existsSync(candidate));
 
 const resolveUploadPath = (filePath) => {
   const normalized = filePath.trim();
