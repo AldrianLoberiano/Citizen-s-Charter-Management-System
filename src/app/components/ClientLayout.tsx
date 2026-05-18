@@ -175,6 +175,7 @@ export function ClientLayout() {
                   <span>Municipal Hall, Calauan, Municipality</span>
                 </li>
                 <li className="flex items-center gap-2">
+                  <Mail className="h-4 w-4 flex-shrink-0 text-slate-400" />
                 </li>
                 <li className="flex items-center gap-2">
                   <Facebook className="h-4 w-4 flex-shrink-0 text-slate-400" />
