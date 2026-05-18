@@ -25,7 +25,6 @@ const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
 
 const uploadsDir = path.join(__dirname, "../uploads/charters");
 fs.mkdirSync(uploadsDir, { recursive: true });
-fs.mkdirSync(previewsDir, { recursive: true });
 const backupsDir = path.join(__dirname, "../uploads/backups");
 fs.mkdirSync(backupsDir, { recursive: true });
 
