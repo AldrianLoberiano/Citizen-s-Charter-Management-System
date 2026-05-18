@@ -117,7 +117,6 @@ app.post("/api/uploads/charters", upload.single("file"), (req, res) => {
 });
 
 
-    return res.status(400).json({ message: "Invalid Excel file path." });
   }
 
   if (!fs.existsSync(inputPath)) {
