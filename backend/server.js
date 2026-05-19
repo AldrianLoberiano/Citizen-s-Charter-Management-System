@@ -313,6 +313,7 @@ app.get("/api/charters/:id/feedback", async (req, res) => {
     "SELECT * FROM feedback_responses WHERE charter_id = $1 ORDER BY created_at DESC, id DESC",
     [req.params.id]
   );
+  res.json(result.rows);
 });
 
 app.post("/api/charters/:id/feedback", async (req, res) => {
