@@ -77,6 +77,7 @@ const sqlUpload = multer({
 
 const getDbArgs = () => {
   const dbHost = process.env.DB_HOST || "127.0.0.1";
+  const dbPort = process.env.DB_PORT || "5432";
   const dbPassword = process.env.DB_PASSWORD || "";
   const dbName = process.env.DB_NAME || "ccms_db";
 
