@@ -298,7 +298,6 @@ app.post("/api/charters/:id/ratings", async (req, res) => {
     "INSERT INTO ratings (charter_id, rating, comment) VALUES ($1, $2, $3) RETURNING *",
     [req.params.id, parsedRating, comment.trim()]
   );
-  const [rows] = await pool.query("SELECT * FROM ratings WHERE id = ?", [result.insertId]);
   res.status(201).json(rows[0]);
 });
 
