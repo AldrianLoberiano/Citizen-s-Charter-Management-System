@@ -236,7 +236,6 @@ app.get("/api/charters", async (req, res) => {
   }
   const where = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
   const sql = `SELECT * FROM charters ${where} ORDER BY id ASC`;
-  const [rows] = await pool.query(sql, params);
   res.json(rows);
 });
 
