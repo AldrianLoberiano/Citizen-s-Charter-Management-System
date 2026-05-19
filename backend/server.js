@@ -123,6 +123,7 @@ app.get("/api/health", (_req, res) => {
 });
 
 app.get("/api/admin/backup", (_req, res) => {
+  const { baseArgs, dbName, env } = getDbArgs();
   const filename = `backup_${new Date().toISOString().slice(0, 10)}.sql`;
 
   res.setHeader("Content-Type", "application/sql");
