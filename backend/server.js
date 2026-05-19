@@ -340,7 +340,6 @@ app.post("/api/charters/:id/feedback", async (req, res) => {
       String(comment).trim() || null,
     ]
   );
-    "SELECT * FROM feedback_responses WHERE id = ?",
     [result.insertId]
   );
   res.status(201).json(rows[0]);
