@@ -216,7 +216,6 @@ app.put("/api/departments/:id", async (req, res) => {
     "UPDATE departments SET name = $1, description = $2 WHERE id = $3 RETURNING *",
     [name.trim(), description.trim(), req.params.id]
   );
-  const [rows] = await pool.query("SELECT * FROM departments WHERE id = ?", [req.params.id]);
   res.json(rows[0]);
 });
 
