@@ -217,6 +217,7 @@ app.put("/api/departments/:id", async (req, res) => {
     [name.trim(), description.trim(), req.params.id]
   );
   if (result.rowCount === 0) return res.status(404).json({ message: "Department not found" });
+  res.json(result.rows[0]);
 });
 
 app.delete("/api/departments/:id", async (req, res) => {
