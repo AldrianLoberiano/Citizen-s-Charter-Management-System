@@ -274,6 +274,7 @@ app.put("/api/charters/:id", async (req, res) => {
 
 app.delete("/api/charters/:id", async (req, res) => {
   const result = await pool.query("DELETE FROM charters WHERE id = $1", [req.params.id]);
+  if (result.rowCount === 0) return res.status(404).json({ message: "Charter not found" });
   res.status(204).send();
 });
 
