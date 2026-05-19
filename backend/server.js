@@ -202,7 +202,6 @@ app.get("/api/departments/:id", async (req, res) => {
 app.post("/api/departments", async (req, res) => {
   const { name, description = "" } = req.body || {};
   if (!name?.trim()) return res.status(400).json({ message: "Department name is required" });
-  const [result] = await pool.query(
     "INSERT INTO departments (name, description) VALUES (?, ?)",
     [name.trim(), description.trim()]
   );
