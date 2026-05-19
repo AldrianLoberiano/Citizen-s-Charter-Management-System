@@ -269,6 +269,7 @@ app.put("/api/charters/:id", async (req, res) => {
     [department_id, title.trim(), content.trim(), file_path, req.params.id]
   );
   if (result.rowCount === 0) return res.status(404).json({ message: "Charter not found" });
+  res.json(result.rows[0]);
 });
 
 app.delete("/api/charters/:id", async (req, res) => {
