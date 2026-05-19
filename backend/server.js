@@ -206,6 +206,7 @@ app.post("/api/departments", async (req, res) => {
     "INSERT INTO departments (name, description) VALUES ($1, $2) RETURNING *",
     [name.trim(), description.trim()]
   );
+  res.status(201).json(result.rows[0]);
 });
 
 app.put("/api/departments/:id", async (req, res) => {
