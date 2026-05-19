@@ -129,6 +129,7 @@ app.get("/api/admin/backup", (_req, res) => {
   res.setHeader("Content-Type", "application/sql");
   res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
 
+  const child = spawn("pg_dump", [...baseArgs, "--no-owner", "--no-privileges", dbName], {
 
   child.stdout.pipe(res);
 
