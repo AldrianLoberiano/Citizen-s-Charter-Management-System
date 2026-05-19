@@ -265,6 +265,7 @@ app.put("/api/charters/:id", async (req, res) => {
     return res.status(400).json({ message: "department_id, title, and content are required" });
   }
   const result = await pool.query(
+    "UPDATE charters SET department_id = $1, title = $2, content = $3, file_path = $4 WHERE id = $5 RETURNING *",
     [department_id, title.trim(), content.trim(), file_path, req.params.id]
   );
   if (result.affectedRows === 0) return res.status(404).json({ message: "Charter not found" });
