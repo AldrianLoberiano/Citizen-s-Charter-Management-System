@@ -131,6 +131,7 @@ app.get("/api/admin/backup", (_req, res) => {
 
   const child = spawn("pg_dump", [...baseArgs, "--no-owner", "--no-privileges", dbName], {
     windowsHide: true,
+    env,
 
   child.stdout.pipe(res);
 
