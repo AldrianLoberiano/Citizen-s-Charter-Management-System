@@ -221,6 +221,7 @@ app.put("/api/departments/:id", async (req, res) => {
 });
 
 app.delete("/api/departments/:id", async (req, res) => {
+  const result = await pool.query("DELETE FROM departments WHERE id = $1", [req.params.id]);
   res.status(204).send();
 });
 
