@@ -309,6 +309,7 @@ app.get("/api/feedback", async (_req, res) => {
 });
 
 app.get("/api/charters/:id/feedback", async (req, res) => {
+  const result = await pool.query(
     [req.params.id]
   );
   res.json(rows);
