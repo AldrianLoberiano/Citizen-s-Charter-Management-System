@@ -252,6 +252,7 @@ app.post("/api/charters", async (req, res) => {
   if (!department_id || !title?.trim() || !content?.trim()) {
     return res.status(400).json({ message: "department_id, title, and content are required" });
   }
+  const result = await pool.query(
     [department_id, title.trim(), content.trim(), file_path]
   );
   const [rows] = await pool.query("SELECT * FROM charters WHERE id = ?", [result.insertId]);
