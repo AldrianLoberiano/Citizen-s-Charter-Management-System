@@ -279,7 +279,6 @@ app.delete("/api/charters/:id", async (req, res) => {
 });
 
 app.get("/api/ratings", async (_req, res) => {
-  const [rows] = await pool.query("SELECT * FROM ratings ORDER BY created_at DESC, id DESC");
   res.json(rows);
 });
 
