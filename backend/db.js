@@ -1,15 +1,15 @@
-import { Pool } from "pg";
+import mysql from "mysql2/promise";
 import dotenv from "dotenv";
 
 dotenv.config();
 
-export const pool = new Pool({
+export const pool = mysql.createPool({
   host: process.env.DB_HOST || "127.0.0.1",
-  port: Number(process.env.DB_PORT || 5432),
-  user: process.env.DB_USER || "postgres",
+  port: Number(process.env.DB_PORT || 3306),
+  user: process.env.DB_USER || "root",
   password: process.env.DB_PASSWORD || "",
   database: process.env.DB_NAME || "ccms_db",
-  max: 10,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 10000,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
 });
