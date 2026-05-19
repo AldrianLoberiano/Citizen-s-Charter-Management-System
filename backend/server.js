@@ -264,7 +264,6 @@ app.put("/api/charters/:id", async (req, res) => {
   if (!department_id || !title?.trim() || !content?.trim()) {
     return res.status(400).json({ message: "department_id, title, and content are required" });
   }
-    "UPDATE charters SET department_id = ?, title = ?, content = ?, file_path = ? WHERE id = ?",
     [department_id, title.trim(), content.trim(), file_path, req.params.id]
   );
   if (result.affectedRows === 0) return res.status(404).json({ message: "Charter not found" });
