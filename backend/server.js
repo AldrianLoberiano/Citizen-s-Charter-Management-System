@@ -206,7 +206,6 @@ app.post("/api/departments", async (req, res) => {
     "INSERT INTO departments (name, description) VALUES ($1, $2) RETURNING *",
     [name.trim(), description.trim()]
   );
-  const [rows] = await pool.query("SELECT * FROM departments WHERE id = ?", [result.insertId]);
   res.status(201).json(rows[0]);
 });
 
