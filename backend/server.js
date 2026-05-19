@@ -329,7 +329,6 @@ app.post("/api/charters/:id/feedback", async (req, res) => {
     return res.status(400).json({ message: "Rating must be between 1 and 5" });
   }
 
-    "INSERT INTO feedback_responses (charter_id, name, email, contact, rating, comment) VALUES (?, ?, ?, ?, ?, ?)",
     [
       req.params.id,
       String(name).trim() || null,
