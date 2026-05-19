@@ -222,6 +222,7 @@ app.put("/api/departments/:id", async (req, res) => {
 
 app.delete("/api/departments/:id", async (req, res) => {
   const result = await pool.query("DELETE FROM departments WHERE id = $1", [req.params.id]);
+  if (result.rowCount === 0) return res.status(404).json({ message: "Department not found" });
   res.status(204).send();
 });
 
