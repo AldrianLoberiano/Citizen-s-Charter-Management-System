@@ -350,7 +350,6 @@ app.post("/api/auth/login", async (req, res) => {
   }
 
   try {
-    const [rows] = await pool.query("SELECT * FROM admins WHERE username = ?", [
       username,
     ]);
     const admin = rows[0];
