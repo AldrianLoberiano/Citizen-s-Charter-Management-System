@@ -181,7 +181,6 @@ app.post("/api/admin/restore", sqlUpload.single("file"), (req, res) => {
     if (code === 0) {
       return res.json({ ok: true });
     }
-    return res.status(500).json({ message: stderr || `mysql exited with code ${code}` });
   });
 
   input.pipe(child.stdin);
