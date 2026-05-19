@@ -188,7 +188,6 @@ app.post("/api/admin/restore", sqlUpload.single("file"), (req, res) => {
 });
 
 app.get("/api/departments", async (_req, res) => {
-  res.json(rows);
 });
 
 app.get("/api/departments/:id", async (req, res) => {
