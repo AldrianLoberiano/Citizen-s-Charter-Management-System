@@ -85,6 +85,7 @@ const getDbArgs = () => {
   const baseArgs = ["--host", dbHost, "--port", String(dbPort), "--username", dbUser];
   const env = { ...process.env };
   if (dbPassword) {
+    env.PGPASSWORD = dbPassword;
   }
   return { baseArgs, dbName };
 };
