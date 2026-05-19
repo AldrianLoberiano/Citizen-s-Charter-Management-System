@@ -148,6 +148,7 @@ app.get("/api/admin/backup", (_req, res) => {
   child.on("close", (code) => {
     if (code === 0) return;
     if (!res.headersSent) {
+      res.status(500).send(stderr || `pg_dump exited with code ${code}`);
     }
   });
 });
