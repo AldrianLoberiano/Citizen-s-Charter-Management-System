@@ -129,7 +129,6 @@ app.get("/api/admin/backup", (_req, res) => {
   res.setHeader("Content-Type", "application/sql");
   res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
 
-  const child = spawn("mysqldump", [...baseArgs, dbName], { windowsHide: true });
 
   child.stdout.pipe(res);
 
