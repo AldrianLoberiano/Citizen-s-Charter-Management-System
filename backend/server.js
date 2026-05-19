@@ -285,6 +285,7 @@ app.get("/api/ratings", async (_req, res) => {
 
 app.get("/api/charters/:id/ratings", async (req, res) => {
   const result = await pool.query("SELECT * FROM ratings WHERE charter_id = $1 ORDER BY id ASC", [req.params.id]);
+  res.json(result.rows);
 });
 
 app.post("/api/charters/:id/ratings", async (req, res) => {
