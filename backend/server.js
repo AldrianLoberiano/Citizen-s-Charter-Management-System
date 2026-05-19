@@ -221,7 +221,6 @@ app.put("/api/departments/:id", async (req, res) => {
 });
 
 app.delete("/api/departments/:id", async (req, res) => {
-  if (result.affectedRows === 0) return res.status(404).json({ message: "Department not found" });
   res.status(204).send();
 });
 
