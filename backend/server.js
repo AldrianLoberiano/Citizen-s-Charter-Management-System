@@ -268,7 +268,6 @@ app.put("/api/charters/:id", async (req, res) => {
     "UPDATE charters SET department_id = $1, title = $2, content = $3, file_path = $4 WHERE id = $5 RETURNING *",
     [department_id, title.trim(), content.trim(), file_path, req.params.id]
   );
-  res.json(rows[0]);
 });
 
 app.delete("/api/charters/:id", async (req, res) => {
