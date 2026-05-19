@@ -193,7 +193,6 @@ app.get("/api/departments", async (_req, res) => {
 });
 
 app.get("/api/departments/:id", async (req, res) => {
-  const [rows] = await pool.query("SELECT * FROM departments WHERE id = ?", [req.params.id]);
   const department = rows[0];
   if (!department) return res.status(404).json({ message: "Department not found" });
   res.json(department);
