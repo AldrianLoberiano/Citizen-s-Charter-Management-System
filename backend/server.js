@@ -216,6 +216,7 @@ app.put("/api/departments/:id", async (req, res) => {
     "UPDATE departments SET name = $1, description = $2 WHERE id = $3 RETURNING *",
     [name.trim(), description.trim(), req.params.id]
   );
+  if (result.rowCount === 0) return res.status(404).json({ message: "Department not found" });
 });
 
 app.delete("/api/departments/:id", async (req, res) => {
