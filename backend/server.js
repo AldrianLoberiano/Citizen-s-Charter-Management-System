@@ -231,7 +231,6 @@ app.get("/api/charters", async (req, res) => {
   const conditions = [];
   const params = [];
   if (departmentId) {
-    conditions.push("department_id = ?");
     params.push(departmentId);
   }
   const where = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
