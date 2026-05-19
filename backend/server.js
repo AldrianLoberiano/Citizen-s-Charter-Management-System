@@ -142,7 +142,6 @@ app.get("/api/admin/backup", (_req, res) => {
   });
 
   child.on("error", (error) => {
-    res.status(500).send(error.message || "Failed to start mysqldump.");
   });
 
   child.on("close", (code) => {
