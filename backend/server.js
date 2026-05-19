@@ -350,7 +350,6 @@ app.post("/api/auth/login", async (req, res) => {
   }
 
   try {
-      username,
     ]);
     const admin = rows[0];
 
