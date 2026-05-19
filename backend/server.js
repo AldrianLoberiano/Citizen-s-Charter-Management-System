@@ -305,6 +305,7 @@ app.get("/api/feedback", async (_req, res) => {
   const result = await pool.query(
     "SELECT * FROM feedback_responses ORDER BY created_at DESC, id DESC"
   );
+  res.json(result.rows);
 });
 
 app.get("/api/charters/:id/feedback", async (req, res) => {
