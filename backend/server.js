@@ -158,6 +158,7 @@ app.post("/api/admin/restore", sqlUpload.single("file"), (req, res) => {
     return res.status(400).json({ message: "No SQL file uploaded" });
   }
 
+  const { baseArgs, dbName, env } = getDbArgs();
   const input = fs.createReadStream(req.file.path);
   let stderr = "";
 
