@@ -298,6 +298,7 @@ app.post("/api/charters/:id/ratings", async (req, res) => {
     "INSERT INTO ratings (charter_id, rating, comment) VALUES ($1, $2, $3) RETURNING *",
     [req.params.id, parsedRating, comment.trim()]
   );
+  res.status(201).json(result.rows[0]);
 });
 
 app.get("/api/feedback", async (_req, res) => {
