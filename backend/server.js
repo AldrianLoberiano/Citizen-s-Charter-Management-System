@@ -87,6 +87,7 @@ const getDbArgs = () => {
   if (dbPassword) {
     env.PGPASSWORD = dbPassword;
   }
+  return { baseArgs, dbName, env };
 };
 
 app.use(
