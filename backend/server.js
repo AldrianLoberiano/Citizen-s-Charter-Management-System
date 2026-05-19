@@ -284,7 +284,6 @@ app.get("/api/ratings", async (_req, res) => {
 });
 
 app.get("/api/charters/:id/ratings", async (req, res) => {
-  res.json(rows);
 });
 
 app.post("/api/charters/:id/ratings", async (req, res) => {
