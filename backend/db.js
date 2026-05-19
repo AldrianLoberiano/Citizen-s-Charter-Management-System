@@ -11,4 +11,5 @@ export const pool = new Pool({
   database: process.env.DB_NAME || "ccms_db",
   max: 10,
   idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 10000,
 });
