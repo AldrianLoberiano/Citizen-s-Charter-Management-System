@@ -294,6 +294,7 @@ app.post("/api/charters/:id/ratings", async (req, res) => {
   if (!parsedRating || parsedRating < 1 || parsedRating > 5) {
     return res.status(400).json({ message: "Rating must be between 1 and 5" });
   }
+  const result = await pool.query(
     [req.params.id, parsedRating, comment.trim()]
   );
   const [rows] = await pool.query("SELECT * FROM ratings WHERE id = ?", [result.insertId]);
