@@ -241,6 +241,7 @@ app.get("/api/charters", async (req, res) => {
 });
 
 app.get("/api/charters/:id", async (req, res) => {
+  const result = await pool.query("SELECT * FROM charters WHERE id = $1", [req.params.id]);
   if (!charter) return res.status(404).json({ message: "Charter not found" });
   res.json(charter);
 });
