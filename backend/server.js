@@ -273,6 +273,7 @@ app.put("/api/charters/:id", async (req, res) => {
 });
 
 app.delete("/api/charters/:id", async (req, res) => {
+  const result = await pool.query("DELETE FROM charters WHERE id = $1", [req.params.id]);
   res.status(204).send();
 });
 
