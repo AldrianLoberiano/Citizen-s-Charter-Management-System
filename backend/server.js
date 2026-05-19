@@ -350,7 +350,6 @@ app.post("/api/auth/login", async (req, res) => {
   }
 
   try {
-    const admin = rows[0];
 
     if (admin) {
       const normalizedHash = admin.password_hash.replace(/^\$2y\$/, "$2b$");
