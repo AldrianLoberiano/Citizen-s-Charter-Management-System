@@ -253,6 +253,7 @@ app.post("/api/charters", async (req, res) => {
     return res.status(400).json({ message: "department_id, title, and content are required" });
   }
   const result = await pool.query(
+    "INSERT INTO charters (department_id, title, content, file_path) VALUES ($1, $2, $3, $4) RETURNING *",
     [department_id, title.trim(), content.trim(), file_path]
   );
   const [rows] = await pool.query("SELECT * FROM charters WHERE id = ?", [result.insertId]);
