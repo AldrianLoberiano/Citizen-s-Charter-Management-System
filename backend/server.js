@@ -329,6 +329,7 @@ app.post("/api/charters/:id/feedback", async (req, res) => {
     return res.status(400).json({ message: "Rating must be between 1 and 5" });
   }
 
+  const result = await pool.query(
     [
       req.params.id,
       String(name).trim() || null,
