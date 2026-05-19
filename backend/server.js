@@ -77,17 +77,16 @@ const sqlUpload = multer({
 
 const getDbArgs = () => {
   const dbHost = process.env.DB_HOST || "127.0.0.1";
-  const dbPort = process.env.DB_PORT || "5432";
-  const dbUser = process.env.DB_USER || "postgres";
+  const dbPort = process.env.DB_PORT || "3306";
+  const dbUser = process.env.DB_USER || "root";
   const dbPassword = process.env.DB_PASSWORD || "";
   const dbName = process.env.DB_NAME || "ccms_db";
 
-  const baseArgs = ["--host", dbHost, "--port", String(dbPort), "--username", dbUser];
-  const env = { ...process.env };
+  const baseArgs = ["--host", dbHost, "--port", String(dbPort), "--user", dbUser];
   if (dbPassword) {
-    env.PGPASSWORD = dbPassword;
+    baseArgs.push(`--password=${dbPassword}`);
   }
-  return { baseArgs, dbName, env };
+  return { baseArgs, dbName };
 };
 
 app.use(
@@ -123,16 +122,13 @@ app.get("/api/health", (_req, res) => {
 });
 
 app.get("/api/admin/backup", (_req, res) => {
-  const { baseArgs, dbName, env } = getDbArgs();
+  const { baseArgs, dbName } = getDbArgs();
   const filename = `backup_${new Date().toISOString().slice(0, 10)}.sql`;
 
   res.setHeader("Content-Type", "application/sql");
   res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
 
-  const child = spawn("pg_dump", [...baseArgs, "--no-owner", "--no-privileges", dbName], {
-    windowsHide: true,
-    env,
-  });
+  const child = spawn("mysqldump", [...baseArgs, dbName], { windowsHide: true });
 
   child.stdout.pipe(res);
 
@@ -142,13 +138,13 @@ app.get("/api/admin/backup", (_req, res) => {
   });
 
   child.on("error", (error) => {
-    res.status(500).send(error.message || "Failed to start pg_dump.");
+    res.status(500).send(error.message || "Failed to start mysqldump.");
   });
 
   child.on("close", (code) => {
     if (code === 0) return;
     if (!res.headersSent) {
-      res.status(500).send(stderr || `pg_dump exited with code ${code}`);
+      res.status(500).send(stderr || `mysqldump exited with code ${code}`);
     }
   });
 });
@@ -158,9 +154,9 @@ app.post("/api/admin/restore", sqlUpload.single("file"), (req, res) => {
     return res.status(400).json({ message: "No SQL file uploaded" });
   }
 
-  const { baseArgs, dbName, env } = getDbArgs();
-  const psqlArgs = [...baseArgs, "--dbname", dbName];
-  const child = spawn("psql", psqlArgs, { windowsHide: true, env });
+  const { baseArgs, dbName } = getDbArgs();
+  const mysqlArgs = [...baseArgs, dbName];
+  const child = spawn("mysql", mysqlArgs, { windowsHide: true });
   const input = fs.createReadStream(req.file.path);
   let stderr = "";
 
@@ -173,7 +169,7 @@ app.post("/api/admin/restore", sqlUpload.single("file"), (req, res) => {
   });
 
   child.on("error", (error) => {
-    res.status(500).json({ message: error.message || "Failed to start psql." });
+    res.status(500).json({ message: error.message || "Failed to start mysql." });
   });
 
   child.on("close", (code) => {
@@ -181,20 +177,20 @@ app.post("/api/admin/restore", sqlUpload.single("file"), (req, res) => {
     if (code === 0) {
       return res.json({ ok: true });
     }
-    return res.status(500).json({ message: stderr || `psql exited with code ${code}` });
+    return res.status(500).json({ message: stderr || `mysql exited with code ${code}` });
   });
 
   input.pipe(child.stdin);
 });
 
 app.get("/api/departments", async (_req, res) => {
-  const result = await pool.query("SELECT * FROM departments ORDER BY id ASC");
-  res.json(result.rows);
+  const [rows] = await pool.query("SELECT * FROM departments ORDER BY id ASC");
+  res.json(rows);
 });
 
 app.get("/api/departments/:id", async (req, res) => {
-  const result = await pool.query("SELECT * FROM departments WHERE id = $1", [req.params.id]);
-  const department = result.rows[0];
+  const [rows] = await pool.query("SELECT * FROM departments WHERE id = ?", [req.params.id]);
+  const department = rows[0];
   if (!department) return res.status(404).json({ message: "Department not found" });
   res.json(department);
 });
@@ -202,27 +198,29 @@ app.get("/api/departments/:id", async (req, res) => {
 app.post("/api/departments", async (req, res) => {
   const { name, description = "" } = req.body || {};
   if (!name?.trim()) return res.status(400).json({ message: "Department name is required" });
-  const result = await pool.query(
-    "INSERT INTO departments (name, description) VALUES ($1, $2) RETURNING *",
+  const [result] = await pool.query(
+    "INSERT INTO departments (name, description) VALUES (?, ?)",
     [name.trim(), description.trim()]
   );
-  res.status(201).json(result.rows[0]);
+  const [rows] = await pool.query("SELECT * FROM departments WHERE id = ?", [result.insertId]);
+  res.status(201).json(rows[0]);
 });
 
 app.put("/api/departments/:id", async (req, res) => {
   const { name, description = "" } = req.body || {};
   if (!name?.trim()) return res.status(400).json({ message: "Department name is required" });
-  const result = await pool.query(
-    "UPDATE departments SET name = $1, description = $2 WHERE id = $3 RETURNING *",
+  const [result] = await pool.query(
+    "UPDATE departments SET name = ?, description = ? WHERE id = ?",
     [name.trim(), description.trim(), req.params.id]
   );
-  if (result.rowCount === 0) return res.status(404).json({ message: "Department not found" });
-  res.json(result.rows[0]);
+  if (result.affectedRows === 0) return res.status(404).json({ message: "Department not found" });
+  const [rows] = await pool.query("SELECT * FROM departments WHERE id = ?", [req.params.id]);
+  res.json(rows[0]);
 });
 
 app.delete("/api/departments/:id", async (req, res) => {
-  const result = await pool.query("DELETE FROM departments WHERE id = $1", [req.params.id]);
-  if (result.rowCount === 0) return res.status(404).json({ message: "Department not found" });
+  const [result] = await pool.query("DELETE FROM departments WHERE id = ?", [req.params.id]);
+  if (result.affectedRows === 0) return res.status(404).json({ message: "Department not found" });
   res.status(204).send();
 });
 
@@ -231,18 +229,18 @@ app.get("/api/charters", async (req, res) => {
   const conditions = [];
   const params = [];
   if (departmentId) {
+    conditions.push("department_id = ?");
     params.push(departmentId);
-    conditions.push(`department_id = $${params.length}`);
   }
   const where = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
   const sql = `SELECT * FROM charters ${where} ORDER BY id ASC`;
-  const result = await pool.query(sql, params);
-  res.json(result.rows);
+  const [rows] = await pool.query(sql, params);
+  res.json(rows);
 });
 
 app.get("/api/charters/:id", async (req, res) => {
-  const result = await pool.query("SELECT * FROM charters WHERE id = $1", [req.params.id]);
-  const charter = result.rows[0];
+  const [rows] = await pool.query("SELECT * FROM charters WHERE id = ?", [req.params.id]);
+  const charter = rows[0];
   if (!charter) return res.status(404).json({ message: "Charter not found" });
   res.json(charter);
 });
@@ -252,11 +250,12 @@ app.post("/api/charters", async (req, res) => {
   if (!department_id || !title?.trim() || !content?.trim()) {
     return res.status(400).json({ message: "department_id, title, and content are required" });
   }
-  const result = await pool.query(
-    "INSERT INTO charters (department_id, title, content, file_path) VALUES ($1, $2, $3, $4) RETURNING *",
+  const [result] = await pool.query(
+    "INSERT INTO charters (department_id, title, content, file_path) VALUES (?, ?, ?, ?)",
     [department_id, title.trim(), content.trim(), file_path]
   );
-  res.status(201).json(result.rows[0]);
+  const [rows] = await pool.query("SELECT * FROM charters WHERE id = ?", [result.insertId]);
+  res.status(201).json(rows[0]);
 });
 
 app.put("/api/charters/:id", async (req, res) => {
@@ -264,28 +263,29 @@ app.put("/api/charters/:id", async (req, res) => {
   if (!department_id || !title?.trim() || !content?.trim()) {
     return res.status(400).json({ message: "department_id, title, and content are required" });
   }
-  const result = await pool.query(
-    "UPDATE charters SET department_id = $1, title = $2, content = $3, file_path = $4 WHERE id = $5 RETURNING *",
+  const [result] = await pool.query(
+    "UPDATE charters SET department_id = ?, title = ?, content = ?, file_path = ? WHERE id = ?",
     [department_id, title.trim(), content.trim(), file_path, req.params.id]
   );
-  if (result.rowCount === 0) return res.status(404).json({ message: "Charter not found" });
-  res.json(result.rows[0]);
+  if (result.affectedRows === 0) return res.status(404).json({ message: "Charter not found" });
+  const [rows] = await pool.query("SELECT * FROM charters WHERE id = ?", [req.params.id]);
+  res.json(rows[0]);
 });
 
 app.delete("/api/charters/:id", async (req, res) => {
-  const result = await pool.query("DELETE FROM charters WHERE id = $1", [req.params.id]);
-  if (result.rowCount === 0) return res.status(404).json({ message: "Charter not found" });
+  const [result] = await pool.query("DELETE FROM charters WHERE id = ?", [req.params.id]);
+  if (result.affectedRows === 0) return res.status(404).json({ message: "Charter not found" });
   res.status(204).send();
 });
 
 app.get("/api/ratings", async (_req, res) => {
-  const result = await pool.query("SELECT * FROM ratings ORDER BY created_at DESC, id DESC");
-  res.json(result.rows);
+  const [rows] = await pool.query("SELECT * FROM ratings ORDER BY created_at DESC, id DESC");
+  res.json(rows);
 });
 
 app.get("/api/charters/:id/ratings", async (req, res) => {
-  const result = await pool.query("SELECT * FROM ratings WHERE charter_id = $1 ORDER BY id ASC", [req.params.id]);
-  res.json(result.rows);
+  const [rows] = await pool.query("SELECT * FROM ratings WHERE charter_id = ? ORDER BY id ASC", [req.params.id]);
+  res.json(rows);
 });
 
 app.post("/api/charters/:id/ratings", async (req, res) => {
@@ -294,26 +294,27 @@ app.post("/api/charters/:id/ratings", async (req, res) => {
   if (!parsedRating || parsedRating < 1 || parsedRating > 5) {
     return res.status(400).json({ message: "Rating must be between 1 and 5" });
   }
-  const result = await pool.query(
-    "INSERT INTO ratings (charter_id, rating, comment) VALUES ($1, $2, $3) RETURNING *",
+  const [result] = await pool.query(
+    "INSERT INTO ratings (charter_id, rating, comment) VALUES (?, ?, ?)",
     [req.params.id, parsedRating, comment.trim()]
   );
-  res.status(201).json(result.rows[0]);
+  const [rows] = await pool.query("SELECT * FROM ratings WHERE id = ?", [result.insertId]);
+  res.status(201).json(rows[0]);
 });
 
 app.get("/api/feedback", async (_req, res) => {
-  const result = await pool.query(
+  const [rows] = await pool.query(
     "SELECT * FROM feedback_responses ORDER BY created_at DESC, id DESC"
   );
-  res.json(result.rows);
+  res.json(rows);
 });
 
 app.get("/api/charters/:id/feedback", async (req, res) => {
-  const result = await pool.query(
-    "SELECT * FROM feedback_responses WHERE charter_id = $1 ORDER BY created_at DESC, id DESC",
+  const [rows] = await pool.query(
+    "SELECT * FROM feedback_responses WHERE charter_id = ? ORDER BY created_at DESC, id DESC",
     [req.params.id]
   );
-  res.json(result.rows);
+  res.json(rows);
 });
 
 app.post("/api/charters/:id/feedback", async (req, res) => {
@@ -329,8 +330,8 @@ app.post("/api/charters/:id/feedback", async (req, res) => {
     return res.status(400).json({ message: "Rating must be between 1 and 5" });
   }
 
-  const result = await pool.query(
-    "INSERT INTO feedback_responses (charter_id, name, email, contact, rating, comment) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+  const [result] = await pool.query(
+    "INSERT INTO feedback_responses (charter_id, name, email, contact, rating, comment) VALUES (?, ?, ?, ?, ?, ?)",
     [
       req.params.id,
       String(name).trim() || null,
@@ -340,7 +341,11 @@ app.post("/api/charters/:id/feedback", async (req, res) => {
       String(comment).trim() || null,
     ]
   );
-  res.status(201).json(result.rows[0]);
+  const [rows] = await pool.query(
+    "SELECT * FROM feedback_responses WHERE id = ?",
+    [result.insertId]
+  );
+  res.status(201).json(rows[0]);
 });
 
 app.post("/api/auth/login", async (req, res) => {
@@ -350,8 +355,10 @@ app.post("/api/auth/login", async (req, res) => {
   }
 
   try {
-    const result = await pool.query("SELECT * FROM admins WHERE username = $1", [username]);
-    const admin = result.rows[0];
+    const [rows] = await pool.query("SELECT * FROM admins WHERE username = ?", [
+      username,
+    ]);
+    const admin = rows[0];
 
     if (admin) {
       const normalizedHash = admin.password_hash.replace(/^\$2y\$/, "$2b$");
