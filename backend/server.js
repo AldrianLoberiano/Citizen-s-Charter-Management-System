@@ -82,6 +82,7 @@ const getDbArgs = () => {
   const dbPassword = process.env.DB_PASSWORD || "";
   const dbName = process.env.DB_NAME || "ccms_db";
 
+  const baseArgs = ["--host", dbHost, "--port", String(dbPort), "--username", dbUser];
   if (dbPassword) {
     baseArgs.push(`--password=${dbPassword}`);
   }
