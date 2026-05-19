@@ -340,7 +340,6 @@ app.post("/api/charters/:id/feedback", async (req, res) => {
       String(comment).trim() || null,
     ]
   );
-  const [rows] = await pool.query(
     "SELECT * FROM feedback_responses WHERE id = ?",
     [result.insertId]
   );
