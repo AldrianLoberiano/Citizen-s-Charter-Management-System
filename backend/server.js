@@ -159,6 +159,7 @@ app.post("/api/admin/restore", sqlUpload.single("file"), (req, res) => {
   }
 
   const { baseArgs, dbName, env } = getDbArgs();
+  const psqlArgs = [...baseArgs, "--dbname", dbName];
   const input = fs.createReadStream(req.file.path);
   let stderr = "";
 
