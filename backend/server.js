@@ -173,6 +173,7 @@ app.post("/api/admin/restore", sqlUpload.single("file"), (req, res) => {
   });
 
   child.on("error", (error) => {
+    res.status(500).json({ message: error.message || "Failed to start psql." });
   });
 
   child.on("close", (code) => {
