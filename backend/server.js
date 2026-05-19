@@ -330,6 +330,7 @@ app.post("/api/charters/:id/feedback", async (req, res) => {
   }
 
   const result = await pool.query(
+    "INSERT INTO feedback_responses (charter_id, name, email, contact, rating, comment) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
     [
       req.params.id,
       String(name).trim() || null,
