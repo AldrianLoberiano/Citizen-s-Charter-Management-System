@@ -4,7 +4,7 @@
  * and citizen feedback/rating system
  */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams, Navigate } from "react-router";
 import {
   ArrowLeft,
@@ -61,13 +61,14 @@ export function CharterDetail() {
       ? `${window.location.origin}/charter/${charter.id}#feedback-form`
       : "";
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(feedbackUrl)}&bgcolor=ffffff&color=1e3a8a`;
-  const attachmentUrl = charter.file_path
-    ? charter.file_path.startsWith("/")
-      ? charter.file_path
-      : charter.file_path.startsWith("uploads/")
-        ? `/${charter.file_path}`
-        : `/uploads/charters/${charter.file_path}`
-    : "/charter-viewer.pdf";
+  const hasAttachment = Boolean(charter.file_path?.trim());
+  const attachmentUrl = hasAttachment
+    ? charter.file_path!.startsWith("/")
+      ? charter.file_path!
+      : charter.file_path!.startsWith("uploads/")
+        ? `/${charter.file_path!}`
+        : `/uploads/charters/${charter.file_path!}`
+    : "";
 
   const FILE_BASE = (import.meta.env.VITE_API_URL || "http://localhost:4000/api").replace(
     /\/api$/,
@@ -88,8 +89,35 @@ export function CharterDetail() {
     return "unknown";
   };
 
-  const viewerType = getViewerType(attachmentUrl);
-  const resolvedAttachmentUrl = resolveFileUrl(attachmentUrl);
+  const viewerType = attachmentUrl ? getViewerType(attachmentUrl) : "unknown";
+  const resolvedAttachmentUrl = attachmentUrl ? resolveFileUrl(attachmentUrl) : "";
+  const [fileStatus, setFileStatus] = useState<"unknown" | "available" | "missing">(
+    hasAttachment ? "unknown" : "missing"
+  );
+
+  useEffect(() => {
+    if (!hasAttachment) {
+      setFileStatus("missing");
+      return;
+    }
+
+    let active = true;
+    setFileStatus("unknown");
+
+    fetch(resolvedAttachmentUrl, { method: "HEAD" })
+      .then((response) => {
+        if (!active) return;
+        setFileStatus(response.ok ? "available" : "missing");
+      })
+      .catch(() => {
+        if (!active) return;
+        setFileStatus("missing");
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [hasAttachment, resolvedAttachmentUrl]);
 
   // Format content with line breaks preserved
   const formattedContent = charter.content.split("\n").map((line, idx) => {
@@ -134,6 +162,7 @@ export function CharterDetail() {
   });
 
   const handleDownload = () => {
+    if (fileStatus !== "available") return;
     window.open(resolvedAttachmentUrl, "_blank", "noopener,noreferrer");
   };
 
@@ -281,6 +310,7 @@ export function CharterDetail() {
                 <button
                   type="button"
                   onClick={handleDownload}
+                  disabled={fileStatus !== "available"}
                   className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-600 transition-colors hover:bg-slate-50 dark:hover:bg-blue-900/40"
                 >
                   <ExternalLink className="h-4 w-4" />
@@ -288,14 +318,20 @@ export function CharterDetail() {
                 </button>
               </div>
               <div className="bg-white p-3">
-                {viewerType === "pdf" && (
+                {fileStatus === "missing" && (
+                  <div className="p-4 text-sm text-slate-500">404 not found</div>
+                )}
+                {fileStatus === "unknown" && (
+                  <div className="p-4 text-sm text-slate-500">Checking attachment...</div>
+                )}
+                {fileStatus === "available" && viewerType === "pdf" && (
                   <iframe
                     src={resolvedAttachmentUrl}
                     title={`${charter.title} PDF preview`}
                     className="h-[720px] w-full rounded-lg border border-slate-200 bg-white"
                   />
                 )}
-                {viewerType === "unknown" && (
+                {fileStatus === "available" && viewerType === "unknown" && (
                   <div className="p-4 text-sm text-slate-500">
                     No preview available for this file type. Use View Full Page to open it.
                   </div>
