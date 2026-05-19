@@ -158,7 +158,6 @@ app.post("/api/admin/restore", sqlUpload.single("file"), (req, res) => {
     return res.status(400).json({ message: "No SQL file uploaded" });
   }
 
-  const child = spawn("mysql", mysqlArgs, { windowsHide: true });
   const input = fs.createReadStream(req.file.path);
   let stderr = "";
 
