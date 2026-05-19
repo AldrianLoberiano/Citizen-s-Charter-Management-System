@@ -189,6 +189,7 @@ app.post("/api/admin/restore", sqlUpload.single("file"), (req, res) => {
 
 app.get("/api/departments", async (_req, res) => {
   const result = await pool.query("SELECT * FROM departments ORDER BY id ASC");
+  res.json(result.rows);
 });
 
 app.get("/api/departments/:id", async (req, res) => {
