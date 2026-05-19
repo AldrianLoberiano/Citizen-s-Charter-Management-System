@@ -213,6 +213,7 @@ app.put("/api/departments/:id", async (req, res) => {
   const { name, description = "" } = req.body || {};
   if (!name?.trim()) return res.status(400).json({ message: "Department name is required" });
   const result = await pool.query(
+    "UPDATE departments SET name = $1, description = $2 WHERE id = $3 RETURNING *",
     [name.trim(), description.trim(), req.params.id]
   );
   if (result.affectedRows === 0) return res.status(404).json({ message: "Department not found" });
