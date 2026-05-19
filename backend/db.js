@@ -10,4 +10,5 @@ export const pool = new Pool({
   password: process.env.DB_PASSWORD || "",
   database: process.env.DB_NAME || "ccms_db",
   max: 10,
+  idleTimeoutMillis: 30000,
 });
