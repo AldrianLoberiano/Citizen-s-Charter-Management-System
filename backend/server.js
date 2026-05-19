@@ -279,7 +279,6 @@ app.delete("/api/charters/:id", async (req, res) => {
 });
 
 app.get("/api/ratings", async (_req, res) => {
-  res.json(rows);
 });
 
 app.get("/api/charters/:id/ratings", async (req, res) => {
