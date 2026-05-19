@@ -309,7 +309,6 @@ app.get("/api/feedback", async (_req, res) => {
 });
 
 app.get("/api/charters/:id/feedback", async (req, res) => {
-  const [rows] = await pool.query(
     "SELECT * FROM feedback_responses WHERE charter_id = ? ORDER BY created_at DESC, id DESC",
     [req.params.id]
   );
