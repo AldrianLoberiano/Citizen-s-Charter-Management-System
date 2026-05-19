@@ -340,7 +340,6 @@ app.post("/api/charters/:id/feedback", async (req, res) => {
       String(comment).trim() || null,
     ]
   );
-  );
   res.status(201).json(rows[0]);
 });
 
