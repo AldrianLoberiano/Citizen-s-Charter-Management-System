@@ -273,7 +273,6 @@ app.put("/api/charters/:id", async (req, res) => {
 });
 
 app.delete("/api/charters/:id", async (req, res) => {
-  if (result.affectedRows === 0) return res.status(404).json({ message: "Charter not found" });
   res.status(204).send();
 });
 
