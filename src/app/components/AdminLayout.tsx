@@ -53,23 +53,20 @@ export function AdminLayout() {
   const location = useLocation();
   const menuRef = useRef<HTMLDivElement | null>(null);
   const mobileNavRef = useRef<HTMLDivElement | null>(null);
+  const authenticated = isAuthenticated();
 
   // Redirect to login if not authenticated
   useEffect(() => {
-    if (!isAuthenticated()) {
+    if (!authenticated) {
       navigate("/admin/login", { replace: true });
     }
-  }, [navigate]);
+  }, [authenticated, navigate]);
 
   useEffect(() => {
     if (typeof document === "undefined") return;
     document.documentElement.classList.toggle("dark", isDark);
     window.localStorage.setItem("ccms_admin_theme", isDark ? "dark" : "light");
   }, [isDark]);
-
-  if (!isAuthenticated()) {
-    return null;
-  }
 
   const currentUser = getAuthUser();
   const displayName = currentUser ? currentUser.split("@")[0] : "Admin";
@@ -139,6 +136,10 @@ export function AdminLayout() {
   };
 
   const isActive = (path: string) => location.pathname === path;
+
+  if (!authenticated) {
+    return null;
+  }
 
 
   return (
