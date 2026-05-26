@@ -51,66 +51,8 @@ export interface FeedbackEntry {
 }
 
 const STORAGE_KEYS = {
-  departments: "ccms_departments",
-  charters: "ccms_charters",
-  ratings: "ccms_ratings",
-  feedback: "ccms_feedback",
   authUser: "ccms_auth_user",
 } as const;
-
-const seedDepartments: Department[] = [
-  {
-    id: 1,
-    name: "Municipal Health Office",
-    description: "Health services, maternal care, and community wellness programs.",
-    created_at: "2024-01-15T08:00:00.000Z",
-  },
-  {
-    id: 2,
-    name: "Municipal Engineering Office",
-    description: "Building permits, infrastructure coordination, and public works.",
-    created_at: "2024-01-18T08:00:00.000Z",
-  },
-  {
-    id: 3,
-    name: "Treasurer's Office",
-    description: "Collections, business permits, and revenue management.",
-    created_at: "2024-01-22T08:00:00.000Z",
-  },
-];
-
-const seedCharters: Charter[] = [
-  {
-    id: 1,
-    department_id: 1,
-    title: "Issuance of Health Certificate",
-    content:
-      "REQUIREMENTS\n- Valid ID\n- Barangay clearance\n\nPROCESSING TIME\n- 30 minutes\n\nFEES\n- PHP 50.00",
-    file_path: null,
-    created_at: "2024-02-01T08:00:00.000Z",
-  },
-  {
-    id: 2,
-    department_id: 2,
-    title: "Building Permit Application",
-    content:
-      "REQUIREMENTS\n- Application form\n- Building plans\n- Zoning clearance\n\nPROCESSING TIME\n- 5 working days",
-    file_path: null,
-    created_at: "2024-02-03T08:00:00.000Z",
-  },
-  {
-    id: 3,
-    department_id: 3,
-    title: "Business Permit Renewal",
-    content:
-      "REQUIREMENTS\n- Previous permit\n- Barangay clearance\n- Tax clearance\n\nPROCESSING TIME\n- 1 day",
-    file_path: null,
-    created_at: "2024-02-05T08:00:00.000Z",
-  },
-];
-
-const seedFeedback: FeedbackResponse[] = [];
-const seedRatings: Rating[] = [];
 
 function getAuthUserFromStorage(): string | null {
   if (typeof window === "undefined") return null;
@@ -122,16 +64,10 @@ function getAuthUserFromStorage(): string | null {
   }
 }
 
-function getScopedKey(key: string) {
-  const user = getAuthUserFromStorage();
-  return user ? `${key}:${user}` : key;
-}
-
-function safeRead<T>(key: string, fallback: T, scoped = false): T {
+function safeRead<T>(key: string, fallback: T): T {
   if (typeof window === "undefined") return fallback;
   try {
-    const storageKey = scoped ? getScopedKey(key) : key;
-    const raw = window.localStorage.getItem(storageKey);
+    const raw = window.localStorage.getItem(key);
     if (!raw) return fallback;
     return JSON.parse(raw) as T;
   } catch {
@@ -139,11 +75,10 @@ function safeRead<T>(key: string, fallback: T, scoped = false): T {
   }
 }
 
-function safeWrite<T>(key: string, value: T, scoped = false) {
+function safeWrite<T>(key: string, value: T) {
   if (typeof window === "undefined") return;
   try {
-    const storageKey = scoped ? getScopedKey(key) : key;
-    window.localStorage.setItem(storageKey, JSON.stringify(value));
+    window.localStorage.setItem(key, JSON.stringify(value));
   } catch {
     return;
   }
@@ -158,49 +93,25 @@ function getNowIso() {
   return new Date().toISOString();
 }
 
-let departmentsCache = safeRead<Department[]>(
-  STORAGE_KEYS.departments,
-  [],
-  true
-);
-let chartersCache = safeRead<Charter[]>(STORAGE_KEYS.charters, [], true);
-let ratingsCache = safeRead<Rating[]>(STORAGE_KEYS.ratings, [], true);
-let feedbackCache = safeRead<FeedbackResponse[]>(STORAGE_KEYS.feedback, [], true);
-
-function persistDepartments() {
-  safeWrite(STORAGE_KEYS.departments, departmentsCache, true);
-}
-
-function persistCharters() {
-  safeWrite(STORAGE_KEYS.charters, chartersCache, true);
-}
-
-function persistRatings() {
-  safeWrite(STORAGE_KEYS.ratings, ratingsCache, true);
-}
-
-function persistFeedback() {
-  safeWrite(STORAGE_KEYS.feedback, feedbackCache, true);
-}
+let departmentsCache: Department[] = [];
+let chartersCache: Charter[] = [];
+let ratingsCache: Rating[] = [];
+let feedbackCache: FeedbackResponse[] = [];
 
 export function setDepartments(departments: Department[]) {
   departmentsCache = [...departments];
-  persistDepartments();
 }
 
 export function setCharters(charters: Charter[]) {
   chartersCache = [...charters];
-  persistCharters();
 }
 
 export function setRatings(ratings: Rating[]) {
   ratingsCache = [...ratings];
-  persistRatings();
 }
 
 export function setFeedback(feedback: FeedbackResponse[]) {
   feedbackCache = [...feedback];
-  persistFeedback();
 }
 
 export function getDepartments(): Department[] {
@@ -217,7 +128,6 @@ export async function createDepartment(data: Omit<Department, "id" | "created_at
     description: data.description,
   });
   departmentsCache = [created, ...departmentsCache];
-  persistDepartments();
   return created;
 }
 
@@ -234,7 +144,6 @@ export async function updateDepartment(id: number, data: Partial<Department>) {
         }
       : dept
   );
-  persistDepartments();
   return updated;
 }
 
@@ -247,10 +156,6 @@ export async function deleteDepartment(id: number) {
   chartersCache = chartersCache.filter((c) => c.department_id !== id);
   ratingsCache = ratingsCache.filter((r) => !removedCharterIds.has(r.charter_id));
   feedbackCache = feedbackCache.filter((r) => !removedCharterIds.has(r.charter_id));
-  persistDepartments();
-  persistCharters();
-  persistRatings();
-  persistFeedback();
 }
 
 export function getCharters(): Charter[] {
@@ -278,7 +183,6 @@ export async function createCharter(data: {
     file_path: data.file_path,
   });
   chartersCache = [created, ...chartersCache];
-  persistCharters();
   return created;
 }
 
@@ -300,7 +204,6 @@ export async function updateCharter(
         }
       : charter
   );
-  persistCharters();
   return updated;
 }
 
@@ -309,9 +212,6 @@ export async function deleteCharter(id: number) {
   chartersCache = chartersCache.filter((charter) => charter.id !== id);
   ratingsCache = ratingsCache.filter((rating) => rating.charter_id !== id);
   feedbackCache = feedbackCache.filter((rating) => rating.charter_id !== id);
-  persistCharters();
-  persistRatings();
-  persistFeedback();
 }
 
 export function getRatings(): Rating[] {
@@ -399,7 +299,6 @@ export async function addFeedback(data: {
     comment: data.comment,
   });
   feedbackCache = [...feedbackCache, created];
-  persistFeedback();
   return created;
 }
 
@@ -443,13 +342,6 @@ export function isAuthenticated(): boolean {
 }
 
 export function logout() {
-  const currentUser = getAuthUserFromStorage();
-  if (currentUser && typeof window !== "undefined") {
-    window.localStorage.removeItem(`${STORAGE_KEYS.departments}:${currentUser}`);
-    window.localStorage.removeItem(`${STORAGE_KEYS.charters}:${currentUser}`);
-    window.localStorage.removeItem(`${STORAGE_KEYS.ratings}:${currentUser}`);
-    window.localStorage.removeItem(`${STORAGE_KEYS.feedback}:${currentUser}`);
-  }
   safeWrite(STORAGE_KEYS.authUser, null);
 }
 
