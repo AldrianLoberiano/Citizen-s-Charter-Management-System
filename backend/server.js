@@ -25,6 +25,8 @@ const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
 
 const uploadsDir = path.join(__dirname, "../uploads/charters");
 fs.mkdirSync(uploadsDir, { recursive: true });
+const editedDir = path.join(__dirname, "../uploads/edited-charters");
+fs.mkdirSync(editedDir, { recursive: true });
 const backupsDir = path.join(__dirname, "../uploads/backups");
 fs.mkdirSync(backupsDir, { recursive: true });
 
@@ -41,6 +43,29 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage,
   limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (_req, file, callback) => {
+    const allowed = ["application/pdf"];
+    if (!allowed.includes(file.mimetype)) {
+      callback(new Error("Only PDF files are allowed."));
+      return;
+    }
+    callback(null, true);
+  },
+});
+
+const editedStorage = multer.diskStorage({
+  destination: (_req, _file, callback) => {
+    callback(null, editedDir);
+  },
+  filename: (_req, file, callback) => {
+    const safeBase = `${Date.now()}-${file.originalname}`.replace(/[^a-zA-Z0-9._-]/g, "_");
+    callback(null, safeBase);
+  },
+});
+
+const editedUpload = multer({
+  storage: editedStorage,
+  limits: { fileSize: 10 * 1024 * 1024 },
   fileFilter: (_req, file, callback) => {
     const allowed = ["application/pdf"];
     if (!allowed.includes(file.mimetype)) {
@@ -115,6 +140,43 @@ app.post("/api/uploads/charters", upload.single("file"), (req, res) => {
     mime_type: req.file.mimetype,
     size: req.file.size,
   });
+});
+
+app.post("/api/charters/:id/edited-pdfs", editedUpload.single("file"), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ message: "No file uploaded" });
+  }
+
+  const charterId = Number(req.params.id);
+  if (!charterId || Number.isNaN(charterId)) {
+    return res.status(400).json({ message: "Invalid charter id" });
+  }
+
+  const { submitted_name = "", submitted_email = "", notes = "" } = req.body || {};
+
+  const charterCheck = await pool.query("SELECT id FROM charters WHERE id = $1", [charterId]);
+  if (charterCheck.rowCount === 0) {
+    return res.status(404).json({ message: "Charter not found" });
+  }
+
+  const result = await pool.query(
+    `INSERT INTO charter_pdf_edits
+      (charter_id, file_path, original_name, mime_type, size_bytes, submitted_name, submitted_email, notes)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+     RETURNING *`,
+    [
+      charterId,
+      `/uploads/edited-charters/${req.file.filename}`,
+      req.file.originalname,
+      req.file.mimetype,
+      req.file.size,
+      submitted_name.trim() || null,
+      submitted_email.trim() || null,
+      notes.trim() || null,
+    ]
+  );
+
+  return res.status(201).json(result.rows[0]);
 });
 
 
