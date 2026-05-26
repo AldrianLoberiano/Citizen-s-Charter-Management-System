@@ -11,25 +11,18 @@ import {
 } from "./data";
 
 export async function syncLocalCacheFromApi(): Promise<void> {
-  try {
-    const [departments, charters] = await Promise.all([
-      api.getDepartments(),
-      api.getCharters(),
-    ]);
+  const [departments, charters] = await Promise.all([
+    api.getDepartments(),
+    api.getCharters(),
+  ]);
 
-    setDepartments(departments);
-    setCharters(charters);
+  setDepartments(departments);
+  setCharters(charters);
 
-    const [ratings, feedback] = await Promise.all([
-      api.getRatingsAll(),
-      api.getFeedback(),
-    ]);
-    setRatings(ratings);
-    setFeedback(feedback);
-  } catch {
-    setDepartments(getDepartments());
-    setCharters(getCharters());
-    setRatings(getRatings());
-    setFeedback(getFeedback());
-  }
+  const [ratings, feedback] = await Promise.all([
+    api.getRatingsAll(),
+    api.getFeedback(),
+  ]);
+  setRatings(ratings);
+  setFeedback(feedback);
 }
