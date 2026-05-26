@@ -115,6 +115,18 @@ export const api = {
     formData.append("file", file);
     return upload("/uploads/charters", formData);
   },
+  uploadEditedCharterPdf: (
+    charterId: number,
+    file: File,
+    meta: { submittedName: string; submittedEmail: string; notes: string }
+  ) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("submitted_name", meta.submittedName);
+    formData.append("submitted_email", meta.submittedEmail);
+    formData.append("notes", meta.notes);
+    return upload(`/charters/${charterId}/edited-pdfs`, formData);
+  },
   downloadBackup: () => download("/admin/backup"),
   restoreBackup: (file: File) => {
     const formData = new FormData();
