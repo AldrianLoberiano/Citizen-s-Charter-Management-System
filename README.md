@@ -4,6 +4,7 @@ Citizen's Charter Management System is a full-stack web app for publishing servi
 
 ## Purpose
 
+- Publish and maintain citizen service charters by department.
 - Provide a public-facing portal for charter browsing and details.
 ## Recent Updates
 
