@@ -34,6 +34,7 @@ Citizen’s Charter Management System/
 │  └─ server.js
 ├─ database/
 │  ├─ ccms_mysql.sql
+│  ├─ ccms_postgres.sql
 │  └─ mysql_connection_example.js
 ├─ public/
 │  └─ images/
