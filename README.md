@@ -3,6 +3,7 @@
 Citizen's Charter Management System is a full-stack web app for publishing service charters, managing departments, and collecting citizen feedback, built with a React + Vite frontend and an Express + MySQL backend.
 
 ## Purpose
+
 ## Recent Updates
 
 - New in-app feedback flow with name, email, contact, rating, and comment fields.
