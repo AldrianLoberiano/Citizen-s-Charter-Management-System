@@ -86,7 +86,6 @@ Citizen’s Charter Management System/
 - `src/` contains the React frontend.
 - `backend/` contains the Express API and MySQL connection logic.
 - `database/` contains the SQL schema and sample connection script.
-- `public/images/header/` stores the header and logo assets used by the client UI.
 - `uploads/charters/` stores uploaded charter documents served by the backend.
 
 ### Directory Purpose
