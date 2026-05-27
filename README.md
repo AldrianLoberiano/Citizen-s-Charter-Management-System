@@ -75,6 +75,7 @@ Citizen’s Charter Management System/
 │  ├─ backups/
 │  ├─ charters/
 │  │  └─ previews/
+│  └─ edited-charters/
 ├─ index.html
 ├─ package.json
 ├─ postcss.config.mjs
