@@ -95,6 +95,7 @@ Citizen’s Charter Management System/
 | ----------------------- | ----------------------------------------------------- |
 | `backend/`              | Express API, MySQL access, and server startup code    |
 | `database/`             | SQL schemas and connection example                    |
+| `dist/`                 | Production frontend build output                      |
 | `src/app/components/`   | Shared UI layouts, dialogs, pagination, and logo loop |
 | `src/app/pages/client/` | Public-facing pages for citizens                      |
 | `src/app/pages/admin/`  | Admin dashboard, login, departments, and charters     |
