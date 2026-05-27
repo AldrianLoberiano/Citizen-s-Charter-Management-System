@@ -47,7 +47,6 @@ Citizen’s Charter Management System/
 │  │  │  ├─ Notification.tsx
 │  │  │  ├─ Pagination.tsx
 │  │  │  ├─ figma/
-│  │  │  └─ ui/
 │  │  ├─ lib/
 │  │  │  └─ api.ts
 │  │  ├─ pages/
