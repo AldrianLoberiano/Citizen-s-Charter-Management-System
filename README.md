@@ -54,6 +54,7 @@ Citizen’s Charter Management System/
 │  │  │  │  ├─ Charters.tsx
 │  │  │  │  ├─ Dashboard.tsx
 │  │  │  │  ├─ Departments.tsx
+│  │  │  │  ├─ Feedback.tsx
 │  │  │  │  └─ Login.tsx
 │  │  │  └─ client/
 │  │  │     ├─ CharterDetail.tsx
