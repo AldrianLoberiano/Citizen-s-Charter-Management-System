@@ -73,6 +73,7 @@ Citizen’s Charter Management System/
 │  └─ vite-env.d.ts
 ├─ uploads/
 │  ├─ backups/
+│  ├─ charters/
 ├─ index.html
 ├─ package.json
 ├─ postcss.config.mjs
