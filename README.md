@@ -50,6 +50,7 @@ Citizen’s Charter Management System/
 │  │  │  └─ api.ts
 │  │  ├─ pages/
 │  │  │  ├─ admin/
+│  │  │  │  ├─ BackupRecovery.tsx
 │  │  │  │  ├─ Charters.tsx
 │  │  │  │  ├─ Dashboard.tsx
 │  │  │  │  ├─ Departments.tsx
