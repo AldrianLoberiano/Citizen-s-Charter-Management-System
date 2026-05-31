@@ -127,6 +127,20 @@ Start the frontend in another terminal:
 
 The frontend runs on `http://localhost:5173` and the backend runs on `http://localhost:4000` by default.
 
+## Deployment (Vercel)
+
+This project is a single-page app (SPA). Vercel needs a rewrite so routes like `/admin` return `index.html`.
+
+1. Deploy the frontend to Vercel from the repo root.
+2. Set the environment variable `VITE_API_URL` in Vercel to your deployed backend base URL, e.g.:
+   - `https://your-backend.example.com/api`
+3. Ensure the backend allows your Vercel domain in CORS.
+
+Notes:
+
+- The frontend cannot call `http://localhost:4000` from Vercel; you must deploy the backend.
+- The SPA rewrite is configured in `vercel.json`.
+
 ## Localhost Deployment (Local Only)
 
 Use these steps to run the system locally on `localhost` without any public hosting.
