@@ -115,10 +115,20 @@ const getDbArgs = () => {
   return { baseArgs, dbName, childEnv };
 };
 
+const isLocalhostOrigin = (origin) =>
+  /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+const allowAllOrigins =
+  String(process.env.ALLOW_ALL_ORIGINS || "").toLowerCase() === "true" ||
+  process.env.NODE_ENV !== "production";
+
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (allowAllOrigins) {
+        callback(null, true);
+        return;
+      }
+      if (!origin || allowedOrigins.includes(origin) || isLocalhostOrigin(origin)) {
         callback(null, true);
         return;
       }
