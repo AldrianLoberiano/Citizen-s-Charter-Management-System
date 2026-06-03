@@ -22,6 +22,7 @@ Citizen's Charter Management System is a full-stack web app for publishing servi
     - Fields: full name (required), email (optional), contact (optional)
     - Star rating (1–5) + optional comment
     - Submits to the backend and updates the displayed list/average rating.
+  - **Feedback QR code** on the charter page encodes:
 ## Prerequisites
 
 - Node.js 18+
