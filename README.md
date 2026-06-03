@@ -279,6 +279,7 @@ Backend `backend/.env` can override the defaults used by `backend/server.js` and
 
 ## Upload Storage
 
+Files are stored locally on the server (disk) in these folders:
 
 ## Database Notes
 
