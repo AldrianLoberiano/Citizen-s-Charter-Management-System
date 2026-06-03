@@ -56,7 +56,6 @@ export function CharterDetail() {
   }
 
   const department = getDepartmentById(charter.department_id);
-  const feedbackUrl =
     typeof window !== "undefined"
       ? `${window.location.origin}/charter/${charter.id}#feedback-form`
       : "";
