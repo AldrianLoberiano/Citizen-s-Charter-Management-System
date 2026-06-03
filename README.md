@@ -245,7 +245,6 @@ Backend `backend/.env` can override the defaults used by `backend/server.js` and
 - `ADMIN_USERNAME` - default `admin`
 - `ADMIN_PASSWORD` - default `admin123`
 
-The frontend syncs with the backend API and can fall back to local storage when the API is unavailable. Main API routes include departments, charters, ratings, feedback responses, authentication, and charter file uploads.
 
 ## Upload Storage
 
