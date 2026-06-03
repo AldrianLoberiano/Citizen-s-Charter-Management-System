@@ -128,7 +128,6 @@ Citizen’s Charter Management System/
 
 ### Directory Purpose
 
-| `src/app/pages/client/` | Public-facing pages for citizens                      |
 | `src/app/pages/admin/`  | Admin dashboard, login, departments, and charters     |
 | `src/app/store/`        | Local data store and API sync helpers                 |
 | `src/styles/`           | Global CSS, fonts, theme, and Tailwind entry files    |
