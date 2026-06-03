@@ -60,6 +60,7 @@ export function CharterDetail() {
     "https://docs.google.com/forms/d/e/1FAIpQLSeDyQVXmFWKI1zy7PfH_2nfzssIwTE-ISo84iOEQaRM7yM2-g/viewform?usp=header";
 
   // Client QR should always open the Google Form (mobile-friendly)
+  const feedbackUrl = gformUrl;
   const hasAttachment = Boolean(charter.file_path?.trim());
   const attachmentUrl = hasAttachment
     ? charter.file_path!.startsWith("/")
