@@ -275,6 +275,7 @@ Backend `backend/.env` can override the defaults used by `backend/server.js` and
   - `GET /api/admin/backup` (streams `.sql`)
   - `POST /api/admin/restore` (restores from uploaded `.sql`)
 - Authentication:
+  - `POST /api/auth/login`
 ## Upload Storage
 
 Uploaded files are stored on disk in `uploads/charters/`. The backend returns and stores relative paths such as `uploads/charters/document.pdf`.
