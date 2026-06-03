@@ -38,6 +38,7 @@ Citizen's Charter Management System is a full-stack web app for publishing servi
   - Attachment viewer for PDFs (iframe)
   - Search, department filtering, pagination
 - **Feedback management**
+  - Filters (Department / Charter / Rating) + search
 ## Prerequisites
 
 - Node.js 18+
