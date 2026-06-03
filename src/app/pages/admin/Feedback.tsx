@@ -58,6 +58,7 @@ export function Feedback() {
     "https://docs.google.com/forms/d/e/1FAIpQLSeDyQVXmFWKI1zy7PfH_2nfzssIwTE-ISo84iOEQaRM7yM2-g/viewform?usp=header";
 
   // QR code + link should always open the Google Form
+  const feedbackFormUrl = gformUrl;
   const feedbackQrUrl = feedbackFormUrl
     ? `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(
         feedbackFormUrl
