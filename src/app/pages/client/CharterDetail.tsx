@@ -56,6 +56,7 @@ export function CharterDetail() {
   }
 
   const department = getDepartmentById(charter.department_id);
+  const gformUrl =
   const hasAttachment = Boolean(charter.file_path?.trim());
   const attachmentUrl = hasAttachment
     ? charter.file_path!.startsWith("/")
