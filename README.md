@@ -30,6 +30,7 @@ Citizen's Charter Management System is a full-stack web app for publishing servi
 - **Admin layout**
   - Auth-gated admin routes, sidebar navigation, and dark/light theme toggle.
 - **Dashboard**
+  - Summary cards (departments, charters, attachments, total feedback)
 ## Prerequisites
 
 - Node.js 18+
