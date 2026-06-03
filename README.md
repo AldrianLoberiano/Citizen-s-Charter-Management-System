@@ -138,6 +138,7 @@ Citizen’s Charter Management System/
 | `src/app/pages/admin/`       | Admin dashboard, login, departments, and charters     |
 | `src/app/store/`             | Local data store and API sync helpers                 |
 | `src/styles/`                | Global CSS, fonts, theme, and Tailwind entry files    |
+| `uploads/charters/`          | Uploaded PDF and document files                       |
 
 ## Setup
 
