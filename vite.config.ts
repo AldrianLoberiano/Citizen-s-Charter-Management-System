@@ -37,4 +37,5 @@ export default defineConfig({
   // Dev-only: prevent browser cache so requests avoid 304 responses
   server: {
     headers: {
+      'Cache-Control': 'no-store',
 })
