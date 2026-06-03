@@ -282,6 +282,7 @@ Backend `backend/.env` can override the defaults used by `backend/server.js` and
 Files are stored locally on the server (disk) in these folders:
 
 - `uploads/charters/` — uploaded charter PDFs
+- `uploads/edited-charters/` — uploaded edited PDFs
 ## Database Notes
 
 The imported SQL file creates the `ccms_db` database with `departments`, `charters`, `ratings`, and `feedback_responses` tables plus seed data for initial testing.
