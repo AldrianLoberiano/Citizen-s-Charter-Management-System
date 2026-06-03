@@ -268,7 +268,6 @@ export function Feedback() {
         </div>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
           <a
-            href="https://docs.google.com/forms/d/e/1FAIpQLSfkaEz1PHp1yvtvrB9hWpa7YuxZE-AD3lT_C9wGocdUM3_Q8Q/viewform?edit2=2_ABaOnufe-Xxa9H_7oMx7qRQ-u8Bl6f6pJZVnu0GRRSkWAibvt-2Tci6MFIlh8xch7w"
             target="_blank"
             rel="noreferrer"
             className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-1.5 text-xs text-slate-700 transition hover:border-slate-300 hover:text-slate-900"
