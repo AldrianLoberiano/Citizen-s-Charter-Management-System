@@ -54,7 +54,6 @@ export function Feedback() {
     setRatings(getCombinedFeedback());
   }, []);
 
-      ? `${window.location.origin}/charter/${charters[0].id}#feedback-form`
       : "";
   const feedbackQrUrl = feedbackFormUrl
     ? `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(
