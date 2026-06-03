@@ -245,6 +245,7 @@ Backend `backend/.env` can override the defaults used by `backend/server.js` and
 - `ADMIN_USERNAME` - default `admin`
 - `ADMIN_PASSWORD` - default `admin123`
 
+## Key Backend Endpoints
 
 ## Upload Storage
 
