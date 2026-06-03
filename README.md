@@ -128,7 +128,6 @@ Citizen’s Charter Management System/
 
 ### Directory Purpose
 
-| Path                    | Purpose                                               |
 | ----------------------- | ----------------------------------------------------- |
 | `backend/`              | Express API, MySQL access, and server startup code    |
 | `database/`             | SQL schemas and connection example                    |
