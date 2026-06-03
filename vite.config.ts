@@ -34,4 +34,5 @@ export default defineConfig({
   // File types to support raw imports. Never add .css, .tsx, or .ts files to this.
   assetsInclude: ['**/*.svg', '**/*.csv'],
 
+  // Dev-only: prevent browser cache so requests avoid 304 responses
 })
