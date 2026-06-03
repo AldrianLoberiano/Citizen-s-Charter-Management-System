@@ -56,7 +56,6 @@ export function CharterDetail() {
   }
 
   const department = getDepartmentById(charter.department_id);
-    typeof window !== "undefined"
       ? `${window.location.origin}/charter/${charter.id}#feedback-form`
       : "";
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(feedbackUrl)}&bgcolor=ffffff&color=1e3a8a`;
