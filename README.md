@@ -45,6 +45,7 @@ Citizen's Charter Management System is a full-stack web app for publishing servi
   - **CSV export** (downloads a local `.csv` file from filtered results)
   - **Feedback Form QR** modal:
     - Generates QR that points to the citizen in-app feedback form
+    - Includes **Copy link** button
 ## Prerequisites
 
 - Node.js 18+
