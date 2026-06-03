@@ -56,7 +56,6 @@ export function CharterDetail() {
   }
 
   const department = getDepartmentById(charter.department_id);
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(feedbackUrl)}&bgcolor=ffffff&color=1e3a8a`;
   const hasAttachment = Boolean(charter.file_path?.trim());
   const attachmentUrl = hasAttachment
     ? charter.file_path!.startsWith("/")
