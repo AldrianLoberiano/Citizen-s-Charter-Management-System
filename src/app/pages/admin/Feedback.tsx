@@ -54,7 +54,6 @@ export function Feedback() {
     setRatings(getCombinedFeedback());
   }, []);
 
-  const feedbackFormUrl =
     typeof window !== "undefined" && charters.length > 0
       ? `${window.location.origin}/charter/${charters[0].id}#feedback-form`
       : "";
