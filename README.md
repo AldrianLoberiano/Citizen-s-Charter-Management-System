@@ -128,7 +128,6 @@ Citizen’s Charter Management System/
 
 ### Directory Purpose
 
-| `uploads/edited-charters/`   | Edited charter documents                          |
 | `uploads/backups/`           | Local database backup files                         |
 
 ## Setup
