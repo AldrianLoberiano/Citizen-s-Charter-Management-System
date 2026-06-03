@@ -35,4 +35,5 @@ export default defineConfig({
   assetsInclude: ['**/*.svg', '**/*.csv'],
 
   // Dev-only: prevent browser cache so requests avoid 304 responses
+  server: {
 })
