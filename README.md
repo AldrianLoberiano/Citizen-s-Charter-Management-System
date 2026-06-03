@@ -17,6 +17,7 @@ Citizen's Charter Management System is a full-stack web app for publishing servi
   - Shows all published charters per department with search.
 - **Charter Details** (`/charter/:id`)
   - Renders charter content with preserved line breaks.
+  - Shows **PDF attachment preview** (iframe) and uses a `HEAD` check to detect availability.
 ## Prerequisites
 
 - Node.js 18+
