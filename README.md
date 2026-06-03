@@ -247,6 +247,7 @@ Backend `backend/.env` can override the defaults used by `backend/server.js` and
 
 ## Key Backend Endpoints
 
+- Health check:
 ## Upload Storage
 
 Uploaded files are stored on disk in `uploads/charters/`. The backend returns and stores relative paths such as `uploads/charters/document.pdf`.
