@@ -288,6 +288,7 @@ Files are stored locally on the server (disk) in these folders:
 The backend serves files under:
 
 - `/uploads/*` (via `express.static`)
+
 ## Database Notes
 
 The imported SQL file creates the `ccms_db` database with `departments`, `charters`, `ratings`, and `feedback_responses` tables plus seed data for initial testing.
