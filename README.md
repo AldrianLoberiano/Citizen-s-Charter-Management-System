@@ -9,7 +9,6 @@ Citizen's Charter Management System is a full-stack web app for publishing servi
 - Collect feedback and ratings with basic analytics for admins.
 - Support document uploads and local backup/recovery workflows.
 
-- Filters, CSV export, QR modal with copy link, and charts (bar + pie) added in admin.
 - QR code now points to the in-app feedback form instead of Google Forms.
 - Client Charter Detail includes a back button to All Charters.
 
