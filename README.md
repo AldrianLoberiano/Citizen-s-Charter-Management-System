@@ -129,6 +129,7 @@ Citizen’s Charter Management System/
 ### Directory Purpose
 
 | Path                         | Purpose                                               |
+| ---------------------------- | ----------------------------------------------------- |
 
 ## Setup
 
