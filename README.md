@@ -131,6 +131,7 @@ Citizen’s Charter Management System/
 | Path                         | Purpose                                               |
 | ---------------------------- | ----------------------------------------------------- |
 | `backend/`                   | Express API, MySQL access, and server startup code    |
+| `database/`                  | SQL schemas and connection example                    |
 
 ## Setup
 
