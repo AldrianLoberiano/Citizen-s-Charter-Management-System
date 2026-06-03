@@ -266,6 +266,7 @@ Backend `backend/.env` can override the defaults used by `backend/server.js` and
   - `GET /api/charters/:id/ratings`
   - `POST /api/charters/:id/ratings`
   - `GET /api/feedback`
+  - `GET /api/charters/:id/feedback`
 ## Upload Storage
 
 Uploaded files are stored on disk in `uploads/charters/`. The backend returns and stores relative paths such as `uploads/charters/document.pdf`.
