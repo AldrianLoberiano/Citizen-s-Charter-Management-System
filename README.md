@@ -13,6 +13,7 @@ Citizen's Charter Management System is a full-stack web app for publishing servi
 
 ### Citizen (Client-facing)
 
+- **Department → Services listing** (`/department/:id`)
 ## Prerequisites
 
 - Node.js 18+
