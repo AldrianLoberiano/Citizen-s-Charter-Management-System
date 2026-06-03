@@ -49,6 +49,7 @@ Citizen's Charter Management System is a full-stack web app for publishing servi
 
 ### Document workflows
 
+- Admin backend supports:
 ## Prerequisites
 
 - Node.js 18+
