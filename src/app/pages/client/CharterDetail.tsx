@@ -61,6 +61,7 @@ export function CharterDetail() {
 
   // Client QR should always open the Google Form (mobile-friendly)
   const feedbackUrl = gformUrl;
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(
   const hasAttachment = Boolean(charter.file_path?.trim());
   const attachmentUrl = hasAttachment
     ? charter.file_path!.startsWith("/")
