@@ -128,7 +128,6 @@ Citizen’s Charter Management System/
 
 ### Directory Purpose
 
-| `backend/`              | Express API, MySQL access, and server startup code    |
 | `database/`             | SQL schemas and connection example                    |
 | `dist/`                 | Production frontend build output                      |
 | `src/app/components/`   | Shared UI layouts, dialogs, pagination, and logo loop |
