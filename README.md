@@ -285,6 +285,7 @@ Files are stored locally on the server (disk) in these folders:
 - `uploads/edited-charters/` — uploaded edited PDFs
 - `uploads/backups/` — uploaded `.sql` files used for restore
 
+The backend serves files under:
 ## Database Notes
 
 The imported SQL file creates the `ccms_db` database with `departments`, `charters`, `ratings`, and `feedback_responses` tables plus seed data for initial testing.
