@@ -273,6 +273,7 @@ Backend `backend/.env` can override the defaults used by `backend/server.js` and
   - `POST /api/charters/:id/edited-pdfs` (PDF only) → stores in `uploads/edited-charters/` and inserts into `charter_pdf_edits`
 - Admin backup & recovery:
   - `GET /api/admin/backup` (streams `.sql`)
+  - `POST /api/admin/restore` (restores from uploaded `.sql`)
 ## Upload Storage
 
 Uploaded files are stored on disk in `uploads/charters/`. The backend returns and stores relative paths such as `uploads/charters/document.pdf`.
