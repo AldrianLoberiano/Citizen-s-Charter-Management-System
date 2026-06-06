@@ -12,4 +12,5 @@ export const pool = mysql.createPool({
   password: process.env.DB_PASSWORD || "",
   database: process.env.DB_NAME || "ccms_db",
   waitForConnections: true,
+  connectionLimit: Number(process.env.DB_POOL_SIZE || 10),
 });
