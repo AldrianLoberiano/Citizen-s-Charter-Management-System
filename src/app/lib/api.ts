@@ -4,6 +4,7 @@ async function request(path: string, options?: RequestInit) {
   const rawUser = typeof window === "undefined" ? null : window.localStorage.getItem("ccms_auth_user");
   const adminUsername = rawUser ? JSON.parse(rawUser) : null;
   const response = await fetch(`${API_BASE}${path}`, {
+    cache: "no-store",
     headers: {
       "Content-Type": "application/json",
       ...(adminUsername ? { "x-admin-username": adminUsername } : {}),
@@ -24,6 +25,7 @@ async function request(path: string, options?: RequestInit) {
 async function upload(path: string, formData: FormData) {
   const response = await fetch(`${API_BASE}${path}`, {
     method: "POST",
+    cache: "no-store",
     body: formData,
   });
 
@@ -36,7 +38,9 @@ async function upload(path: string, formData: FormData) {
 }
 
 async function download(path: string) {
-  const response = await fetch(`${API_BASE}${path}`);
+  const response = await fetch(`${API_BASE}${path}`, {
+    cache: "no-store",
+  });
   if (!response.ok) {
     const message = await response.text();
     throw new Error(message || `Download failed: ${response.status}`);
