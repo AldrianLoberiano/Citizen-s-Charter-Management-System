@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const { Pool } = pg;
 const useSsl = String(process.env.DB_SSL || "").toLowerCase() === "true";
 
 export const pool = new Pool({
