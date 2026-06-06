@@ -102,17 +102,18 @@ const sqlUpload = multer({
 
 const getDbArgs = () => {
   const dbHost = process.env.DB_HOST || "127.0.0.1";
-  const dbPort = process.env.DB_PORT || "5432";
-  const dbUser = process.env.DB_USER || "postgres";
+  const dbPort = process.env.DB_PORT || "3306";
+  const dbUser = process.env.DB_USER || "root";
   const dbPassword = process.env.DB_PASSWORD || "";
   const dbName = process.env.DB_NAME || "ccms_db";
 
-  const baseArgs = ["--host", dbHost, "--port", String(dbPort), "--username", dbUser];
-  const childEnv = { ...process.env };
+  // Used for mysql/mysqldump commands (credentials passed via CLI flags)
+  // Note: this mirrors existing behavior where secrets come from env vars.
+  const baseArgs = ["--host", dbHost, "--port", String(dbPort), "--user", dbUser];
   if (dbPassword) {
-    childEnv.PGPASSWORD = dbPassword;
+    baseArgs.push(`--password=${dbPassword}`);
   }
-  return { baseArgs, dbName, childEnv };
+  return { baseArgs, dbName, dbUser, dbPassword };
 };
 
 const isLocalhostOrigin = (origin) =>
@@ -164,29 +165,29 @@ app.post("/api/charters/:id/edited-pdfs", editedUpload.single("file"), async (re
 
   const { submitted_name = "", submitted_email = "", notes = "" } = req.body || {};
 
-  const charterCheck = await pool.query("SELECT id FROM charters WHERE id = $1", [charterId]);
-  if (charterCheck.rowCount === 0) {
+  const [charterRows] = await pool.query("SELECT id FROM charters WHERE id = ?", [charterId]);
+  if (!charterRows || charterRows.length === 0) {
     return res.status(404).json({ message: "Charter not found" });
   }
 
-  const result = await pool.query(
-    `INSERT INTO charter_pdf_edits
+  const insertSql = `INSERT INTO charter_pdf_edits
       (charter_id, file_path, original_name, mime_type, size_bytes, submitted_name, submitted_email, notes)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-     RETURNING *`,
-    [
-      charterId,
-      `/uploads/edited-charters/${req.file.filename}`,
-      req.file.originalname,
-      req.file.mimetype,
-      req.file.size,
-      submitted_name.trim() || null,
-      submitted_email.trim() || null,
-      notes.trim() || null,
-    ]
-  );
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
 
-  return res.status(201).json(result.rows[0]);
+  const [insertResult] = await pool.query(insertSql, [
+    charterId,
+    `/uploads/edited-charters/${req.file.filename}`,
+    req.file.originalname,
+    req.file.mimetype,
+    req.file.size,
+    submitted_name.trim() || null,
+    submitted_email.trim() || null,
+    notes.trim() || null,
+  ]);
+
+  const newId = insertResult?.insertId;
+  const [rows] = await pool.query("SELECT * FROM charter_pdf_edits WHERE id = ?", [newId]);
+  return res.status(201).json(rows[0]);
 });
 
 
@@ -194,78 +195,124 @@ app.get("/api/health", (_req, res) => {
   res.json({ ok: true });
 });
 
-app.get("/api/admin/backup", (_req, res) => {
-  const { baseArgs, dbName, childEnv } = getDbArgs();
-  const filename = `backup_${new Date().toISOString().slice(0, 10)}.sql`;
+app.get("/api/admin/backup", async (_req, res) => {
+  try {
+    const filename = `backup_${new Date().toISOString().slice(0, 10)}.sql`;
 
-  res.setHeader("Content-Type", "application/sql");
-  res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+    res.setHeader("Content-Type", "application/sql; charset=utf-8");
+    res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
 
-  const child = spawn("pg_dump", [...baseArgs, "--no-owner", "--no-privileges", dbName], {
-    windowsHide: true,
-    env: childEnv,
-  });
+    const [tablesRows] = await pool.query("SHOW TABLES");
+    const tableKey = Object.keys(tablesRows?.[0] || {})[0];
 
-  child.stdout.pipe(res);
+    const tables = (tablesRows || []).map((r) => r[tableKey]).filter(Boolean);
 
-  let stderr = "";
-  child.stderr.on("data", (chunk) => {
-    stderr += chunk.toString();
-  });
+    // Header
+    res.write(`-- CCMS MySQL backup (${new Date().toISOString()})\n`);
+    res.write(`-- Database: ${process.env.DB_NAME || "ccms_db"}\n\n`);
+    res.write(`SET FOREIGN_KEY_CHECKS = 0;\n\n`);
 
-  child.on("error", (error) => {
-    res.status(500).send(error.message || "Failed to start pg_dump.");
-  });
-
-  child.on("close", (code) => {
-    if (code === 0) return;
-    if (!res.headersSent) {
-      res.status(500).send(stderr || `pg_dump exited with code ${code}`);
+    // Schema
+    for (const table of tables) {
+      const [createRows] = await pool.query(`SHOW CREATE TABLE \`${table}\``);
+      const createStmt = createRows?.[0]?.["Create Table"] || createRows?.[0]?.[Object.keys(createRows?.[0] || {})[1]];
+      res.write(`DROP TABLE IF EXISTS \`${table}\`;\n`);
+      res.write(`${createStmt};\n\n`);
     }
-  });
+
+    // Data
+    res.write(`SET FOREIGN_KEY_CHECKS = 1;\n\n`);
+    for (const table of tables) {
+      const [rows] = await pool.query(`SELECT * FROM \`${table}\``);
+      if (!rows || rows.length === 0) continue;
+
+      const columns = Object.keys(rows[0] || {});
+      const colList = columns.map((c) => `\`${c}\``).join(", ");
+
+      for (const row of rows) {
+        const valuesSql = columns
+          .map((c) => {
+            const v = row[c];
+            if (v === null || v === undefined) return "NULL";
+            if (typeof v === "number") return String(v);
+            if (typeof v === "bigint") return `${v.toString()} `;
+            // Escape strings for SQL
+            return `'${String(v).replace(/\\/g, "\\\\").replace(/'/g, "''")}'`;
+          })
+          .join(", ");
+
+        res.write(`INSERT INTO \`${table}\` (${colList}) VALUES (${valuesSql});\n`);
+      }
+
+      res.write("\n");
+    }
+
+    res.end();
+  } catch (error) {
+    console.error("Backup error:", error);
+    if (!res.headersSent) {
+      res.status(500).json({
+        message: "Failed to generate backup SQL",
+        error: error?.message || String(error),
+      });
+    } else {
+      res.end();
+    }
+  }
 });
 
-app.post("/api/admin/restore", sqlUpload.single("file"), (req, res) => {
+app.post("/api/admin/import-schema", async (_req, res) => {
+  try {
+    const sqlPath = path.join(__dirname, "../database/ccms_mysql.sql");
+    if (!fs.existsSync(sqlPath)) {
+      return res.status(400).json({ message: "SQL schema file not found", sqlPath });
+    }
+
+    const sql = fs.readFileSync(sqlPath, "utf8");
+    if (!sql.trim()) {
+      return res.status(400).json({ message: "SQL schema file is empty", sqlPath });
+    }
+
+    await pool.query(sql);
+    return res.json({ ok: true, imported: "ccms_mysql.sql" });
+  } catch (error) {
+    console.error("Schema import error:", error);
+    return res.status(500).json({ message: "Failed to import schema", error: error?.message || String(error) });
+  }
+});
+
+app.post("/api/admin/restore", sqlUpload.single("file"), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ message: "No SQL file uploaded" });
   }
 
-  const { baseArgs, dbName, childEnv } = getDbArgs();
-  const psqlArgs = [...baseArgs, "--dbname", dbName];
-  const child = spawn("psql", psqlArgs, { windowsHide: true, env: childEnv });
-  const input = fs.createReadStream(req.file.path);
-  let stderr = "";
-
-  input.on("error", (error) => {
-    res.status(500).json({ message: error.message || "Failed to read SQL file." });
-  });
-
-  child.stderr.on("data", (chunk) => {
-    stderr += chunk.toString();
-  });
-
-  child.on("error", (error) => {
-    res.status(500).json({ message: error.message || "Failed to start psql." });
-  });
-
-  child.on("close", (code) => {
-    fs.unlink(req.file.path, () => {});
-    if (code === 0) {
-      return res.json({ ok: true });
+  try {
+    const sql = fs.readFileSync(req.file.path, "utf8");
+    if (!sql.trim()) {
+      return res.status(400).json({ message: "Uploaded SQL file is empty" });
     }
-    return res.status(500).json({ message: stderr || `psql exited with code ${code}` });
-  });
 
-  input.pipe(child.stdin);
+    await pool.query(sql);
+
+    return res.json({ ok: true });
+  } catch (error) {
+    console.error("Restore error:", error);
+    return res.status(500).json({
+      message: "Failed to restore database from SQL",
+      error: error?.message || String(error),
+    });
+  } finally {
+    fs.unlink(req.file.path, () => {});
+  }
 });
 
 app.get("/api/departments", async (_req, res) => {
-  const { rows } = await pool.query("SELECT * FROM departments ORDER BY id ASC");
+  const [rows] = await pool.query("SELECT * FROM departments ORDER BY id ASC");
   res.json(rows);
 });
 
 app.get("/api/departments/:id", async (req, res) => {
-  const { rows } = await pool.query("SELECT * FROM departments WHERE id = $1", [req.params.id]);
+  const [rows] = await pool.query("SELECT * FROM departments WHERE id = ?", [req.params.id]);
   const department = rows[0];
   if (!department) return res.status(404).json({ message: "Department not found" });
   res.json(department);
@@ -274,27 +321,37 @@ app.get("/api/departments/:id", async (req, res) => {
 app.post("/api/departments", async (req, res) => {
   const { name, description = "" } = req.body || {};
   if (!name?.trim()) return res.status(400).json({ message: "Department name is required" });
-  const { rows } = await pool.query(
-    "INSERT INTO departments (name, description) VALUES ($1, $2) RETURNING *",
+
+  const [insertResult] = await pool.query(
+    "INSERT INTO departments (name, description) VALUES (?, ?)",
     [name.trim(), description.trim()]
   );
+  const newId = insertResult?.insertId;
+
+  const [rows] = await pool.query("SELECT * FROM departments WHERE id = ?", [newId]);
   res.status(201).json(rows[0]);
 });
 
 app.put("/api/departments/:id", async (req, res) => {
   const { name, description = "" } = req.body || {};
   if (!name?.trim()) return res.status(400).json({ message: "Department name is required" });
-  const { rows, rowCount } = await pool.query(
-    "UPDATE departments SET name = $1, description = $2 WHERE id = $3 RETURNING *",
+
+  const [updateResult] = await pool.query(
+    "UPDATE departments SET name = ?, description = ? WHERE id = ?",
     [name.trim(), description.trim(), req.params.id]
   );
-  if (rowCount === 0) return res.status(404).json({ message: "Department not found" });
+
+  if ((updateResult?.affectedRows || 0) === 0) {
+    return res.status(404).json({ message: "Department not found" });
+  }
+
+  const [rows] = await pool.query("SELECT * FROM departments WHERE id = ?", [req.params.id]);
   res.json(rows[0]);
 });
 
 app.delete("/api/departments/:id", async (req, res) => {
-  const { rowCount } = await pool.query("DELETE FROM departments WHERE id = $1", [req.params.id]);
-  if (rowCount === 0) return res.status(404).json({ message: "Department not found" });
+  const [deleteResult] = await pool.query("DELETE FROM departments WHERE id = ?", [req.params.id]);
+  if ((deleteResult?.affectedRows || 0) === 0) return res.status(404).json({ message: "Department not found" });
   res.status(204).send();
 });
 
@@ -304,16 +361,16 @@ app.get("/api/charters", async (req, res) => {
   const params = [];
   if (departmentId) {
     params.push(departmentId);
-    conditions.push(`department_id = $${params.length}`);
+    conditions.push(`department_id = ?`);
   }
   const where = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
   const sql = `SELECT * FROM charters ${where} ORDER BY id ASC`;
-  const { rows } = await pool.query(sql, params);
+  const [rows] = await pool.query(sql, params);
   res.json(rows);
 });
 
 app.get("/api/charters/:id", async (req, res) => {
-  const { rows } = await pool.query("SELECT * FROM charters WHERE id = $1", [req.params.id]);
+  const [rows] = await pool.query("SELECT * FROM charters WHERE id = ?", [req.params.id]);
   const charter = rows[0];
   if (!charter) return res.status(404).json({ message: "Charter not found" });
   res.json(charter);
@@ -324,10 +381,14 @@ app.post("/api/charters", async (req, res) => {
   if (!department_id || !title?.trim() || !content?.trim()) {
     return res.status(400).json({ message: "department_id, title, and content are required" });
   }
-  const { rows } = await pool.query(
-    "INSERT INTO charters (department_id, title, content, file_path) VALUES ($1, $2, $3, $4) RETURNING *",
+
+  const [insertResult] = await pool.query(
+    "INSERT INTO charters (department_id, title, content, file_path) VALUES (?, ?, ?, ?)",
     [department_id, title.trim(), content.trim(), file_path]
   );
+  const newId = insertResult?.insertId;
+
+  const [rows] = await pool.query("SELECT * FROM charters WHERE id = ?", [newId]);
   res.status(201).json(rows[0]);
 });
 
@@ -336,27 +397,33 @@ app.put("/api/charters/:id", async (req, res) => {
   if (!department_id || !title?.trim() || !content?.trim()) {
     return res.status(400).json({ message: "department_id, title, and content are required" });
   }
-  const { rows, rowCount } = await pool.query(
-    "UPDATE charters SET department_id = $1, title = $2, content = $3, file_path = $4 WHERE id = $5 RETURNING *",
+
+  const [updateResult] = await pool.query(
+    "UPDATE charters SET department_id = ?, title = ?, content = ?, file_path = ? WHERE id = ?",
     [department_id, title.trim(), content.trim(), file_path, req.params.id]
   );
-  if (rowCount === 0) return res.status(404).json({ message: "Charter not found" });
+
+  if ((updateResult?.affectedRows || 0) === 0) {
+    return res.status(404).json({ message: "Charter not found" });
+  }
+
+  const [rows] = await pool.query("SELECT * FROM charters WHERE id = ?", [req.params.id]);
   res.json(rows[0]);
 });
 
 app.delete("/api/charters/:id", async (req, res) => {
-  const { rowCount } = await pool.query("DELETE FROM charters WHERE id = $1", [req.params.id]);
-  if (rowCount === 0) return res.status(404).json({ message: "Charter not found" });
+  const [deleteResult] = await pool.query("DELETE FROM charters WHERE id = ?", [req.params.id]);
+  if ((deleteResult?.affectedRows || 0) === 0) return res.status(404).json({ message: "Charter not found" });
   res.status(204).send();
 });
 
 app.get("/api/ratings", async (_req, res) => {
-  const { rows } = await pool.query("SELECT * FROM ratings ORDER BY created_at DESC, id DESC");
+  const [rows] = await pool.query("SELECT * FROM ratings ORDER BY created_at DESC, id DESC");
   res.json(rows);
 });
 
 app.get("/api/charters/:id/ratings", async (req, res) => {
-  const { rows } = await pool.query("SELECT * FROM ratings WHERE charter_id = $1 ORDER BY id ASC", [req.params.id]);
+  const [rows] = await pool.query("SELECT * FROM ratings WHERE charter_id = ? ORDER BY id ASC", [req.params.id]);
   res.json(rows);
 });
 
@@ -366,23 +433,27 @@ app.post("/api/charters/:id/ratings", async (req, res) => {
   if (!parsedRating || parsedRating < 1 || parsedRating > 5) {
     return res.status(400).json({ message: "Rating must be between 1 and 5" });
   }
-  const { rows } = await pool.query(
-    "INSERT INTO ratings (charter_id, rating, comment) VALUES ($1, $2, $3) RETURNING *",
+
+  const [insertResult] = await pool.query(
+    "INSERT INTO ratings (charter_id, rating, comment) VALUES (?, ?, ?)",
     [req.params.id, parsedRating, comment.trim()]
   );
+  const newId = insertResult?.insertId;
+
+  const [rows] = await pool.query("SELECT * FROM ratings WHERE id = ?", [newId]);
   res.status(201).json(rows[0]);
 });
 
 app.get("/api/feedback", async (_req, res) => {
-  const { rows } = await pool.query(
+  const [rows] = await pool.query(
     "SELECT * FROM feedback_responses ORDER BY created_at DESC, id DESC"
   );
   res.json(rows);
 });
 
 app.get("/api/charters/:id/feedback", async (req, res) => {
-  const { rows } = await pool.query(
-    "SELECT * FROM feedback_responses WHERE charter_id = $1 ORDER BY created_at DESC, id DESC",
+  const [rows] = await pool.query(
+    "SELECT * FROM feedback_responses WHERE charter_id = ? ORDER BY created_at DESC, id DESC",
     [req.params.id]
   );
   res.json(rows);
@@ -401,8 +472,8 @@ app.post("/api/charters/:id/feedback", async (req, res) => {
     return res.status(400).json({ message: "Rating must be between 1 and 5" });
   }
 
-  const { rows } = await pool.query(
-    "INSERT INTO feedback_responses (charter_id, name, email, contact, rating, comment) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+  const [insertResult] = await pool.query(
+    "INSERT INTO feedback_responses (charter_id, name, email, contact, rating, comment) VALUES (?, ?, ?, ?, ?, ?)",
     [
       req.params.id,
       String(name).trim() || null,
@@ -412,6 +483,9 @@ app.post("/api/charters/:id/feedback", async (req, res) => {
       String(comment).trim() || null,
     ]
   );
+
+  const newId = insertResult?.insertId;
+  const [rows] = await pool.query("SELECT * FROM feedback_responses WHERE id = ?", [newId]);
   res.status(201).json(rows[0]);
 });
 
@@ -422,9 +496,7 @@ app.post("/api/auth/login", async (req, res) => {
   }
 
   try {
-    const { rows } = await pool.query("SELECT * FROM admins WHERE username = $1", [
-      username,
-    ]);
+    const [rows] = await pool.query("SELECT * FROM admins WHERE username = ?", [username]);
     const admin = rows[0];
 
     if (admin) {
