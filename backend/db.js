@@ -14,4 +14,5 @@ export const pool = mysql.createPool({
   waitForConnections: true,
   connectionLimit: Number(process.env.DB_POOL_SIZE || 10),
   queueLimit: 0,
+  ssl: useSsl ? { rejectUnauthorized: false } : undefined,
 });
