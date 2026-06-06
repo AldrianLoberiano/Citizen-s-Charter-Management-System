@@ -16,8 +16,29 @@ function figmaAssetResolver() {
   }
 }
 
+function stripDevCacheValidators() {
+  return {
+    name: 'strip-dev-cache-validators',
+    configureServer(server) {
+      server.middlewares.use((_req, res, next) => {
+        const originalWriteHead = res.writeHead
+        res.writeHead = function patchedWriteHead(...args) {
+          res.removeHeader('ETag')
+          res.removeHeader('Last-Modified')
+          res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate')
+          res.setHeader('Pragma', 'no-cache')
+          res.setHeader('Expires', '0')
+          return originalWriteHead.apply(this, args)
+        }
+        next()
+      })
+    },
+  }
+}
+
 export default defineConfig({
   plugins: [
+    stripDevCacheValidators(),
     figmaAssetResolver(),
     // The React and Tailwind plugins are both required for Make, even if
     // Tailwind is not being actively used – do not remove them
@@ -37,7 +58,9 @@ export default defineConfig({
   // Dev-only: prevent browser cache so requests avoid 304 responses
   server: {
     headers: {
-      'Cache-Control': 'no-store',
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0',
     },
   },
 })
