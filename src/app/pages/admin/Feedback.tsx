@@ -16,6 +16,170 @@ import {
   FeedbackEntry,
 } from "../../store/data";
 
+const GSHEETS_CONFIG = {
+  apiKey: "AIzaSyAOam-5qK2RGaR157ylUYkUnFP69BoFRrM",
+  spreadsheetId: "1Op53bBwh9weXkt34YcOaTPUXlE-sSJgJFTJ5Pbky0M8",
+  sheetName: "Form Responses 1",
+  range: "A:Z",
+} as const;
+
+type SheetStatus = "idle" | "loading" | "success" | "error";
+
+const EMOJI_SCORE: Record<string, number> = {
+  "😀 Lubos na sumasangayon": 5,
+  "😊 Sumasangayon": 4,
+  "😐 Walang Opinyon": 3,
+  "🙁 Hindi Sumasangayon": 2,
+  "😦 Lubos na di Sumasangayon": 1,
+  "Strongly Agree": 5,
+  Agree: 4,
+  Neutral: 3,
+  Disagree: 2,
+  "Strongly Disagree": 1,
+  5: 5,
+  4: 4,
+  3: 3,
+  2: 2,
+  1: 1,
+};
+
+function emojiToScore(value: string) {
+  if (!value || value.trim() === "") return 0;
+  const trimmed = value.trim();
+
+  if (EMOJI_SCORE[trimmed] !== undefined) return EMOJI_SCORE[trimmed];
+
+  if (trimmed.includes(",")) {
+    const scores = trimmed
+      .split(",")
+      .map((part) => EMOJI_SCORE[part.trim()] || 0)
+      .filter((score) => score > 0);
+    return scores.length > 0 ? Math.min(...scores) : 0;
+  }
+
+  for (const [key, score] of Object.entries(EMOJI_SCORE)) {
+    if (trimmed.toLowerCase().includes(key.toLowerCase())) return score;
+  }
+
+  const numeric = Number.parseFloat(trimmed.replace(/[^\d.]/g, ""));
+  if (!Number.isNaN(numeric) && numeric >= 1 && numeric <= 5) {
+    return Math.round(numeric);
+  }
+
+  return 0;
+}
+
+function parseSheetRows(rows: string[][], charterLookup: (service: string) => number) {
+  if (!rows || rows.length < 2) return [] as FeedbackEntry[];
+
+  const headers = rows[0].map((header) => String(header || "").trim());
+  const dataRows = rows.slice(1);
+
+  function findColumn(keywords: string[]) {
+    for (const keyword of keywords) {
+      const index = headers.findIndex((header) =>
+        header.toLowerCase().includes(keyword.toLowerCase())
+      );
+      if (index !== -1) return index;
+    }
+    return -1;
+  }
+
+  const columns = {
+    timestamp: findColumn(["Timestamp", "timestamp"]),
+    name: findColumn(["Uri ng Kliyente", "name", "respondent", "client"]),
+    service: findColumn(["Serbisyon", "service availed", "service", "transaction"]),
+    gender: findColumn(["Kasarian", "gender", "sex"]),
+    age: findColumn(["Edad", "age"]),
+    comment: findColumn(["mungkahi", "suggestion", "comment", "remarks", "feedback"]),
+    email: findColumn(["Email", "email"]),
+    sqd0: findColumn(["SQD0", "nasisiyahan", "satisfied", "overall"]),
+    sqd1: findColumn(["SQD1", "oras", "time", "duration"]),
+    sqd2: findColumn(["SQD2", "sinunod", "followed", "accuracy"]),
+    sqd3: findColumn(["SQD3", "madali at simple", "simple", "ease"]),
+    sqd4: findColumn(["SQD4", "impormasyon", "information"]),
+    sqd5: findColumn(["SQD5", "bayarin", "fees", "payment"]),
+    sqd6: findColumn(["SQD6", "patas", "fair", "fairness"]),
+    sqd7: findColumn(["SQD7", "Magalang", "courtesy", "staff"]),
+    sqd8: findColumn(["SQD8", "Nakuha", "obtained", "outcome"]),
+  };
+
+  const getValue = (row: string[], index: number) =>
+    index !== -1 && index < row.length ? String(row[index] || "").trim() : "";
+
+  return dataRows
+    .filter((row) => row && row.length > 1 && row.some((cell) => cell && cell.trim() !== ""))
+    .map((row, index) => {
+      const scores = [
+        columns.sqd0,
+        columns.sqd1,
+        columns.sqd2,
+        columns.sqd3,
+        columns.sqd4,
+        columns.sqd5,
+        columns.sqd6,
+        columns.sqd7,
+        columns.sqd8,
+      ]
+        .map((column) => emojiToScore(getValue(row, column)))
+        .filter((score) => score > 0);
+
+      const overall = scores.length
+        ? Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length)
+        : 0;
+
+      const rawDate = getValue(row, columns.timestamp);
+      const parsedDate = rawDate ? new Date(rawDate) : new Date();
+      const createdAt = Number.isNaN(parsedDate.getTime())
+        ? new Date().toISOString()
+        : parsedDate.toISOString();
+
+      const serviceName = getValue(row, columns.service) || "General";
+      const charterId = charterLookup(serviceName);
+
+      return {
+        uid: `gs-${index}-${createdAt}`,
+        id: index + 1,
+        charter_id: charterId,
+        name: getValue(row, columns.name) || "Anonymous",
+        email: getValue(row, columns.email) || null,
+        contact: "",
+        rating: overall,
+        comment: getValue(row, columns.comment) || null,
+        created_at: createdAt,
+        source: "feedback",
+      } satisfies FeedbackEntry;
+    })
+    .filter((entry) => entry.rating > 0);
+}
+
+async function fetchSheetTabs() {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${GSHEETS_CONFIG.spreadsheetId}?key=${GSHEETS_CONFIG.apiKey}&fields=sheets.properties.title`;
+  const response = await fetch(url);
+  if (!response.ok) return [] as string[];
+  const payload = (await response.json()) as { sheets?: Array<{ properties?: { title?: string } }> };
+  return (payload.sheets || [])
+    .map((sheet) => sheet.properties?.title)
+    .filter((title): title is string => Boolean(title));
+}
+
+async function fetchSheetValues(sheetName: string) {
+  const encoded = encodeURIComponent(`${sheetName}!${GSHEETS_CONFIG.range}`);
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${GSHEETS_CONFIG.spreadsheetId}/values/${encoded}?key=${GSHEETS_CONFIG.apiKey}`;
+  const response = await fetch(url);
+  if (!response.ok) {
+    let message = `HTTP ${response.status}`;
+    try {
+      const payload = await response.json();
+      message = payload.error?.message || message;
+    } catch {
+      // fall through with HTTP status message
+    }
+    throw new Error(message);
+  }
+  return (await response.json()) as { values?: string[][] };
+}
+
 function polarToCartesian(centerX: number, centerY: number, radius: number, angle: number) {
   const angleInRadians = ((angle - 90) * Math.PI) / 180;
   return {
@@ -39,6 +203,11 @@ function describeArc(
 
 export function Feedback() {
   const [ratings, setRatings] = useState<FeedbackEntry[]>(getCombinedFeedback());
+  const [sheetRatings, setSheetRatings] = useState<FeedbackEntry[] | null>(null);
+  const [sheetStatus, setSheetStatus] = useState<SheetStatus>("idle");
+  const [sheetError, setSheetError] = useState<string | null>(null);
+  const [sheetTabs, setSheetTabs] = useState<string[]>([]);
+  const [sheetName, setSheetName] = useState<string>(() => String(GSHEETS_CONFIG.sheetName));
   const [departmentFilter, setDepartmentFilter] = useState("all");
   const [charterFilter, setCharterFilter] = useState("all");
   const [ratingFilter, setRatingFilter] = useState("all");
@@ -54,6 +223,22 @@ export function Feedback() {
     setRatings(getCombinedFeedback());
   }, []);
 
+  const charterLookup = useMemo(() => {
+    return (service: string) => {
+      const normalized = service.trim().toLowerCase();
+      const exact = charters.find((charter) => charter.title.toLowerCase() === normalized);
+      if (exact) return exact.id;
+
+      const loose = charters.find(
+        (charter) =>
+          charter.title.toLowerCase().includes(normalized) || normalized.includes(charter.title.toLowerCase())
+      );
+      return loose?.id ?? charters[0]?.id ?? 0;
+    };
+  }, [charters]);
+
+  const activeRatings = sheetRatings ?? ratings;
+
   const gformUrl =
     "https://docs.google.com/forms/d/e/1FAIpQLSeDyQVXmFWKI1zy7PfH_2nfzssIwTE-ISo84iOEQaRM7yM2-g/viewform?usp=header";
 
@@ -66,31 +251,31 @@ export function Feedback() {
     : "";
 
   const sortedRatings = useMemo(() => {
-    return [...ratings].sort(
+    return [...activeRatings].sort(
       (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     );
-  }, [ratings]);
+  }, [activeRatings]);
 
   const summary = useMemo(() => {
-    if (ratings.length === 0) {
+    if (activeRatings.length === 0) {
       return { total: 0, average: 0 };
     }
-    const total = ratings.reduce((sum, rating) => sum + rating.rating, 0);
-    const average = Math.round((total / ratings.length) * 10) / 10;
-    return { total: ratings.length, average };
-  }, [ratings]);
+    const total = activeRatings.reduce((sum, rating) => sum + rating.rating, 0);
+    const average = Math.round((total / activeRatings.length) * 10) / 10;
+    return { total: activeRatings.length, average };
+  }, [activeRatings]);
 
   const ratingBreakdown = useMemo(() => {
     return [5, 4, 3, 2, 1].map((value) => {
-      const count = ratings.filter((entry) => entry.rating === value).length;
+      const count = activeRatings.filter((entry) => entry.rating === value).length;
       const pct = summary.total > 0 ? Math.round((count / summary.total) * 100) : 0;
       return { value, count, pct };
     });
-  }, [ratings, summary.total]);
+  }, [activeRatings, summary.total]);
 
   const sourceBreakdown = useMemo(() => {
-    const ratingCount = ratings.filter((entry) => entry.source === "rating").length;
-    const feedbackCount = ratings.filter((entry) => entry.source === "feedback").length;
+    const ratingCount = activeRatings.filter((entry) => entry.source === "rating").length;
+    const feedbackCount = activeRatings.filter((entry) => entry.source === "feedback").length;
     const total = summary.total || 1;
     return [
       {
@@ -106,7 +291,7 @@ export function Feedback() {
         color: "#059669",
       },
     ];
-  }, [ratings, summary.total]);
+  }, [activeRatings, summary.total]);
 
   const sourceSlices = useMemo(() => {
     let currentAngle = 0;
@@ -174,6 +359,54 @@ export function Feedback() {
     setCharterFilter("all");
     setRatingFilter("all");
     setSearchTerm("");
+  };
+
+  const loadGoogleSheetsData = async () => {
+    setSheetStatus("loading");
+    setSheetError(null);
+
+    try {
+      const tabs = await fetchSheetTabs();
+      setSheetTabs(tabs);
+
+      const selectedTab = tabs.includes(sheetName)
+        ? sheetName
+        : tabs.find((tab) => /response|feedback/i.test(tab)) || tabs[0] || GSHEETS_CONFIG.sheetName;
+      setSheetName(selectedTab);
+
+      const response = await fetchSheetValues(selectedTab);
+      const rows = response.values || [];
+      if (rows.length === 0) {
+        throw new Error("The sheet is empty.");
+      }
+
+      const parsed = parseSheetRows(rows, charterLookup);
+      if (parsed.length === 0) {
+        throw new Error("No valid rows found. Check that rating columns use the correct format.");
+      }
+
+      setSheetRatings(parsed);
+      setSheetStatus("success");
+    } catch (error) {
+      setSheetRatings(null);
+      setSheetStatus("error");
+
+      let message = error instanceof Error ? error.message : "Unknown error";
+      if (/403|PERMISSION_DENIED/.test(message)) {
+        message = "Sheet is private - share it with Anyone with the link as Viewer.";
+      } else if (/404|NOT_FOUND/.test(message)) {
+        message = "Spreadsheet not found. Verify the Spreadsheet ID.";
+      } else if (/API_KEY|API key/.test(message)) {
+        message = "Invalid API key.";
+      }
+      setSheetError(message);
+    }
+  };
+
+  const useLocalData = () => {
+    setSheetRatings(null);
+    setSheetStatus("idle");
+    setSheetError(null);
   };
 
   const handleExportCsv = () => {
@@ -278,6 +511,68 @@ export function Feedback() {
           <div className="flex items-center gap-2 text-sm text-slate-500">
             <MessageSquare className="h-4 w-4" />
             {summary.total} total responses
+          </div>
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-slate-200 bg-white p-4">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span
+                className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${
+                  sheetStatus === "success"
+                    ? "bg-emerald-50 text-emerald-700"
+                    : sheetStatus === "error"
+                      ? "bg-red-50 text-red-700"
+                      : sheetStatus === "loading"
+                        ? "bg-sky-50 text-sky-700"
+                        : "bg-slate-100 text-slate-600"
+                }`}
+              >
+                {sheetStatus === "success"
+                  ? `Google Sheets connected${sheetRatings ? ` · ${sheetRatings.length} rows` : ""}`
+                  : sheetStatus === "error"
+                    ? "Google Sheets connection error"
+                    : sheetStatus === "loading"
+                      ? "Syncing Google Sheets..."
+                      : "Using local feedback data"}
+              </span>
+            </div>
+            <p className="text-sm text-slate-500">
+              Sync responses from Google Sheets, or keep using the local database data.
+            </p>
+            {sheetError && <p className="text-sm text-red-600">{sheetError}</p>}
+          </div>
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+            {sheetTabs.length > 0 && (
+              <select
+                value={sheetName}
+                onChange={(event) => setSheetName(event.target.value)}
+                className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                {sheetTabs.map((tab) => (
+                  <option key={tab} value={tab}>
+                    {tab}
+                  </option>
+                ))}
+              </select>
+            )}
+            <button
+              type="button"
+              onClick={loadGoogleSheetsData}
+              disabled={sheetStatus === "loading"}
+              className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 transition hover:border-slate-300 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {sheetStatus === "loading" ? "Syncing..." : "Sync Google Sheets"}
+            </button>
+            <button
+              type="button"
+              onClick={useLocalData}
+              className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 transition hover:border-slate-300 hover:text-slate-900"
+            >
+              Use Local Data
+            </button>
           </div>
         </div>
       </div>
