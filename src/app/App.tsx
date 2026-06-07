@@ -21,5 +21,6 @@ export default function App() {
     const isDark = stored ? stored === "dark" : false;
     document.documentElement.classList.toggle("dark", isDark);
   }, []);
+
   return <RouterProvider router={router} />;
 }
