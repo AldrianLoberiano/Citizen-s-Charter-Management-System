@@ -188,6 +188,7 @@ export function ClientLayout() {
             </div>
           </div>
 
+          <div className="mt-8 border-t border-slate-200 pt-6 text-center text-sm text-slate-500 dark:border-slate-800 dark:text-slate-300">
             <p>
               &copy; {new Date().getFullYear()} Citizen's Charter Management
               System. All Rights Reserved.
