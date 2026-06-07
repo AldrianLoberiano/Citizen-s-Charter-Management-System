@@ -59,6 +59,7 @@ export function ClientLayout() {
         {showHelp && (
           <div
             id="help-panel"
+            className="mb-2 w-72 rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-700 shadow-lg dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200"
           >
             <div className="mb-1 text-slate-900">How to use the Citizen's Charter</div>
             <p className="text-slate-600">
