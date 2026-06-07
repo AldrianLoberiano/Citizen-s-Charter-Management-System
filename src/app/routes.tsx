@@ -73,7 +73,6 @@ export const router = createBrowserRouter([
       },
       {
         path: "feedback",
-        Component: Feedback,
       },
       {
         path: "backup",
