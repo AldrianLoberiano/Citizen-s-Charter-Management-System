@@ -35,6 +35,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "charter/:id",
+        element: <CharterDetail />,
       },
     ],
   },
