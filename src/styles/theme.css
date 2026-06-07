@@ -127,6 +127,7 @@
   }
 
   body {
+    background: var(--background);
     font-family: var(--font-body);
   }
 
