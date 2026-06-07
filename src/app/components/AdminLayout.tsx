@@ -214,7 +214,6 @@ export function AdminLayout() {
             </button>
             {menuOpen && (
               <div className="absolute right-0 top-12 w-52 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg">
-                  onClick={() => setIsDark((prev) => !prev)}
                   className="flex w-full items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-100"
                 >
                   {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
