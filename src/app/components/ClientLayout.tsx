@@ -54,6 +54,7 @@ export function ClientLayout() {
   }, [showHelp]);
 
   return (
+    <div className="min-h-screen flex flex-col bg-white text-slate-700 dark:bg-slate-950 dark:text-slate-200">
       <div className="fixed bottom-15 right-4 z-50 flex flex-col items-end">
         {showHelp && (
           <div
