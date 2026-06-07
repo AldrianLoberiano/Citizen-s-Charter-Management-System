@@ -45,7 +45,6 @@ export const router = createBrowserRouter([
   // =========================================================
   {
     path: "/admin/login",
-    Component: Login,
   },
 
   // =========================================================
