@@ -62,6 +62,7 @@ export const router = createBrowserRouter([
       {
         path: "dashboard",
         Component: Dashboard,
+        element: <Dashboard />,
       },
       {
         path: "departments",
