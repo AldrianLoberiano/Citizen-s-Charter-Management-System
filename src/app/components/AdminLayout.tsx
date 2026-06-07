@@ -214,7 +214,6 @@ export function AdminLayout() {
             </button>
             {menuOpen && (
               <div className="absolute right-0 top-12 w-52 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg">
-                  {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
                   {isDark ? "Light theme" : "Dark theme"}
                 </button>
                 <Link
