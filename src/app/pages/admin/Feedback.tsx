@@ -790,7 +790,6 @@ export function Feedback() {
                           <h3 className="text-slate-900">{h}</h3>
                           <p className="mt-0.5 text-xs text-slate-500">{dates.length} responses</p>
                         </div>
-                        <button type="button" className="text-xs text-slate-500">Copy chart</button>
                       </div>
 
                       <div className="mt-4 flex items-center gap-6">
