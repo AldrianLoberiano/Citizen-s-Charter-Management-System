@@ -123,6 +123,7 @@
 
 @layer base {
   * {
+    box-sizing: border-box;
   }
 
   body {
