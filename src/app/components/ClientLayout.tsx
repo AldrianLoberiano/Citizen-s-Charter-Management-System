@@ -149,7 +149,6 @@ export function ClientLayout() {
       </main>
 
       {/* Footer */}
-      <footer className="mt-auto border-t border-slate-200 bg-white text-slate-600">
         <div className="mx-auto w-full px-6 py-10 sm:px-10 lg:px-16">
           <div className="grid grid-cols-1 items-start gap-8 md:grid-cols-[1.25fr_1fr]">
             {/* About */}
