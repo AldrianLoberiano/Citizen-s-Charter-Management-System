@@ -113,6 +113,7 @@ export function ClientLayout() {
 
       {/* Main Navigation Header */}
       <header
+        className="sticky top-0 z-40 bg-gradient-to-r from-slate-900 via-purple-950 to-slate-900 shadow-none sm:shadow-sm dark:shadow-none"
         style={{
           backgroundImage: `url(${clientHeaderBgSrc})`,
           backgroundSize: "cover",
