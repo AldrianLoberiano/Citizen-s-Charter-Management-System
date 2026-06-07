@@ -17,6 +17,7 @@ import { router } from "./routes";
 
 export default function App() {
   useEffect(() => {
+    const stored = window.localStorage.getItem("ccms_admin_theme");
     const isDark = stored ? stored === "dark" : false;
   return <RouterProvider router={router} />;
 }
