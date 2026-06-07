@@ -31,7 +31,6 @@ export const router = createBrowserRouter([
       },
       {
         path: "department/:id",
-        Component: DepartmentPage,
       },
       {
         path: "charter/:id",
