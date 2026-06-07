@@ -170,6 +170,7 @@ export function ClientLayout() {
 
             {/* Contact */}
             <div>
+              <h4 className="mb-3 text-slate-900 dark:text-slate-100">Contact Information</h4>
                 <li className="flex items-start gap-2">
                   <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-slate-400" />
                   <span>Municipal Hall, Calauan, Municipality</span>
