@@ -193,7 +193,6 @@ export function ClientLayout() {
               &copy; {new Date().getFullYear()} Citizen's Charter Management
               System. All Rights Reserved.
             </p>
-            <p className="mt-1 text-xs text-slate-400">
               In compliance with RA 11032 — Ease of Doing Business and Efficient
               Government Service Delivery Act
             </p>
