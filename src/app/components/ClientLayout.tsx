@@ -156,6 +156,7 @@ export function ClientLayout() {
             <div>
               <div className="mb-3 flex items-center gap-2">
                 <Shield className="h-5 w-5 text-slate-900" />
+                <span className="text-slate-900 leading-none dark:text-slate-100">
                   Calauan Citizen's Charter
                 </span>
               </div>
