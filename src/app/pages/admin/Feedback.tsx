@@ -967,7 +967,6 @@ export function Feedback() {
                       <div>
                         <h3 className="text-slate-900">{h}</h3>
                       </div>
-                      <button type="button" className="text-xs text-slate-500">Copy chart</button>
                     </div>
 
                     <div className="mt-3 space-y-3">
