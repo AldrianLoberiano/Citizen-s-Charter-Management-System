@@ -80,7 +80,6 @@
   --sidebar-ring: #94a3b8;
 }
 
-@theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
