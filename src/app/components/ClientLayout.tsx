@@ -63,6 +63,7 @@ export function ClientLayout() {
           >
             <div className="mb-1 text-slate-900 dark:text-slate-100">
               How to use the Citizen's Charter
+            </div>
               Choose a department, open a service charter, then follow the
               requirements and steps listed.
             </p>
