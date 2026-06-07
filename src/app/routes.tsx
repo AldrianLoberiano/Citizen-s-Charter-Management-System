@@ -23,6 +23,7 @@ export const router = createBrowserRouter([
   // =========================================================
   {
     path: "/",
+    element: <ClientLayout />,
     children: [
       {
         index: true,
