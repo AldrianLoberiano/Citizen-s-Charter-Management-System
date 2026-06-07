@@ -17,5 +17,6 @@ import { router } from "./routes";
 
 export default function App() {
   useEffect(() => {
+    const isDark = stored ? stored === "dark" : false;
   return <RouterProvider router={router} />;
 }
