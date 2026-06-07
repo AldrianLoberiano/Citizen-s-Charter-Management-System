@@ -65,6 +65,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "departments",
+        element: <Departments />,
       },
       {
         path: "charters",
