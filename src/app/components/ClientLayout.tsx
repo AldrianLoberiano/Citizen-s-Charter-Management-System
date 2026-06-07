@@ -160,6 +160,7 @@ export function ClientLayout() {
                   Calauan Citizen's Charter
                 </span>
               </div>
+              <p className="text-sm leading-relaxed text-slate-500 dark:text-slate-300">
                 The Calauan Citizen's Charter is a document that communicates, in simple
                 terms, information on the services provided by the government,
                 the requirements needed to avail them, and the procedure to
