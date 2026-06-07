@@ -19,6 +19,7 @@ export default function App() {
   useEffect(() => {
     const stored = window.localStorage.getItem("ccms_admin_theme");
     const isDark = stored ? stored === "dark" : false;
+    document.documentElement.classList.toggle("dark", isDark);
   }, []);
   return <RouterProvider router={router} />;
 }
