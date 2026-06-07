@@ -214,7 +214,6 @@ export function AdminLayout() {
             </button>
             {menuOpen && (
               <div className="absolute right-0 top-12 w-52 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg">
-                </button>
                 <Link
                   to="/"
                   onClick={() => setMenuOpen(false)}
