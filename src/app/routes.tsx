@@ -69,6 +69,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "charters",
+        element: <Charters />,
       },
       {
         path: "feedback",
