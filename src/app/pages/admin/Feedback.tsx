@@ -153,6 +153,13 @@ function parseSheetRows(rows: string[][], charterLookup: (service: string) => nu
     .filter((entry) => entry.rating > 0);
 }
 
+function getFeedbackDataSourceLabel(gsData: FeedbackEntry[] | null, localCount: number) {
+  if (gsData) {
+    return `Google Sheets (${gsData.length} rows)`;
+  }
+  return `Local DB (${localCount} rows)`;
+}
+
 async function fetchSheetTabs() {
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${GSHEETS_CONFIG.spreadsheetId}?key=${GSHEETS_CONFIG.apiKey}&fields=sheets.properties.title`;
   const response = await fetch(url);
@@ -238,6 +245,7 @@ export function Feedback() {
   }, [charters]);
 
   const activeRatings = sheetRatings ?? ratings;
+  const dataSourceLabel = getFeedbackDataSourceLabel(sheetRatings, ratings.length);
 
   const gformUrl =
     "https://docs.google.com/forms/d/e/1FAIpQLSeDyQVXmFWKI1zy7PfH_2nfzssIwTE-ISo84iOEQaRM7yM2-g/viewform?usp=header";
@@ -309,6 +317,20 @@ export function Feedback() {
       };
     });
   }, [sourceBreakdown]);
+
+  const ratingSummaryLabel = useMemo(() => {
+    if (summary.total === 0) return "No ratings yet";
+    const topCount = ratingBreakdown[0]?.count ?? 0;
+    return `${topCount} rating${topCount === 1 ? "" : "s"} at ${ratingBreakdown[0]?.value ?? 0} stars`;
+  }, [ratingBreakdown, summary.total]);
+
+  const sourceSummaryLabel = useMemo(() => {
+    if (summary.total === 0) return "No sources yet";
+    const dominant = sourceBreakdown.reduce((best, current) =>
+      current.count > best.count ? current : best
+    , sourceBreakdown[0]);
+    return `${dominant.label} is the main source (${dominant.pct}%)`;
+  }, [sourceBreakdown, summary.total]);
 
   const filteredRatings = useMemo(() => {
     const normalizedSearch = searchTerm.trim().toLowerCase();
@@ -515,41 +537,30 @@ export function Feedback() {
         </div>
       </div>
 
-      <div className="rounded-2xl border border-slate-200 bg-white p-4">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <span
-                className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${
-                  sheetStatus === "success"
-                    ? "bg-emerald-50 text-emerald-700"
-                    : sheetStatus === "error"
-                      ? "bg-red-50 text-red-700"
-                      : sheetStatus === "loading"
-                        ? "bg-sky-50 text-sky-700"
-                        : "bg-slate-100 text-slate-600"
-                }`}
-              >
-                {sheetStatus === "success"
-                  ? `Google Sheets connected${sheetRatings ? ` · ${sheetRatings.length} rows` : ""}`
-                  : sheetStatus === "error"
-                    ? "Google Sheets connection error"
-                    : sheetStatus === "loading"
-                      ? "Syncing Google Sheets..."
-                      : "Using local feedback data"}
-              </span>
-            </div>
-            <p className="text-sm text-slate-500">
-              Sync responses from Google Sheets, or keep using the local database data.
-            </p>
-            {sheetError && <p className="text-sm text-red-600">{sheetError}</p>}
+      <div className="gs-panel">
+        <div className="gs-panel-left">
+          <div className="gs-logo">
+            <svg viewBox="0 0 40 40" aria-hidden="true">
+              <rect width="40" height="40" rx="8" fill="#0F9D58" />
+              <path d="M11 12h18v4H11zM11 18h18v4H11zM11 24h12v4H11z" fill="#fff" />
+            </svg>
           </div>
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <div className="gs-info">
+            <strong>Google Sheets Integration</strong>
+            <span id="gs-data-source-label" className="gs-src-label">
+              {dataSourceLabel}
+            </span>
+          </div>
+        </div>
+
+        <div className="gs-panel-center">
+          <div className="gs-controls">
+            <label htmlFor="gs-sheet-tab">Sheet</label>
             {sheetTabs.length > 0 && (
               <select
+                id="gs-sheet-tab"
                 value={sheetName}
                 onChange={(event) => setSheetName(event.target.value)}
-                className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 {sheetTabs.map((tab) => (
                   <option key={tab} value={tab}>
@@ -558,22 +569,45 @@ export function Feedback() {
                 ))}
               </select>
             )}
-            <button
-              type="button"
-              onClick={loadGoogleSheetsData}
-              disabled={sheetStatus === "loading"}
-              className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 transition hover:border-slate-300 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-60"
+            <span
+              className={`gs-status-badge gs-${sheetStatus}`}
+              id="gs-status-badge"
             >
-              {sheetStatus === "loading" ? "Syncing..." : "Sync Google Sheets"}
-            </button>
-            <button
-              type="button"
-              onClick={useLocalData}
-              className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 transition hover:border-slate-300 hover:text-slate-900"
-            >
-              Use Local Data
-            </button>
+              <span className="gs-dot" />
+              {sheetStatus === "success"
+                ? `Connected${sheetRatings ? ` · ${sheetRatings.length} rows` : ""}`
+                : sheetStatus === "error"
+                  ? "Connection Error"
+                  : sheetStatus === "loading"
+                    ? "Syncing…"
+                    : "Not synced"}
+            </span>
           </div>
+          <div className="gs-msg-row">
+            <p id="gs-status-msg">{sheetError || "Sync responses from Google Sheets or use the local database."}</p>
+            <div className="gs-col-map">
+              <span className="col-chip col-chip-ok">Admin feedback sync</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="gs-panel-right">
+          <button
+            type="button"
+            id="gs-refresh-btn"
+            className="btn-gs"
+            onClick={loadGoogleSheetsData}
+            disabled={sheetStatus === "loading"}
+          >
+            {sheetStatus === "loading" ? "Syncing…" : "⟳ Sync Now"}
+          </button>
+          <button
+            type="button"
+            className="btn-gs"
+            onClick={useLocalData}
+          >
+            Use Local Data
+          </button>
         </div>
       </div>
 
@@ -595,84 +629,91 @@ export function Feedback() {
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <div className="rounded-2xl border border-slate-200 bg-white p-5">
-          <div className="flex items-center justify-between">
-            <h3 className="text-slate-900">Rating Breakdown</h3>
-            <span className="text-xs text-slate-400">% of total</span>
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <h3 className="text-slate-900">Rating Breakdown</h3>
+              <p className="mt-0.5 text-xs text-slate-500">
+                Distribution of all ratings from highest to lowest.
+              </p>
+            </div>
+            <span className="rounded-full bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-700">
+              {ratingSummaryLabel}
+            </span>
           </div>
-          <div className="mt-4">
-            <svg viewBox="0 0 360 180" className="h-40 w-full">
-              <line x1="30" y1="150" x2="330" y2="150" stroke="#e2e8f0" />
-              {ratingBreakdown.map((item, index) => {
-                const barWidth = 44;
-                const gap = 16;
-                const x = 30 + index * (barWidth + gap);
-                const barHeight = Math.max(6, (item.pct / 100) * 110);
-                const y = 150 - barHeight;
-                return (
-                  <g key={item.value}>
-                    <rect
-                      x={x}
-                      y={y}
-                      width={barWidth}
-                      height={barHeight}
-                      rx={6}
-                      fill="#f59e0b"
+
+          <div className="mt-4 space-y-3">
+            {ratingBreakdown.map((item) => {
+              const label = item.value === 1 ? "1 star" : `${item.value} stars`;
+              const width = `${Math.max(item.pct, item.count > 0 ? 6 : 0)}%`;
+              return (
+                <div key={item.value} className="space-y-1.5">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="font-medium text-slate-700">{label}</span>
+                    <span className="text-slate-500">
+                      {item.count} response{item.count === 1 ? "" : "s"} · {item.pct}%
+                    </span>
+                  </div>
+                  <div className="h-3 rounded-full bg-slate-100">
+                    <div
+                      className="h-3 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 transition-all"
+                      style={{ width }}
                     />
-                    <text x={x + barWidth / 2} y={170} textAnchor="middle" fontSize="11" fill="#64748b">
-                      {item.value}★
-                    </text>
-                    <text x={x + barWidth / 2} y={y - 6} textAnchor="middle" fontSize="10" fill="#94a3b8">
-                      {item.pct}%
-                    </text>
-                  </g>
-                );
-              })}
-            </svg>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
 
         <div className="rounded-2xl border border-slate-200 bg-white p-5">
-          <div className="flex items-center justify-between">
-            <h3 className="text-slate-900">Source Breakdown</h3>
-            <span className="text-xs text-slate-400">% of total</span>
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <h3 className="text-slate-900">Source Breakdown</h3>
+              <p className="mt-0.5 text-xs text-slate-500">
+                Where the responses came from.
+              </p>
+            </div>
+            <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700">
+              {sourceSummaryLabel}
+            </span>
           </div>
-          <div className="mt-4 flex flex-col items-center gap-4 sm:flex-row sm:items-start">
-            <svg viewBox="0 0 120 120" className="h-36 w-36">
-              <circle cx="60" cy="60" r="56" fill="#f1f5f9" />
-              {sourceSlices.map((slice) => (
-                <g key={slice.label}>
-                  <path
-                    d={describeArc(60, 60, 56, slice.startAngle, slice.endAngle)}
-                    fill={slice.color}
+
+          <div className="mt-4 space-y-4">
+            <div className="rounded-2xl bg-slate-50 p-4">
+              <div className="flex h-4 overflow-hidden rounded-full bg-slate-200">
+                {sourceBreakdown.map((item) => (
+                  <div
+                    key={item.label}
+                    title={`${item.label}: ${item.count} (${item.pct}%)`}
+                    className="h-4"
+                    style={{ width: `${item.pct}%`, backgroundColor: item.color }}
                   />
-                  {slice.pct > 0 && (
-                    <text
-                      x={polarToCartesian(60, 60, 34, slice.midAngle).x}
-                      y={polarToCartesian(60, 60, 34, slice.midAngle).y}
-                      textAnchor="middle"
-                      dominantBaseline="middle"
-                      fontSize="9"
-                      fill="#ffffff"
-                    >
-                      {slice.pct}%
-                    </text>
-                  )}
-                </g>
-              ))}
-            </svg>
-            <div className="w-full space-y-2">
-              {sourceBreakdown.map((item) => (
-                <div key={item.label} className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-2 text-slate-600">
+                ))}
+              </div>
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                {sourceBreakdown.map((item) => (
+                  <div key={item.label} className="flex items-center gap-3 rounded-xl bg-white px-3 py-2 shadow-sm ring-1 ring-slate-100">
                     <span
-                      className="h-2.5 w-2.5 rounded-full"
+                      className="h-3 w-3 rounded-full"
                       style={{ backgroundColor: item.color }}
                     />
-                    {item.label}
+                    <div className="min-w-0 flex-1">
+                      <div className="text-sm font-medium text-slate-700">{item.label}</div>
+                      <div className="text-xs text-slate-500">
+                        {item.count} response{item.count === 1 ? "" : "s"} · {item.pct}%
+                      </div>
+                    </div>
                   </div>
-                  <span className="text-xs text-slate-500">
-                    {item.count} ({item.pct}%)
-                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              {sourceBreakdown.map((item) => (
+                <div key={`${item.label}-stat`} className="rounded-xl border border-slate-200 px-4 py-3">
+                  <div className="text-xs uppercase tracking-wide text-slate-400">{item.label}</div>
+                  <div className="mt-1 text-2xl text-slate-900">{item.count}</div>
+                  <div className="text-sm text-slate-500">{item.pct}% of responses</div>
                 </div>
               ))}
             </div>
