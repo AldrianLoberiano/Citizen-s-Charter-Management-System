@@ -215,6 +215,7 @@ export function Feedback() {
   const [sheetError, setSheetError] = useState<string | null>(null);
   const [sheetTabs, setSheetTabs] = useState<string[]>([]);
   const [sheetName, setSheetName] = useState<string>(() => String(GSHEETS_CONFIG.sheetName));
+  const [sheetRawRows, setSheetRawRows] = useState<string[][] | null>(null);
   const [departmentFilter, setDepartmentFilter] = useState("all");
   const [charterFilter, setCharterFilter] = useState("all");
   const [ratingFilter, setRatingFilter] = useState("all");
@@ -407,6 +408,9 @@ export function Feedback() {
         throw new Error("No valid rows found. Check that rating columns use the correct format.");
       }
 
+      // Keep raw rows for per-question breakdown visualization
+      setSheetRawRows(rows);
+
       setSheetRatings(parsed);
       setSheetStatus("success");
     } catch (error) {
@@ -427,6 +431,7 @@ export function Feedback() {
 
   const useLocalData = () => {
     setSheetRatings(null);
+    setSheetRawRows(null);
     setSheetStatus("idle");
     setSheetError(null);
   };
@@ -721,7 +726,279 @@ export function Feedback() {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+        {/* Per-question breakdown from Google Sheets (matches form response layout) */}
+        {sheetRawRows && (
+          <div className="grid grid-cols-1 gap-4">
+            {(() => {
+              const headers = sheetRawRows[0] || [];
+              const rows = sheetRawRows.slice(1);
+              const skipKeys = ["timestamp", "email", "uri ng kliyente", "name", "service", "contact", "phone", "mungkahi", "comment", "remarks"];
+              const candidates = headers
+                .map((h, i) => ({ h: String(h || "").trim(), i }))
+                .filter(({ h }) => {
+                  if (!h) return false;
+                  const lh = h.toLowerCase();
+                  if (skipKeys.some((k) => lh.includes(k))) return false;
+                  return true;
+                });
+
+              return candidates.map(({ h, i }) => {
+                const counts = new Map<string, number>();
+                for (const r of rows) {
+                  const v = String(r[i] || "").trim();
+                  if (!v) continue;
+                  counts.set(v, (counts.get(v) || 0) + 1);
+                }
+                if (counts.size === 0) return null;
+                const items = Array.from(counts.entries()).sort((a, b) => b[1] - a[1]);
+                const totalRowsCount = rows.length || 1;
+                const max = items[0][1] || 1;
+                const lh = h.toLowerCase();
+
+                // Date (Petsa) - show month and recent day chips
+                if (/petsa|date|petsang|date submitted/i.test(lh)) {
+                  // collect timestamps from rows
+                  const dates: Date[] = [];
+                  for (const r of rows) {
+                    const raw = String(r[i] || "").trim();
+                    if (!raw) continue;
+                    const d = new Date(raw);
+                    if (!Number.isNaN(d.getTime())) dates.push(d);
+                  }
+                  if (dates.length === 0) return null;
+                  dates.sort((a, b) => b.getTime() - a.getTime());
+                  const latestMonth = dates[0];
+                  const monthLabel = latestMonth.toLocaleString(undefined, { month: 'short', year: 'numeric' });
+                  // group counts by day of month within that month
+                  const dayCounts = new Map<number, number>();
+                  for (const d of dates) {
+                    if (d.getMonth() === latestMonth.getMonth() && d.getFullYear() === latestMonth.getFullYear()) {
+                      const day = d.getDate();
+                      dayCounts.set(day, (dayCounts.get(day) || 0) + 1);
+                    }
+                  }
+                  const dayItems = Array.from(dayCounts.entries()).sort((a, b) => b[0] - a[0]);
+                  // show the top 4 most recent days (descending day)
+                  const recent = dayItems.slice(0, 4).sort((a, b) => b[0] - a[0]);
+
+                  const colors = ['#7C3AED', '#C084FC', '#E9D5FF', '#E5E7EB'];
+
+                  return (
+                    <div key={i} className="rounded-2xl border border-slate-200 bg-white p-5">
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <h3 className="text-slate-900">{h}</h3>
+                          <p className="mt-0.5 text-xs text-slate-500">{dates.length} responses</p>
+                        </div>
+                        <button type="button" className="text-xs text-slate-500">Copy chart</button>
+                      </div>
+
+                      <div className="mt-4 flex items-center gap-6">
+                        <div className="text-sm font-medium">{monthLabel}</div>
+                        <div className="border-l h-6" />
+                        <div className="flex items-center gap-2">
+                          {recent.map(([day, count], idx) => (
+                            <div key={day} className="inline-flex items-center gap-2 rounded-full px-3 py-1" style={{ background: colors[idx % colors.length], color: idx===3? '#374151':'#fff' }}>
+                              <div className="text-sm font-semibold">{count}</div>
+                              <div className="text-xs opacity-80">{String(day)}</div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
+
+                // Gender pie chart (Kasarian)
+                if (/kasarian|gender|sex/.test(lh)) {
+                  let start = 0;
+                  return (
+                    <div key={i} className="rounded-2xl border border-slate-200 bg-white p-5">
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <h3 className="text-slate-900">{h}</h3>
+                          <p className="mt-0.5 text-xs text-slate-500">{items.length} category{items.length===1?"":"ies"}</p>
+                        </div>
+                        <button type="button" className="text-xs text-slate-500">Copy chart</button>
+                      </div>
+
+                      <div className="mt-4 flex items-center gap-6">
+                        <svg width={160} height={120} viewBox="0 0 160 120">
+                          <g transform="translate(80,60)">
+                            {items.map(([label, count], idx) => {
+                              const angle = (count / totalRowsCount) * 360;
+                              const slice = describeArc(0, 0, 40, start, start + angle);
+                              const color = ["#6366F1", "#A78BFA", "#7C3AED", "#E879F9", "#C084FC"][idx % 5];
+                              start += angle;
+                              return <path key={label} d={slice} fill={color} stroke="#fff" strokeWidth={0.5} />;
+                            })}
+                          </g>
+                        </svg>
+
+                        <div className="flex-1">
+                          {items.map(([label, count]) => (
+                            <div key={label} className="flex items-center gap-3 mb-2">
+                              <div className="h-3 w-3 flex-shrink-0 rounded-full" style={{ background: "#7C3AED" }} />
+                              <div className="min-w-0 flex-1 text-sm text-slate-700 truncate">{label}</div>
+                              <div className="text-xs text-slate-500">{count} · {Math.round((count/totalRowsCount)*100)}%</div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
+
+                // Client type pie chart (Uri ng Kliyente)
+                if (/uri ng kliyente|uri ng|kliyente|client type|client/i.test(lh)) {
+                  let start2 = 0;
+                  return (
+                    <div key={i} className="rounded-2xl border border-slate-200 bg-white p-5">
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <h3 className="text-slate-900">{h}</h3>
+                          <p className="mt-0.5 text-xs text-slate-500">{items.length} category{items.length===1?"":"ies"}</p>
+                        </div>
+                        <button type="button" className="text-xs text-slate-500">Copy chart</button>
+                      </div>
+
+                      <div className="mt-4 flex items-center gap-6">
+                        <svg width={160} height={120} viewBox="0 0 160 120">
+                          <g transform="translate(80,60)">
+                            {items.map(([label, count], idx) => {
+                              const angle = (count / totalRowsCount) * 360;
+                              const slice = describeArc(0, 0, 40, start2, start2 + angle);
+                              const colors = ["#F97316", "#0EA5A4", "#6366F1", "#F472B6", "#60A5FA"];
+                              const color = colors[idx % colors.length];
+                              start2 += angle;
+                              return <path key={label} d={slice} fill={color} stroke="#fff" strokeWidth={0.5} />;
+                            })}
+                          </g>
+                        </svg>
+
+                        <div className="flex-1">
+                          {items.map(([label, count], idx) => (
+                            <div key={label} className="flex items-center gap-3 mb-2">
+                              <div className="h-3 w-3 flex-shrink-0 rounded-full" style={{ background: ["#F97316", "#0EA5A4", "#6366F1", "#F472B6", "#60A5FA"][idx % 5] }} />
+                              <div className="min-w-0 flex-1 text-sm text-slate-700 truncate">{label}</div>
+                              <div className="text-xs text-slate-500">{count} · {Math.round((count/totalRowsCount)*100)}%</div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
+
+                // Age vertical bar chart (Edad)
+                if (/edad|age/.test(lh)) {
+                  // bucket ages
+                  const buckets: [string, (n: number) => boolean][] = [
+                    ["<18", (n) => n < 18],
+                    ["18-25", (n) => n >= 18 && n <= 25],
+                    ["26-35", (n) => n >= 26 && n <= 35],
+                    ["36-45", (n) => n >= 36 && n <= 45],
+                    ["46-60", (n) => n >= 46 && n <= 60],
+                    ["60+", (n) => n > 60],
+                  ];
+                  const bucketCounts = buckets.map(([label, test]) => {
+                    let c = 0;
+                    for (const r of rows) {
+                      const raw = String(r[i] || "").trim();
+                      const num = Number.parseInt(raw.replace(/[^0-9]/g, "")) || NaN;
+                      if (!Number.isNaN(num) && test(num)) c++;
+                    }
+                    return c;
+                  });
+                  const maxBucket = Math.max(...bucketCounts, 1);
+
+                  return (
+                    <div key={i} className="rounded-2xl border border-slate-200 bg-white p-5">
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <h3 className="text-slate-900">{h}</h3>
+                        </div>
+                        <button type="button" className="text-xs text-slate-500">Copy chart</button>
+                      </div>
+
+                      <div className="mt-4 flex items-end gap-4 h-40">
+                        {buckets.map(([label], idx) => (
+                          <div key={label} className="flex flex-col items-center gap-2">
+                            <div className="w-10 bg-purple-100" style={{ height: `${Math.round((bucketCounts[idx]/maxBucket)*100)}%`, minHeight: 6 }} />
+                            <div className="text-xs text-slate-500">{label}</div>
+                            <div className="text-xs text-slate-700">{bucketCounts[idx]}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                }
+
+                // SQD / survey questions: horizontal percentage bars based on total responses
+                if (/sqd|sqdo|sqd0|sqd1|sqd2|sqd3|sqd4|sqd5|sqd6|sqd7|sqd8/.test(lh)) {
+                  return (
+                    <div key={i} className="rounded-2xl border border-slate-200 bg-white p-5">
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <h3 className="text-slate-900">{h}</h3>
+                        </div>
+                        <button type="button" className="text-xs text-slate-500">Copy chart</button>
+                      </div>
+
+                      <div className="mt-3 space-y-3">
+                        {items.map(([label, count]) => {
+                          const pct = Math.round((count / totalRowsCount) * 100);
+                          return (
+                            <div key={label} className="flex items-center gap-3">
+                              <div className="w-44 text-sm text-slate-700 truncate">{label}</div>
+                              <div className="flex-1">
+                                <div className="h-4 rounded bg-purple-100">
+                                  <div style={{ width: `${pct}%` }} className="h-4 rounded bg-purple-600" />
+                                </div>
+                              </div>
+                              <div className="w-12 text-xs text-slate-500 text-right">{pct}%</div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                }
+
+                // Default horizontal bars (relative to max)
+                return (
+                  <div key={i} className="rounded-2xl border border-slate-200 bg-white p-5">
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <h3 className="text-slate-900">{h}</h3>
+                      </div>
+                      <button type="button" className="text-xs text-slate-500">Copy chart</button>
+                    </div>
+
+                    <div className="mt-3 space-y-3">
+                      {items.map(([label, count]) => {
+                        const pct = Math.round((count / max) * 100);
+                        return (
+                          <div key={label} className="flex items-center gap-3">
+                            <div className="w-44 text-sm text-slate-700 truncate">{label}</div>
+                            <div className="flex-1">
+                              <div className="h-4 rounded bg-purple-100">
+                                <div style={{ width: `${pct}%` }} className="h-4 rounded bg-purple-600" />
+                              </div>
+                            </div>
+                            <div className="w-12 text-xs text-slate-500 text-right">{count}</div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              });
+            })()}
+          </div>
+        )}
+
+        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
         <div className="border-b border-slate-200 px-6 py-4">
           <h2 className="text-slate-900">Latest Feedback</h2>
           <p className="mt-0.5 text-xs text-slate-400">
