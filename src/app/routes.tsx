@@ -77,6 +77,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "backup",
+        element: <BackupRecovery />,
       },
     ],
   },
