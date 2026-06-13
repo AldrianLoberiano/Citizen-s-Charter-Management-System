@@ -160,6 +160,7 @@ export function ClientLayout() {
                     src={clientLogoSrc}
                     alt="Calauan City Seal"
                     className="h-full w-full scale-165 object-contain"
+                </div>
                 <span className="text-slate-900 leading-none dark:text-slate-100">
                   Calauan Citizen's Charter
                 </span>
