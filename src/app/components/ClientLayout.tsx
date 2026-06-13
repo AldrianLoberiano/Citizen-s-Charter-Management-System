@@ -154,7 +154,6 @@ export function ClientLayout() {
           <div className="grid grid-cols-1 items-start gap-8 md:grid-cols-[1.25fr_1fr]">
             {/* About */}
             <div>
-              <div className="mb-3 flex items-center gap-2">
                 <span className="text-slate-900 leading-none dark:text-slate-100">
                   Calauan Citizen's Charter
                 </span>
