@@ -157,6 +157,7 @@ export function ClientLayout() {
               <div className="mb-3 flex items-center gap-5">
                 <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-white p-0.5">
                   <img
+                    src={clientLogoSrc}
                 <span className="text-slate-900 leading-none dark:text-slate-100">
                   Calauan Citizen's Charter
                 </span>
