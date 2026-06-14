@@ -1,7 +1,6 @@
 /**
  * Admin Departments Page
  * Full CRUD operations for departments
- * Equivalent to PHP CRUD with PDO prepared statements
  */
 
 import { useState, useCallback } from "react";
@@ -39,17 +38,14 @@ export function Departments() {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Modal states
   const [formModalOpen, setFormModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [editingDept, setEditingDept] = useState<Department | null>(null);
   const [deletingDept, setDeletingDept] = useState<Department | null>(null);
 
-  // Form state
   const [formData, setFormData] = useState<FormData>(emptyForm);
   const [formErrors, setFormErrors] = useState<Partial<FormData>>({});
 
-  // Notification
   const [notification, setNotification] = useState<{
     type: "success" | "error";
     message: string;
@@ -62,7 +58,6 @@ export function Departments() {
     setTimeout(() => setNotification(null), 3500);
   };
 
-  // Filter departments
   const filtered = departments.filter(
     (d) =>
       d.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -75,7 +70,6 @@ export function Departments() {
     currentPage * ITEMS_PER_PAGE
   );
 
-  // Open add form
   const openAdd = () => {
     setEditingDept(null);
     setFormData(emptyForm);
@@ -83,7 +77,6 @@ export function Departments() {
     setFormModalOpen(true);
   };
 
-  // Open edit form
   const openEdit = (dept: Department) => {
     setEditingDept(dept);
     setFormData({ name: dept.name, description: dept.description });
@@ -91,13 +84,11 @@ export function Departments() {
     setFormModalOpen(true);
   };
 
-  // Open delete confirmation
   const openDelete = (dept: Department) => {
     setDeletingDept(dept);
     setDeleteModalOpen(true);
   };
 
-  // Validate form inputs (equivalent to PHP server-side validation)
   const validate = (): boolean => {
     const errors: Partial<FormData> = {};
     if (!formData.name.trim()) {
@@ -109,7 +100,6 @@ export function Departments() {
     return Object.keys(errors).length === 0;
   };
 
-  // Submit add/edit form
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
@@ -135,7 +125,6 @@ export function Departments() {
     }
   };
 
-  // Confirm delete
   const handleDelete = async () => {
     if (!deletingDept) return;
     try {
@@ -159,7 +148,6 @@ export function Departments() {
 
   return (
     <div className="space-y-6">
-      {/* Notification */}
       {notification && (
         <Notification
           type={notification.type}
@@ -168,16 +156,16 @@ export function Departments() {
         />
       )}
 
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div>
-          <h1 className="text-slate-900">Departments</h1>
-          <p className="text-slate-500 text-sm mt-0.5">
-            {departments.length} department{departments.length !== 1 ? "s" : ""}{" "}
+      <div className="rounded-xl border-l-4 border-violet-900 bg-violet-50 dark:bg-violet-950/30 px-6 py-4 mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div>
+            <h1 className="text-slate-900 dark:text-white">Departments</h1>
+            <p className="text-slate-600 dark:text-slate-300 text-sm mt-1">
+              {departments.length} department{departments.length !== 1 ? "s" : ""}{" "}
             registered in the system
-          </p>
-        </div>
-        <button
+            </p>
+          </div>
+          <button
           onClick={openAdd}
           className="flex items-center justify-center gap-2 px-4 py-2 bg-violet-900 text-white rounded-lg hover:bg-violet-950 transition-colors text-sm"
         >
@@ -186,10 +174,8 @@ export function Departments() {
         </button>
       </div>
 
-      {/* Table Card */}
-      <div className="bg-white rounded-xl border border-slate-200">
-        {/* Search Bar */}
-        <div className="p-4 border-b border-slate-200">
+      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700">
+        <div className="p-4 border-b border-slate-200 dark:border-slate-700">
           <div className="relative max-w-xs">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <input
@@ -197,52 +183,51 @@ export function Departments() {
               placeholder="Search departments..."
               value={search}
               onChange={handleSearchChange}
-              className="w-full pl-9 pr-4 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full pl-9 pr-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
         </div>
 
-        {/* Table */}
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-200 bg-slate-50">
-                <th className="text-left px-5 py-3 text-slate-500 text-xs uppercase tracking-wide">
+              <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+                <th className="text-left px-5 py-3 text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wide">
                   Department Name
                 </th>
-                <th className="text-left px-5 py-3 text-slate-500 text-xs uppercase tracking-wide hidden lg:table-cell">
+                <th className="text-left px-5 py-3 text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wide hidden lg:table-cell">
                   Description
                 </th>
-                <th className="text-center px-5 py-3 text-slate-500 text-xs uppercase tracking-wide w-24">
+                <th className="text-center px-5 py-3 text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wide w-24">
                   Charters
                 </th>
-                <th className="text-center px-5 py-3 text-slate-500 text-xs uppercase tracking-wide w-28">
+                <th className="text-center px-5 py-3 text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wide w-28">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50">
               {paginated.map((dept) => {
                 const count = charterCountForDept(dept.id);
                 return (
                   <tr
                     key={dept.id}
-                    className="hover:bg-slate-50 dark:hover:bg-blue-900/50 transition-colors"
+                    className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
                   >
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-2.5">
                         <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0">
                           <Building2 className="w-4 h-4 text-slate-400" />
                         </div>
-                        <span className="text-slate-900 text-sm">
+                        <span className="text-slate-900 dark:text-white text-sm">
                           {dept.name}
                         </span>
                       </div>
                     </td>
-                    <td className="px-5 py-4 text-slate-500 text-sm hidden lg:table-cell max-w-sm">
+                    <td className="px-5 py-4 text-slate-500 dark:text-slate-400 text-sm hidden lg:table-cell max-w-sm">
                       <span className="line-clamp-2">
                         {dept.description || (
-                          <span className="text-slate-300 italic">
+                          <span className="text-slate-300 dark:text-slate-600 italic">
                             No description
                           </span>
                         )}
@@ -252,8 +237,8 @@ export function Departments() {
                       <span
                         className={`inline-flex items-center justify-center min-w-[28px] h-7 px-2 rounded-full text-xs ${
                           count > 0
-                            ? "bg-blue-100 text-blue-800"
-                            : "bg-slate-100 text-slate-400"
+                            ? "bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300"
+                            : "bg-slate-100 dark:bg-slate-800 text-slate-400"
                         }`}
                       >
                         {count}
@@ -264,14 +249,14 @@ export function Departments() {
                         <button
                           onClick={() => openEdit(dept)}
                           title="Edit department"
-                          className="p-2 text-slate-400 hover:text-violet-700 hover:bg-violet-50 rounded-lg transition-colors"
+                          className="p-2 text-slate-400 hover:text-violet-700 dark:hover:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-950/50 rounded-lg transition-colors"
                         >
                           <Pencil className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => openDelete(dept)}
                           title="Delete department"
-                          className="p-2 text-slate-400 hover:text-violet-700 hover:bg-violet-50 rounded-lg transition-colors"
+                          className="p-2 text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/50 rounded-lg transition-colors"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -284,7 +269,7 @@ export function Departments() {
                 <tr>
                   <td
                     colSpan={5}
-                    className="px-6 py-12 text-center text-slate-400 text-sm"
+                    className="px-6 py-12 text-center text-slate-400 dark:text-slate-500 text-sm"
                   >
                     {search
                       ? `No departments match "${search}".`
@@ -296,7 +281,6 @@ export function Departments() {
           </table>
         </div>
 
-        {/* Pagination */}
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
@@ -306,18 +290,16 @@ export function Departments() {
         />
       </div>
 
-      {/* Add / Edit Modal */}
       <Modal
         isOpen={formModalOpen}
         onClose={() => setFormModalOpen(false)}
         title={editingDept ? "Edit Department" : "Add New Department"}
       >
         <form onSubmit={handleSubmit} noValidate className="space-y-4">
-          {/* Department Name */}
           <div>
             <label
               htmlFor="dept-name"
-              className="block text-slate-700 mb-1.5 text-sm"
+              className="block text-slate-700 dark:text-slate-300 mb-1.5 text-sm"
             >
               Department Name <span className="text-red-500">*</span>
             </label>
@@ -329,23 +311,22 @@ export function Departments() {
                 setFormData((p) => ({ ...p, name: e.target.value }))
               }
               placeholder="e.g., Public Works Office"
-              className={`w-full px-4 py-2.5 border rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow ${
-                formErrors.name ? "border-red-400" : "border-slate-300"
+              className={`w-full px-4 py-2.5 border rounded-lg text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow ${
+                formErrors.name ? "border-red-400" : "border-slate-300 dark:border-slate-600"
               }`}
             />
             {formErrors.name && (
-              <p className="text-red-600 text-xs mt-1 flex items-center gap-1">
+              <p className="text-red-600 dark:text-red-400 text-xs mt-1 flex items-center gap-1">
                 <AlertCircle className="w-3.5 h-3.5" />
                 {formErrors.name}
               </p>
             )}
           </div>
 
-          {/* Description */}
           <div>
             <label
               htmlFor="dept-desc"
-              className="block text-slate-700 mb-1.5 text-sm"
+              className="block text-slate-700 dark:text-slate-300 mb-1.5 text-sm"
             >
               Description
             </label>
@@ -357,16 +338,15 @@ export function Departments() {
               }
               placeholder="Brief description of the department's function and services..."
               rows={4}
-              className="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y"
+              className="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-600 rounded-lg text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y"
             />
           </div>
 
-          {/* Form Actions */}
-          <div className="flex justify-end gap-3 pt-2 border-t border-slate-100">
+          <div className="flex justify-end gap-3 pt-2 border-t border-slate-100 dark:border-slate-700">
             <button
               type="button"
               onClick={() => setFormModalOpen(false)}
-              className="px-4 py-2 text-sm text-slate-600 border border-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-blue-900/40 transition-colors"
+              className="px-4 py-2 text-sm text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
             >
               Cancel
             </button>
@@ -380,7 +360,6 @@ export function Departments() {
         </form>
       </Modal>
 
-      {/* Delete Confirmation Modal */}
       <Modal
         isOpen={deleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}
@@ -388,17 +367,17 @@ export function Departments() {
         size="sm"
       >
         <div className="space-y-4">
-          <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
-            <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+          <div className="flex items-start gap-3 p-4 bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800 rounded-lg">
+            <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-slate-800 text-sm">
+              <p className="text-slate-800 dark:text-slate-200 text-sm">
                 Are you sure you want to delete{" "}
                 <strong>"{deletingDept?.name}"</strong>? This action cannot be
                 undone.
               </p>
               {deletingDept &&
                 charterCountForDept(deletingDept.id) > 0 && (
-                  <p className="text-red-600 text-xs mt-2 bg-red-100 p-2 rounded">
+                  <p className="text-red-600 dark:text-red-400 text-xs mt-2 bg-red-100 dark:bg-red-900/30 p-2 rounded">
                     Warning: This department has{" "}
                     {charterCountForDept(deletingDept.id)} charter(s) associated
                     with it. Those charters will remain but lose their department
@@ -410,7 +389,7 @@ export function Departments() {
           <div className="flex justify-end gap-3">
             <button
               onClick={() => setDeleteModalOpen(false)}
-              className="px-4 py-2 text-sm text-slate-600 border border-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-blue-900/40 transition-colors"
+              className="px-4 py-2 text-sm text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
             >
               Cancel
             </button>
