@@ -1,7 +1,6 @@
 /**
  * Admin Login Page
  * Secure login form with validation
- * In production: credentials verified server-side with PHP/MySQL using password_verify()
  */
 
 import { useState, useEffect } from "react";
@@ -23,7 +22,6 @@ export function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Redirect if already logged in
   useEffect(() => {
     if (isAuthenticated()) {
       navigate("/admin/dashboard", { replace: true });
@@ -34,7 +32,6 @@ export function Login() {
     e.preventDefault();
     setError("");
 
-    // Input validation (equivalent to PHP server-side validation)
     if (!username.trim()) {
       setError("Username is required.");
       return;
@@ -46,7 +43,6 @@ export function Login() {
 
     setLoading(true);
 
-    // Simulate server response delay
     setTimeout(() => {
       loginWithApi(username.trim(), password)
         .then(async (success) => {
@@ -62,8 +58,7 @@ export function Login() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-slate-100 p-4">
-      {/* Header */}
+    <div className="flex min-h-screen flex-col items-center justify-center bg-slate-100 dark:bg-slate-950 p-4">
       <div className="mb-8 text-center">
         <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl">
           <img
@@ -74,36 +69,33 @@ export function Login() {
             decoding="async"
           />
         </div>
-        <h1 className="text-slate-900">Admin Portal</h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <h1 className="text-slate-900 dark:text-white">Admin Portal</h1>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           Citizen's Charter Management System
         </p>
       </div>
 
-      {/* Login Card */}
       <div className="w-full max-w-md">
-        <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-8 shadow-sm">
           <div className="mb-6">
-            <h2 className="text-slate-800">Sign In</h2>
-            <p className="mt-1 text-sm text-slate-500">
+            <h2 className="text-slate-800 dark:text-white">Sign In</h2>
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
               Enter your administrator credentials to continue
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-            {/* Error Alert */}
             {error && (
-              <div className="flex items-start gap-2.5 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+              <div className="flex items-start gap-2.5 rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/50 p-3 text-sm text-red-700 dark:text-red-400">
                 <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0" />
                 <span>{error}</span>
               </div>
             )}
 
-            {/* Username Field */}
             <div>
               <label
                 htmlFor="username"
-                className="mb-1.5 block text-slate-700"
+                className="mb-1.5 block text-slate-700 dark:text-slate-300"
               >
                 Username
               </label>
@@ -116,16 +108,15 @@ export function Login() {
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="Enter your username"
                   autoComplete="username"
-                  className="w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-10 pr-4 text-slate-900 shadow-sm placeholder-slate-400 transition-shadow focus:outline-none focus:ring-2 focus:ring-slate-300"
+                  className="w-full rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 py-2.5 pl-10 pr-4 text-slate-900 dark:text-white shadow-sm placeholder-slate-400 dark:placeholder-slate-500 transition-shadow focus:outline-none focus:ring-2 focus:ring-slate-300 dark:focus:ring-slate-500"
                 />
               </div>
             </div>
 
-            {/* Password Field */}
             <div>
               <label
                 htmlFor="password"
-                className="mb-1.5 block text-slate-700"
+                className="mb-1.5 block text-slate-700 dark:text-slate-300"
               >
                 Password
               </label>
@@ -138,12 +129,12 @@ export function Login() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
                   autoComplete="current-password"
-                  className="w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-10 pr-12 text-slate-900 shadow-sm placeholder-slate-400 transition-shadow focus:outline-none focus:ring-2 focus:ring-slate-300"
+                  className="w-full rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 py-2.5 pl-10 pr-12 text-slate-900 dark:text-white shadow-sm placeholder-slate-400 dark:placeholder-slate-500 transition-shadow focus:outline-none focus:ring-2 focus:ring-slate-300 dark:focus:ring-slate-500"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition-colors hover:text-slate-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition-colors hover:text-slate-600 dark:hover:text-slate-200"
                   tabIndex={-1}
                 >
                   {showPassword ? (
@@ -155,7 +146,6 @@ export function Login() {
               </div>
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
@@ -192,11 +182,10 @@ export function Login() {
 
         </div>
 
-        {/* Back link */}
         <div className="text-center mt-5">
           <Link
             to="/"
-            className="text-blue-700 hover:text-blue-900 text-sm transition-colors"
+            className="text-blue-700 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 text-sm transition-colors"
           >
             Return to Public Site
           </Link>
