@@ -40,7 +40,6 @@ export function CharterDetail() {
   );
   const [avgRating, setAvgRating] = useState(getAverageRating(charterId));
 
-  // Feedback form state
   const [hoverStar, setHoverStar] = useState(0);
   const [selectedStar, setSelectedStar] = useState(0);
   const [comment, setComment] = useState("");
@@ -50,7 +49,6 @@ export function CharterDetail() {
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState("");
 
-  // Redirect if charter not found
   if (!charter) {
     return <Navigate to="/" replace />;
   }
@@ -59,7 +57,6 @@ export function CharterDetail() {
   const gformUrl =
     "https://docs.google.com/forms/d/e/1FAIpQLSeDyQVXmFWKI1zy7PfH_2nfzssIwTE-ISo84iOEQaRM7yM2-g/viewform?usp=header";
 
-  // Client QR should always open the Google Form (mobile-friendly)
   const feedbackUrl = gformUrl;
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(
     feedbackUrl
@@ -122,35 +119,31 @@ export function CharterDetail() {
     };
   }, [hasAttachment, resolvedAttachmentUrl]);
 
-  // Format content with line breaks preserved
   const formattedContent = charter.content.split("\n").map((line, idx) => {
     const trimmed = line.trim();
     if (!trimmed) return <br key={idx} />;
 
-    // Section headers (all caps lines)
     if (trimmed === trimmed.toUpperCase() && trimmed.length > 3 && !trimmed.startsWith("-")) {
       return (
-        <p key={idx} className="text-slate-800 mt-4 mb-1">
+        <p key={idx} className="text-slate-800 dark:text-slate-200 mt-4 mb-1">
           {trimmed}
         </p>
       );
     }
 
-    // Bullet points
     if (trimmed.startsWith("-")) {
       return (
-        <li key={idx} className="text-slate-600 text-sm leading-relaxed ml-4">
+        <li key={idx} className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed ml-4">
           {trimmed.slice(1).trim()}
         </li>
       );
     }
 
-    // Numbered items
     if (/^\d+\./.test(trimmed)) {
       return (
         <li
           key={idx}
-          className="text-slate-600 text-sm leading-relaxed ml-4 list-decimal"
+          className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed ml-4 list-decimal"
         >
           {trimmed.replace(/^\d+\.\s*/, "")}
         </li>
@@ -158,7 +151,7 @@ export function CharterDetail() {
     }
 
     return (
-      <p key={idx} className="text-slate-600 text-sm leading-relaxed">
+      <p key={idx} className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
         {trimmed}
       </p>
     );
@@ -169,7 +162,6 @@ export function CharterDetail() {
     window.open(resolvedAttachmentUrl, "_blank", "noopener,noreferrer");
   };
 
-  // Submit feedback
   const handleSubmitRating = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitError("");
@@ -217,12 +209,10 @@ export function CharterDetail() {
 
   return (
     <div>
-      {/* Header */}
-      <section className="border-b border-slate-200 bg-white">
+      <section className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
         <div className="mx-auto w-full px-6 py-10 sm:px-10 lg:px-16">
-          {/* Breadcrumb */}
-          <nav className="mb-6 flex flex-wrap items-center gap-2 text-sm text-slate-500">
-            <Link to="/" className="transition-colors hover:text-slate-900">
+          <nav className="mb-6 flex flex-wrap items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+            <Link to="/" className="transition-colors hover:text-slate-900 dark:hover:text-white">
               Home
             </Link>
             <ChevronRight className="h-3.5 w-3.5" />
@@ -230,35 +220,34 @@ export function CharterDetail() {
               <>
                 <Link
                   to={`/department/${department.id}`}
-                  className="transition-colors hover:text-slate-900"
+                  className="transition-colors hover:text-slate-900 dark:hover:text-white"
                 >
                   {department.name}
                 </Link>
                 <ChevronRight className="h-3.5 w-3.5" />
               </>
             )}
-            <span className="max-w-xs truncate text-slate-900">{charter.title}</span>
+            <span className="max-w-xs truncate text-slate-900 dark:text-white">{charter.title}</span>
           </nav>
 
-          {/* Title */}
           <div className="flex items-start gap-3">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-semibold leading-tight text-slate-950 normal-case break-words">
+              <h1 className="text-2xl sm:text-3xl font-semibold leading-tight text-slate-950 dark:text-white normal-case break-words">
                 {charter.title}
               </h1>
               <div className="mt-2 flex flex-wrap items-center gap-4">
                 {department && (
-                  <div className="flex items-center gap-1.5 text-sm text-slate-500">
+                  <div className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400">
                     <Building2 className="h-4 w-4" />
                     {department.name}
                   </div>
                 )}
-                <div className="flex items-center gap-1.5 text-sm text-slate-500">
+                <div className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400">
                   <Clock className="h-4 w-4" />
                   Published {formatDate(charter.created_at)}
                 </div>
                 {feedbackEntries.length > 0 && (
-                  <div className="flex items-center gap-1 text-sm text-amber-600">
+                  <div className="flex items-center gap-1 text-sm text-amber-600 dark:text-amber-400">
                     <Star className="h-4 w-4 fill-amber-500 text-amber-500" />
                     {avgRating} ({feedbackEntries.length} review
                     {feedbackEntries.length !== 1 ? "s" : ""})
@@ -270,20 +259,17 @@ export function CharterDetail() {
         </div>
       </section>
 
-      {/* Main Content */}
       <div className="mx-auto w-full px-6 py-10 sm:px-10 lg:px-16">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-          {/* Charter Content */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Content Card */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
               <div className="mb-5 flex items-center gap-2">
-                <FileText className="h-5 w-5 text-slate-700" />
-                <h2 className="text-slate-900">Service Information</h2>
+                <FileText className="h-5 w-5 text-slate-700 dark:text-slate-300" />
+                <h2 className="text-slate-900 dark:text-white">Service Information</h2>
               </div>
 
-              <div className="space-y-4 text-sm leading-relaxed text-slate-600">
-                <div className="flex items-center justify-between gap-3 border-b border-slate-100 pb-4 text-xs text-slate-400">
+              <div className="space-y-4 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                <div className="flex items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-700 pb-4 text-xs text-slate-400">
                   <span>Service details</span>
                   <span>Published {formatDate(charter.created_at)}</span>
                 </div>
@@ -292,21 +278,20 @@ export function CharterDetail() {
                   {formattedContent}
                 </div>
 
-                <div className="mt-8 flex items-center justify-between border-t border-slate-100 pt-4 text-xs text-slate-400">
+                <div className="mt-8 flex items-center justify-between border-t border-slate-100 dark:border-slate-700 pt-4 text-xs text-slate-400">
                   <span>Calauan Citizen's Charter Management System</span>
                   <span>Page 1 of 1</span>
                 </div>
               </div>
             </div>
 
-            {/* File Viewer */}
-            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-              <div className="flex items-center justify-between gap-3 border-b border-slate-200 px-4 py-3">
+            <div className="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm">
+              <div className="flex items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-700 px-4 py-3">
                 <div>
-                  <h3 className="text-slate-900">
+                  <h3 className="text-slate-900 dark:text-white">
                     {viewerType === "pdf" ? "PDF Viewer" : "Attachment Viewer"}
                   </h3>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
                     View the attached charter document
                   </p>
                 </div>
@@ -314,47 +299,46 @@ export function CharterDetail() {
                   type="button"
                   onClick={handleDownload}
                   disabled={fileStatus !== "available"}
-                  className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-600 transition-colors hover:bg-slate-50 dark:hover:bg-blue-900/40"
+                  className="inline-flex items-center gap-2 rounded-lg border border-slate-200 dark:border-slate-600 px-3 py-2 text-sm text-slate-600 dark:text-slate-300 transition-colors hover:bg-slate-50 dark:hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <ExternalLink className="h-4 w-4" />
                   View Full Page
                 </button>
               </div>
-              <div className="bg-white p-3">
+              <div className="bg-white dark:bg-slate-800 p-3">
                 {fileStatus === "missing" && (
-                  <div className="p-4 text-sm text-slate-500">404 not found</div>
+                  <div className="p-4 text-sm text-slate-500 dark:text-slate-400">404 not found</div>
                 )}
                 {fileStatus === "unknown" && (
-                  <div className="p-4 text-sm text-slate-500">Checking attachment...</div>
+                  <div className="p-4 text-sm text-slate-500 dark:text-slate-400">Checking attachment...</div>
                 )}
                 {fileStatus === "available" && viewerType === "pdf" && (
                   <iframe
                     src={resolvedAttachmentUrl}
                     title={`${charter.title} PDF preview`}
-                    className="h-[720px] w-full rounded-lg border border-slate-200 bg-white"
+                    className="h-[720px] w-full rounded-lg border border-slate-200 dark:border-slate-600 bg-white"
                   />
                 )}
                 {fileStatus === "available" && viewerType === "unknown" && (
-                  <div className="p-4 text-sm text-slate-500">
+                  <div className="p-4 text-sm text-slate-500 dark:text-slate-400">
                     No preview available for this file type. Use View Full Page to open it.
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Feedback Section */}
-            <div id="feedback-form" className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div id="feedback-form" className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
               <div className="mb-5 flex items-center gap-2">
-                <MessageSquare className="h-5 w-5 text-slate-700" />
-                <h2 className="text-slate-900">Citizen Feedback</h2>
+                <MessageSquare className="h-5 w-5 text-slate-700 dark:text-slate-300" />
+                <h2 className="text-slate-900 dark:text-white">Citizen Feedback</h2>
               </div>
 
               {submitted ? (
-                <div className="flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-700">
+                <div className="flex items-center gap-3 rounded-xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/50 p-4 text-emerald-700 dark:text-emerald-400">
                   <CheckCircle className="h-5 w-5 flex-shrink-0" />
                   <div>
                     <p>Thank you for your feedback!</p>
-                    <p className="mt-0.5 text-sm text-emerald-600">
+                    <p className="mt-0.5 text-sm text-emerald-600 dark:text-emerald-500">
                       Your rating has been submitted and helps improve our
                       services.
                     </p>
@@ -364,7 +348,7 @@ export function CharterDetail() {
                 <form onSubmit={handleSubmitRating} className="space-y-4">
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div>
-                      <label className="mb-1.5 block text-sm text-slate-700">
+                      <label className="mb-1.5 block text-sm text-slate-700 dark:text-slate-300">
                         Full name
                       </label>
                       <input
@@ -372,11 +356,11 @@ export function CharterDetail() {
                         onChange={(e) => setName(e.target.value)}
                         placeholder="Your name"
                         maxLength={150}
-                        className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                     <div>
-                      <label className="mb-1.5 block text-sm text-slate-700">
+                      <label className="mb-1.5 block text-sm text-slate-700 dark:text-slate-300">
                         Email (optional)
                       </label>
                       <input
@@ -385,11 +369,11 @@ export function CharterDetail() {
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="you@email.com"
                         maxLength={190}
-                        className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                     <div>
-                      <label className="mb-1.5 block text-sm text-slate-700">
+                      <label className="mb-1.5 block text-sm text-slate-700 dark:text-slate-300">
                         Contact number (optional)
                       </label>
                       <input
@@ -397,13 +381,12 @@ export function CharterDetail() {
                         onChange={(e) => setContact(e.target.value)}
                         placeholder="0917 123 4567"
                         maxLength={50}
-                        className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                   </div>
-                  {/* Star Rating */}
                   <div>
-                    <label className="mb-2 block text-sm text-slate-700">
+                    <label className="mb-2 block text-sm text-slate-700 dark:text-slate-300">
                       Rate this service
                     </label>
                     <div className="flex items-center gap-1">
@@ -420,25 +403,24 @@ export function CharterDetail() {
                             className={`h-7 w-7 transition-colors ${
                               star <= (hoverStar || selectedStar)
                                 ? "fill-amber-400 text-amber-400"
-                                : "text-slate-300"
+                                : "text-slate-300 dark:text-slate-600"
                             }`}
                           />
                         </button>
                       ))}
                       {(hoverStar || selectedStar) > 0 && (
-                        <span className="ml-2 text-sm text-slate-600">
+                        <span className="ml-2 text-sm text-slate-600 dark:text-slate-300">
                           {starLabel[hoverStar || selectedStar]}
                         </span>
                       )}
                     </div>
                     {submitError && (
-                      <p className="mt-1 text-xs text-red-600">{submitError}</p>
+                      <p className="mt-1 text-xs text-red-600 dark:text-red-400">{submitError}</p>
                     )}
                   </div>
 
-                  {/* Comment */}
                   <div>
-                    <label className="mb-1.5 block text-sm text-slate-700">
+                    <label className="mb-1.5 block text-sm text-slate-700 dark:text-slate-300">
                       Comment{" "}
                       <span className="text-xs text-slate-400">(optional)</span>
                     </label>
@@ -448,9 +430,9 @@ export function CharterDetail() {
                       placeholder="Share your experience with this service..."
                       rows={3}
                       maxLength={500}
-                      className="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                      className="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-600 rounded-lg text-sm bg-white dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                     />
-                    <p className="text-slate-400 text-xs text-right mt-1">
+                    <p className="text-slate-400 dark:text-slate-500 text-xs text-right mt-1">
                       {comment.length}/500
                     </p>
                   </div>
@@ -465,20 +447,18 @@ export function CharterDetail() {
                 </form>
               )}
 
-              {/* Existing Feedback */}
               {feedbackEntries.length > 0 && (
-                <div className="mt-6 pt-6 border-t border-slate-100 space-y-4">
+                <div className="mt-6 pt-6 border-t border-slate-100 dark:border-slate-700 space-y-4">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-slate-700">
+                    <h3 className="text-slate-700 dark:text-slate-300">
                       Reviews ({feedbackEntries.length})
                     </h3>
                     <div className="flex items-center gap-1 text-amber-500">
                       <Star className="w-4 h-4 fill-amber-500" />
-                      <span className="text-slate-700">{avgRating} / 5</span>
+                      <span className="text-slate-700 dark:text-slate-300">{avgRating} / 5</span>
                     </div>
                   </div>
 
-                  {/* Rating distribution */}
                   <div className="space-y-1.5">
                     {[5, 4, 3, 2, 1].map((star) => {
                       const count = feedbackEntries.filter(
@@ -493,15 +473,15 @@ export function CharterDetail() {
                           key={star}
                           className="flex items-center gap-2 text-sm"
                         >
-                          <span className="text-slate-500 w-3">{star}</span>
+                          <span className="text-slate-500 dark:text-slate-400 w-3">{star}</span>
                           <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                          <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
+                          <div className="flex-1 h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
                             <div
                               className="h-full bg-amber-400 rounded-full transition-all"
                               style={{ width: `${pct}%` }}
                             />
                           </div>
-                          <span className="text-slate-400 w-8 text-right">
+                          <span className="text-slate-400 dark:text-slate-500 w-8 text-right">
                             {count}
                           </span>
                         </div>
@@ -509,7 +489,6 @@ export function CharterDetail() {
                     })}
                   </div>
 
-                  {/* Comment list */}
                   <div className="space-y-3 mt-4">
                     {feedbackEntries
                       .filter((r) => r.comment)
@@ -518,7 +497,7 @@ export function CharterDetail() {
                       .map((r) => (
                         <div
                           key={r.uid}
-                          className="p-3 bg-slate-50 rounded-lg border border-slate-100"
+                          className="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg border border-slate-100 dark:border-slate-600"
                         >
                           <div className="flex items-center gap-2 mb-1.5">
                             <div className="flex">
@@ -528,19 +507,19 @@ export function CharterDetail() {
                                   className={`w-3.5 h-3.5 ${
                                     s <= r.rating
                                       ? "fill-amber-400 text-amber-400"
-                                      : "text-slate-300"
+                                      : "text-slate-300 dark:text-slate-600"
                                   }`}
                                 />
                               ))}
                             </div>
-                            <span className="text-slate-600 text-xs">
+                            <span className="text-slate-600 dark:text-slate-300 text-xs">
                               {r.name || "Anonymous"}
                             </span>
-                            <span className="text-slate-400 text-xs">
+                            <span className="text-slate-400 dark:text-slate-500 text-xs">
                               {formatDateTime(r.created_at)}
                             </span>
                           </div>
-                          <p className="text-slate-600 text-sm">{r.comment}</p>
+                          <p className="text-slate-600 dark:text-slate-300 text-sm">{r.comment}</p>
                         </div>
                       ))}
                   </div>
@@ -549,29 +528,27 @@ export function CharterDetail() {
             </div>
           </div>
 
-          {/* Sidebar */}
           <div className="space-y-5">
             <Link
               to="/"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-700 transition-colors hover:border-slate-300 hover:text-slate-900"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-300 transition-colors hover:border-slate-300 dark:hover:border-slate-600 hover:text-slate-900 dark:hover:text-white"
             >
               <ArrowLeft className="h-4 w-4" />
               Back to Home
             </Link>
-            {/* QR Code */}
-            <div className="bg-white rounded-xl border border-slate-200 p-5">
-              <h3 className="text-slate-900 mb-3 flex items-center gap-2">
-                <QrCode className="w-4 h-4 text-slate-500" />
+            <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5">
+              <h3 className="text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                <QrCode className="w-4 h-4 text-slate-500 dark:text-slate-400" />
                 Feedback QR Code
               </h3>
-              <p className="text-slate-500 text-xs mb-3">
+              <p className="text-slate-500 dark:text-slate-400 text-xs mb-3">
                 Scan to open the citizen feedback form.
               </p>
               <div className="flex flex-col items-center gap-3">
                 <img
                   src={qrUrl}
                   alt="QR Code for the citizen feedback form"
-                  className="w-40 h-40 border border-slate-200 rounded-lg bg-white"
+                  className="w-40 h-40 border border-slate-200 dark:border-slate-600 rounded-lg bg-white"
                 />
               </div>
             </div>
