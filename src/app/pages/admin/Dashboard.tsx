@@ -79,16 +79,17 @@ export function Dashboard() {
   return (
     <div className="space-y-6">
       {/* Page Title */}
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-slate-900 dark:text-slate-100">Dashboard</h1>
-          <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-300">
-            Overview of the Calauan Citizen's Charter Management System
-          </p>
-        </div>
-          <div className="flex items-center gap-1 text-sm text-slate-400 dark:text-slate-300">
-          <Clock className="h-4 w-4" />
-          {new Date().toLocaleDateString("en-PH", {
+      <div className="rounded-xl border-l-4 border-violet-900 bg-violet-50 dark:bg-violet-950/30 px-6 py-4">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-slate-900 dark:text-white">Dashboard</h1>
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+              Overview of the Calauan Citizen's Charter Management System
+            </p>
+          </div>
+          <div className="flex items-center gap-1 text-sm text-slate-500 dark:text-slate-400">
+            <Clock className="h-4 w-4" />
+            {new Date().toLocaleDateString("en-PH", {
             weekday: "long",
             year: "numeric",
             month: "long",
@@ -125,7 +126,7 @@ export function Dashboard() {
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
         <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4 dark:border-slate-800">
           <div>
-            <h2 className="text-slate-900 dark:text-slate-100">Recent Charters</h2>
+            <h2 className="text-slate-900 dark:text-white">Recent Charters</h2>
             <p className="mt-0.5 text-xs text-slate-400 dark:text-slate-400">
               Last {recentCharters.length} added or updated charters
             </p>
