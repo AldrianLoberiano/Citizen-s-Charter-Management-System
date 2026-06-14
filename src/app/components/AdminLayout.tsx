@@ -291,6 +291,7 @@ export function AdminLayout() {
           <Outlet />
         </main>
 
+        {/* Footer */}
       </div>
 
       <Modal
