@@ -141,7 +141,7 @@ export function Home() {
           </div>
           <div className="mt-8 flex flex-col items-center gap-2 sm:absolute sm:right-4 sm:top-20 sm:mt-0">
             <div className="inline-flex shrink-0 items-center rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1 text-xs text-slate-600 dark:text-slate-300 shadow-sm">
-              {formattedDate} – {formattedTime}
+              {formattedDate} â€“ {formattedTime}
             </div>
             <div className="flex items-center justify-center gap-2">
               <img
