@@ -191,10 +191,7 @@
 }
 
 /* ===== GOOGLE SHEETS PANEL ===== */
-.gs-panel{
-  display:flex;align-items:flex-start;gap:1.25rem;padding:1rem 1.25rem;margin-bottom:1.25rem;
-  border-left:4px solid #0F9D58;background:#fff;flex-wrap:wrap;
-}
+.gs-panel{display:flex;align-items:flex-start;gap:1.25rem;padding:1rem 1.25rem;margin-bottom:1.25rem;border-left:4px solid #0F9D58;background:#fff;flex-wrap:wrap;} .dark .gs-panel{background:#0f172a;border-left-color:#10B981;}
 .gs-panel-left{display:flex;align-items:center;gap:.75rem;flex-shrink:0;}
 .gs-logo svg{width:36px;height:36px;border-radius:8px;display:block;}
 .gs-info{display:flex;flex-direction:column;gap:.3rem;}
@@ -207,17 +204,17 @@
 .gs-loading .gs-dot{background:#F59E0B;animation:gsPulse .8s infinite alternate;}
 .gs-success .gs-dot{background:#10B981;}
 .gs-error   .gs-dot{background:#EF4444;}
-.gs-idle   {background:#F1F5F9;color:#64748B;}
-.gs-loading{background:#FFFBEB;color:#92400E;}
+.gs-idle{background:#F1F5F9;color:#64748B;} .dark .gs-idle{background:#1e293b;color:#94a3b8;}
+.gs-loading{background:#FFFBEB;color:#92400E;} .dark .gs-loading{background:#422006;color:#fbbf24;}
 .gs-success{background:#ECFDF5;color:#065F46;}
-.gs-error  {background:#FEF2F2;color:#991B1B;}
+.gs-error{background:#FEF2F2;color:#991B1B;} .dark .gs-error{background:#450a0a;color:#f87171;}
 @keyframes gsPulse{from{opacity:.4}to{opacity:1}}
 
 /* Center section */
 .gs-panel-center{flex:1;min-width:0;display:flex;flex-direction:column;gap:.5rem;}
 .gs-controls{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;}
 .gs-controls label{font-size:.75rem;font-weight:600;color:var(--muted-foreground);white-space:nowrap;}
-.gs-controls select{width:auto;font-size:.8rem;padding:.3rem .6rem;max-width:200px;}
+.gs-controls select{width:auto;font-size:.8rem;padding:.3rem .6rem;max-width:200px;} .dark .gs-controls select{background:#1e293b;color:#e2e8f0;border-color:#475569;}
 .gs-msg-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;}
 #gs-status-msg{font-size:.78rem;color:var(--muted-foreground);flex:1;}
 .gs-src-label{font-size:.75rem;color:var(--muted-foreground);white-space:nowrap;}
