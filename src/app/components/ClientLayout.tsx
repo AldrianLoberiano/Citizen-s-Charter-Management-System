@@ -4,7 +4,7 @@
  */
 
 import { Outlet, Link, useLocation } from "react-router";
-import { Mail, Facebook, MapPin, ArrowUp, Moon, Sun } from "lucide-react";
+import { Mail, Facebook, MapPin, ArrowUp } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const clientLogoSrc = new URL("../../public/images/header/logo.png", import.meta.url).href;
@@ -19,20 +19,11 @@ export function ClientLayout() {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [assistantVisible, setAssistantVisible] = useState(true);
-  const [isDark, setIsDark] = useState(() => {
-    if (typeof window === "undefined") return false;
-    const stored = window.localStorage.getItem("ccms_admin_theme");
-    return stored ? stored === "dark" : false;
-  });
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   }, [location.pathname]);
 
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", isDark);
-    window.localStorage.setItem("ccms_admin_theme", isDark ? "dark" : "light");
-  }, [isDark]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -104,14 +95,6 @@ export function ClientLayout() {
         </button>
       </div>
       <div className="fixed bottom-4 right-4 z-40 flex flex-col items-end gap-2">
-        <button
-          type="button"
-          onClick={() => setIsDark((prev) => !prev)}
-          className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 shadow-lg transition-colors hover:bg-slate-800 dark:hover:bg-white"
-          aria-label="Toggle dark mode"
-        >
-          {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-        </button>
         {showScrollTop && (
           <button
             type="button"
@@ -124,7 +107,7 @@ export function ClientLayout() {
         )}
       </div>
       <div className="bg-slate-950 px-4 py-2 text-center text-xs text-slate-200">
-        Official Website of the Local Government Unit – For inquiries, contact
+        Official Website of the Local Government Unit â€“ For inquiries, contact
         the Information Officer
       </div>
 
@@ -211,7 +194,7 @@ export function ClientLayout() {
               System. All Rights Reserved.
             </p>
             <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">
-              In compliance with RA 11032 – Ease of Doing Business and Efficient
+              In compliance with RA 11032 â€“ Ease of Doing Business and Efficient
               Government Service Delivery Act
             </p>
           </div>
