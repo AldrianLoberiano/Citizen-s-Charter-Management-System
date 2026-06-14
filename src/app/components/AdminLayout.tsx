@@ -296,6 +296,7 @@ export function AdminLayout() {
           <div className="flex flex-col items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400 sm:flex-row">
             <p>&copy; 2026 Calauan Citizen's Charter Management System (CCMS). All rights reserved.</p>
             <p>
+              In compliance with the <span className="font-medium text-slate-700 dark:text-slate-300">Data Privacy Act of 2012 (RA 10173)</span>.
       </div>
 
       <Modal
