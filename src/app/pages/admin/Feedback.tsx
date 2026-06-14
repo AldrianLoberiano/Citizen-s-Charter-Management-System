@@ -519,25 +519,27 @@ export function Feedback() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-slate-900 dark:text-white">Feedback</h1>
-          <p className="mt-0.5 text-sm text-slate-500">
-            Citizen feedback responses submitted per charter.
-          </p>
-        </div>
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
+      <div className="rounded-xl border-l-4 border-violet-900 bg-white dark:bg-slate-900 px-6 py-4 mb-6">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-slate-900 dark:text-white">Feedback</h1>
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+              Citizen feedback responses submitted per charter.
+            </p>
+          </div>
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
           <a
             href={feedbackFormUrl}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-1.5 text-xs text-slate-700 transition hover:border-slate-300 hover:text-slate-900"
+            className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-1.5 text-xs text-slate-700 transition hover:border-slate-300 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:text-white"
           >
             View Feedback (GForm)
           </a>
-          <div className="flex items-center gap-2 text-sm text-slate-500">
-            <MessageSquare className="h-4 w-4" />
-            {summary.total} total responses
+            <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+              <MessageSquare className="h-4 w-4" />
+              {summary.total} total responses
+            </div>
           </div>
         </div>
       </div>
@@ -617,27 +619,27 @@ export function Feedback() {
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div className="rounded-2xl border border-slate-200 bg-white p-5">
-          <p className="text-xs uppercase tracking-wide text-slate-400">Average Rating</p>
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+          <p className="text-xs uppercase tracking-wide text-slate-400 dark:text-slate-500">Average Rating</p>
           <div className="mt-3 flex items-center gap-2">
             <Star className="h-5 w-5 text-amber-400" />
-            <span className="text-2xl text-slate-900">{summary.average}</span>
-            <span className="text-sm text-slate-500">/ 5</span>
+            <span className="text-2xl text-slate-900 dark:text-white">{summary.average}</span>
+            <span className="text-sm text-slate-500 dark:text-slate-400">/ 5</span>
           </div>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-5">
-          <p className="text-xs uppercase tracking-wide text-slate-400">Total Feedback</p>
-          <div className="mt-3 text-2xl text-slate-900">{summary.total}</div>
-          <p className="mt-1 text-sm text-slate-500">All submitted responses</p>
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+          <p className="text-xs uppercase tracking-wide text-slate-400 dark:text-slate-500">Total Feedback</p>
+          <div className="mt-3 text-2xl text-slate-900 dark:text-white">{summary.total}</div>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">All submitted responses</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <div className="rounded-2xl border border-slate-200 bg-white p-5">
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <h3 className="text-slate-900">Rating Breakdown</h3>
-              <p className="mt-0.5 text-xs text-slate-500">
+              <h3 className="text-slate-900 dark:text-white">Rating Breakdown</h3>
+              <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
                 Distribution of all ratings from highest to lowest.
               </p>
             </div>
@@ -653,12 +655,12 @@ export function Feedback() {
               return (
                 <div key={item.value} className="space-y-1.5">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="font-medium text-slate-700">{label}</span>
+                    <span className="font-medium text-slate-700 dark:text-slate-200">{label}</span>
                     <span className="text-slate-500">
                       {item.count} response{item.count === 1 ? "" : "s"} · {item.pct}%
                     </span>
                   </div>
-                  <div className="h-3 rounded-full bg-slate-100">
+                  <div className="h-3 rounded-full bg-slate-100 dark:bg-slate-700">
                     <div
                       className="h-3 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 transition-all"
                       style={{ width }}
@@ -670,11 +672,11 @@ export function Feedback() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-5">
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <h3 className="text-slate-900">Source Breakdown</h3>
-              <p className="mt-0.5 text-xs text-slate-500">
+              <h3 className="text-slate-900 dark:text-white">Source Breakdown</h3>
+              <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
                 Where the responses came from.
               </p>
             </div>
@@ -684,7 +686,7 @@ export function Feedback() {
           </div>
 
           <div className="mt-4 space-y-4">
-            <div className="rounded-2xl bg-slate-50 p-4">
+            <div className="rounded-2xl bg-slate-50 p-4 dark:bg-slate-800">
               <div className="flex h-4 overflow-hidden rounded-full bg-slate-200">
                 {sourceBreakdown.map((item) => (
                   <div
@@ -697,14 +699,14 @@ export function Feedback() {
               </div>
               <div className="mt-3 grid gap-3 sm:grid-cols-2">
                 {sourceBreakdown.map((item) => (
-                  <div key={item.label} className="flex items-center gap-3 rounded-xl bg-white px-3 py-2 shadow-sm ring-1 ring-slate-100">
+                  <div key={item.label} className="flex items-center gap-3 rounded-xl bg-white px-3 py-2 shadow-sm ring-1 ring-slate-100 dark:bg-slate-900 dark:ring-slate-700">
                     <span
                       className="h-3 w-3 rounded-full"
                       style={{ backgroundColor: item.color }}
                     />
                     <div className="min-w-0 flex-1">
-                      <div className="text-sm font-medium text-slate-700">{item.label}</div>
-                      <div className="text-xs text-slate-500">
+                      <div className="text-sm font-medium text-slate-700 dark:text-slate-200">{item.label}</div>
+                      <div className="text-xs text-slate-500 dark:text-slate-400">
                         {item.count} response{item.count === 1 ? "" : "s"} · {item.pct}%
                       </div>
                     </div>
@@ -715,10 +717,10 @@ export function Feedback() {
 
             <div className="grid grid-cols-2 gap-3">
               {sourceBreakdown.map((item) => (
-                <div key={`${item.label}-stat`} className="rounded-xl border border-slate-200 px-4 py-3">
-                  <div className="text-xs uppercase tracking-wide text-slate-400">{item.label}</div>
-                  <div className="mt-1 text-2xl text-slate-900">{item.count}</div>
-                  <div className="text-sm text-slate-500">{item.pct}% of responses</div>
+                <div key={`${item.label}-stat`} className="rounded-xl border border-slate-200 px-4 py-3 dark:border-slate-700">
+                  <div className="text-xs uppercase tracking-wide text-slate-400 dark:text-slate-500">{item.label}</div>
+                  <div className="mt-1 text-2xl text-slate-900 dark:text-white">{item.count}</div>
+                  <div className="text-sm text-slate-500 dark:text-slate-400">{item.pct}% of responses</div>
                 </div>
               ))}
             </div>
@@ -784,11 +786,11 @@ export function Feedback() {
                   const colors = ['#7C3AED', '#C084FC', '#E9D5FF', '#E5E7EB'];
 
                   return (
-                    <div key={i} className="rounded-2xl border border-slate-200 bg-white p-5">
+                    <div key={i} className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
                       <div className="flex items-start justify-between gap-4">
                         <div>
-                          <h3 className="text-slate-900">{h}</h3>
-                          <p className="mt-0.5 text-xs text-slate-500">{dates.length} responses</p>
+                          <h3 className="text-slate-900 dark:text-white">{h}</h3>
+                          <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">{dates.length} responses</p>
                         </div>
                       </div>
 
@@ -812,11 +814,11 @@ export function Feedback() {
                 if (/kasarian|gender|sex/.test(lh)) {
                   let start = 0;
                   return (
-                    <div key={i} className="rounded-2xl border border-slate-200 bg-white p-5">
+                    <div key={i} className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
                       <div className="flex items-start justify-between gap-4">
                         <div>
-                          <h3 className="text-slate-900">{h}</h3>
-                          <p className="mt-0.5 text-xs text-slate-500">{items.length} category{items.length===1?"":"ies"}</p>
+                          <h3 className="text-slate-900 dark:text-white">{h}</h3>
+                          <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">{items.length} category{items.length===1?"":"ies"}</p>
                         </div>
                       </div>
 
@@ -837,8 +839,8 @@ export function Feedback() {
                           {items.map(([label, count]) => (
                             <div key={label} className="flex items-center gap-3 mb-2">
                               <div className="h-3 w-3 flex-shrink-0 rounded-full" style={{ background: "#7C3AED" }} />
-                              <div className="min-w-0 flex-1 text-sm text-slate-700 truncate">{label}</div>
-                              <div className="text-xs text-slate-500">{count} · {Math.round((count/totalRowsCount)*100)}%</div>
+                              <div className="min-w-0 flex-1 text-sm text-slate-700 truncate dark:text-slate-200">{label}</div>
+                              <div className="text-xs text-slate-500 dark:text-slate-400">{count} · {Math.round((count/totalRowsCount)*100)}%</div>
                             </div>
                           ))}
                         </div>
@@ -851,11 +853,11 @@ export function Feedback() {
                 if (/uri ng kliyente|uri ng|kliyente|client type|client/i.test(lh)) {
                   let start2 = 0;
                   return (
-                    <div key={i} className="rounded-2xl border border-slate-200 bg-white p-5">
+                    <div key={i} className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
                       <div className="flex items-start justify-between gap-4">
                         <div>
-                          <h3 className="text-slate-900">{h}</h3>
-                          <p className="mt-0.5 text-xs text-slate-500">{items.length} category{items.length===1?"":"ies"}</p>
+                          <h3 className="text-slate-900 dark:text-white">{h}</h3>
+                          <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">{items.length} category{items.length===1?"":"ies"}</p>
                         </div>
                       </div>
 
@@ -877,8 +879,8 @@ export function Feedback() {
                           {items.map(([label, count], idx) => (
                             <div key={label} className="flex items-center gap-3 mb-2">
                               <div className="h-3 w-3 flex-shrink-0 rounded-full" style={{ background: ["#F97316", "#0EA5A4", "#6366F1", "#F472B6", "#60A5FA"][idx % 5] }} />
-                              <div className="min-w-0 flex-1 text-sm text-slate-700 truncate">{label}</div>
-                              <div className="text-xs text-slate-500">{count} · {Math.round((count/totalRowsCount)*100)}%</div>
+                              <div className="min-w-0 flex-1 text-sm text-slate-700 truncate dark:text-slate-200">{label}</div>
+                              <div className="text-xs text-slate-500 dark:text-slate-400">{count} · {Math.round((count/totalRowsCount)*100)}%</div>
                             </div>
                           ))}
                         </div>
@@ -910,10 +912,10 @@ export function Feedback() {
                   const maxBucket = Math.max(...bucketCounts, 1);
 
                   return (
-                    <div key={i} className="rounded-2xl border border-slate-200 bg-white p-5">
+                    <div key={i} className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
                       <div className="flex items-start justify-between gap-4">
                         <div>
-                          <h3 className="text-slate-900">{h}</h3>
+                          <h3 className="text-slate-900 dark:text-white">{h}</h3>
                         </div>
                       </div>
 
@@ -921,8 +923,8 @@ export function Feedback() {
                         {buckets.map(([label], idx) => (
                           <div key={label} className="flex flex-col items-center gap-2">
                             <div className="w-10 bg-purple-100" style={{ height: `${Math.round((bucketCounts[idx]/maxBucket)*100)}%`, minHeight: 6 }} />
-                            <div className="text-xs text-slate-500">{label}</div>
-                            <div className="text-xs text-slate-700">{bucketCounts[idx]}</div>
+                            <div className="text-xs text-slate-500 dark:text-slate-400">{label}</div>
+                            <div className="text-xs text-slate-700 dark:text-slate-300">{bucketCounts[idx]}</div>
                           </div>
                         ))}
                       </div>
@@ -933,10 +935,10 @@ export function Feedback() {
                 // SQD / survey questions: horizontal percentage bars based on total responses
                 if (/sqd|sqdo|sqd0|sqd1|sqd2|sqd3|sqd4|sqd5|sqd6|sqd7|sqd8/.test(lh)) {
                   return (
-                    <div key={i} className="rounded-2xl border border-slate-200 bg-white p-5">
+                    <div key={i} className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
                       <div className="flex items-start justify-between gap-4">
                         <div>
-                          <h3 className="text-slate-900">{h}</h3>
+                          <h3 className="text-slate-900 dark:text-white">{h}</h3>
                         </div>
                       </div>
 
@@ -945,13 +947,13 @@ export function Feedback() {
                           const pct = Math.round((count / totalRowsCount) * 100);
                           return (
                             <div key={label} className="flex items-center gap-3">
-                              <div className="w-44 text-sm text-slate-700 truncate">{label}</div>
+                              <div className="w-44 text-sm text-slate-700 truncate dark:text-slate-200">{label}</div>
                               <div className="flex-1">
                                 <div className="h-4 rounded bg-purple-100">
                                   <div style={{ width: `${pct}%` }} className="h-4 rounded bg-purple-600" />
                                 </div>
                               </div>
-                              <div className="w-12 text-xs text-slate-500 text-right">{pct}%</div>
+                              <div className="w-12 text-xs text-slate-500 text-right dark:text-slate-400">{pct}%</div>
                             </div>
                           );
                         })}
@@ -962,10 +964,10 @@ export function Feedback() {
 
                 // Default horizontal bars (relative to max)
                 return (
-                  <div key={i} className="rounded-2xl border border-slate-200 bg-white p-5">
+                  <div key={i} className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
                     <div className="flex items-start justify-between gap-4">
                       <div>
-                        <h3 className="text-slate-900">{h}</h3>
+                        <h3 className="text-slate-900 dark:text-white">{h}</h3>
                       </div>
                     </div>
 
@@ -974,13 +976,13 @@ export function Feedback() {
                         const pct = Math.round((count / max) * 100);
                         return (
                           <div key={label} className="flex items-center gap-3">
-                            <div className="w-44 text-sm text-slate-700 truncate">{label}</div>
+                            <div className="w-44 text-sm text-slate-700 truncate dark:text-slate-200">{label}</div>
                             <div className="flex-1">
                               <div className="h-4 rounded bg-purple-100">
                                 <div style={{ width: `${pct}%` }} className="h-4 rounded bg-purple-600" />
                               </div>
                             </div>
-                            <div className="w-12 text-xs text-slate-500 text-right">{count}</div>
+                            <div className="w-12 text-xs text-slate-500 text-right dark:text-slate-400">{count}</div>
                           </div>
                         );
                       })}
@@ -992,25 +994,25 @@ export function Feedback() {
           </div>
         )}
 
-        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-        <div className="border-b border-slate-200 px-6 py-4">
-          <h2 className="text-slate-900">Latest Feedback</h2>
+        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
+        <div className="border-b border-slate-200 px-6 py-4 dark:border-slate-700">
+          <h2 className="text-slate-900 dark:text-white">Latest Feedback</h2>
           <p className="mt-0.5 text-xs text-slate-400">
             Showing {filteredRatings.length} of {sortedRatings.length} response
             {sortedRatings.length === 1 ? "" : "s"}
           </p>
         </div>
 
-        <div className="border-b border-slate-200 bg-slate-50 px-6 py-4">
+        <div className="border-b border-slate-200 bg-slate-50 px-6 py-4 dark:border-slate-700 dark:bg-slate-800">
           <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-5">
             <div>
-              <label className="text-xs uppercase tracking-wide text-slate-400">
+              <label className="text-xs uppercase tracking-wide text-slate-400 dark:text-slate-500">
                 Department
               </label>
               <select
                 value={departmentFilter}
                 onChange={(event) => setDepartmentFilter(event.target.value)}
-                className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-800 dark:text-white dark:focus:ring-blue-400"
               >
                 <option value="all">All departments</option>
                 {departments.map((dept) => (
@@ -1022,13 +1024,13 @@ export function Feedback() {
             </div>
 
             <div>
-              <label className="text-xs uppercase tracking-wide text-slate-400">
+              <label className="text-xs uppercase tracking-wide text-slate-400 dark:text-slate-500">
                 Charter
               </label>
               <select
                 value={charterFilter}
                 onChange={(event) => setCharterFilter(event.target.value)}
-                className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-800 dark:text-white dark:focus:ring-blue-400"
               >
                 <option value="all">All charters</option>
                 {charters.map((charter) => (
@@ -1040,13 +1042,13 @@ export function Feedback() {
             </div>
 
             <div>
-              <label className="text-xs uppercase tracking-wide text-slate-400">
+              <label className="text-xs uppercase tracking-wide text-slate-400 dark:text-slate-500">
                 Rating
               </label>
               <select
                 value={ratingFilter}
                 onChange={(event) => setRatingFilter(event.target.value)}
-                className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-800 dark:text-white dark:focus:ring-blue-400"
               >
                 <option value="all">All ratings</option>
                 {[5, 4, 3, 2, 1].map((value) => (
@@ -1058,7 +1060,7 @@ export function Feedback() {
             </div>
 
             <div className="md:col-span-2 xl:col-span-2">
-              <label className="text-xs uppercase tracking-wide text-slate-400">
+              <label className="text-xs uppercase tracking-wide text-slate-400 dark:text-slate-500">
                 Search
               </label>
               <input
@@ -1066,7 +1068,7 @@ export function Feedback() {
                 value={searchTerm}
                 onChange={(event) => setSearchTerm(event.target.value)}
                 placeholder="Search charter, department, name, or comment"
-                className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-800 dark:text-white dark:focus:ring-blue-400"
               />
             </div>
           </div>
@@ -1074,7 +1076,7 @@ export function Feedback() {
             <button
               type="button"
               onClick={handleExportCsv}
-              className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700 transition-colors hover:border-slate-300 hover:text-slate-900"
+              className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700 transition-colors hover:border-slate-300 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:text-white"
             >
               Export CSV
             </button>
@@ -1082,7 +1084,7 @@ export function Feedback() {
               type="button"
               onClick={() => setIsQrOpen(true)}
               disabled={!feedbackFormUrl}
-              className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700 transition-colors hover:border-slate-300 hover:text-slate-900"
+              className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700 transition-colors hover:border-slate-300 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:text-white"
             >
               <QrCode className="h-4 w-4" />
               Feedback Form QR
@@ -1090,7 +1092,7 @@ export function Feedback() {
             <button
               type="button"
               onClick={clearFilters}
-              className="text-xs text-slate-500 transition-colors hover:text-slate-900"
+              className="text-xs text-slate-500 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
             >
               Clear filters
             </button>
@@ -1100,40 +1102,40 @@ export function Feedback() {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-100 bg-slate-50">
-                <th className="px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500">
+              <tr className="border-b border-slate-100 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+                <th className="px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
                   Charter
                 </th>
-                <th className="hidden px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 md:table-cell">
+                <th className="hidden px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400 md:table-cell">
                   Department
                 </th>
-                <th className="hidden px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 lg:table-cell">
+                <th className="hidden px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400 lg:table-cell">
                   Name
                 </th>
-                <th className="hidden px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 lg:table-cell">
+                <th className="hidden px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400 lg:table-cell">
                   Email
                 </th>
-                <th className="hidden px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 lg:table-cell">
+                <th className="hidden px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400 lg:table-cell">
                   Contact
                 </th>
-                <th className="hidden px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 lg:table-cell">
+                <th className="hidden px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400 lg:table-cell">
                   Source
                 </th>
-                <th className="px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500">
+                <th className="px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
                   Rating
                 </th>
-                <th className="hidden px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 sm:table-cell">
+                <th className="hidden px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400 sm:table-cell">
                   Comment
                 </th>
-                <th className="px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500">
+                <th className="px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
                   Date
                 </th>
-                <th className="px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500">
+                <th className="px-6 py-3 text-left text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
                   Action
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
               {filteredRatings.map((rating) => {
                 const charter = getCharterById(rating.charter_id);
                 const department = charter
@@ -1145,22 +1147,22 @@ export function Feedback() {
                     key={rating.uid}
                     className="transition-colors hover:bg-slate-50 dark:hover:bg-blue-900/50"
                   >
-                    <td className="px-6 py-3.5 text-sm text-slate-900">
+                    <td className="px-6 py-3.5 text-sm text-slate-900 dark:text-white">
                       {charter?.title || "Unknown charter"}
                     </td>
-                    <td className="hidden px-6 py-3.5 text-sm text-slate-500 md:table-cell">
+                    <td className="hidden px-6 py-3.5 text-sm text-slate-500 dark:text-slate-400 md:table-cell">
                       {department?.name || "—"}
                     </td>
-                    <td className="hidden px-6 py-3.5 text-sm text-slate-500 lg:table-cell">
+                    <td className="hidden px-6 py-3.5 text-sm text-slate-500 dark:text-slate-400 lg:table-cell">
                       {rating.name || "—"}
                     </td>
-                    <td className="hidden px-6 py-3.5 text-sm text-slate-500 lg:table-cell">
+                    <td className="hidden px-6 py-3.5 text-sm text-slate-500 dark:text-slate-400 lg:table-cell">
                       {rating.email || "—"}
                     </td>
-                    <td className="hidden px-6 py-3.5 text-sm text-slate-500 lg:table-cell">
+                    <td className="hidden px-6 py-3.5 text-sm text-slate-500 dark:text-slate-400 lg:table-cell">
                       {rating.contact || "—"}
                     </td>
-                    <td className="hidden px-6 py-3.5 text-sm text-slate-500 lg:table-cell">
+                    <td className="hidden px-6 py-3.5 text-sm text-slate-500 dark:text-slate-400 lg:table-cell">
                       {rating.source === "feedback" ? "QR/Form" : "Rating"}
                     </td>
                     <td className="px-6 py-3.5">
@@ -1169,10 +1171,10 @@ export function Feedback() {
                         {rating.rating}
                       </span>
                     </td>
-                    <td className="hidden px-6 py-3.5 text-sm text-slate-500 sm:table-cell">
+                    <td className="hidden px-6 py-3.5 text-sm text-slate-500 dark:text-slate-400 sm:table-cell">
                       {rating.comment?.trim() || "—"}
                     </td>
-                    <td className="px-6 py-3.5 text-sm text-slate-500">
+                    <td className="px-6 py-3.5 text-sm text-slate-500 dark:text-slate-400">
                       {formatDateTime(rating.created_at)}
                     </td>
                     <td className="px-6 py-3.5">
@@ -1211,8 +1213,8 @@ export function Feedback() {
         {selectedFeedback ? (
           <div className="space-y-3 text-sm text-slate-600">
             <div>
-              <p className="text-xs uppercase tracking-wide text-slate-400">Charter</p>
-              <p className="text-slate-900">
+              <p className="text-xs uppercase tracking-wide text-slate-400 dark:text-slate-500">Charter</p>
+              <p className="text-slate-900 dark:text-white">
                 {selectedCharter?.title || "Unknown charter"}
               </p>
               <p className="text-xs text-slate-400">
@@ -1221,37 +1223,37 @@ export function Feedback() {
             </div>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
-                <p className="text-xs uppercase tracking-wide text-slate-400">Name</p>
-                <p className="text-slate-900">{selectedFeedback.name || "—"}</p>
+                <p className="text-xs uppercase tracking-wide text-slate-400 dark:text-slate-500">Name</p>
+                <p className="text-slate-900 dark:text-white">{selectedFeedback.name || "—"}</p>
               </div>
               <div>
-                <p className="text-xs uppercase tracking-wide text-slate-400">Contact</p>
-                <p className="text-slate-900">{selectedFeedback.contact || "—"}</p>
+                <p className="text-xs uppercase tracking-wide text-slate-400 dark:text-slate-500">Contact</p>
+                <p className="text-slate-900 dark:text-white">{selectedFeedback.contact || "—"}</p>
               </div>
               <div>
-                <p className="text-xs uppercase tracking-wide text-slate-400">Email</p>
-                <p className="text-slate-900">{selectedFeedback.email || "—"}</p>
+                <p className="text-xs uppercase tracking-wide text-slate-400 dark:text-slate-500">Email</p>
+                <p className="text-slate-900 dark:text-white">{selectedFeedback.email || "—"}</p>
               </div>
               <div>
-                <p className="text-xs uppercase tracking-wide text-slate-400">Source</p>
-                <p className="text-slate-900">
+                <p className="text-xs uppercase tracking-wide text-slate-400 dark:text-slate-500">Source</p>
+                <p className="text-slate-900 dark:text-white">
                   {selectedFeedback.source === "feedback" ? "QR/Form" : "Rating"}
                 </p>
               </div>
               <div>
-                <p className="text-xs uppercase tracking-wide text-slate-400">Rating</p>
-                <p className="text-slate-900">{selectedFeedback.rating}</p>
+                <p className="text-xs uppercase tracking-wide text-slate-400 dark:text-slate-500">Rating</p>
+                <p className="text-slate-900 dark:text-white">{selectedFeedback.rating}</p>
               </div>
               <div>
-                <p className="text-xs uppercase tracking-wide text-slate-400">Date</p>
-                <p className="text-slate-900">
+                <p className="text-xs uppercase tracking-wide text-slate-400 dark:text-slate-500">Date</p>
+                <p className="text-slate-900 dark:text-white">
                   {formatDateTime(selectedFeedback.created_at)}
                 </p>
               </div>
             </div>
             <div>
-              <p className="text-xs uppercase tracking-wide text-slate-400">Comment</p>
-              <p className="text-slate-900">
+              <p className="text-xs uppercase tracking-wide text-slate-400 dark:text-slate-500">Comment</p>
+              <p className="text-slate-900 dark:text-white">
                 {selectedFeedback.comment?.trim() || "—"}
               </p>
             </div>
@@ -1271,7 +1273,7 @@ export function Feedback() {
               <img
                 src={feedbackQrUrl}
                 alt="QR code for feedback form"
-                className="h-44 w-44 rounded-lg border border-slate-200 bg-white"
+                className="h-44 w-44 rounded-lg border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800"
               />
               <div className="flex flex-wrap items-center justify-center gap-3">
                 <a
@@ -1291,12 +1293,12 @@ export function Feedback() {
                   {copied ? "Copied" : "Copy link"}
                 </button>
               </div>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Scan the QR code or open the link to submit feedback.
               </p>
             </>
           ) : (
-            <p className="text-sm text-slate-500">No charter available for QR.</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">No charter available for QR.</p>
           )}
         </div>
       </Modal>
