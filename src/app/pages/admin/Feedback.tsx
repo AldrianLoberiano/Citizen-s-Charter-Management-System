@@ -521,7 +521,7 @@ export function Feedback() {
     <div className="space-y-6">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-slate-900">Feedback</h1>
+          <h1 className="text-slate-900 dark:text-white">Feedback</h1>
           <p className="mt-0.5 text-sm text-slate-500">
             Citizen feedback responses submitted per charter.
           </p>
