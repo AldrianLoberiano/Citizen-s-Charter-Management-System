@@ -55,7 +55,6 @@ export function AdminLayout() {
   const mobileNavRef = useRef<HTMLDivElement | null>(null);
   const authenticated = isAuthenticated();
 
-  // Redirect to login if not authenticated
   useEffect(() => {
     if (!authenticated) {
       navigate("/admin/login", { replace: true });
@@ -148,7 +147,7 @@ export function AdminLayout() {
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden min-h-0">
         {/* Top Header Bar */}
         <header
-          className="relative flex flex-shrink-0 items-center gap-4 bg-white px-4 py-3 shadow-sm"
+          className="relative flex flex-shrink-0 items-center gap-4 bg-white dark:bg-slate-900 px-4 py-3 shadow-sm dark:shadow-slate-800/50"
           style={{
             backgroundImage: `url(${adminHeaderBgSrc})`,
             backgroundSize: "cover",
@@ -193,6 +192,14 @@ export function AdminLayout() {
           <div className="relative flex flex-shrink-0 items-center gap-2" ref={menuRef}>
             <button
               type="button"
+              onClick={() => setIsDark((prev) => !prev)}
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
+              aria-label="Toggle dark mode"
+            >
+              {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            </button>
+            <button
+              type="button"
               onClick={() => setMobileNavOpen((prev) => !prev)}
               className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 sm:hidden"
               aria-label="Toggle navigation"
@@ -213,11 +220,11 @@ export function AdminLayout() {
               </div>
             </button>
             {menuOpen && (
-              <div className="absolute right-0 top-12 w-52 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg">
+              <div className="absolute right-0 top-12 w-52 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-lg">
                 <Link
                   to="/"
                   onClick={() => setMenuOpen(false)}
-                  className="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-100"
+                  className="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700"
                 >
                   <ExternalLink className="h-4 w-4" />
                   View Public Site
@@ -225,7 +232,7 @@ export function AdminLayout() {
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="flex w-full items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-100"
+                  className="flex w-full items-center gap-2 px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700"
                 >
                   <LogOut className="h-4 w-4" />
                   Logout
@@ -237,7 +244,7 @@ export function AdminLayout() {
           {mobileNavOpen && (
             <div
               ref={mobileNavRef}
-              className="absolute left-0 right-0 top-full z-30 border-t border-slate-200 bg-white/95 px-4 py-3 shadow-lg backdrop-blur-sm sm:hidden"
+              className="absolute left-0 right-0 top-full z-30 border-t border-slate-200 dark:border-slate-700 bg-white/95 dark:bg-slate-900/95 px-4 py-3 shadow-lg backdrop-blur-sm sm:hidden"
             >
               <nav className="flex flex-col gap-2">
                 {navItems.map(({ path, label, icon: Icon }) => (
@@ -248,8 +255,8 @@ export function AdminLayout() {
                     className={
                       `flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors ` +
                       (isActive(path)
-                        ? "bg-slate-200 text-slate-900"
-                        : "text-slate-700 hover:bg-slate-100")
+                        ? "bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white"
+                        : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800")
                     }
                   >
                     <Icon className="h-4 w-4" />
@@ -263,7 +270,7 @@ export function AdminLayout() {
 
 
         {/* Page Content */}
-        <main className="flex-1 min-h-0 overflow-auto p-4 sm:p-6 dark:text-white dark:[&_h1]:text-white dark:[&_h2]:text-white dark:[&_h3]:text-white dark:[&_p]:text-slate-200 dark:[&_span]:text-slate-200 dark:[&_label]:text-slate-200 dark:[&_th]:text-slate-200 dark:[&_td]:text-slate-200 dark:[&_.bg-white]:bg-slate-900 dark:[&_.bg-slate-50]:bg-slate-800/80 dark:[&_.bg-slate-100]:bg-slate-800 dark:[&_.border-slate-200]:border-slate-700 dark:[&_.border-slate-100]:border-slate-800 dark:[&_.text-slate-900]:text-white dark:[&_.text-slate-700]:text-slate-200 dark:[&_.text-slate-600]:text-slate-300 dark:[&_.text-slate-500]:text-slate-300 dark:[&_.text-slate-400]:text-slate-400 dark:[&_.text-slate-300]:text-slate-500">
+        <main className="flex-1 min-h-0 overflow-auto p-4 sm:p-6">
           <Outlet />
         </main>
       </div>
@@ -275,14 +282,14 @@ export function AdminLayout() {
         size="sm"
       >
         <div className="space-y-4">
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-slate-600 dark:text-slate-300">
             Are you sure you want to logout?
           </p>
           <div className="flex justify-end gap-2">
             <button
               type="button"
               onClick={() => setLogoutOpen(false)}
-              className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs text-slate-700 transition-colors hover:border-slate-300 hover:text-slate-900"
+              className="rounded-lg border border-slate-200 dark:border-slate-600 px-3 py-1.5 text-xs text-slate-700 dark:text-slate-300 transition-colors hover:border-slate-300 dark:hover:border-slate-500 hover:text-slate-900 dark:hover:text-white"
             >
               Cancel
             </button>
