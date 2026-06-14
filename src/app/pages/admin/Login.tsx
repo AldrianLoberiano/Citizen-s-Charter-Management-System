@@ -9,10 +9,8 @@ import { Eye, EyeOff, AlertCircle, Lock, User } from "lucide-react";
 import { loginWithApi, isAuthenticated } from "../../store/data";
 import { syncLocalCacheFromApi } from "../../store/apiSync";
 
-const adminLogoSrc = new URL(
-  "../../../public/images/header/logo.png",
-  import.meta.url
-).href;
+const adminLogoSrc = new URL("../../../public/images/header/logo.png", import.meta.url).href;
+const municipalityBg = new URL("../../../public/images/header/municipality.png", import.meta.url).href;
 
 export function Login() {
   const [username, setUsername] = useState("");
@@ -58,8 +56,12 @@ export function Login() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-slate-100 dark:bg-slate-950 p-4">
-      <div className="mb-8 text-center">
+    <div className="relative flex min-h-screen flex-col items-center justify-center p-4">
+
+        <div className="absolute inset-0 -z-20 bg-cover bg-center" style={{ backgroundImage: `url(${municipalityBg})` }} />
+        <div className="absolute inset-0 -z-10 bg-white/70 backdrop-blur-sm dark:bg-slate-950/80" />
+
+        <div className="mb-8 text-center">
         <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl">
           <img
             src={adminLogoSrc}
@@ -76,7 +78,7 @@ export function Login() {
       </div>
 
       <div className="w-full max-w-md">
-        <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-8 shadow-sm">
+        <div className="rounded-2xl border border-violet-200/50 bg-gradient-to-br from-white/80 to-violet-50/80 p-8 shadow-lg backdrop-blur-xl dark:border-violet-400/20 dark:from-slate-800/80 dark:to-violet-950/50 dark:shadow-violet-900/20">
           <div className="mb-6">
             <h2 className="text-slate-800 dark:text-white">Sign In</h2>
             <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
