@@ -28,7 +28,6 @@ export function Modal({
   children,
   size = "md",
 }: ModalProps) {
-  // Close modal on Escape key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -47,26 +46,22 @@ export function Modal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/50"
         onClick={onClose}
       />
-      {/* Modal container */}
       <div
-        className={`relative bg-white rounded-xl shadow-2xl w-full ${sizeClasses[size]} max-h-[90vh] flex flex-col`}
+        className={`relative bg-white dark:bg-slate-900 rounded-xl shadow-2xl w-full ${sizeClasses[size]} max-h-[90vh] flex flex-col`}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 flex-shrink-0">
-          <h3 className="text-slate-900">{title}</h3>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex-shrink-0">
+          <h3 className="text-slate-900 dark:text-white">{title}</h3>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
-        {/* Body */}
         <div className="p-6 overflow-y-auto">{children}</div>
       </div>
     </div>
