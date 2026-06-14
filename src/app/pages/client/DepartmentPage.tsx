@@ -34,7 +34,6 @@ export function DepartmentPage() {
   const deptId = parseInt(id || "0");
   const department = getDepartmentById(deptId);
 
-  // Redirect if department not found
   if (!department) {
     return <Navigate to="/" replace />;
   }
@@ -57,17 +56,16 @@ export function DepartmentPage() {
 
   return (
     <div>
-      {/* Department Hero */}
-      <section className="border-b border-slate-200 bg-white">
+      <section className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
         <div className="relative mx-auto w-full px-6 py-10 sm:px-10 lg:px-16">
           <div className="mt-6 flex flex-col items-center gap-2 sm:absolute sm:right-4 sm:top-10 sm:mt-0">
-            <div className="inline-flex shrink-0 items-center rounded-full border border-slate-200 bg-white px-2.5 py-0.5 text-[11px] text-slate-600 shadow-sm">
+            <div className="inline-flex shrink-0 items-center rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 py-0.5 text-[11px] text-slate-600 dark:text-slate-300 shadow-sm">
               {now.toLocaleDateString(undefined, {
                 weekday: "short",
                 year: "numeric",
                 month: "short",
                 day: "numeric",
-              })} Â· {now.toLocaleTimeString()}
+              })} – {now.toLocaleTimeString()}
             </div>
             <div className="flex items-center justify-center gap-2">
               <img
@@ -86,23 +84,21 @@ export function DepartmentPage() {
               />
             </div>
           </div>
-          {/* Breadcrumb */}
-          <nav className="mb-6 flex items-center gap-2 text-sm text-slate-500">
-            <Link to="/" className="transition-colors hover:text-slate-900">
+          <nav className="mb-6 flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+            <Link to="/" className="transition-colors hover:text-slate-900 dark:hover:text-white">
               Home
             </Link>
             <ChevronRight className="w-3.5 h-3.5" />
-            <span className="text-slate-900">{department.name}</span>
+            <span className="text-slate-900 dark:text-white">{department.name}</span>
           </nav>
 
-          {/* Department Info */}
           <div className="flex items-start gap-4">
             <div>
-              <h1 className="leading-tight text-slate-950">{department.name}</h1>
-              <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">
+              <h1 className="leading-tight text-slate-950 dark:text-white">{department.name}</h1>
+              <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600 dark:text-slate-400">
                 {department.description || "No description available."}
               </p>
-              <div className="mt-3 flex items-center gap-1.5 text-sm text-slate-500">
+              <div className="mt-3 flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400">
                 <FileText className="h-4 w-4" />
                 <span>
                   {allCharters.length} available service
@@ -114,28 +110,25 @@ export function DepartmentPage() {
         </div>
       </section>
 
-      {/* Charters Section */}
       <section className="mx-auto w-full px-6 py-10 sm:px-10 lg:px-16">
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-slate-950">Available Services</h2>
-            <p className="mt-0.5 text-sm text-slate-500">
+            <h2 className="text-slate-950 dark:text-white">Available Services</h2>
+            <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">
               Click on a service to view full details, requirements, and
               procedures
             </p>
           </div>
 
-          {/* Back button */}
           <Link
             to="/"
-            className="flex items-center gap-2 text-sm text-slate-500 transition-colors hover:text-slate-900"
+            className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 transition-colors hover:text-slate-900 dark:hover:text-white"
           >
             <ArrowLeft className="h-4 w-4" />
             All Departments
           </Link>
         </div>
 
-        {/* Search within department */}
         {allCharters.length > 3 && (
           <div className="relative mb-6 max-w-sm">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
@@ -144,52 +137,48 @@ export function DepartmentPage() {
               placeholder="Search services..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-xl border border-slate-300 bg-white px-9 py-2.5 text-sm text-slate-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-300"
+              className="w-full rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-9 py-2.5 text-sm text-slate-800 dark:text-white shadow-sm placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-300 dark:focus:ring-slate-500"
             />
           </div>
         )}
 
-        {/* Charter Cards Grid */}
         {charters.length > 0 ? (
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
             {charters.map((charter) => (
               <Link
                 key={charter.id}
                 to={`/charter/${charter.id}`}
-                className="group flex flex-col rounded-2xl border border-slate-200 bg-white p-6 transition-all hover:border-slate-300 hover:shadow-sm"
+                className="group flex flex-col rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 transition-all hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-sm"
               >
-                {/* Top */}
                 <div className="mb-4 flex items-start gap-3">
-                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-slate-100 transition-colors group-hover:bg-slate-200">
-                    <FileText className="h-5 w-5 text-slate-500 transition-colors group-hover:text-slate-700" />
+                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-100 dark:bg-slate-700 transition-colors group-hover:bg-slate-200 dark:group-hover:bg-slate-600">
+                    <FileText className="h-5 w-5 text-slate-500 dark:text-slate-300 transition-colors group-hover:text-slate-700 dark:group-hover:text-white" />
                   </div>
                   <div className="min-w-0">
-                    <h3 className="leading-snug text-slate-900 transition-colors group-hover:text-slate-950">
+                    <h3 className="leading-snug text-slate-900 dark:text-white transition-colors group-hover:text-slate-950 dark:group-hover:text-white">
                       {charter.title}
                     </h3>
                   </div>
                 </div>
 
-                {/* Content preview */}
-                <p className="line-clamp-3 flex-1 text-sm leading-relaxed text-slate-500">
+                <p className="line-clamp-3 flex-1 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
                   {charter.content.split("\n")[0]}
                 </p>
 
-                {/* Footer */}
-                <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
+                <div className="mt-5 flex items-center justify-between border-t border-slate-100 dark:border-slate-700 pt-4">
                   <div className="flex items-center gap-3">
                     <div className="flex items-center gap-1 text-xs text-slate-400">
                       <Clock className="h-3.5 w-3.5" />
                       {formatDate(charter.created_at)}
                     </div>
                     {charter.file_path && (
-                      <div className="flex items-center gap-1 rounded-full border border-slate-200 bg-slate-100 px-2 py-0.5 text-xs text-slate-600">
+                      <div className="flex items-center gap-1 rounded-full border border-slate-200 dark:border-slate-600 bg-slate-100 dark:bg-slate-700 px-2 py-0.5 text-xs text-slate-600 dark:text-slate-300">
                         <Paperclip className="h-3 w-3" />
                         File attached
                       </div>
                     )}
                   </div>
-                  <div className="flex items-center gap-1 text-sm text-slate-700 transition-all group-hover:gap-2">
+                  <div className="flex items-center gap-1 text-sm text-slate-700 dark:text-slate-300 transition-all group-hover:gap-2">
                     <span>Read more</span>
                     <ChevronRight className="h-4 w-4" />
                   </div>
@@ -198,12 +187,12 @@ export function DepartmentPage() {
             ))}
           </div>
         ) : (
-          <div className="rounded-2xl border border-slate-200 bg-white py-20 text-center">
-            <BookOpen className="mx-auto mb-3 h-10 w-10 text-slate-300" />
-            <h3 className="text-slate-500">
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 py-20 text-center">
+            <BookOpen className="mx-auto mb-3 h-10 w-10 text-slate-300 dark:text-slate-600" />
+            <h3 className="text-slate-500 dark:text-slate-400">
               {search ? "No services match your search" : "No services available"}
             </h3>
-            <p className="mt-1 text-sm text-slate-400">
+            <p className="mt-1 text-sm text-slate-400 dark:text-slate-500">
               {search
                 ? `Try a different keyword.`
                 : "This department has not published any charters yet."}
