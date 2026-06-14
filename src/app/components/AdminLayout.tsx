@@ -298,6 +298,7 @@ export function AdminLayout() {
             <p>
               In compliance with the <span className="font-medium text-slate-700 dark:text-slate-300">Data Privacy Act of 2012 (RA 10173)</span>.
             </p>
+          </div>
       </div>
 
       <Modal
