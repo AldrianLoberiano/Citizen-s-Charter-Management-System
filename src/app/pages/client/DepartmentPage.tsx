@@ -65,7 +65,7 @@ export function DepartmentPage() {
                 year: "numeric",
                 month: "short",
                 day: "numeric",
-              })} – {now.toLocaleTimeString()}
+              })} â€“ {now.toLocaleTimeString()}
             </div>
             <div className="flex items-center justify-center gap-2">
               <img
