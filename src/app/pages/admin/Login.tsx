@@ -59,7 +59,7 @@ export function Login() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-slate-100 dark:bg-slate-950 p-4">
-      <div className="mb-8 text-center">
+      <div className="mb-8 text-center rounded-xl border-l-4 border-violet-900 bg-white dark:bg-slate-900 px-6 py-4">
         <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl">
           <img
             src={adminLogoSrc}
