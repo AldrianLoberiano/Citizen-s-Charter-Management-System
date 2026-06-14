@@ -285,11 +285,12 @@ export function Charters() {
       )}
 
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div>
-          <h1 className="text-slate-900 dark:text-white">Charters</h1>
-          <p className="text-slate-500 dark:text-slate-300 text-sm mt-0.5">
-            {charters.length} charter{charters.length !== 1 ? "s" : ""} in the
+      <div className="rounded-xl border-l-4 border-violet-900 bg-white dark:bg-slate-900 px-6 py-4 mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div>
+            <h1 className="text-slate-900 dark:text-white">Charters</h1>
+            <p className="text-slate-600 dark:text-slate-300 text-sm mt-1">
+              {charters.length} charter{charters.length !== 1 ? "s" : ""} in the
             system
           </p>
         </div>
@@ -300,12 +301,13 @@ export function Charters() {
           <Plus className="w-4 h-4" />
           Add Charter
         </button>
+        </div>
       </div>
 
       {/* Table Card */}
-      <div className="bg-white rounded-xl border border-slate-200">
+      <div className="bg-white rounded-xl border border-slate-200 dark:bg-slate-900 dark:border-slate-700">
         {/* Filters */}
-        <div className="p-4 border-b border-slate-200 flex flex-col sm:flex-row gap-3">
+        <div className="p-4 border-b border-slate-200 flex flex-col sm:flex-row gap-3 dark:border-slate-700">
           {/* Search */}
           <div className="relative flex-1 max-w-xs">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -314,7 +316,7 @@ export function Charters() {
               placeholder="Search charters..."
               value={search}
               onChange={handleSearchChange}
-              className="w-full pl-9 pr-4 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent"
+              className="w-full pl-9 pr-4 py-2 border border-slate-300 rounded-lg text-sm bg-white dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent dark:bg-slate-800 dark:text-white dark:border-slate-600 dark:focus:ring-slate-500"
             />
           </div>
 
@@ -324,7 +326,7 @@ export function Charters() {
             <select
               value={filterDept}
               onChange={handleFilterChange}
-              className="pl-9 pr-8 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent appearance-none cursor-pointer"
+              className="pl-9 pr-8 py-2 border border-slate-300 rounded-lg text-sm bg-white dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent appearance-none cursor-pointer dark:bg-slate-800 dark:text-white dark:border-slate-600 dark:focus:ring-slate-500"
             >
               <option value="">All Departments</option>
               {departments.map((d) => (
@@ -343,7 +345,7 @@ export function Charters() {
                 setFilterDept("");
                 setCurrentPage(1);
               }}
-              className="flex items-center gap-1 text-slate-500 hover:text-slate-700 text-sm px-2"
+              className="flex items-center gap-1 text-slate-500 hover:text-slate-700 text-sm px-2 dark:text-slate-400 dark:hover:text-slate-200"
             >
               <X className="w-4 h-4" /> Clear
             </button>
@@ -354,8 +356,8 @@ export function Charters() {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-200 bg-slate-50">
-                <th className="text-left px-5 py-3 text-slate-500 text-xs uppercase tracking-wide">
+              <tr className="border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+                <th className="text-left px-5 py-3 text-slate-500 text-xs uppercase tracking-wide dark:text-slate-400">
                   Title
                 </th>
                 <th className="text-left px-5 py-3 text-slate-500 text-xs uppercase tracking-wide hidden md:table-cell">
@@ -364,15 +366,15 @@ export function Charters() {
                 <th className="text-left px-5 py-3 text-slate-500 text-xs uppercase tracking-wide hidden lg:table-cell">
                   Date Created
                 </th>
-                <th className="text-center px-5 py-3 text-slate-500 text-xs uppercase tracking-wide w-20">
+                <th className="text-center px-5 py-3 text-slate-500 text-xs uppercase tracking-wide w-20 dark:text-slate-400">
                   File
                 </th>
-                <th className="text-center px-5 py-3 text-slate-500 text-xs uppercase tracking-wide w-28">
+                <th className="text-center px-5 py-3 text-slate-500 text-xs uppercase tracking-wide w-28 dark:text-slate-400">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
               {paginated.map((charter) => {
                 const dept = getDepartmentById(charter.department_id);
                 return (
@@ -384,7 +386,7 @@ export function Charters() {
                       <div className="flex items-start gap-2">
                         <FileText className="w-4 h-4 text-slate-400 flex-shrink-0 mt-0.5" />
                         <div>
-                          <p className="text-slate-900 text-sm leading-snug">
+                          <p className="text-slate-900 text-sm leading-snug dark:text-white">
                             {charter.title}
                           </p>
                           <p className="text-slate-400 text-xs mt-0.5 line-clamp-1">
@@ -395,7 +397,7 @@ export function Charters() {
                     </td>
                     <td className="px-5 py-4 hidden md:table-cell">
                       {dept ? (
-                        <span className="inline-flex items-center gap-1.5 text-blue-800 bg-slate-100 border border-slate-200 px-2.5 py-0.5 rounded-full text-xs">
+                        <span className="inline-flex items-center gap-1.5 text-blue-800 bg-slate-100 border border-slate-200 px-2.5 py-0.5 rounded-full text-xs dark:text-blue-300 dark:bg-blue-950/50 dark:border-blue-800">
                           {dept.name}
                         </span>
                       ) : (
@@ -404,7 +406,7 @@ export function Charters() {
                         </span>
                       )}
                     </td>
-                    <td className="px-5 py-4 text-slate-500 text-sm hidden lg:table-cell">
+                    <td className="px-5 py-4 text-slate-500 text-sm hidden lg:table-cell dark:text-slate-400">
                       {formatDate(charter.created_at)}
                     </td>
                     <td className="px-5 py-4 text-center">
@@ -420,7 +422,7 @@ export function Charters() {
                           <Paperclip className="w-3.5 h-3.5 text-white" />
                         </button>
                       ) : (
-                        <span className="text-slate-300 text-sm">No attachment</span>
+                        <span className="text-slate-300 text-sm dark:text-slate-600">No attachment</span>
                       )}
                     </td>
                     <td className="px-5 py-4">
@@ -428,14 +430,14 @@ export function Charters() {
                         <button
                           onClick={() => openEdit(charter)}
                           title="Edit charter"
-                          className="p-2 text-slate-400 hover:text-violet-700 hover:bg-violet-50 rounded-lg transition-colors"
+                          className="p-2 text-slate-400 hover:text-violet-700 hover:bg-violet-50 rounded-lg transition-colors dark:text-slate-500 dark:hover:text-violet-400 dark:hover:bg-violet-950/30"
                         >
                           <Pencil className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => openDelete(charter)}
                           title="Delete charter"
-                          className="p-2 text-slate-400 hover:text-violet-700 hover:bg-violet-50 rounded-lg transition-colors"
+                          className="p-2 text-slate-400 hover:text-violet-700 hover:bg-violet-50 rounded-lg transition-colors dark:text-slate-500 dark:hover:text-violet-400 dark:hover:bg-violet-950/30"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -480,7 +482,7 @@ export function Charters() {
         <form onSubmit={handleSubmit} noValidate className="space-y-4">
           {/* Department Selection */}
           <div>
-            <label className="block text-slate-700 mb-1.5 text-sm">
+            <label className="block text-slate-700 mb-1.5 text-sm dark:text-slate-300">
               Department <span className="text-red-500">*</span>
             </label>
             <select
@@ -488,8 +490,8 @@ export function Charters() {
               onChange={(e) =>
                 setFormData((p) => ({ ...p, department_id: e.target.value }))
               }
-              className={`w-full px-4 py-2.5 border rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-slate-300 cursor-pointer ${
-                formErrors.department_id ? "border-red-400" : "border-slate-300"
+              className={`w-full px-4 py-2.5 border rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-slate-300 cursor-pointer dark:bg-slate-800 dark:text-white dark:border-slate-600 ${
+                formErrors.department_id ? "border-red-400" : "border-slate-300 dark:border-slate-600"
               }`}
             >
               <option value="">-- Select Department --</option>
@@ -509,7 +511,7 @@ export function Charters() {
 
           {/* Charter Title */}
           <div>
-            <label className="block text-slate-700 mb-1.5 text-sm">
+            <label className="block text-slate-700 mb-1.5 text-sm dark:text-slate-300">
               Charter Title <span className="text-red-500">*</span>
             </label>
             <input
@@ -519,8 +521,8 @@ export function Charters() {
                 setFormData((p) => ({ ...p, title: e.target.value }))
               }
               placeholder="e.g., BPLO Citizen's Charter"
-              className={`w-full px-4 py-2.5 border rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-slate-300 ${
-                formErrors.title ? "border-red-400" : "border-slate-300"
+              className={`w-full px-4 py-2.5 border rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-slate-300 dark:bg-slate-800 dark:text-white dark:border-slate-600 ${
+                formErrors.title ? "border-red-400" : "border-slate-300 dark:border-slate-600"
               }`}
             />
             {formErrors.title && (
@@ -533,7 +535,7 @@ export function Charters() {
 
           {/* Charter Content */}
           <div>
-            <label className="block text-slate-700 mb-1.5 text-sm">
+            <label className="block text-slate-700 mb-1.5 text-sm dark:text-slate-300">
               Content / Description <span className="text-red-500">*</span>
             </label>
             <textarea
@@ -543,8 +545,8 @@ export function Charters() {
               }
               placeholder="Describe the service, requirements, fees, processing time, and how to avail..."
               rows={8}
-              className={`w-full px-4 py-2.5 border rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-slate-300 resize-y font-mono ${
-                formErrors.content ? "border-red-400" : "border-slate-300"
+              className={`w-full px-4 py-2.5 border rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-slate-300 dark:bg-slate-800 dark:text-white dark:border-slate-600 resize-y dark:bg-slate-800 dark:text-white dark:border-slate-600 font-mono ${
+                formErrors.content ? "border-red-400" : "border-slate-300 dark:border-slate-600"
               }`}
             />
             <p className="text-slate-400 text-xs mt-1">
@@ -561,14 +563,14 @@ export function Charters() {
 
           {/* File Upload */}
           <div>
-            <label className="block text-slate-700 mb-1.5 text-sm">
+            <label className="block text-slate-700 mb-1.5 text-sm dark:text-slate-300">
               Attachment{" "}
               <span className="text-slate-400 text-xs">(PDF only, max 5MB)</span>
             </label>
-            <div className="border-2 border-dashed border-slate-300 rounded-lg p-4 hover:border-slate-400 transition-colors">
+            <div className="border-2 border-dashed border-slate-300 rounded-lg p-4 hover:border-slate-400 transition-colors dark:border-slate-600 dark:hover:border-slate-500">
               {formData.file_path ? (
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-sm text-slate-700">
+                  <div className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
                     <Paperclip className="w-4 h-4 text-slate-600" />
                     <span className="truncate max-w-xs">{formData.file_path}</span>
                   </div>
@@ -577,18 +579,18 @@ export function Charters() {
                     onClick={() =>
                       setFormData((p) => ({ ...p, file_path: "" }))
                     }
-                      className="p-1 text-slate-400 hover:text-violet-700 rounded transition-colors"
+                      className="p-1 text-slate-400 hover:text-violet-700 rounded transition-colors dark:text-slate-500 dark:hover:text-violet-400"
                   >
                     <X className="w-4 h-4" />
                   </button>
                 </div>
               ) : (
                 <label className="flex flex-col items-center gap-2 cursor-pointer">
-                  <Paperclip className="w-5 h-5 text-slate-400" />
-                  <span className="text-slate-500 text-sm">
+                  <Paperclip className="w-5 h-5 text-slate-400 dark:text-slate-500" />
+                  <span className="text-slate-500 text-sm dark:text-slate-400">
                     {uploadingFile ? "Uploading file..." : "Click to upload or drag and drop"}
                   </span>
-                  <span className="text-slate-400 text-xs">PDF</span>
+                  <span className="text-slate-400 text-xs dark:text-slate-500">PDF</span>
                   <input
                     type="file"
                     accept=".pdf"
@@ -615,7 +617,7 @@ export function Charters() {
             <button
               type="button"
               onClick={() => setFormModalOpen(false)}
-              className="px-4 py-2 text-sm text-slate-600 border border-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-blue-900/40 transition-colors"
+              className="px-4 py-2 text-sm text-slate-600 border border-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-violet-950/30 transition-colors"
             >
               Cancel
             </button>
@@ -644,7 +646,7 @@ export function Charters() {
             <iframe
               title="PDF Preview"
               src={resolveFileUrl(viewerFilePath)}
-              className="h-full w-full rounded-lg border border-slate-200"
+              className="h-full w-full rounded-lg border border-slate-200 dark:border-slate-700"
             />
           </div>
         )}
@@ -669,7 +671,7 @@ export function Charters() {
           <div className="flex justify-end gap-3">
             <button
               onClick={() => setDeleteModalOpen(false)}
-              className="px-4 py-2 text-sm text-slate-600 border border-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-blue-900/40 transition-colors"
+              className="px-4 py-2 text-sm text-slate-600 border border-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-violet-950/30 transition-colors"
             >
               Cancel
             </button>
