@@ -79,7 +79,7 @@ export function Dashboard() {
   return (
     <div className="space-y-6">
       {/* Page Title */}
-      <div className="rounded-xl border-l-4 border-violet-900 bg-violet-50 dark:bg-violet-950/30 px-6 py-4">
+      <div className="rounded-xl border-l-4 border-violet-900 bg-white dark:bg-slate-900 px-6 py-4">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-slate-900 dark:text-white">Dashboard</h1>
@@ -95,6 +95,7 @@ export function Dashboard() {
             month: "long",
             day: "numeric",
           })}
+          </div>
         </div>
       </div>
 
@@ -104,7 +105,7 @@ export function Dashboard() {
           <Link
             key={stat.label}
             to={stat.link}
-            className="group flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 transition-all hover:border-slate-300 hover:shadow-sm hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800"
+            className="group flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 transition-all hover:border-slate-300 hover:shadow-sm hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:hover:bg-slate-800"
           >
             <div
               className="flex-shrink-0 rounded-xl bg-slate-900 p-3 transition-opacity group-hover:opacity-90"
@@ -123,8 +124,8 @@ export function Dashboard() {
       </div>
 
       {/* Recent Charters Table */}
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
-        <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4 dark:border-slate-800">
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
+        <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4 dark:border-slate-700">
           <div>
             <h2 className="text-slate-900 dark:text-white">Recent Charters</h2>
             <p className="mt-0.5 text-xs text-slate-400 dark:text-slate-400">
@@ -216,55 +217,55 @@ export function Dashboard() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <Link
           to="/admin/departments"
-          className="group flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-5 transition-all hover:border-slate-300 hover:shadow-sm"
+          className="group flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-5 transition-all hover:border-slate-300 hover:shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800"
         >
           <div className="flex items-center gap-3">
-            <Building2 className="h-5 w-5 text-slate-700" />
+            <Building2 className="h-5 w-5 text-slate-700 dark:text-slate-300" />
             <div>
               <p className="text-slate-900">Manage Departments</p>
               <p className="text-xs text-slate-400">Add, edit, or remove departments</p>
             </div>
           </div>
-          <ArrowRight className="h-4 w-4 text-slate-400 transition-colors group-hover:text-slate-700" />
+          <ArrowRight className="h-4 w-4 text-slate-400 transition-colors group-hover:text-slate-700 dark:text-slate-500 dark:group-hover:text-slate-300" />
         </Link>
         <Link
           to="/admin/charters"
-          className="group flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-5 transition-all hover:border-slate-300 hover:shadow-sm"
+          className="group flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-5 transition-all hover:border-slate-300 hover:shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800"
         >
           <div className="flex items-center gap-3">
-            <FileText className="h-5 w-5 text-slate-700" />
+            <FileText className="h-5 w-5 text-slate-700 dark:text-slate-300" />
             <div>
               <p className="text-slate-900">Manage Charters</p>
               <p className="text-xs text-slate-400">Create, edit, or delete charters</p>
             </div>
           </div>
-          <ArrowRight className="h-4 w-4 text-slate-400 transition-colors group-hover:text-slate-700" />
+          <ArrowRight className="h-4 w-4 text-slate-400 transition-colors group-hover:text-slate-700 dark:text-slate-500 dark:group-hover:text-slate-300" />
         </Link>
         <Link
           to="/admin/backup"
-          className="group flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-5 text-left transition-all hover:border-slate-300 hover:shadow-sm"
+          className="group flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-5 text-left transition-all hover:border-slate-300 hover:shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800"
         >
           <div className="flex items-center gap-3">
-            <Database className="h-5 w-5 text-slate-700" />
+            <Database className="h-5 w-5 text-slate-700 dark:text-slate-300" />
             <div>
               <p className="text-slate-900">Backup & Recovery</p>
               <p className="text-xs text-slate-400">Manage backup and recovery options</p>
             </div>
           </div>
-          <ArrowRight className="h-4 w-4 text-slate-400 transition-colors group-hover:text-slate-700" />
+          <ArrowRight className="h-4 w-4 text-slate-400 transition-colors group-hover:text-slate-700 dark:text-slate-500 dark:group-hover:text-slate-300" />
         </Link>
         <Link
           to="/admin/feedback"
-          className="group flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-5 transition-all hover:border-slate-300 hover:shadow-sm"
+          className="group flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-5 transition-all hover:border-slate-300 hover:shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800"
         >
           <div className="flex items-center gap-3">
-            <Star className="h-5 w-5 text-slate-700" />
+            <Star className="h-5 w-5 text-slate-700 dark:text-slate-300" />
             <div>
               <p className="text-slate-900">View Feedback</p>
               <p className="text-xs text-slate-400">Review client ratings and comments</p>
             </div>
           </div>
-          <ArrowRight className="h-4 w-4 text-slate-400 transition-colors group-hover:text-slate-700" />
+          <ArrowRight className="h-4 w-4 text-slate-400 transition-colors group-hover:text-slate-700 dark:text-slate-500 dark:group-hover:text-slate-300" />
         </Link>
       </div>
     </div>
