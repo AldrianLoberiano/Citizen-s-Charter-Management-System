@@ -210,41 +210,50 @@ export function AdminLayout() {
             <button
               type="button"
               onClick={() => setMenuOpen((prev) => !prev)}
-              className="flex items-center gap-2 rounded-full bg-white/10 px-2.5 py-1 text-white transition-colors hover:bg-white/20"
+              className="flex items-center gap-2 rounded-full bg-white/10 pl-2.5 pr-1.5 py-1 text-white transition-colors hover:bg-white/20"
             >
-              <span className="hidden text-sm sm:block">
+              <span className="hidden text-sm font-medium sm:block">
                 {displayName}
               </span>
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/15">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-violet-500/80">
                 <User className="h-4 w-4 text-white" />
               </div>
+              <ChevronDown className={`hidden h-3.5 w-3.5 text-white/70 transition-transform sm:block ${menuOpen ? "rotate-180" : ""}`} />
             </button>
             {menuOpen && (
-              <div className="absolute right-0 top-12 w-52 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-lg">
-                <Link
-                  to="/"
-                  onClick={() => setMenuOpen(false)}
-                  className="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700"
-                >
-                  <ExternalLink className="h-4 w-4" />
-                  View Public Site
-                </Link>
-                <Link
-                  to="/admin/backup"
-                  onClick={() => setMenuOpen(false)}
-                  className="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700"
-                >
-                  <Database className="h-4 w-4" />
-                  Backup & Recovery
-                </Link>
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className="flex w-full items-center gap-2 px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700"
-                >
-                  <LogOut className="h-4 w-4" />
-                  Logout
-                </button>
+              <div className="absolute right-0 top-12 w-60 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-xl">
+                <div className="border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/50 px-4 py-3">
+                  <p className="text-sm font-semibold text-slate-900 dark:text-white">{displayName}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">{currentUser || "admin@calauan.gov"}</p>
+                </div>
+                <div className="py-1">
+                  <Link
+                    to="/"
+                    onClick={() => setMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                  >
+                    <ExternalLink className="h-4 w-4 text-slate-400 dark:text-slate-500" />
+                    View Public Site
+                  </Link>
+                  <Link
+                    to="/admin/backup"
+                    onClick={() => setMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                  >
+                    <Database className="h-4 w-4 text-slate-400 dark:text-slate-500" />
+                    Backup & Recovery
+                  </Link>
+                </div>
+                <div className="border-t border-slate-100 dark:border-slate-700 py-1">
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Logout
+                  </button>
+                </div>
               </div>
             )}
           </div>
