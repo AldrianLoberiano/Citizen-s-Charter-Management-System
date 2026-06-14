@@ -45,7 +45,7 @@ export function Pagination({
   return (
     <div className="flex items-center justify-between px-6 py-4 border-t border-slate-200 dark:border-slate-700">
       <p className="text-slate-500 dark:text-slate-400 text-sm">
-        Showing {start}–{end} of {totalItems} entries
+        Showing {start}â€“{end} of {totalItems} entries
       </p>
       <div className="flex items-center gap-1">
         <button
