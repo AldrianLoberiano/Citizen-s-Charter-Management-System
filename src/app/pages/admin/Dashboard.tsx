@@ -41,38 +41,50 @@ export function Dashboard() {
     )
     .slice(0, 6);
 
+  const attachmentCount = charters.filter((c) => c.file_path).length;
+  const attachmentPct = charters.length > 0 ? Math.round((attachmentCount / charters.length) * 100) : 0;
+  const feedbackPct = charters.length > 0 ? Math.round((feedback.length / charters.length) * 100) : 0;
+
   const stats = [
     {
       label: "Total Departments",
       value: departments.length,
       icon: Building2,
-      bgColor: "bg-blue-800",
+      color: "text-blue-600 dark:text-blue-400",
+      bg: "bg-blue-50 dark:bg-blue-950/50",
       link: "/admin/departments",
-      description: "Government departments",
+      detail: `${departments.length} registered`,
+      change: "Government units",
     },
     {
       label: "Total Charters",
       value: charters.length,
       icon: FileText,
-      bgColor: "bg-green-700",
+      color: "text-emerald-600 dark:text-emerald-400",
+      bg: "bg-emerald-50 dark:bg-emerald-950/50",
       link: "/admin/charters",
-      description: "Published service charters",
+      detail: `${charters.length} published`,
+      change: "Active services",
     },
     {
       label: "With Attachments",
-      value: charters.filter((c) => c.file_path).length,
+      value: attachmentCount,
       icon: Paperclip,
-      bgColor: "bg-amber-600",
+      color: "text-amber-600 dark:text-amber-400",
+      bg: "bg-amber-50 dark:bg-amber-950/50",
       link: "/admin/charters",
-      description: "Charters with files",
+      detail: `${attachmentPct}% of charters`,
+      change: "Have PDF files",
     },
     {
       label: "Total Feedback",
       value: feedback.length,
       icon: Star,
-      bgColor: "bg-purple-700",
+      color: "text-purple-600 dark:text-purple-400",
+      bg: "bg-purple-50 dark:bg-purple-950/50",
       link: "/admin/feedback",
-      description: "Citizen feedback received",
+      detail: `${feedbackPct}% response rate`,
+      change: "Citizen reviews",
     },
   ];
 
@@ -99,31 +111,27 @@ export function Dashboard() {
         </div>
       </div>
 
-      <p className="text-xs font-semibold uppercase tracking-wider text-violet-600 dark:text-violet-400">Quick Actions</p>
-
-      {/* Statistics Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {stats.map((stat) => (
           <Link
             key={stat.label}
             to={stat.link}
-            className="group flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 transition-all hover:border-slate-300 hover:shadow-sm hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:hover:bg-slate-800"
+            className="group relative rounded-2xl border border-slate-200 bg-white p-5 transition-all hover:border-slate-300 hover:shadow-md hover:-translate-y-0.5 dark:border-slate-700 dark:bg-slate-900 dark:hover:bg-slate-800"
           >
-            <div
-              className="flex-shrink-0 rounded-xl bg-slate-900 p-3 transition-opacity group-hover:opacity-90"
-            >
-              <stat.icon className="h-6 w-6 text-white" />
+            <div className={`absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-lg ${stat.bg} transition-transform group-hover:scale-110`}>
+              <stat.icon className={`h-4 w-4 ${stat.color}`} />
             </div>
-            <div className="min-w-0">
-              <p className="truncate text-xs text-slate-500 dark:text-slate-300">{stat.label}</p>
-              <p className="text-2xl text-slate-900 dark:text-slate-100">{stat.value}</p>
-              <p className="truncate text-xs text-slate-400 dark:text-slate-400">
-                {stat.description}
-              </p>
+            <div className="min-w-0 pr-10">
+              <p className="text-xs font-medium text-slate-500 dark:text-slate-400">{stat.label}</p>
+              <p className="mt-1 text-3xl font-bold text-slate-900 dark:text-white">{stat.value}</p>
+              <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">{stat.detail}</p>
+            </div>
+            <div className="mt-2 border-t border-slate-100 pt-2 dark:border-slate-800">
+              <p className="text-xs text-slate-500 dark:text-slate-400">{stat.change}</p>
             </div>
           </Link>
-        ))}
-      </div>
+        ) )}
+        </div>
 
       {/* Recent Charters Table */}
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
