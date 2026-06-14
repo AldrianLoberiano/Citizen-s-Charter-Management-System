@@ -156,7 +156,7 @@ export function Departments() {
         />
       )}
 
-      <div className="rounded-xl border-l-4 border-violet-900 bg-violet-50 dark:bg-violet-950/30 px-6 py-4 mb-6">
+      <div className="rounded-xl border-l-4 border-violet-900 bg-white dark:bg-slate-900 px-6 py-4 mb-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
             <h1 className="text-slate-900 dark:text-white">Departments</h1>
@@ -172,6 +172,7 @@ export function Departments() {
           <Plus className="w-4 h-4" />
           Add Department
         </button>
+        </div>
       </div>
 
       <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700">
