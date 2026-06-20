@@ -91,7 +91,7 @@ export function Dashboard() {
   return (
     <div className="space-y-6">
       {/* Page Title */}
-      <div className="rounded-xl border-l-4 border-violet-900 bg-white dark:bg-slate-900 px-6 py-4">
+      <div className="rounded-xl bg-white dark:bg-slate-900 px-6 py-4">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-slate-900 dark:text-white">Dashboard</h1>
@@ -113,10 +113,9 @@ export function Dashboard() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {stats.map((stat) => (
-          <Link
+          <div
             key={stat.label}
-            to={stat.link}
-            className="group relative rounded-2xl border border-slate-200 bg-white p-5 transition-all hover:border-slate-300 hover:shadow-md hover:-translate-y-0.5 dark:border-slate-700 dark:bg-slate-900 dark:hover:bg-slate-800"
+            className="group relative rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900"
           >
             <div className={`absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-lg ${stat.bg} transition-transform group-hover:scale-110`}>
               <stat.icon className={`h-4 w-4 ${stat.color}`} />
@@ -129,7 +128,7 @@ export function Dashboard() {
             <div className="mt-2 border-t border-slate-100 pt-2 dark:border-slate-800">
               <p className="text-xs text-slate-500 dark:text-slate-400">{stat.change}</p>
             </div>
-          </Link>
+          </div>
         ) )}
         </div>
 
@@ -220,6 +219,49 @@ export function Dashboard() {
               )}
             </tbody>
           </table>
+        </div>
+      </div>
+
+      {/* Quick Links */}
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="mb-4 text-sm font-semibold text-slate-900 dark:text-white">Quick Links</h2>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <Link to="/admin/departments" className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4 transition hover:border-slate-300 hover:shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/50">
+              <Building2 className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-slate-900 dark:text-white">Departments</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Manage units</p>
+            </div>
+          </Link>
+          <Link to="/admin/charters" className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4 transition hover:border-slate-300 hover:shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-900/50">
+              <FileText className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-slate-900 dark:text-white">Charters</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Manage services</p>
+            </div>
+          </Link>
+          <Link to="/admin/feedback" className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4 transition hover:border-slate-300 hover:shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-purple-100 dark:bg-purple-900/50">
+              <Star className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-slate-900 dark:text-white">Feedback</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">View responses</p>
+            </div>
+          </Link>
+          <Link to="/admin/backup" className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4 transition hover:border-slate-300 hover:shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-100 dark:bg-amber-900/50">
+              <Database className="h-4 w-5 text-amber-600 dark:text-amber-400" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-slate-900 dark:text-white">Backup</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Data recovery</p>
+            </div>
+          </Link>
         </div>
       </div>
     </div>
