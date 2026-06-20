@@ -30,8 +30,19 @@ async function upload(path: string, formData: FormData) {
   });
 
   if (!response.ok) {
-    const message = await response.text();
-    throw new Error(message || `Upload failed: ${response.status}`);
+    const text = await response.text();
+    try {
+      const json = JSON.parse(text);
+      const parts = [json.message || `Upload failed: ${response.status}`];
+      if (json.detail) parts.push(json.detail);
+      if (json.sqlPreview) parts.push(`At statement #${json.statementIndex}: ${json.sqlPreview.slice(0, 200)}`);
+      throw new Error(parts.join(" | "));
+    } catch (parseErr) {
+      if (parseErr instanceof SyntaxError) {
+        throw new Error(text || `Upload failed: ${response.status}`);
+      }
+      throw parseErr;
+    }
   }
 
   return response.json();
@@ -138,4 +149,3 @@ export const api = {
     return upload("/admin/restore", formData);
   },
 };
-
