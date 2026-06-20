@@ -271,6 +271,11 @@ app.get("/api/admin/backup", async (_req, res) => {
             if (v === null || v === undefined) return "NULL";
             if (typeof v === "number") return String(v);
             if (typeof v === "bigint") return `${v.toString()} `;
+            if (v instanceof Date) return "'" + v.toISOString().slice(0,19).replace("T"," ") + "'";
+            if (typeof v === "string" && /^\w{3} \w{3} \d{2} \d{4}/.test(v)) {
+              const d = new Date(v);
+              if (!isNaN(d.getTime())) return "'" + d.toISOString().slice(0,19).replace("T"," ") + "'";
+            }
             // Escape strings for SQL
             return `'${String(v).replace(/\\/g, "\\\\").replace(/'/g, "''")}'`;
           })
@@ -424,18 +429,46 @@ app.post("/api/admin/restore", async (req, res) => {
       return res.status(400).json({ message: "No SQL file uploaded" });
     }
 
-    const sql = fs.readFileSync(req.file.path, "utf8");
-    const result = await restoreFromSql(sql);
-    return res.json({ ok: true, ...result });
+    const { host, port, user, password, database } = {
+      host: process.env.DB_HOST || "127.0.0.1",
+      port: process.env.DB_PORT || "3306",
+      user: process.env.DB_USER || "root",
+      password: process.env.DB_PASSWORD || "",
+      database: process.env.DB_NAME || "ccms_db",
+    };
+
+    const mysqlBin = process.env.MYSQL_BIN || "C:\\\\laragon\\\\bin\\\\mysql\\\\mysql-8.0.30-winx64\\\\bin\\\\mysql.exe";
+
+    const result = await new Promise((resolve, reject) => {
+      const args = ["--host", host, "--port", String(port), "--user", user];
+      if (password) args.push(`-p${password}`);
+      args.push(database);
+
+      const child = spawn(mysqlBin, args, { stdio: ["pipe", "ignore", "pipe"] });
+
+      const fileStream = fs.createReadStream(req.file.path);
+      fileStream.pipe(child.stdin);
+
+      let stderr = "";
+      child.stderr.on("data", (d) => { stderr += d.toString(); });
+      child.on("close", (code) => {
+        if (code === 0) {
+          resolve({ ok: true, restoredMode: "cli" });
+        } else {
+          reject(new Error(stderr || `mysql exited with code ${code}`));
+        }
+      });
+      child.on("error", (err) => {
+        reject(new Error("Failed to run mysql: " + err.message));
+      });
+    });
+
+    return res.json(result);
   } catch (error) {
-    console.error("Restore error:", error);
+    console.error("Restore error:", error?.message || error);
     const statusCode = error?.statusCode || (error?.name === "MulterError" ? 400 : 500);
     return res.status(statusCode).json({
-      message: "Failed to restore database from SQL",
-      error: error?.message || String(error),
-      code: error?.code || undefined,
-      errno: error?.errno || undefined,
-      sqlState: error?.sqlState || undefined,
+      message: error?.message || "Failed to restore database from SQL",
     });
   } finally {
     if (req.file?.path) {
@@ -444,7 +477,6 @@ app.post("/api/admin/restore", async (req, res) => {
   }
 });
 
-// Helpful endpoint for debugging: restores by posting { sql: "...." } without uploading a file.
 app.post("/api/admin/restore-sql", async (req, res) => {
   try {
     const { sql } = req.body || {};
