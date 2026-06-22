@@ -82,6 +82,7 @@ const editedUpload = multer({
     const hasValidExt = lower.endsWith(".pdf") || lower.endsWith(".docx");
     const hasValidMime = allowedMimes.includes(file.mimetype);
     if (!hasValidExt && !hasValidMime) {
+      callback(new Error("Only PDF and .docx Word files are allowed. Please save your document as .docx and try again."));
       return;
     }
     callback(null, true);
