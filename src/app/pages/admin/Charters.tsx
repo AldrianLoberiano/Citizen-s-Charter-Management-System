@@ -655,7 +655,6 @@ export function Charters() {
         {!viewerError && viewerType === "docx" && (
           <div className="h-[70vh]">
             <iframe
-              src={resolveFileUrl(viewerFilePath)}
               className="h-full w-full rounded-lg border border-slate-200 dark:border-slate-700"
             />
           </div>
