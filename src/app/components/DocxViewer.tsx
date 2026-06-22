@@ -54,3 +54,4 @@ export function DocxViewer({ fileUrl, className = "" }: DocxViewerProps) {
         {error}
       </div>
     );
+  }
