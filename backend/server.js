@@ -732,6 +732,7 @@ app.use((err, _req, res, next) => {
   }
   if (err) {
     console.error("Unhandled error:", err);
+    return res.status(500).json({ message: err.message || "Internal server error" });
 app.listen(port, () => {
   console.log(`CCMS backend listening on http://localhost:${port}`);
 });
