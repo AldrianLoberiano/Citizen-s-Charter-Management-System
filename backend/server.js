@@ -80,6 +80,7 @@ const editedUpload = multer({
     ];
     const lower = file.originalname.toLowerCase();
     const hasValidExt = lower.endsWith(".pdf") || lower.endsWith(".docx");
+    const hasValidMime = allowedMimes.includes(file.mimetype);
       return;
     }
     callback(null, true);
