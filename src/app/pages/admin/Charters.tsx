@@ -193,6 +193,7 @@ export function Charters() {
         "application/pdf",
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         "application/msword",
+      ];
       if (!allowed.includes(file.type)) {
         setFormErrors((p) => ({
           ...p,
