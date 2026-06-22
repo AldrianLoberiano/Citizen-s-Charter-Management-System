@@ -20,3 +20,4 @@ export function DocxViewer({ fileUrl, className = "" }: DocxViewerProps) {
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch document");
         return res.arrayBuffer();
+      })
