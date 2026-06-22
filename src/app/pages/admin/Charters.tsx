@@ -195,7 +195,6 @@ export function Charters() {
         "application/pdf",
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       ];
-      if (!allowed.includes(file.type)) {
         setFormErrors((p) => ({
           ...p,
           file_path: "Only PDF and Word document files are allowed.",
