@@ -29,6 +29,7 @@ import {
   formatDateTime,
   FeedbackEntry,
 } from "../../store/data";
+import { DocxViewer } from "../../components/DocxViewer";
 
 export function CharterDetail() {
   const { id } = useParams<{ id: string }>();
