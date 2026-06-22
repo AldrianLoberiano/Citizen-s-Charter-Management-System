@@ -4,6 +4,7 @@ import {
   Download,
   Printer,
   ZoomIn,
+  ZoomOut,
 
 interface DocxViewerProps {
   fileUrl: string;
