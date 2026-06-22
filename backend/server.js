@@ -55,6 +55,7 @@ const upload = multer({
     const allowedExts = [".pdf", ".docx", ".doc"];
     const hasValidExt = allowedExts.some((ext) => lower.endsWith(ext));
     const hasValidMime = allowedMimes.includes(file.mimetype);
+    if (!hasValidExt && !hasValidMime) {
       callback(new Error("Only PDF and Word document files are allowed."));
       return;
     }
