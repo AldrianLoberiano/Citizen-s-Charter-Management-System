@@ -726,6 +726,7 @@ app.post("/api/auth/login", async (req, res) => {
 app.use((err, _req, res, next) => {
   if (err instanceof multer.MulterError) {
     if (err.code === "LIMIT_FILE_SIZE") {
+      return res.status(400).json({ message: "File too large. Maximum size is 5MB." });
 app.listen(port, () => {
   console.log(`CCMS backend listening on http://localhost:${port}`);
 });
