@@ -179,6 +179,7 @@ export function ClientLayout() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:text-violet-600 dark:hover:text-violet-400 transition-colors"
+                  >
                 </li>
                 <li className="flex items-center gap-2">
                   <Mail className="h-4 w-4 flex-shrink-0 text-slate-400" />
