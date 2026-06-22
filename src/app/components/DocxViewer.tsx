@@ -57,3 +57,4 @@ export function DocxViewer({ fileUrl, className = "" }: DocxViewerProps) {
   }
 
   return (
+    <div
