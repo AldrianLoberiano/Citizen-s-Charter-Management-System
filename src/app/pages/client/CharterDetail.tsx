@@ -322,6 +322,7 @@ export function CharterDetail() {
                   />
                 )}
                 {fileStatus === "available" && viewerType === "docx" && (
+                  <DocxViewer
                   />
                 )}
                 {fileStatus === "available" && viewerType === "unknown" && (
