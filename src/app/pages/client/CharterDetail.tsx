@@ -322,6 +322,7 @@ export function CharterDetail() {
                 )}
                 {fileStatus === "available" && viewerType === "docx" && (
                   <iframe
+                    title={`${charter.title} Word document preview`}
                 {fileStatus === "available" && viewerType === "unknown" && (
                   <div className="p-4 text-sm text-slate-500 dark:text-slate-400">
                     No preview available for this file type. Use View Full Page to open it.
