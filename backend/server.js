@@ -48,7 +48,6 @@ const upload = multer({
     const allowedMimes = [
       "application/pdf",
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      "application/octet-stream",
     ];
     const lower = file.originalname.toLowerCase();
     const allowedExts = [".pdf", ".docx", ".doc"];
