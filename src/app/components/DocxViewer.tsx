@@ -6,6 +6,7 @@ import {
   ZoomIn,
   ZoomOut,
   RotateCcw,
+  FileText,
 
 interface DocxViewerProps {
   fileUrl: string;
