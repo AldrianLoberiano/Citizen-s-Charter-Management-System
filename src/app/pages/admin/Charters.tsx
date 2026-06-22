@@ -661,6 +661,7 @@ export function Charters() {
             />
           </div>
         )}
+        {!viewerError && viewerType === "unknown" && (
       </Modal>
 
       {/* Delete Confirmation Modal */}
