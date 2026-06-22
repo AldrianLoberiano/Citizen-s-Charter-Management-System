@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import mammoth from "mammoth";
 import {
   Download,
+  Printer,
   ZoomIn,
 
 interface DocxViewerProps {
