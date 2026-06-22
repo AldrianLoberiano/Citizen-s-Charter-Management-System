@@ -31,6 +31,7 @@ import { api } from "../../lib/api";
 import { Modal } from "../../components/Modal";
 import { Pagination } from "../../components/Pagination";
 import { Notification } from "../../components/Notification";
+import { PdfEditor } from "../../components/PdfEditor";
 
 const ITEMS_PER_PAGE = 8;
 const FILE_BASE = (import.meta.env.VITE_API_URL || "http://localhost:4000/api").replace(
