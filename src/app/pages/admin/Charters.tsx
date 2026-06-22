@@ -599,6 +599,7 @@ export function Charters() {
                   <span className="text-slate-400 text-xs dark:text-slate-500">PDF or Word Document</span>
                   <input
                     type="file"
+                    accept=".pdf,.docx,.doc"
                     onChange={handleFileChange}
                     className="hidden"
                     disabled={uploadingFile}
