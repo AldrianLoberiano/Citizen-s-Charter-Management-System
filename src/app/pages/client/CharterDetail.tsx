@@ -320,6 +320,7 @@ export function CharterDetail() {
                     className="h-[720px] w-full rounded-lg border border-slate-200 dark:border-slate-600 bg-white"
                   />
                 )}
+                {fileStatus === "available" && viewerType === "docx" && (
                 {fileStatus === "available" && viewerType === "unknown" && (
                   <div className="p-4 text-sm text-slate-500 dark:text-slate-400">
                     No preview available for this file type. Use View Full Page to open it.
