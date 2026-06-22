@@ -27,3 +27,4 @@ export function DocxViewer({ fileUrl, className = "" }: DocxViewerProps) {
       .then((result) => {
         if (!cancelled) {
           setHtml(result.value);
+          setLoading(false);
