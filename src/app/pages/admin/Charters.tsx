@@ -655,7 +655,6 @@ export function Charters() {
         )}
         {!viewerError && viewerType === "docx" && (
           <div className="h-[70vh]">
-              title="Word Document Preview"
               src={`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(resolveFileUrl(viewerFilePath))}`}
               className="h-full w-full rounded-lg border border-slate-200 dark:border-slate-700"
             />
