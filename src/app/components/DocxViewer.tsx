@@ -6,3 +6,4 @@ interface DocxViewerProps {
   className?: string;
 }
 
+export function DocxViewer({ fileUrl, className = "" }: DocxViewerProps) {
