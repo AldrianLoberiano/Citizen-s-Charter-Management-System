@@ -190,7 +190,6 @@ export function Charters() {
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Validate file type: accept PDF and Word document files
       const allowed = [
         "application/pdf",
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
