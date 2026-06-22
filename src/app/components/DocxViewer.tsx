@@ -25,3 +25,4 @@ export function DocxViewer({ fileUrl, className = "" }: DocxViewerProps) {
         mammoth.convertToHtml({ arrayBuffer: buffer })
       )
       .then((result) => {
+        if (!cancelled) {
