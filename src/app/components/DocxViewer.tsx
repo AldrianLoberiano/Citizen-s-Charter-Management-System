@@ -90,6 +90,7 @@ export function DocxViewer({ fileUrl, fileName, className = "", editable = true 
       if (contentRef.current) contentRef.current.innerHTML = next;
       setIsDirty(next !== originalHtml);
     }
+  }, [originalHtml]);
 
   const handleInput = useCallback(() => {
     if (!contentRef.current) return;
