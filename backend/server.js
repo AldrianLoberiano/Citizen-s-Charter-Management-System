@@ -49,6 +49,7 @@ const upload = multer({
       "application/pdf",
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       "application/msword",
+    ];
     if (!allowed.includes(file.mimetype)) {
       callback(new Error("Only PDF files are allowed."));
       return;
