@@ -81,7 +81,6 @@ export function DocxViewer({ fileUrl, fileName, className = "", editable = true 
       if (contentRef.current) contentRef.current.innerHTML = prev;
       setIsDirty(prev !== originalHtml);
     }
-  }, []);
 
   const handleRedo = useCallback(() => {
     if (historyIndexRef.current < historyRef.current.length - 1) {
