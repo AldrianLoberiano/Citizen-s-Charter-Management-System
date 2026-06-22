@@ -15,7 +15,6 @@ interface DocxViewerProps {
   className?: string;
 }
 
-export function DocxViewer({ fileUrl, className = "" }: DocxViewerProps) {
   const [html, setHtml] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
