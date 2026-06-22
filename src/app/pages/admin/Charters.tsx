@@ -664,6 +664,7 @@ export function Charters() {
         {!viewerError && viewerType === "unknown" && (
           <div className="text-sm text-slate-500 dark:text-slate-400">
             Preview is not available for this file type.
+          </div>
       </Modal>
 
       {/* Delete Confirmation Modal */}
