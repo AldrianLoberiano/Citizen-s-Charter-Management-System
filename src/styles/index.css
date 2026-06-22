@@ -21,3 +21,20 @@
 .docx-content img { max-width: 100%; height: auto; }
 .docx-content blockquote { border-left: 3px solid #a78bfa; padding-left: 12px; margin: 12px 0; color: #4b5563; font-style: italic; }
 .docx-content a { color: #7c3aed; text-decoration: underline; }
+
+.docx-preview-container {
+  padding: 0;
+  background: white;
+}
+.docx-preview-container .docx-wrapper {
+  margin: 0;
+  padding: 0;
+}
+.docx-preview-container canvas {
+  max-width: 100%;
+  height: auto;
+}
+.docx-preview-container > div {
+  margin-bottom: 2px;
+  background: white;
+}
