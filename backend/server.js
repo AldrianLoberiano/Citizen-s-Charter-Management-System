@@ -724,6 +724,7 @@ app.post("/api/auth/login", async (req, res) => {
 });
 
 app.use((err, _req, res, next) => {
+  if (err instanceof multer.MulterError) {
 app.listen(port, () => {
   console.log(`CCMS backend listening on http://localhost:${port}`);
 });
