@@ -16,3 +16,4 @@
 .docx-content ul, .docx-content ol { margin: 8px 0; padding-left: 28px; }
 .docx-content li { margin: 4px 0; }
 .docx-content table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+.docx-content th, .docx-content td { border: 1px solid #d1d5db; padding: 8px 12px; text-align: left; }
