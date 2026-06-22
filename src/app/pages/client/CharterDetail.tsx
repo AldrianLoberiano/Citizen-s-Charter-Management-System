@@ -324,6 +324,7 @@ export function CharterDetail() {
                 {fileStatus === "available" && viewerType === "docx" && (
                   <DocxViewer
                     fileUrl={resolvedAttachmentUrl}
+                    editable={false}
                     className="h-[720px] rounded-lg border border-slate-200 dark:border-slate-600 bg-white"
                   />
                 )}
