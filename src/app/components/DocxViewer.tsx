@@ -17,3 +17,4 @@ export function DocxViewer({ fileUrl, className = "" }: DocxViewerProps) {
     setError(null);
 
     fetch(fileUrl)
+      .then((res) => {
