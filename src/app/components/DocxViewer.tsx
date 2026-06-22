@@ -11,6 +11,7 @@ import {
 
 interface DocxViewerProps {
   fileUrl: string;
+  fileName?: string;
   className?: string;
 }
 
