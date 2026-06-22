@@ -79,6 +79,7 @@ export function DocxViewer({ fileUrl, fileName, className = "", editable = true 
       historyIndexRef.current--;
       const prev = historyRef.current[historyIndexRef.current];
       if (contentRef.current) contentRef.current.innerHTML = prev;
+      setIsDirty(prev !== originalHtml);
     }
   }, []);
 
