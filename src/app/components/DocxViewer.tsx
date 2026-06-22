@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import mammoth from "mammoth";
 import {
+  ZoomIn,
 
 interface DocxViewerProps {
   fileUrl: string;
