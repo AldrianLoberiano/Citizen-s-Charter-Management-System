@@ -13,3 +13,4 @@
 .docx-content h3 { font-size: 16px; font-weight: 600; margin: 14px 0 6px; }
 .docx-content h4 { font-size: 14px; font-weight: 600; margin: 12px 0 4px; }
 .docx-content p { margin: 8px 0; }
+.docx-content ul, .docx-content ol { margin: 8px 0; padding-left: 28px; }
