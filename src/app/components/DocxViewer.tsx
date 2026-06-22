@@ -52,3 +52,4 @@ export function DocxViewer({ fileUrl, className = "" }: DocxViewerProps) {
     return (
       <div className={`flex items-center justify-center p-8 text-sm text-red-500 ${className}`}>
         {error}
+      </div>
