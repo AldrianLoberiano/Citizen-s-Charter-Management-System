@@ -571,6 +571,7 @@ export function Charters() {
           <div>
             <label className="block text-slate-700 mb-1.5 text-sm dark:text-slate-300">
               Attachment{" "}
+              <span className="text-slate-400 text-xs">(PDF or Word, max 5MB)</span>
             </label>
             <div className="border-2 border-dashed border-slate-300 rounded-lg p-4 hover:border-slate-400 transition-colors dark:border-slate-600 dark:hover:border-slate-500">
               {formData.file_path ? (
