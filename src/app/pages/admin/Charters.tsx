@@ -42,6 +42,7 @@ type ViewerType = "pdf" | "docx" | "unknown";
 const getViewerType = (filePath: string): ViewerType => {
   const lower = filePath.toLowerCase();
   if (lower.endsWith(".pdf")) return "pdf";
+  if (lower.endsWith(".docx") || lower.endsWith(".doc")) return "docx";
   return "unknown";
 };
 
