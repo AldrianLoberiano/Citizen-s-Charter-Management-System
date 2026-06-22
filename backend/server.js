@@ -51,6 +51,7 @@ const upload = multer({
       "application/msword",
       "application/octet-stream",
     ];
+    const lower = file.originalname.toLowerCase();
       callback(new Error("Only PDF and Word document files are allowed."));
       return;
     }
