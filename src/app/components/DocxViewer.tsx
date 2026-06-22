@@ -61,3 +61,4 @@ export function DocxViewer({ fileUrl, className = "" }: DocxViewerProps) {
       className={`prose prose-sm max-w-none dark:prose-invert p-6 overflow-auto ${className}`}
       dangerouslySetInnerHTML={{ __html: html }}
     />
+  );
