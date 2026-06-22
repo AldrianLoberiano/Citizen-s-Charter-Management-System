@@ -731,6 +731,7 @@ app.use((err, _req, res, next) => {
     return res.status(400).json({ message: `Upload error: ${err.message}` });
   }
   if (err) {
+    console.error("Unhandled error:", err);
 app.listen(port, () => {
   console.log(`CCMS backend listening on http://localhost:${port}`);
 });
