@@ -78,6 +78,7 @@ const editedUpload = multer({
       "application/pdf",
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     ];
+    const lower = file.originalname.toLowerCase();
       return;
     }
     callback(null, true);
