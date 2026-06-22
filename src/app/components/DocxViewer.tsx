@@ -32,7 +32,6 @@ export function DocxViewer({ fileUrl, fileName, className = "" }: DocxViewerProp
         if (!res.ok) throw new Error("Failed to fetch document");
         return res.arrayBuffer();
       })
-      .then((buffer) =>
         mammoth.convertToHtml({ arrayBuffer: buffer })
       )
       .then((result) => {
