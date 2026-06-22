@@ -652,6 +652,7 @@ export function Charters() {
             <PdfEditor fileUrl={resolveFileUrl(viewerFilePath)} />
           </div>
         )}
+        {!viewerError && viewerType === "docx" && (
           <div className="h-[70vh]">
             <iframe
               title="PDF Preview"
