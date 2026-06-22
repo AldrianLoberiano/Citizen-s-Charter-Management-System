@@ -648,6 +648,7 @@ export function Charters() {
           <div className="text-sm text-red-600">{viewerError}</div>
         )}
         {!viewerError && viewerType === "pdf" && (
+          <div className="h-[75vh]">
           <div className="h-[70vh]">
             <iframe
               title="PDF Preview"
