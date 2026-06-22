@@ -79,6 +79,7 @@ const editedUpload = multer({
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     ];
     const lower = file.originalname.toLowerCase();
+    const hasValidExt = lower.endsWith(".pdf") || lower.endsWith(".docx");
       return;
     }
     callback(null, true);
