@@ -37,6 +37,7 @@ const FILE_BASE = (import.meta.env.VITE_API_URL || "http://localhost:4000/api").
   /\/api$/,
   ""
 );
+type ViewerType = "pdf" | "docx" | "unknown";
 
 const getViewerType = (filePath: string): ViewerType => {
   const lower = filePath.toLowerCase();
