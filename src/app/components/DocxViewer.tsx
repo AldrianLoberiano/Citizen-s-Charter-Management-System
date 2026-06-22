@@ -62,3 +62,4 @@ export function DocxViewer({ fileUrl, className = "" }: DocxViewerProps) {
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );
+}
