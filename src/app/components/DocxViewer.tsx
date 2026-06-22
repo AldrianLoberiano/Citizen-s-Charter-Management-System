@@ -20,6 +20,7 @@ export function DocxViewer({ fileUrl, fileName, className = "" }: DocxViewerProp
   const [html, setHtml] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [zoom, setZoom] = useState(100);
 
   useEffect(() => {
     let cancelled = false;
