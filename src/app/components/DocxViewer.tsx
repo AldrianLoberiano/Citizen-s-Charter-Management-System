@@ -57,6 +57,7 @@ export function DocxViewer({ fileUrl, fileName, className = "" }: DocxViewerProp
     printWindow.document.write(`
       <!DOCTYPE html>
       <html>
+      <head>
   if (loading) {
     return (
       <div className={`flex items-center justify-center p-8 text-sm text-slate-500 dark:text-slate-400 ${className}`}>
