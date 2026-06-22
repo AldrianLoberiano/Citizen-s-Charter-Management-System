@@ -5,3 +5,4 @@ interface DocxViewerProps {
   fileUrl: string;
   className?: string;
 }
+
