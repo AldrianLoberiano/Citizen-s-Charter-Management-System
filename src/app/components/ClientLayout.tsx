@@ -177,6 +177,7 @@ export function ClientLayout() {
                   <a
                     href="https://www.google.com/maps/search/Municipal+Hall+Calauan+Laguna"
                     target="_blank"
+                    rel="noopener noreferrer"
                 </li>
                 <li className="flex items-center gap-2">
                   <Mail className="h-4 w-4 flex-shrink-0 text-slate-400" />
