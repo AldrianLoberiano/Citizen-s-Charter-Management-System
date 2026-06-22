@@ -189,6 +189,7 @@ export function Charters() {
     const file = e.target.files?.[0];
     if (file) {
       // Validate file type: accept PDF and Word document files
+      const allowed = [
       if (!allowed.includes(file.type)) {
         setFormErrors((p) => ({
           ...p,
