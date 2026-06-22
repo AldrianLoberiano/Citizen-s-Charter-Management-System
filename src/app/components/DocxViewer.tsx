@@ -158,6 +158,7 @@ export function DocxViewer({ fileUrl, fileName, className = "", editable = true 
   }, [fileName]);
 
   const handleReset = useCallback(() => {
+    if (contentRef.current) contentRef.current.innerHTML = originalHtml;
     setIsDirty(false);
     historyRef.current = [originalHtml];
     historyIndexRef.current = 0;
