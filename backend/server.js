@@ -77,7 +77,6 @@ const editedUpload = multer({
     const allowedMimes = [
       "application/pdf",
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      "application/msword",
     ];
     if (!allowed.includes(file.mimetype)) {
       callback(new Error("Only PDF and Word document files are allowed."));
