@@ -21,3 +21,4 @@ export function DocxViewer({ fileUrl, className = "" }: DocxViewerProps) {
         if (!res.ok) throw new Error("Failed to fetch document");
         return res.arrayBuffer();
       })
+      .then((buffer) =>
