@@ -30,3 +30,4 @@ export function DocxViewer({ fileUrl, className = "" }: DocxViewerProps) {
           setLoading(false);
         }
       })
+      .catch((err) => {
