@@ -191,6 +191,7 @@ export function Charters() {
       // Validate file type: accept PDF and Word document files
       const allowed = [
         "application/pdf",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       if (!allowed.includes(file.type)) {
         setFormErrors((p) => ({
           ...p,
