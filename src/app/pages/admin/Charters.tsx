@@ -596,6 +596,7 @@ export function Charters() {
                   <span className="text-slate-500 text-sm dark:text-slate-400">
                     {uploadingFile ? "Uploading file..." : "Click to upload or drag and drop"}
                   </span>
+                  <span className="text-slate-400 text-xs dark:text-slate-500">PDF or Word Document</span>
                   <input
                     type="file"
                     accept=".pdf"
