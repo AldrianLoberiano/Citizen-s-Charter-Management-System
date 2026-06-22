@@ -22,3 +22,4 @@ export function DocxViewer({ fileUrl, className = "" }: DocxViewerProps) {
         return res.arrayBuffer();
       })
       .then((buffer) =>
+        mammoth.convertToHtml({ arrayBuffer: buffer })
