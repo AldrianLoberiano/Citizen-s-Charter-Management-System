@@ -52,6 +52,7 @@ const upload = multer({
       "application/octet-stream",
     ];
     const lower = file.originalname.toLowerCase();
+    const allowedExts = [".pdf", ".docx", ".doc"];
       callback(new Error("Only PDF and Word document files are allowed."));
       return;
     }
