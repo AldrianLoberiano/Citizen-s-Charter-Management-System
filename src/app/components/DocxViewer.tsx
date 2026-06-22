@@ -41,3 +41,4 @@ export function DocxViewer({ fileUrl, className = "" }: DocxViewerProps) {
   }, [fileUrl]);
 
   if (loading) {
+    return (
