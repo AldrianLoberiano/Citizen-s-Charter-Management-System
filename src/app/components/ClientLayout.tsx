@@ -174,7 +174,6 @@ export function ClientLayout() {
               <ul className="space-y-2 text-sm text-slate-500 dark:text-slate-400">
                 <li className="flex items-start gap-2">
                   <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-slate-400" />
-                  <span>Municipal Hall, Calauan, Municipality</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <Mail className="h-4 w-4 flex-shrink-0 text-slate-400" />
