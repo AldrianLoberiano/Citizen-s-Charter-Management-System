@@ -15,3 +15,4 @@ export function DocxViewer({ fileUrl, className = "" }: DocxViewerProps) {
     let cancelled = false;
     setLoading(true);
     setError(null);
+
