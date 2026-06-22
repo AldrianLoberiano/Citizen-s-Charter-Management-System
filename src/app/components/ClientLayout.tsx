@@ -197,6 +197,7 @@ export function ClientLayout() {
                   <a
                     href="https://www.facebook.com/p/Business-Permit-and-Licensing-Office-Calauan-Laguna-61576258070290/"
                     target="_blank"
+                    rel="noopener noreferrer"
                 </li>
               </ul>
             </div>
