@@ -78,7 +78,6 @@ const editedUpload = multer({
       "application/pdf",
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     ];
-      callback(new Error("Only PDF and Word document files are allowed."));
       return;
     }
     callback(null, true);
