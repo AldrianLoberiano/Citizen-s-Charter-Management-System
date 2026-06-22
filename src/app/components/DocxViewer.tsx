@@ -55,6 +55,7 @@ export function DocxViewer({ fileUrl, fileName, className = "" }: DocxViewerProp
     const printWindow = window.open("", "_blank");
     if (!printWindow) return;
     printWindow.document.write(`
+      <!DOCTYPE html>
   if (loading) {
     return (
       <div className={`flex items-center justify-center p-8 text-sm text-slate-500 dark:text-slate-400 ${className}`}>
