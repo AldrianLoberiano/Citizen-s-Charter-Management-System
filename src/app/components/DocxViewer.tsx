@@ -40,3 +40,4 @@ export function DocxViewer({ fileUrl, className = "" }: DocxViewerProps) {
     return () => { cancelled = true; };
   }, [fileUrl]);
 
+  if (loading) {
