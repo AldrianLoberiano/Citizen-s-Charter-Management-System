@@ -196,6 +196,7 @@ export function Charters() {
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       ];
       const lower = file.name.toLowerCase();
+      const hasValidExt = lower.endsWith(".pdf") || lower.endsWith(".docx");
         setFormErrors((p) => ({
           ...p,
           file_path: "Only PDF and Word document files are allowed.",
