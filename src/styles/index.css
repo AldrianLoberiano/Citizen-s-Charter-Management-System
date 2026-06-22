@@ -20,3 +20,4 @@
 .docx-content th { background: #f8fafc; font-weight: 600; }
 .docx-content img { max-width: 100%; height: auto; }
 .docx-content blockquote { border-left: 3px solid #a78bfa; padding-left: 12px; margin: 12px 0; color: #4b5563; font-style: italic; }
+.docx-content a { color: #7c3aed; text-decoration: underline; }
