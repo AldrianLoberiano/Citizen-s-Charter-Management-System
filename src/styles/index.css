@@ -14,3 +14,4 @@
 .docx-content h4 { font-size: 14px; font-weight: 600; margin: 12px 0 4px; }
 .docx-content p { margin: 8px 0; }
 .docx-content ul, .docx-content ol { margin: 8px 0; padding-left: 28px; }
+.docx-content li { margin: 4px 0; }
