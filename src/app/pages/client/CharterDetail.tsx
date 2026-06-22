@@ -324,6 +324,7 @@ export function CharterDetail() {
                   <iframe
                     title={`${charter.title} Word document preview`}
                     src={`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(resolvedAttachmentUrl)}`}
+                    className="h-[720px] w-full rounded-lg border border-slate-200 dark:border-slate-600 bg-white"
                 {fileStatus === "available" && viewerType === "unknown" && (
                   <div className="p-4 text-sm text-slate-500 dark:text-slate-400">
                     No preview available for this file type. Use View Full Page to open it.
