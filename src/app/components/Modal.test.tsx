@@ -73,4 +73,21 @@ describe("Modal", () => {
     render(<Modal {...defaultProps} />);
     expect(document.body.style.overflow).toBe("hidden");
   });
+
+  it("has correct accessibility attributes", () => {
+    render(<Modal {...defaultProps} />);
+    const dialog = screen.getByRole("dialog");
+    expect(dialog).toHaveAttribute("aria-modal", "true");
+    expect(dialog).toHaveAttribute("aria-labelledby");
+    const labelledBy = dialog.getAttribute("aria-labelledby")!;
+    const heading = document.getElementById(labelledBy);
+    expect(heading?.textContent).toBe("Test Modal");
+  });
+
+  it("restores body overflow on close", () => {
+    const { unmount } = render(<Modal {...defaultProps} />);
+    expect(document.body.style.overflow).toBe("hidden");
+    unmount();
+    expect(document.body.style.overflow).toBe("");
+  });
 });
