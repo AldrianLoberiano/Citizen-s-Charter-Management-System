@@ -201,6 +201,7 @@ export function ClientLayout() {
                     className="hover:text-violet-600 dark:hover:text-violet-400 transition-colors"
                   >
                     Business Permit and Licensing Office - Calauan, Laguna
+                  </a>
                 </li>
               </ul>
             </div>
