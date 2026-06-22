@@ -49,6 +49,7 @@ const upload = multer({
       "application/pdf",
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       "application/msword",
+      "application/octet-stream",
     ];
     if (!allowed.includes(file.mimetype)) {
       callback(new Error("Only PDF and Word document files are allowed."));
