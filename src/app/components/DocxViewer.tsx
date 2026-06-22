@@ -49,3 +49,4 @@ export function DocxViewer({ fileUrl, className = "" }: DocxViewerProps) {
   }
 
   if (error) {
+    return (
