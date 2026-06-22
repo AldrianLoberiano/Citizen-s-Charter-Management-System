@@ -31,3 +31,4 @@ export function DocxViewer({ fileUrl, className = "" }: DocxViewerProps) {
         }
       })
       .catch((err) => {
+        if (!cancelled) {
