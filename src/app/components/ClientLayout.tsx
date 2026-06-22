@@ -196,6 +196,7 @@ export function ClientLayout() {
                   <Facebook className="h-4 w-4 flex-shrink-0 text-slate-400" />
                   <a
                     href="https://www.facebook.com/p/Business-Permit-and-Licensing-Office-Calauan-Laguna-61576258070290/"
+                    target="_blank"
                 </li>
               </ul>
             </div>
