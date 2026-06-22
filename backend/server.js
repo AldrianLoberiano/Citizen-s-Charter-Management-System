@@ -729,6 +729,7 @@ app.use((err, _req, res, next) => {
       return res.status(400).json({ message: "File too large. Maximum size is 5MB." });
     }
     return res.status(400).json({ message: `Upload error: ${err.message}` });
+  }
 app.listen(port, () => {
   console.log(`CCMS backend listening on http://localhost:${port}`);
 });
