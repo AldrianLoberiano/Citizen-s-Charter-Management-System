@@ -198,6 +198,7 @@ export function ClientLayout() {
                     href="https://www.facebook.com/p/Business-Permit-and-Licensing-Office-Calauan-Laguna-61576258070290/"
                     target="_blank"
                     rel="noopener noreferrer"
+                    className="hover:text-violet-600 dark:hover:text-violet-400 transition-colors"
                 </li>
               </ul>
             </div>
