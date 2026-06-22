@@ -197,6 +197,7 @@ export function Charters() {
       ];
       const lower = file.name.toLowerCase();
       const hasValidExt = lower.endsWith(".pdf") || lower.endsWith(".docx");
+      const hasValidMime = allowed.includes(file.type);
         setFormErrors((p) => ({
           ...p,
           file_path: "Only PDF and Word document files are allowed.",
