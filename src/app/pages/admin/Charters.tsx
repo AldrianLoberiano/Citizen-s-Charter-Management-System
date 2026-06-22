@@ -662,6 +662,7 @@ export function Charters() {
           </div>
         )}
         {!viewerError && viewerType === "unknown" && (
+          <div className="text-sm text-slate-500 dark:text-slate-400">
       </Modal>
 
       {/* Delete Confirmation Modal */}
