@@ -201,6 +201,7 @@ export function Charters() {
       if (!hasValidExt && !hasValidMime) {
         setFormErrors((p) => ({
           ...p,
+          file_path: "Only PDF and .docx Word files are allowed. Please save your document as .docx.",
         }));
         return;
       }
