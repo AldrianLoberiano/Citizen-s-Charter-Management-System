@@ -11,3 +11,4 @@ export function DocxViewer({ fileUrl, className = "" }: DocxViewerProps) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
