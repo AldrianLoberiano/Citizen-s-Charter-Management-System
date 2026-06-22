@@ -54,6 +54,7 @@ const upload = multer({
     const lower = file.originalname.toLowerCase();
     const allowedExts = [".pdf", ".docx", ".doc"];
     const hasValidExt = allowedExts.some((ext) => lower.endsWith(ext));
+    const hasValidMime = allowedMimes.includes(file.mimetype);
       callback(new Error("Only PDF and Word document files are allowed."));
       return;
     }
