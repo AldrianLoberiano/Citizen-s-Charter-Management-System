@@ -7,6 +7,7 @@ import {
   ZoomOut,
   RotateCcw,
   FileText,
+} from "lucide-react";
 
 interface DocxViewerProps {
   fileUrl: string;
