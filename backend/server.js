@@ -723,6 +723,7 @@ app.post("/api/auth/login", async (req, res) => {
   }
 });
 
+app.use((err, _req, res, next) => {
 app.listen(port, () => {
   console.log(`CCMS backend listening on http://localhost:${port}`);
 });
