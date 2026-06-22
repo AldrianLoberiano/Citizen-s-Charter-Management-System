@@ -12,3 +12,4 @@ export function DocxViewer({ fileUrl, className = "" }: DocxViewerProps) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
