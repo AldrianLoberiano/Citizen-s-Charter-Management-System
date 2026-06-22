@@ -47,6 +47,7 @@ const upload = multer({
   fileFilter: (_req, file, callback) => {
     const allowed = [
       "application/pdf",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     if (!allowed.includes(file.mimetype)) {
       callback(new Error("Only PDF files are allowed."));
       return;
