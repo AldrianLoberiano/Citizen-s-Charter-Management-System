@@ -34,3 +34,4 @@ export function DocxViewer({ fileUrl, className = "" }: DocxViewerProps) {
         if (!cancelled) {
           setError(err instanceof Error ? err.message : "Failed to load document");
           setLoading(false);
+        }
