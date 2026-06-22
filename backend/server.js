@@ -74,6 +74,7 @@ const editedUpload = multer({
   storage: editedStorage,
   limits: { fileSize: 10 * 1024 * 1024 },
   fileFilter: (_req, file, callback) => {
+    const allowedMimes = [
       "application/pdf",
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       "application/msword",
