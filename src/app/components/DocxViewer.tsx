@@ -8,3 +8,4 @@ interface DocxViewerProps {
 
 export function DocxViewer({ fileUrl, className = "" }: DocxViewerProps) {
   const [html, setHtml] = useState("");
+  const [error, setError] = useState<string | null>(null);
