@@ -198,6 +198,7 @@ export function Charters() {
       if (!allowed.includes(file.type)) {
         setFormErrors((p) => ({
           ...p,
+          file_path: "Only PDF and Word document files are allowed.",
         }));
         return;
       }
