@@ -29,3 +29,4 @@ export function DocxViewer({ fileUrl, className = "" }: DocxViewerProps) {
           setHtml(result.value);
           setLoading(false);
         }
+      })
