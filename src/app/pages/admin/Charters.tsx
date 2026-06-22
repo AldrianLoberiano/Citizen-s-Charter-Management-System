@@ -201,7 +201,6 @@ export function Charters() {
       if (!hasValidExt && !hasValidMime) {
         setFormErrors((p) => ({
           ...p,
-          file_path: "Only PDF and Word document files are allowed.",
         }));
         return;
       }
