@@ -5,6 +5,7 @@ import {
   Printer,
   ZoomIn,
   ZoomOut,
+  RotateCcw,
 
 interface DocxViewerProps {
   fileUrl: string;
