@@ -322,7 +322,6 @@ export function CharterDetail() {
                   />
                 )}
                 {fileStatus === "available" && viewerType === "docx" && (
-                  <iframe
                     title={`${charter.title} Word document preview`}
                     src={`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(resolvedAttachmentUrl)}`}
                     className="h-[720px] w-full rounded-lg border border-slate-200 dark:border-slate-600 bg-white"
