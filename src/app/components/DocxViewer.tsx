@@ -3,3 +3,4 @@ import mammoth from "mammoth";
 
 interface DocxViewerProps {
   fileUrl: string;
+  className?: string;
