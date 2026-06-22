@@ -53,7 +53,6 @@ const upload = multer({
     const hasValidExt = lower.endsWith(".pdf") || lower.endsWith(".docx");
     const hasValidMime = allowedMimes.includes(file.mimetype);
     if (!hasValidExt && !hasValidMime) {
-      callback(new Error("Only PDF and Word document files are allowed."));
       return;
     }
     callback(null, true);
