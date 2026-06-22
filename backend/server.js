@@ -50,7 +50,6 @@ const upload = multer({
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     ];
     const lower = file.originalname.toLowerCase();
-    const hasValidExt = allowedExts.some((ext) => lower.endsWith(ext));
     const hasValidMime = allowedMimes.includes(file.mimetype);
     if (!hasValidExt && !hasValidMime) {
       callback(new Error("Only PDF and Word document files are allowed."));
