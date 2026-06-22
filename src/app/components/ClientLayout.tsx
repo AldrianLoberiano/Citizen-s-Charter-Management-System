@@ -199,6 +199,7 @@ export function ClientLayout() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:text-violet-600 dark:hover:text-violet-400 transition-colors"
+                  >
                     Business Permit and Licensing Office - Calauan, Laguna
                 </li>
               </ul>
