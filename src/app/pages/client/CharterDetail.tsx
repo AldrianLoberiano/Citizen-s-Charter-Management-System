@@ -322,7 +322,6 @@ export function CharterDetail() {
                   />
                 )}
                 {fileStatus === "available" && viewerType === "docx" && (
-                    className="h-[720px] w-full rounded-lg border border-slate-200 dark:border-slate-600 bg-white"
                   />
                 )}
                 {fileStatus === "available" && viewerType === "unknown" && (
