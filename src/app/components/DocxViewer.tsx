@@ -37,3 +37,4 @@ export function DocxViewer({ fileUrl, className = "" }: DocxViewerProps) {
         }
       });
 
+    return () => { cancelled = true; };
