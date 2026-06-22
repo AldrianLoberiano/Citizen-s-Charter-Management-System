@@ -95,7 +95,6 @@ export function DocxViewer({ fileUrl, fileName, className = "", editable = true 
   const handleInput = useCallback(() => {
     if (!contentRef.current) return;
     const newHtml = contentRef.current.innerHTML;
-    setHtml(newHtml);
     setIsDirty(newHtml !== originalHtml);
     pushHistory(newHtml);
   }, [originalHtml, pushHistory]);
