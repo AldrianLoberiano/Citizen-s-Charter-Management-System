@@ -32,6 +32,7 @@ import { Modal } from "../../components/Modal";
 import { Pagination } from "../../components/Pagination";
 import { Notification } from "../../components/Notification";
 import { PdfEditor } from "../../components/PdfEditor";
+import { DocxViewer } from "../../components/DocxViewer";
 
 const ITEMS_PER_PAGE = 8;
 const FILE_BASE = (import.meta.env.VITE_API_URL || "http://localhost:4000/api").replace(
