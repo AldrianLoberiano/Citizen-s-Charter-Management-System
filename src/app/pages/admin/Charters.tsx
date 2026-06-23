@@ -725,6 +725,7 @@ export function Charters() {
               ))}
             </div>
           </div>
+        )}
       </Modal>
 
       {/* Delete Confirmation Modal */}
