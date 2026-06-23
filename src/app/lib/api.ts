@@ -130,6 +130,7 @@ export const api = {
     formData.append("file", file);
     return upload("/uploads/charters", formData);
   },
+  updateCharterAttachment: (charterId: number, file: File) => {
   uploadEditedCharterPdf: (
     charterId: number,
     file: File,
