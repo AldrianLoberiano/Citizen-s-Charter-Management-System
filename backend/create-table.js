@@ -11,3 +11,4 @@ await pool.query(`
     submitted_name VARCHAR(255),
     submitted_email VARCHAR(255),
     notes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
