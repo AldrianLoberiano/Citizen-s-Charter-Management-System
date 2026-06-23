@@ -75,6 +75,7 @@ function parseInline(element: HTMLElement): TextRun[] {
 function dataUriToBuffer(dataUri: string): { buffer: ArrayBuffer; type: string } | null {
   const match = dataUri.match(/^data:([^;]+);base64,(.+)$/);
   if (!match) return null;
+  const type = match[1];
 function htmlToDocxElements(htmlStr: string): (Paragraph | Table)[] {
   const div = document.createElement("div");
   div.innerHTML = htmlStr;
