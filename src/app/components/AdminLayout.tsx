@@ -20,6 +20,7 @@ import {
   Sun,
   Menu,
   X,
+  History,
 } from "lucide-react";
 import { Modal } from "./Modal";
 import { isAuthenticated, logout, getAuthUser } from "../store/data";
