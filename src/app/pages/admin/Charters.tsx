@@ -720,6 +720,7 @@ export function Charters() {
                     title="Download this version"
                   >
                     <Download className="w-4 h-4" />
+                  </a>
                 </div>
       </Modal>
 
