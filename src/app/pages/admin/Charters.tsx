@@ -170,6 +170,7 @@ export function Charters() {
   };
 
   const handleSaveAttachment = useCallback(async (blob: Blob) => {
+    if (!viewerCharterId) return;
   // Validate form
   const validate = (): boolean => {
     const errors: Partial<FormData> = {};
