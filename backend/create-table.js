@@ -17,3 +17,4 @@ await pool.query(`
 `);
 
 console.log("charter_pdf_edits table created");
+process.exit(0);
