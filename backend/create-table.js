@@ -10,3 +10,4 @@ await pool.query(`
     size_bytes INT,
     submitted_name VARCHAR(255),
     submitted_email VARCHAR(255),
+    notes TEXT,
