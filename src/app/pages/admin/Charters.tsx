@@ -176,6 +176,7 @@ export function Charters() {
     const result = await api.saveCharterEdit(viewerCharterId, file);
     setViewerFilePath(result.file_path);
     updateCharterFilePath(viewerCharterId, result.file_path);
+    setCharters(getCharters());
   }, [viewerCharterId]);
 
   // Validate form
