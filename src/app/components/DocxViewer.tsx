@@ -235,6 +235,7 @@ export function DocxViewer({ fileUrl, fileName, className = "", editable = true,
         if (!res.ok) {
           if (res.status === 404) throw new Error("Document file not found on the server. Please re-upload the file.");
           throw new Error("Failed to fetch document");
+        }
         return res.arrayBuffer();
       })
       .then((buffer) => mammoth.convertToHtml({ arrayBuffer: buffer }))
