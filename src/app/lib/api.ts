@@ -144,6 +144,7 @@ export const api = {
     return request(`/charters/${charterId}/edits`);
   },
   getAllEditedCharters: () => {
+    return request("/edited-charters");
   uploadEditedCharterPdf: (
     charterId: number,
     file: File,
