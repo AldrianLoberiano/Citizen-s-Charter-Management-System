@@ -232,7 +232,6 @@ export function DocxViewer({ fileUrl, fileName, className = "", editable = true,
 
     fetch(fileUrl)
       .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch document");
         return res.arrayBuffer();
       })
       .then((buffer) => mammoth.convertToHtml({ arrayBuffer: buffer }))
