@@ -698,6 +698,7 @@ export function Charters() {
         {editHistory.length > 0 && (
           <div className="mt-4 border-t border-slate-200 dark:border-slate-700 pt-4">
             <div className="flex items-center gap-2 mb-3">
+              <History className="w-4 h-4 text-slate-500" />
       </Modal>
 
       {/* Delete Confirmation Modal */}
