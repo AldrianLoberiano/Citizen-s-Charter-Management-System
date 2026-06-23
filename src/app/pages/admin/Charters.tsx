@@ -161,6 +161,7 @@ export function Charters() {
     setViewerOpen(true);
     setViewerFilePath(filePath);
     setViewerType(type);
+    setViewerCharterId(charterId ?? null);
     setViewerError(null);
 
     if (type === "unknown") {
