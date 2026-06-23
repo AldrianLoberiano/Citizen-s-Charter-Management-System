@@ -38,6 +38,7 @@ const navItems: NavItem[] = [
   { path: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { path: "/admin/departments", label: "Departments", icon: Building2 },
   { path: "/admin/charters", label: "Charters", icon: FileText },
+  { path: "/admin/edited-charters", label: "Edited Charters", icon: History },
   { path: "/admin/feedback", label: "Feedback", icon: MessageSquare },
 ];
 
