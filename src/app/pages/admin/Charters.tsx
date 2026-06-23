@@ -711,6 +711,7 @@ export function Charters() {
                       {edit.notes || "No notes"} &middot; {new Date(edit.created_at).toLocaleString()}
                     </p>
                   </div>
+                  <a
       </Modal>
 
       {/* Delete Confirmation Modal */}
