@@ -11,6 +11,7 @@ interface ModalProps {
   onClose: () => void;
   title: string;
   children: ReactNode;
+  size?: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl";
 }
 
 const sizeClasses: Record<string, string> = {
