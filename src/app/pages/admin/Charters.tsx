@@ -4,6 +4,7 @@
  * Includes file upload simulation, department selection, and pagination
  */
 
+import { useState, useCallback, useEffect } from "react";
 import {
   Plus,
   Search,
