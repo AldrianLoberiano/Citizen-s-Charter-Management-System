@@ -98,6 +98,7 @@ function htmlToDocxElements(htmlStr: string): (Paragraph | Table)[] {
     const tag = el.tagName.toLowerCase();
 
     if (tag === "img") {
+      const src = el.getAttribute("src") || "";
     if (tag === "table") {
       const rows: TableRow[] = [];
       el.querySelectorAll("tr").forEach((tr) => {
