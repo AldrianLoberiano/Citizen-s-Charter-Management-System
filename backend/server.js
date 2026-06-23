@@ -635,6 +635,7 @@ app.post("/api/charters/:id/attachment", upload.single("file"), async (req, res)
     try {
       if (fs.existsSync(oldAbsolute)) fs.unlinkSync(oldAbsolute);
     } catch { /* ignore */ }
+  }
   await pool.query("UPDATE charters SET file_path = ? WHERE id = ?", [newRelativePath, charterId]);
 
   res.json({
