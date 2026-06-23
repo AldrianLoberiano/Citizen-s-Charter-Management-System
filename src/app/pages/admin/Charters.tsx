@@ -713,6 +713,7 @@ export function Charters() {
                   </div>
                   <a
                     href={`${FILE_BASE}${edit.file_path}`}
+                    target="_blank"
                     rel="noopener noreferrer"
       </Modal>
 
