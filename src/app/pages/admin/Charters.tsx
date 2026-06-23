@@ -178,6 +178,7 @@ export function Charters() {
       setEditHistory([]);
       return;
     }
+    api.getCharterEdits(viewerCharterId).then((data: any) => {
   const handleSaveAttachment = useCallback(async (blob: Blob) => {
     if (!viewerCharterId) return;
     const file = new File([blob], "document.docx", { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
