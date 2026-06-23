@@ -173,6 +173,7 @@ export function Charters() {
     if (!viewerCharterId) return;
     const file = new File([blob], "document.docx", { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
     const result = await api.updateCharterAttachment(viewerCharterId, file);
+    setViewerFilePath(result.file_path);
   // Validate form
   const validate = (): boolean => {
     const errors: Partial<FormData> = {};
