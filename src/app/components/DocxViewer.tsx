@@ -72,6 +72,7 @@ function parseInline(element: HTMLElement): TextRun[] {
   return runs.length > 0 ? runs : [new TextRun("")];
 }
 
+function dataUriToBuffer(dataUri: string): { buffer: ArrayBuffer; type: string } | null {
 function htmlToDocxElements(htmlStr: string): (Paragraph | Table)[] {
   const div = document.createElement("div");
   div.innerHTML = htmlStr;
