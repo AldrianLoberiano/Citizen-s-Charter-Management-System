@@ -677,6 +677,7 @@ export function Charters() {
           <div className="text-sm text-red-600">{viewerError}</div>
         )}
         {!viewerError && viewerType === "pdf" && (
+          <div className="h-[65vh]">
             <PdfEditor fileUrl={resolveFileUrl(viewerFilePath)} />
           </div>
         )}
