@@ -174,6 +174,7 @@ export function Charters() {
   };
 
   useEffect(() => {
+    if (!viewerOpen || !viewerCharterId) {
   const handleSaveAttachment = useCallback(async (blob: Blob) => {
     if (!viewerCharterId) return;
     const file = new File([blob], "document.docx", { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
