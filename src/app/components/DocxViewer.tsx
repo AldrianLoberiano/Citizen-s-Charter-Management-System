@@ -106,6 +106,7 @@ function htmlToDocxElements(htmlStr: string): (Paragraph | Table)[] {
           children: [
             new ImageRun({
               data: imgData.buffer,
+              transformation: { width: 400, height: 300 },
     if (tag === "table") {
       const rows: TableRow[] = [];
       el.querySelectorAll("tr").forEach((tr) => {
