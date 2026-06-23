@@ -15,6 +15,7 @@ import {
   Paperclip,
   X,
   Filter,
+  History,
 } from "lucide-react";
 import {
   getCharters,
