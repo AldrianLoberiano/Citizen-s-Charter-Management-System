@@ -722,6 +722,7 @@ export function Charters() {
                     <Download className="w-4 h-4" />
                   </a>
                 </div>
+              ))}
       </Modal>
 
       {/* Delete Confirmation Modal */}
