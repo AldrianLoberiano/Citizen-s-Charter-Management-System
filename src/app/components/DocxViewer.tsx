@@ -79,6 +79,7 @@ function dataUriToBuffer(dataUri: string): { buffer: ArrayBuffer; type: string }
   const binary = atob(match[2]);
   const bytes = new Uint8Array(binary.length);
   for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return { buffer: bytes.buffer, type };
 function htmlToDocxElements(htmlStr: string): (Paragraph | Table)[] {
   const div = document.createElement("div");
   div.innerHTML = htmlStr;
