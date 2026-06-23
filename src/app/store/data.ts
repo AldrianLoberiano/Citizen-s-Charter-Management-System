@@ -214,6 +214,7 @@ export async function deleteCharter(id: number) {
   feedbackCache = feedbackCache.filter((rating) => rating.charter_id !== id);
 }
 
+export function updateCharterFilePath(id: number, filePath: string) {
 export function getRatings(): Rating[] {
   return [...ratingsCache];
 }
