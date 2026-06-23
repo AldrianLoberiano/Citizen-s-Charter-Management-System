@@ -216,6 +216,7 @@ export async function deleteCharter(id: number) {
 
 export function updateCharterFilePath(id: number, filePath: string) {
   chartersCache = chartersCache.map((charter) =>
+    charter.id === id ? { ...charter, file_path: filePath } : charter
 export function getRatings(): Rating[] {
   return [...ratingsCache];
 }
