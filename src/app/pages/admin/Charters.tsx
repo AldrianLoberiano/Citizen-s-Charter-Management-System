@@ -666,6 +666,7 @@ export function Charters() {
           </div>
         )}
         {!viewerError && viewerType === "docx" && (
+          <div className="h-[80vh]">
             <DocxViewer
               fileUrl={resolveFileUrl(viewerFilePath)}
               className="h-full rounded-lg border border-slate-200 dark:border-slate-700"
