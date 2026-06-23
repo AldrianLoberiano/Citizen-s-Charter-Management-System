@@ -669,6 +669,7 @@ app.post("/api/charters/:id/save-edit", editedUpload.single("file"), async (req,
       (charter_id, file_path, original_name, mime_type, size_bytes, submitted_name, submitted_email, notes)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
 
+  await pool.query(insertSql, [
 app.delete("/api/charters/:id", async (req, res) => {
   const [deleteResult] = await pool.query("DELETE FROM charters WHERE id = ?", [req.params.id]);
   if ((deleteResult?.affectedRows || 0) === 0) return res.status(404).json({ message: "Charter not found" });
