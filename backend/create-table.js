@@ -8,3 +8,4 @@ await pool.query(`
     original_name VARCHAR(255),
     mime_type VARCHAR(100),
     size_bytes INT,
+    submitted_name VARCHAR(255),
