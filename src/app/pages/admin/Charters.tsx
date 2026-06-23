@@ -23,6 +23,7 @@ import {
   createCharter,
   updateCharter,
   deleteCharter,
+  updateCharterFilePath,
   Charter,
   Department,
   formatDate,
