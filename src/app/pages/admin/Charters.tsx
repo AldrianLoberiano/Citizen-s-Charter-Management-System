@@ -695,6 +695,7 @@ export function Charters() {
             Preview is not available for this file type.
           </div>
         )}
+        {editHistory.length > 0 && (
       </Modal>
 
       {/* Delete Confirmation Modal */}
