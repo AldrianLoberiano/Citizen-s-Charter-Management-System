@@ -89,6 +89,7 @@ export function Charters() {
   const [viewerType, setViewerType] = useState<ViewerType>("unknown");
   const [viewerError, setViewerError] = useState<string | null>(null);
   const [viewerCharterId, setViewerCharterId] = useState<number | null>(null);
+  const [editHistory, setEditHistory] = useState<any[]>([]);
 
   // Form
   const [formData, setFormData] = useState<FormData>(emptyForm);
