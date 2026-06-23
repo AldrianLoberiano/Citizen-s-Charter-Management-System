@@ -628,6 +628,7 @@ app.post("/api/charters/:id/attachment", upload.single("file"), async (req, res)
   }
 
   const oldFilePath = charterRows[0].file_path;
+  const newRelativePath = `/uploads/charters/${req.file.filename}`;
 
   await pool.query("UPDATE charters SET file_path = ? WHERE id = ?", [newRelativePath, charterId]);
 
