@@ -99,6 +99,7 @@ function htmlToDocxElements(htmlStr: string): (Paragraph | Table)[] {
 
     if (tag === "img") {
       const src = el.getAttribute("src") || "";
+      const imgData = dataUriToBuffer(src);
     if (tag === "table") {
       const rows: TableRow[] = [];
       el.querySelectorAll("tr").forEach((tr) => {
