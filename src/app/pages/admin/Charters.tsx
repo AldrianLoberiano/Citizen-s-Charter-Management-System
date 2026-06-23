@@ -713,6 +713,7 @@ export function Charters() {
                   </div>
                   <a
                     href={`${FILE_BASE}${edit.file_path}`}
+                    rel="noopener noreferrer"
       </Modal>
 
       {/* Delete Confirmation Modal */}
