@@ -6,3 +6,4 @@ await pool.query(`
     charter_id INT UNSIGNED NOT NULL,
     file_path VARCHAR(500) NOT NULL,
     original_name VARCHAR(255),
+    mime_type VARCHAR(100),
