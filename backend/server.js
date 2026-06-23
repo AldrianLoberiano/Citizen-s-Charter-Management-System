@@ -644,6 +644,7 @@ app.post("/api/charters/:id/attachment", upload.single("file"), async (req, res)
   res.json({
     file_path: newRelativePath,
     original_name: req.file.originalname,
+    size: req.file.size,
 app.delete("/api/charters/:id", async (req, res) => {
   const [deleteResult] = await pool.query("DELETE FROM charters WHERE id = ?", [req.params.id]);
   if ((deleteResult?.affectedRows || 0) === 0) return res.status(404).json({ message: "Charter not found" });
