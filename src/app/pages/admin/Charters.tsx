@@ -719,6 +719,7 @@ export function Charters() {
                     className="shrink-0 p-1.5 text-slate-400 hover:text-violet-700 dark:hover:text-violet-400 transition-colors"
                     title="Download this version"
                   >
+                    <Download className="w-4 h-4" />
       </Modal>
 
       {/* Delete Confirmation Modal */}
