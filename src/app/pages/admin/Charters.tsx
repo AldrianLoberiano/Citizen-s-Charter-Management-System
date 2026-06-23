@@ -156,6 +156,7 @@ export function Charters() {
     setViewerCharterId(null);
   };
 
+  const openViewer = async (filePath: string, charterId?: number) => {
     const type = getViewerType(filePath);
     setViewerOpen(true);
     setViewerFilePath(filePath);
