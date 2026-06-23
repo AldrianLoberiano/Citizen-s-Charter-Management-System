@@ -712,6 +712,7 @@ export function Charters() {
                     </p>
                   </div>
                   <a
+                    href={`${FILE_BASE}${edit.file_path}`}
       </Modal>
 
       {/* Delete Confirmation Modal */}
