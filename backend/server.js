@@ -627,7 +627,6 @@ app.post("/api/charters/:id/attachment", editedUpload.single("file"), async (req
     return res.status(404).json({ message: "Charter not found" });
   }
 
-  const newRelativePath = `/uploads/charters/${req.file.filename}`;
 
   // Delete old file if it exists
   if (oldFilePath) {
