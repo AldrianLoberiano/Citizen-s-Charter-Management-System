@@ -137,6 +137,7 @@ export const api = {
   },
   saveCharterEdit: (charterId: number, file: File) => {
     const formData = new FormData();
+    formData.append("file", file);
   uploadEditedCharterPdf: (
     charterId: number,
     file: File,
