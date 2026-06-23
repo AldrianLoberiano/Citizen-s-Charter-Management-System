@@ -153,6 +153,7 @@ export function Charters() {
     setViewerFilePath("");
     setViewerType("unknown");
     setViewerError(null);
+    setViewerCharterId(null);
   };
 
   const openViewer = async (filePath: string) => {
