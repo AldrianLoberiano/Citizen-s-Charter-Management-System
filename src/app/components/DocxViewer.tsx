@@ -114,6 +114,7 @@ function htmlToDocxElements(htmlStr: string): (Paragraph | Table)[] {
       }
       return;
     }
+
     if (tag === "table") {
       const rows: TableRow[] = [];
       el.querySelectorAll("tr").forEach((tr) => {
