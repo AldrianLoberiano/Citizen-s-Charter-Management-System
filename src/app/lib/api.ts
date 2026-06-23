@@ -143,6 +143,7 @@ export const api = {
   getCharterEdits: (charterId: number) => {
     return request(`/charters/${charterId}/edits`);
   },
+  getAllEditedCharters: () => {
   uploadEditedCharterPdf: (
     charterId: number,
     file: File,
