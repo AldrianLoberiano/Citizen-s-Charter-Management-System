@@ -15,3 +15,4 @@ await pool.query(`
     FOREIGN KEY (charter_id) REFERENCES charters(id) ON DELETE CASCADE
   )
 `);
+
