@@ -629,7 +629,6 @@ app.post("/api/charters/:id/attachment", editedUpload.single("file"), async (req
 
   const newRelativePath = `/uploads/edited-charters/${req.file.filename}`;
 
-  // Delete old file if it exists
   if (oldFilePath) {
     const oldAbsolute = path.join(__dirname, "..", oldFilePath);
     try {
