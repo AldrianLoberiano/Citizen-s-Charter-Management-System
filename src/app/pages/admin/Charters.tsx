@@ -708,6 +708,7 @@ export function Charters() {
                   <div className="flex-1 min-w-0">
                     <p className="text-slate-700 dark:text-slate-300 truncate">{edit.original_name}</p>
                     <p className="text-xs text-slate-400">
+                    </p>
       </Modal>
 
       {/* Delete Confirmation Modal */}
