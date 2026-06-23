@@ -12,6 +12,7 @@ import {
   AlignmentType,
   HeadingLevel,
   BorderStyle,
+  ImageRun,
   convertInchesToTwip,
 } from "docx";
 import {
