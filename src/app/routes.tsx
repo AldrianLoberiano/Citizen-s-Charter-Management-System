@@ -11,6 +11,7 @@ import { Login } from "./pages/admin/Login";
 import { Dashboard } from "./pages/admin/Dashboard";
 import { Departments } from "./pages/admin/Departments";
 import { Charters } from "./pages/admin/Charters";
+import { EditedCharters } from "./pages/admin/EditedCharters";
 import { Feedback } from "./pages/admin/Feedback";
 import { BackupRecovery } from "./pages/admin/BackupRecovery";
 import { Home } from "./pages/client/Home";
