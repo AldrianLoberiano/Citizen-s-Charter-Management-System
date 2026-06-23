@@ -85,6 +85,7 @@ export function Charters() {
   const [viewerFilePath, setViewerFilePath] = useState("");
   const [viewerType, setViewerType] = useState<ViewerType>("unknown");
   const [viewerError, setViewerError] = useState<string | null>(null);
+  const [viewerCharterId, setViewerCharterId] = useState<number | null>(null);
 
   // Form
   const [formData, setFormData] = useState<FormData>(emptyForm);
