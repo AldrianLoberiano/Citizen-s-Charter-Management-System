@@ -612,6 +612,7 @@ app.put("/api/charters/:id", async (req, res) => {
   res.json(rows[0]);
 });
 
+app.post("/api/charters/:id/attachment", editedUpload.single("file"), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ message: "No file uploaded" });
   }
