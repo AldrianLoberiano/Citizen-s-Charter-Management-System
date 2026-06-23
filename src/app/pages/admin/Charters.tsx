@@ -16,6 +16,7 @@ import {
   X,
   Filter,
   History,
+  Download,
 } from "lucide-react";
 import {
   getCharters,
