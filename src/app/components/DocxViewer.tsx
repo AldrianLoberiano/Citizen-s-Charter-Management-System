@@ -101,6 +101,7 @@ function htmlToDocxElements(htmlStr: string): (Paragraph | Table)[] {
       const src = el.getAttribute("src") || "";
       const imgData = dataUriToBuffer(src);
       if (imgData) {
+        const ext = imgData.type.split("/")[1] || "png";
     if (tag === "table") {
       const rows: TableRow[] = [];
       el.querySelectorAll("tr").forEach((tr) => {
