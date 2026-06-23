@@ -175,6 +175,7 @@ export function Charters() {
     const result = await api.updateCharterAttachment(viewerCharterId, file);
     setViewerFilePath(result.file_path);
   }, [viewerCharterId]);
+
   // Validate form
   const validate = (): boolean => {
     const errors: Partial<FormData> = {};
