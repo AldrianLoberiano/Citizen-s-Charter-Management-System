@@ -703,6 +703,7 @@ export function Charters() {
               <span className="text-xs text-slate-400">({editHistory.length} version{editHistory.length !== 1 ? "s" : ""})</span>
             </div>
             <div className="max-h-[20vh] overflow-y-auto space-y-2">
+              {editHistory.map((edit) => (
       </Modal>
 
       {/* Delete Confirmation Modal */}
