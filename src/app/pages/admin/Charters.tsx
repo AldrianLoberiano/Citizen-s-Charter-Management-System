@@ -704,6 +704,7 @@ export function Charters() {
             </div>
             <div className="max-h-[20vh] overflow-y-auto space-y-2">
               {editHistory.map((edit) => (
+                <div key={edit.id} className="flex items-center justify-between gap-3 p-2 rounded-lg bg-slate-50 dark:bg-slate-800 text-sm">
       </Modal>
 
       {/* Delete Confirmation Modal */}
