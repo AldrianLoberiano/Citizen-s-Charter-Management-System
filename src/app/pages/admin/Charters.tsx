@@ -173,6 +173,7 @@ export function Charters() {
   const handleSaveAttachment = useCallback(async (blob: Blob) => {
     if (!viewerCharterId) return;
     const file = new File([blob], "document.docx", { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
+    const result = await api.saveCharterEdit(viewerCharterId, file);
     setViewerFilePath(result.file_path);
   }, [viewerCharterId]);
 
