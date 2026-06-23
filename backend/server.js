@@ -618,6 +618,7 @@ app.post("/api/charters/:id/attachment", upload.single("file"), async (req, res)
   }
 
   const charterId = Number(req.params.id);
+  if (!charterId || Number.isNaN(charterId)) {
 app.delete("/api/charters/:id", async (req, res) => {
   const [deleteResult] = await pool.query("DELETE FROM charters WHERE id = ?", [req.params.id]);
   if ((deleteResult?.affectedRows || 0) === 0) return res.status(404).json({ message: "Charter not found" });
