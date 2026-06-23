@@ -700,6 +700,7 @@ export function Charters() {
             <div className="flex items-center gap-2 mb-3">
               <History className="w-4 h-4 text-slate-500" />
               <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Edit History</span>
+              <span className="text-xs text-slate-400">({editHistory.length} version{editHistory.length !== 1 ? "s" : ""})</span>
       </Modal>
 
       {/* Delete Confirmation Modal */}
