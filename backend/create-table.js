@@ -13,3 +13,4 @@ await pool.query(`
     notes TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (charter_id) REFERENCES charters(id) ON DELETE CASCADE
+  )
