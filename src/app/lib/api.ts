@@ -141,6 +141,7 @@ export const api = {
     return upload(`/charters/${charterId}/save-edit`, formData);
   },
   getCharterEdits: (charterId: number) => {
+    return request(`/charters/${charterId}/edits`);
   uploadEditedCharterPdf: (
     charterId: number,
     file: File,
