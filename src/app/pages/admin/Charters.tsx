@@ -696,6 +696,7 @@ export function Charters() {
           </div>
         )}
         {editHistory.length > 0 && (
+          <div className="mt-4 border-t border-slate-200 dark:border-slate-700 pt-4">
       </Modal>
 
       {/* Delete Confirmation Modal */}
