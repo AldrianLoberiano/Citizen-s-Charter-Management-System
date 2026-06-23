@@ -629,7 +629,6 @@ app.post("/api/charters/:id/attachment", editedUpload.single("file"), async (req
 
   const newRelativePath = `/uploads/edited-charters/${req.file.filename}`;
 
-    const oldAbsolute = path.join(__dirname, "..", oldFilePath);
     try {
       if (fs.existsSync(oldAbsolute)) fs.unlinkSync(oldAbsolute);
     } catch { /* ignore */ }
