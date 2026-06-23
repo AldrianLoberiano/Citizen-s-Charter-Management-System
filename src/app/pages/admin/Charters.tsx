@@ -715,6 +715,7 @@ export function Charters() {
                     href={`${FILE_BASE}${edit.file_path}`}
                     target="_blank"
                     rel="noopener noreferrer"
+                    download
       </Modal>
 
       {/* Delete Confirmation Modal */}
