@@ -627,7 +627,6 @@ app.post("/api/charters/:id/attachment", upload.single("file"), async (req, res)
     return res.status(404).json({ message: "Charter not found" });
   }
 
-  const newRelativePath = `/uploads/edited-charters/${req.file.filename}`;
 
   await pool.query("UPDATE charters SET file_path = ? WHERE id = ?", [newRelativePath, charterId]);
 
