@@ -1,6 +1,20 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import mammoth from "mammoth";
 import {
+  Document,
+  Packer,
+  Paragraph,
+  TextRun,
+  Table,
+  TableRow,
+  TableCell,
+  WidthType,
+  AlignmentType,
+  HeadingLevel,
+  BorderStyle,
+  convertInchesToTwip,
+} from "docx";
+import {
   Download,
   Printer,
   ZoomIn,
@@ -17,9 +31,152 @@ interface DocxViewerProps {
   fileName?: string;
   className?: string;
   editable?: boolean;
+  onSave?: (blob: Blob) => Promise<void>;
 }
 
-export function DocxViewer({ fileUrl, fileName, className = "", editable = true }: DocxViewerProps) {
+function parseInline(element: HTMLElement): TextRun[] {
+  const runs: TextRun[] = [];
+  element.childNodes.forEach((child) => {
+    if (child.nodeType === Node.TEXT_NODE) {
+      const text = child.textContent || "";
+      if (text) {
+        const isBold = element.tagName === "B" || element.tagName === "STRONG";
+        const isItalic = element.tagName === "I" || element.tagName === "EM";
+        const isUnderline = element.tagName === "U";
+        runs.push(new TextRun({ text, bold: isBold, italics: isItalic, underline: isUnderline ? {} : undefined }));
+      }
+    } else if (child.nodeType === Node.ELEMENT_NODE) {
+      const cel = child as HTMLElement;
+      const tag = cel.tagName;
+      const isBold = tag === "B" || tag === "STRONG";
+      const isItalic = tag === "I" || tag === "EM";
+      const isUnderline = tag === "U";
+      cel.childNodes.forEach((gc) => {
+        if (gc.nodeType === Node.TEXT_NODE) {
+          const t = gc.textContent || "";
+          if (t) runs.push(new TextRun({ text: t, bold: isBold, italics: isItalic, underline: isUnderline ? {} : undefined }));
+        } else if (gc.nodeType === Node.ELEMENT_NODE) {
+          const gcel = gc as HTMLElement;
+          const gt = gcel.tagName;
+          runs.push(new TextRun({
+            text: gcel.textContent || "",
+            bold: isBold || gt === "B" || gt === "STRONG",
+            italics: isItalic || gt === "I" || gt === "EM",
+            underline: isUnderline || gt === "U" ? {} : undefined,
+          }));
+        }
+      });
+    }
+  });
+  return runs.length > 0 ? runs : [new TextRun("")];
+}
+
+function htmlToDocxElements(htmlStr: string): (Paragraph | Table)[] {
+  const div = document.createElement("div");
+  div.innerHTML = htmlStr;
+  const elements: (Paragraph | Table)[] = [];
+
+  function processNode(node: ChildNode) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      const text = node.textContent || "";
+      if (text.trim()) elements.push(new Paragraph({ children: [new TextRun(text)] }));
+      return;
+    }
+    if (node.nodeType !== Node.ELEMENT_NODE) return;
+    const el = node as HTMLElement;
+    const tag = el.tagName.toLowerCase();
+
+    if (tag === "table") {
+      const rows: TableRow[] = [];
+      el.querySelectorAll("tr").forEach((tr) => {
+        const cells: TableCell[] = [];
+        tr.querySelectorAll("td, th").forEach((td) => {
+          const cellParagraphs: Paragraph[] = [];
+          td.childNodes.forEach((child) => {
+            if (child.nodeType === Node.TEXT_NODE) {
+              const t = child.textContent || "";
+              if (t) cellParagraphs.push(new Paragraph({ children: [new TextRun({ text: t, bold: td.tagName === "TH" })] }));
+            } else if (child.nodeType === Node.ELEMENT_NODE) {
+              cellParagraphs.push(...htmlToDocxElements((child as HTMLElement).outerHTML));
+            }
+          });
+          if (cellParagraphs.length === 0) cellParagraphs.push(new Paragraph({ children: [new TextRun("")] }));
+          cells.push(new TableCell({
+            children: cellParagraphs,
+            width: { size: Math.floor(100 / Math.max(tr.querySelectorAll("td, th").length, 1)), type: WidthType.PERCENTAGE },
+          }));
+        });
+        if (cells.length > 0) rows.push(new TableRow({ children: cells }));
+      });
+      if (rows.length > 0) elements.push(new Table({ rows }));
+      return;
+    }
+
+    if (/^h([1-6])$/.test(tag)) {
+      const level = Number(tag[1]);
+      const headingMap: Record<number, (typeof HeadingLevel)[keyof typeof HeadingLevel]> = {
+        1: HeadingLevel.HEADING_1,
+        2: HeadingLevel.HEADING_2,
+        3: HeadingLevel.HEADING_3,
+        4: HeadingLevel.HEADING_4,
+        5: HeadingLevel.HEADING_5,
+        6: HeadingLevel.HEADING_6,
+      };
+      elements.push(new Paragraph({
+        children: [new TextRun({ text: el.textContent || "", bold: true })],
+        heading: headingMap[level] || HeadingLevel.HEADING_1,
+      }));
+      return;
+    }
+
+    if (tag === "p") {
+      elements.push(new Paragraph({ children: parseInline(el) }));
+      return;
+    }
+
+    if (tag === "ul" || tag === "ol") {
+      el.querySelectorAll("li").forEach((li) => {
+        elements.push(new Paragraph({
+          children: parseInline(li),
+          bullet: tag === "ul" ? { level: 0 } : undefined,
+          numbering: tag === "ol" ? { reference: 0, level: 0 } : undefined,
+        }));
+      });
+      return;
+    }
+
+    if (tag === "br") {
+      elements.push(new Paragraph({ children: [new TextRun("")] }));
+      return;
+    }
+
+    el.childNodes.forEach(processNode);
+  }
+
+  div.childNodes.forEach(processNode);
+  return elements.length > 0 ? elements : [new Paragraph({ children: [new TextRun("")] })];
+}
+
+async function htmlToDocxBlob(htmlStr: string, title?: string): Promise<Blob> {
+  const children = htmlToDocxElements(htmlStr);
+  const doc = new Document({
+    numbering: {
+      config: [{
+        reference: "ordered-list",
+        levels: [{ level: 0, format: "decimal", text: "%1.", alignment: AlignmentType.LEFT, style: { paragraph: { indent: { left: convertInchesToTwip(0.5), hanging: convertInchesToTwip(0.25) } } } }],
+      }],
+    },
+    sections: [{
+      properties: {},
+      children: title
+        ? [new Paragraph({ children: [new TextRun({ text: title, bold: true })], heading: HeadingLevel.TITLE }), ...children]
+        : children,
+    }],
+  });
+  return Packer.toBlob(doc);
+}
+
+export function DocxViewer({ fileUrl, fileName, className = "", editable = true, onSave }: DocxViewerProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const [html, setHtml] = useState("");
   const [originalHtml, setOriginalHtml] = useState("");
@@ -27,10 +184,19 @@ export function DocxViewer({ fileUrl, fileName, className = "", editable = true 
   const [loading, setLoading] = useState(true);
   const [zoom, setZoom] = useState(100);
   const [isDirty, setIsDirty] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const historyRef = useRef<string[]>([]);
   const historyIndexRef = useRef(-1);
+  const skipNextFetchRef = useRef(false);
 
   useEffect(() => {
+    if (skipNextFetchRef.current) {
+      skipNextFetchRef.current = false;
+      setLoading(false);
+      return;
+    }
+
     let cancelled = false;
     setLoading(true);
     setError(null);
@@ -99,25 +265,33 @@ export function DocxViewer({ fileUrl, fileName, className = "", editable = true 
     pushHistory(newHtml);
   }, [originalHtml, pushHistory]);
 
-  const handleSave = useCallback(() => {
+  const handleSave = useCallback(async () => {
     if (!contentRef.current) return;
     const editedHtml = contentRef.current.innerHTML;
-    const fullHtml = `
-      <!DOCTYPE html>
-      <html>
-      <head><meta charset="utf-8"><title>${fileName || "Document"}</title></head>
-      <body>${editedHtml}</body>
-      </html>
-    `;
-    const blob = new Blob([fullHtml], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = fileName ? fileName.replace(/\.docx$/i, "") + " (edited).docx" : "document.docx";
-    a.click();
-    URL.revokeObjectURL(url);
-    setIsDirty(false);
-  }, [fileName]);
+    const blob = await htmlToDocxBlob(editedHtml, fileName || undefined);
+
+    if (onSave) {
+      setSaving(true);
+      setSaveError(null);
+      try {
+        skipNextFetchRef.current = true;
+        await onSave(blob);
+        setIsDirty(false);
+      } catch (err) {
+        setSaveError(err instanceof Error ? err.message : "Save failed");
+      } finally {
+        setSaving(false);
+      }
+    } else {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fileName ? fileName.replace(/\.docx$/i, "") + " (edited).docx" : "document.docx";
+      a.click();
+      URL.revokeObjectURL(url);
+      setIsDirty(false);
+    }
+  }, [fileName, onSave]);
 
   const handleDownloadOriginal = useCallback(() => {
     const a = document.createElement("a");
@@ -209,12 +383,12 @@ export function DocxViewer({ fileUrl, fileName, className = "", editable = true 
             <>
               <button
                 onClick={handleSave}
-                disabled={!isDirty}
+                disabled={!isDirty || saving}
                 title="Save (Ctrl+S)"
                 className="inline-flex items-center gap-1.5 rounded-lg bg-violet-900 px-3 py-1.5 text-xs text-white transition-colors hover:bg-violet-950 disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 <Save className="h-3.5 w-3.5" />
-                Save
+                {saving ? "Saving..." : "Save"}
               </button>
               <div className="w-px h-5 bg-slate-200 dark:bg-slate-700 mx-1" />
               <button onClick={handleUndo} title="Undo (Ctrl+Z)" className="p-1.5 rounded text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800">
@@ -238,6 +412,9 @@ export function DocxViewer({ fileUrl, fileName, className = "", editable = true 
           </button>
         </div>
         <div className="flex items-center gap-1">
+          {saveError && (
+            <span className="text-xs text-red-500 dark:text-red-400 mr-2">{saveError}</span>
+          )}
           {isDirty && (
             <span className="text-xs text-amber-500 dark:text-amber-400 mr-2">Unsaved changes</span>
           )}
