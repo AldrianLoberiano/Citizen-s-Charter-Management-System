@@ -5,3 +5,4 @@ await pool.query(`
     id INT AUTO_INCREMENT PRIMARY KEY,
     charter_id INT UNSIGNED NOT NULL,
     file_path VARCHAR(500) NOT NULL,
+    original_name VARCHAR(255),
