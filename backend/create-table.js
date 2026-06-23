@@ -7,3 +7,4 @@ await pool.query(`
     file_path VARCHAR(500) NOT NULL,
     original_name VARCHAR(255),
     mime_type VARCHAR(100),
+    size_bytes INT,
