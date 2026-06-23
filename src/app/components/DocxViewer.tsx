@@ -76,6 +76,7 @@ function dataUriToBuffer(dataUri: string): { buffer: ArrayBuffer; type: string }
   const match = dataUri.match(/^data:([^;]+);base64,(.+)$/);
   if (!match) return null;
   const type = match[1];
+  const binary = atob(match[2]);
 function htmlToDocxElements(htmlStr: string): (Paragraph | Table)[] {
   const div = document.createElement("div");
   div.innerHTML = htmlStr;
