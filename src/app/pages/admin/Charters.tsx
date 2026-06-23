@@ -717,6 +717,7 @@ export function Charters() {
                     rel="noopener noreferrer"
                     download
                     className="shrink-0 p-1.5 text-slate-400 hover:text-violet-700 dark:hover:text-violet-400 transition-colors"
+                    title="Download this version"
       </Modal>
 
       {/* Delete Confirmation Modal */}
