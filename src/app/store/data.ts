@@ -219,6 +219,7 @@ export function updateCharterFilePath(id: number, filePath: string) {
     charter.id === id ? { ...charter, file_path: filePath } : charter
   );
 }
+
 export function getRatings(): Rating[] {
   return [...ratingsCache];
 }
