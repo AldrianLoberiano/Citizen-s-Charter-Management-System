@@ -434,6 +434,7 @@ export function Charters() {
                           type="button"
                           title="View attachment"
                            onClick={() => {
+                            if (charter.file_path) openViewer(charter.file_path, charter.id);
                           }}
                           className="inline-flex items-center justify-center w-7 h-7 bg-violet-900 rounded-lg hover:bg-violet-950 transition-colors"
                         >
