@@ -215,6 +215,7 @@ export async function deleteCharter(id: number) {
 }
 
 export function updateCharterFilePath(id: number, filePath: string) {
+  chartersCache = chartersCache.map((charter) =>
 export function getRatings(): Rating[] {
   return [...ratingsCache];
 }
