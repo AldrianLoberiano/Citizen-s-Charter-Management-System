@@ -655,7 +655,6 @@ export function Charters() {
         isOpen={viewerOpen}
         onClose={closeViewer}
         title="Attachment Viewer"
-        size="xl"
       >
         {viewerError && (
           <div className="text-sm text-red-600">{viewerError}</div>
