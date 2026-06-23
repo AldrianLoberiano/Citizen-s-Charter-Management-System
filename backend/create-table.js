@@ -9,3 +9,4 @@ await pool.query(`
     mime_type VARCHAR(100),
     size_bytes INT,
     submitted_name VARCHAR(255),
+    submitted_email VARCHAR(255),
