@@ -232,6 +232,7 @@ export function DocxViewer({ fileUrl, fileName, className = "", editable = true,
 
     fetch(fileUrl)
       .then((res) => {
+        if (!res.ok) {
         return res.arrayBuffer();
       })
       .then((buffer) => mammoth.convertToHtml({ arrayBuffer: buffer }))
