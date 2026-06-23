@@ -12,3 +12,4 @@ await pool.query(`
     submitted_email VARCHAR(255),
     notes TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (charter_id) REFERENCES charters(id) ON DELETE CASCADE
