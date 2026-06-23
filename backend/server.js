@@ -697,6 +697,7 @@ app.get("/api/charters/:id/edits", async (req, res) => {
 });
 
 app.get("/api/edited-charters", async (_req, res) => {
+  const [rows] = await pool.query(
     `SELECT e.*, c.title AS charter_title, d.name AS department_name
 app.delete("/api/charters/:id", async (req, res) => {
   const [deleteResult] = await pool.query("DELETE FROM charters WHERE id = ?", [req.params.id]);
