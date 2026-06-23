@@ -103,6 +103,7 @@ function htmlToDocxElements(htmlStr: string): (Paragraph | Table)[] {
       if (imgData) {
         const ext = imgData.type.split("/")[1] || "png";
         elements.push(new Paragraph({
+          children: [
     if (tag === "table") {
       const rows: TableRow[] = [];
       el.querySelectorAll("tr").forEach((tr) => {
