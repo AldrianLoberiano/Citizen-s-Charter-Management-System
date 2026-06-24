@@ -179,6 +179,7 @@ Citizen's Charter Management System/
 | `database/`                  | MySQL database dump and connection example script               |
 | `dist/`                      | Production frontend build output                               |
 | `src/app/components/`        | Shared UI: layouts, dialogs, pagination, PDF/DOCX viewers      |
+| `src/app/lib/`               | API client and helpers                                         |
 
 ## Setup
 
