@@ -75,6 +75,10 @@ export function Charters() {
   const [charters, setCharters] = useState<Charter[]>(getCharters());
   const [departments] = useState<Department[]>(getDepartments());
 
+  useEffect(() => {
+    api.getCharters().then(setCharters).catch(() => {});
+  }, []);
+
   const [search, setSearch] = useState("");
   const [filterDept, setFilterDept] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -111,6 +115,8 @@ export function Charters() {
   const [formData, setFormData] = useState<FormData>(emptyForm);
   const [formErrors, setFormErrors] = useState<Partial<FormData>>({});
   const [uploadingFile, setUploadingFile] = useState(false);
+  const [formSuccess, setFormSuccess] = useState<string | null>(null);
+  const [viewerSuccess, setViewerSuccess] = useState(false);
 
   // Notification
   const [notification, setNotification] = useState<{
@@ -118,7 +124,10 @@ export function Charters() {
     message: string;
   } | null>(null);
 
-  const refresh = useCallback(() => setCharters(getCharters()), []);
+  const refresh = useCallback(async () => {
+    const fresh = await api.getCharters();
+    setCharters(fresh);
+  }, []);
 
   const showNotification = (type: "success" | "error", message: string) => {
     setNotification({ type, message });
@@ -146,6 +155,7 @@ export function Charters() {
     setEditingCharter(null);
     setFormData(emptyForm);
     setFormErrors({});
+    setFormSuccess(null);
     setFormModalOpen(true);
   };
 
@@ -159,6 +169,7 @@ export function Charters() {
       file_path: charter.file_path || "",
     });
     setFormErrors({});
+    setFormSuccess(null);
     setFormModalOpen(true);
   };
 
@@ -174,6 +185,7 @@ export function Charters() {
     setViewerType("unknown");
     setViewerError(null);
     setViewerCharterId(null);
+    setViewerSuccess(false);
   };
 
   const handleOpenExternal = useCallback(() => {
@@ -217,7 +229,10 @@ export function Charters() {
     const result = await api.saveCharterEdit(viewerCharterId, file, editorName.trim());
     setViewerFilePath(result.file_path);
     updateCharterFilePath(viewerCharterId, result.file_path);
-    setCharters(getCharters());
+    const freshCharters = await api.getCharters();
+    setCharters(freshCharters);
+    setViewerSuccess(true);
+    setTimeout(() => setViewerSuccess(false), 2000);
   }, [viewerCharterId, editorName]);
 
   // Validate form
@@ -299,15 +314,19 @@ export function Charters() {
     try {
       if (editingCharter) {
         await updateCharter(editingCharter.id, data);
-        showNotification("success", `Charter "${data.title}" has been updated.`);
+        setFormSuccess("Updated successfully!");
       } else {
         await createCharter(data);
-        showNotification("success", `Charter "${data.title}" has been created.`);
+        setFormSuccess("Created successfully!");
       }
 
       refresh();
-      setFormModalOpen(false);
+      setTimeout(() => {
+        setFormSuccess(null);
+        setFormModalOpen(false);
+      }, 1500);
     } catch (error) {
+      setFormSuccess(null);
       showNotification("error", error instanceof Error ? error.message : "Failed to save charter.");
     }
   };
@@ -689,6 +708,14 @@ export function Charters() {
           </div>
 
           {/* Form Actions */}
+          {formSuccess && (
+            <div className="flex items-center gap-2 p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-700 text-sm font-medium">
+              <svg className="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              {formSuccess}
+            </div>
+          )}
           <div className="flex justify-end gap-3 pt-2 border-t border-slate-100">
             <button
               type="button"
@@ -714,6 +741,14 @@ export function Charters() {
         title="Attachment Viewer"
         size="3xl"
       >
+        {viewerSuccess && (
+          <div className="flex items-center gap-2 p-3 mb-3 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-700 text-sm font-medium">
+            <svg className="w-5 h-5 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            Updated successfully!
+          </div>
+        )}
         {viewerError && (
           <div className="text-sm text-red-600">{viewerError}</div>
         )}
