@@ -429,6 +429,9 @@ export function Charters() {
                 <th className="text-left px-5 py-3 text-slate-500 text-xs uppercase tracking-wide hidden lg:table-cell">
                   Date Created
                 </th>
+                <th className="text-left px-5 py-3 text-slate-500 text-xs uppercase tracking-wide hidden xl:table-cell">
+                  Last Edited By
+                </th>
                 <th className="text-center px-5 py-3 text-slate-500 text-xs uppercase tracking-wide w-20 dark:text-slate-400">
                   File
                 </th>
@@ -471,6 +474,16 @@ export function Charters() {
                     </td>
                     <td className="px-5 py-4 text-slate-500 text-sm hidden lg:table-cell dark:text-slate-400">
                       {formatDate(charter.created_at)}
+                    </td>
+                    <td className="px-5 py-4 hidden xl:table-cell">
+                      {charter.last_edited_by ? (
+                        <span className="inline-flex items-center gap-1.5 text-violet-800 bg-violet-50 border border-violet-200 px-2.5 py-0.5 rounded-full text-xs dark:text-violet-300 dark:bg-violet-950/50 dark:border-violet-800">
+                          <User className="w-3 h-3" />
+                          {charter.last_edited_by}
+                        </span>
+                      ) : (
+                        <span className="text-slate-300 text-xs dark:text-slate-600">Not edited</span>
+                      )}
                     </td>
                     <td className="px-5 py-4 text-center">
                       {charter.file_path ? (
