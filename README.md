@@ -90,6 +90,7 @@ Citizen's Charter Management System is a full-stack web app for publishing servi
 Citizen's Charter Management System/
 ├─ backend/
 │  ├─ .env.example
+│  ├─ create-table.js              # Migration script for charter_pdf_edits table
 │  ├─ db.js
 │  ├─ package.json
 │  ├─ server.js
