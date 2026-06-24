@@ -17,6 +17,7 @@ import {
   Filter,
   History,
   Download,
+  User,
 } from "lucide-react";
 import {
   getCharters,
@@ -91,6 +92,11 @@ export function Charters() {
   const [viewerCharterId, setViewerCharterId] = useState<number | null>(null);
   const [editHistory, setEditHistory] = useState<any[]>([]);
 
+  // Editor name collection
+  const [editorNameModalOpen, setEditorNameModalOpen] = useState(false);
+  const [editorName, setEditorName] = useState("");
+  const [pendingViewerFile, setPendingViewerFile] = useState<{ filePath: string; charterId?: number } | null>(null);
+
   // Form
   const [formData, setFormData] = useState<FormData>(emptyForm);
   const [formErrors, setFormErrors] = useState<Partial<FormData>>({});
@@ -161,16 +167,31 @@ export function Charters() {
   };
 
   const openViewer = async (filePath: string, charterId?: number) => {
-    const type = getViewerType(filePath);
-    setViewerOpen(true);
-    setViewerFilePath(filePath);
-    setViewerType(type);
-    setViewerCharterId(charterId ?? null);
-    setViewerError(null);
+    setPendingViewerFile({ filePath, charterId });
+    setEditorNameModalOpen(true);
+  };
 
-    if (type === "unknown") {
-      setViewerError("Preview is not available for this file type.");
+  const confirmEditorName = () => {
+    if (!editorName.trim()) return;
+    setEditorNameModalOpen(false);
+    if (pendingViewerFile) {
+      const { filePath, charterId } = pendingViewerFile;
+      const type = getViewerType(filePath);
+      setViewerOpen(true);
+      setViewerFilePath(filePath);
+      setViewerType(type);
+      setViewerCharterId(charterId ?? null);
+      setViewerError(null);
+      if (type === "unknown") {
+        setViewerError("Preview is not available for this file type.");
+      }
     }
+  };
+
+  const cancelEditorName = () => {
+    setEditorNameModalOpen(false);
+    setPendingViewerFile(null);
+    setEditorName("");
   };
 
   useEffect(() => {
@@ -186,11 +207,11 @@ export function Charters() {
   const handleSaveAttachment = useCallback(async (blob: Blob) => {
     if (!viewerCharterId) return;
     const file = new File([blob], "document.docx", { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
-    const result = await api.saveCharterEdit(viewerCharterId, file);
+    const result = await api.saveCharterEdit(viewerCharterId, file, editorName.trim());
     setViewerFilePath(result.file_path);
     updateCharterFilePath(viewerCharterId, result.file_path);
     setCharters(getCharters());
-  }, [viewerCharterId]);
+  }, [viewerCharterId, editorName]);
 
   // Validate form
   const validate = (): boolean => {
@@ -708,6 +729,10 @@ export function Charters() {
                   <div className="flex-1 min-w-0">
                     <p className="text-slate-700 dark:text-slate-300 truncate">{edit.original_name}</p>
                     <p className="text-xs text-slate-400">
+                      {edit.submitted_name && (
+                        <span className="text-violet-600 dark:text-violet-400 font-medium">{edit.submitted_name}</span>
+                      )}
+                      {edit.submitted_name && (edit.notes || "No notes") && " · "}
                       {edit.notes || "No notes"} &middot; {new Date(edit.created_at).toLocaleString()}
                     </p>
                   </div>
@@ -756,6 +781,52 @@ export function Charters() {
               className="px-4 py-2 text-sm bg-violet-900 text-white rounded-lg hover:bg-violet-950 transition-colors"
             >
               Delete Charter
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Editor Name Collection Modal */}
+      <Modal
+        isOpen={editorNameModalOpen}
+        onClose={cancelEditorName}
+        title="Editor Identification"
+        size="sm"
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-slate-600 dark:text-slate-300">
+            Please enter your name before making changes to this document. This will be recorded in the edit history.
+          </p>
+          <div>
+            <label className="block text-slate-700 mb-1.5 text-sm dark:text-slate-300">
+              Your Name <span className="text-red-500">*</span>
+            </label>
+            <div className="relative">
+              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <input
+                type="text"
+                value={editorName}
+                onChange={(e) => setEditorName(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && confirmEditorName()}
+                placeholder="Enter your full name"
+                autoFocus
+                className="w-full pl-9 pr-4 py-2.5 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-slate-300 dark:bg-slate-800 dark:text-white dark:border-slate-600"
+              />
+            </div>
+          </div>
+          <div className="flex justify-end gap-3 pt-2 border-t border-slate-100">
+            <button
+              onClick={cancelEditorName}
+              className="px-4 py-2 text-sm text-slate-600 border border-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-violet-950/30 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={confirmEditorName}
+              disabled={!editorName.trim()}
+              className="px-4 py-2 text-sm bg-violet-900 text-white rounded-lg hover:bg-violet-950 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              Continue
             </button>
           </div>
         </div>
