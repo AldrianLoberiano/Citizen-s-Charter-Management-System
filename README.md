@@ -69,6 +69,7 @@ Citizen's Charter Management System is a full-stack web app for publishing servi
   - **Charts**:
     - Rating breakdown (bar style, SVG)
     - Source breakdown (legacy rating vs QR/form) (pie style, SVG)
+    - Per-question breakdown visualizations (Google Sheets integration)
   - **CSV export** (downloads a local `.csv` file from filtered results)
   - **Feedback Form QR** modal:
     - Generates QR that points to the citizen in-app feedback form
