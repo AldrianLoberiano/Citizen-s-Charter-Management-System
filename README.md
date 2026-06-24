@@ -76,6 +76,7 @@ Citizen's Charter Management System is a full-stack web app for publishing servi
     - Includes **Copy link** button
 - **Backup & Recovery**
   - SQL dump download and restore from uploaded `.sql` files
+  - Import database schema via admin endpoint
 
 ## Prerequisites
 
