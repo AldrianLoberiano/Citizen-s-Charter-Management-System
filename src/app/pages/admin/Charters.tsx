@@ -17,6 +17,7 @@ import {
   Filter,
   Download,
   User,
+  CheckCircle,
 } from "lucide-react";
 import {
   getCharters,
@@ -232,7 +233,6 @@ export function Charters() {
     const freshCharters = await api.getCharters();
     setCharters(freshCharters);
     setViewerSuccess(true);
-    setTimeout(() => setViewerSuccess(false), 2000);
   }, [viewerCharterId, editorName]);
 
   // Validate form
@@ -741,14 +741,6 @@ export function Charters() {
         title="Attachment Viewer"
         size="3xl"
       >
-        {viewerSuccess && (
-          <div className="flex items-center gap-2 p-3 mb-3 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-700 text-sm font-medium">
-            <svg className="w-5 h-5 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-            Updated successfully!
-          </div>
-        )}
         {viewerError && (
           <div className="text-sm text-red-600">{viewerError}</div>
         )}
@@ -802,6 +794,31 @@ export function Charters() {
               className="px-4 py-2 text-sm bg-violet-900 text-white rounded-lg hover:bg-violet-950 transition-colors"
             >
               Delete Charter
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Success Modal */}
+      <Modal
+        isOpen={viewerSuccess}
+        onClose={() => setViewerSuccess(false)}
+        title="Success"
+        size="sm"
+      >
+        <div className="space-y-4">
+          <div className="flex items-start gap-3 p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
+            <CheckCircle className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+            <p className="text-slate-800 text-sm">
+              Document has been saved successfully.
+            </p>
+          </div>
+          <div className="flex justify-end">
+            <button
+              onClick={() => setViewerSuccess(false)}
+              className="px-4 py-2 text-sm bg-violet-900 text-white rounded-lg hover:bg-violet-950 transition-colors"
+            >
+              OK
             </button>
           </div>
         </div>
