@@ -32,7 +32,10 @@ export function Modal({
 }: ModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
+  const onCloseRef = useRef(onClose);
   const titleId = useRef(`modal-title-${Math.random().toString(36).slice(2, 9)}`);
+
+  onCloseRef.current = onClose;
 
   const getFocusableElements = useCallback(() => {
     if (!modalRef.current) return [];
@@ -50,7 +53,7 @@ export function Modal({
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        onClose();
+        onCloseRef.current();
         return;
       }
       if (e.key === "Tab") {
@@ -89,7 +92,7 @@ export function Modal({
       document.body.style.overflow = "";
       previousFocusRef.current?.focus();
     };
-  }, [isOpen, onClose, getFocusableElements]);
+  }, [isOpen, getFocusableElements]);
 
   if (!isOpen) return null;
 
