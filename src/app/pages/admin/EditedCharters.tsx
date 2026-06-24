@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { History, Download, Search, FileText } from "lucide-react";
+import { History, Download, Search, FileText, User } from "lucide-react";
 import { api } from "../../lib/api";
 
 const FILE_BASE = (import.meta.env.VITE_API_URL || "http://localhost:4000/api").replace(/\/api$/, "");
@@ -11,6 +11,7 @@ interface EditedCharter {
   original_name: string;
   mime_type: string;
   size_bytes: number;
+  submitted_name: string | null;
   notes: string;
   created_at: string;
   charter_title: string;
@@ -78,6 +79,7 @@ export function EditedCharters() {
                 <tr className="border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
                   <th className="text-left px-5 py-3 text-slate-500 text-xs uppercase tracking-wide dark:text-slate-400">Charter</th>
                   <th className="text-left px-5 py-3 text-slate-500 text-xs uppercase tracking-wide hidden md:table-cell">Department</th>
+                  <th className="text-left px-5 py-3 text-slate-500 text-xs uppercase tracking-wide hidden lg:table-cell">Editor</th>
                   <th className="text-left px-5 py-3 text-slate-500 text-xs uppercase tracking-wide hidden lg:table-cell">File</th>
                   <th className="text-left px-5 py-3 text-slate-500 text-xs uppercase tracking-wide hidden lg:table-cell">Size</th>
                   <th className="text-left px-5 py-3 text-slate-500 text-xs uppercase tracking-wide">Date</th>
@@ -93,6 +95,16 @@ export function EditedCharters() {
                     </td>
                     <td className="px-5 py-4 text-sm text-slate-600 dark:text-slate-400 hidden md:table-cell">
                       {edit.department_name || "-"}
+                    </td>
+                    <td className="px-5 py-4 text-sm text-slate-600 dark:text-slate-400 hidden lg:table-cell">
+                      {edit.submitted_name ? (
+                        <span className="inline-flex items-center gap-1.5 text-violet-700 bg-violet-50 border border-violet-200 px-2 py-0.5 rounded-full text-xs dark:text-violet-300 dark:bg-violet-950/50 dark:border-violet-800">
+                          <User className="w-3 h-3" />
+                          {edit.submitted_name}
+                        </span>
+                      ) : (
+                        <span className="text-slate-400 text-xs">-</span>
+                      )}
                     </td>
                     <td className="px-5 py-4 text-sm text-slate-600 dark:text-slate-400 hidden lg:table-cell truncate max-w-[200px]">
                       {edit.original_name}
