@@ -172,7 +172,6 @@ Citizen's Charter Management System/
 
 ### Directory Purpose
 
-| `backend/`                   | Express API, MySQL access, and server startup code    |
 | `backend/tests/`             | Backend test suite (Vitest)                           |
 | `database/`                  | Connection example script                             |
 | `dist/`                      | Production frontend build output                      |
