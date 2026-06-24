@@ -172,7 +172,6 @@ Citizen's Charter Management System/
 
 ### Directory Purpose
 
-| `uploads/charters/`          | Uploaded PDF and document files                       |
 
 ## Setup
 
