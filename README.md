@@ -175,6 +175,7 @@ Citizen's Charter Management System/
 | Path                         | Purpose                                                        |
 | ---------------------------- | -------------------------------------------------------------- |
 | `backend/`                   | Express API, MySQL access, and server startup code             |
+| `backend/tests/`             | Backend test suite (Vitest)                                    |
 
 ## Setup
 
