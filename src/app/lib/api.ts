@@ -138,6 +138,7 @@ export const api = {
   saveCharterEdit: (charterId: number, file: File, editorName?: string) => {
     const formData = new FormData();
     formData.append("file", file);
+    if (editorName) formData.append("editor_name", editorName);
     return upload(`/charters/${charterId}/save-edit`, formData);
   },
   getCharterEdits: (charterId: number) => {
