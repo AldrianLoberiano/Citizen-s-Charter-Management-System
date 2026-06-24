@@ -172,7 +172,6 @@ Citizen's Charter Management System/
 
 ### Directory Purpose
 
-| `dist/`                      | Production frontend build output                      |
 | `src/app/components/`        | Shared UI layouts, dialogs, pagination, and logo loop |
 | `src/app/lib/`               | API client and helpers                                |
 | `src/app/pages/client/`      | Public-facing pages for citizens                      |
