@@ -75,7 +75,6 @@ Citizen's Charter Management System is a full-stack web app for publishing servi
     - Generates QR that points to the citizen in-app feedback form
     - Includes **Copy link** button
   - Uploading **edited charter PDFs** and recording metadata
-  - Local **Backup & Recovery** (SQL dump/restore)
 
 ## Prerequisites
 
