@@ -61,6 +61,7 @@ Citizen's Charter Management System is a full-stack web app for publishing servi
   - **Edit history**: tracks all saved versions with metadata and timestamps
   - Search, department filtering, pagination
 - **Edited Charters** (`/admin/edited-charters`)
+  - Centralized view of all edited charter documents
 - **Feedback management**
   - Filters (Department / Charter / Rating) + search
   - **Charts**:
