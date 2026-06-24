@@ -112,6 +112,7 @@ Citizen's Charter Management System/
 │  │  ├─ components/
 │  │  │  ├─ AdminLayout.tsx
 │  │  │  ├─ ClientLayout.tsx
+│  │  │  ├─ DocxViewer.tsx         # DOCX viewer/editor (mammoth.js + docx)
 │  │  │  ├─ LogoLoop.tsx
 │  │  │  ├─ Modal.tsx
 │  │  │  ├─ Modal.test.tsx
