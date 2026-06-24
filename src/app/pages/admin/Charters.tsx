@@ -200,11 +200,11 @@ export function Charters() {
     }
   };
 
-  const cancelEditorName = () => {
+  const cancelEditorName = useCallback(() => {
     setEditorNameModalOpen(false);
     setPendingViewerFile(null);
     setEditorName("");
-  };
+  }, []);
 
   useEffect(() => {
     if (!viewerOpen || !viewerCharterId) {
