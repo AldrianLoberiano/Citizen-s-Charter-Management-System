@@ -8,9 +8,9 @@ import {
   Download,
   ChevronLeft,
   ChevronRight,
-  RotateCcw,
   ZoomIn,
   ZoomOut,
+  RotateCcw,
 } from "lucide-react";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
@@ -86,34 +86,34 @@ export function PdfEditor({ fileUrl }: PdfEditorProps) {
       overlayEl.height = viewport.height;
       ctx.clearRect(0, 0, viewport.width, viewport.height);
 
-      const pageAnnotations = {
-        texts: textAnnotations.filter((t) => t.page === page),
-        draws: drawPaths.filter((d) => d.page === page),
-        highlights: highlights.filter((h) => h.page === page),
-      };
+      highlights
+        .filter((h) => h.page === page)
+        .forEach((h) => {
+          ctx.fillStyle = "rgba(255, 255, 0, 0.35)";
+          ctx.fillRect(h.x, h.y, h.width, h.height);
+        });
 
-      pageAnnotations.highlights.forEach((h) => {
-        ctx.fillStyle = "rgba(255, 255, 0, 0.35)";
-        ctx.fillRect(h.x, h.y, h.width, h.height);
-      });
+      drawPaths
+        .filter((d) => d.page === page)
+        .forEach((path) => {
+          if (path.points.length < 2) return;
+          ctx.beginPath();
+          ctx.strokeStyle = path.color;
+          ctx.lineWidth = path.width;
+          ctx.lineCap = "round";
+          ctx.lineJoin = "round";
+          ctx.moveTo(path.points[0].x, path.points[0].y);
+          path.points.forEach((pt) => ctx.lineTo(pt.x, pt.y));
+          ctx.stroke();
+        });
 
-      pageAnnotations.draws.forEach((path) => {
-        if (path.points.length < 2) return;
-        ctx.beginPath();
-        ctx.strokeStyle = path.color;
-        ctx.lineWidth = path.width;
-        ctx.lineCap = "round";
-        ctx.lineJoin = "round";
-        ctx.moveTo(path.points[0].x, path.points[0].y);
-        path.points.forEach((pt) => ctx.lineTo(pt.x, pt.y));
-        ctx.stroke();
-      });
-
-      pageAnnotations.texts.forEach((t) => {
-        ctx.font = `${t.fontSize}px Arial`;
-        ctx.fillStyle = t.color;
-        ctx.fillText(t.text, t.x, t.y);
-      });
+      textAnnotations
+        .filter((t) => t.page === page)
+        .forEach((t) => {
+          ctx.font = `${t.fontSize}px Arial`;
+          ctx.fillStyle = t.color;
+          ctx.fillText(t.text, t.x, t.y);
+        });
 
       if (isDrawing && activeTool === "draw" && currentPath.length > 1) {
         ctx.beginPath();
@@ -158,7 +158,6 @@ export function PdfEditor({ fileUrl }: PdfEditorProps) {
       }
 
       if (version !== renderVersionRef.current) return;
-
       drawOverlay(viewport, pageNum);
     },
     [pdfDoc, scale, drawOverlay]
@@ -174,9 +173,7 @@ export function PdfEditor({ fileUrl }: PdfEditorProps) {
     };
     loadPdf();
     return () => {
-      if (renderTaskRef.current) {
-        renderTaskRef.current.cancel();
-      }
+      if (renderTaskRef.current) renderTaskRef.current.cancel();
     };
   }, [fileUrl]);
 
@@ -220,27 +217,23 @@ export function PdfEditor({ fileUrl }: PdfEditorProps) {
       return;
     }
 
-    const target = e.target as HTMLCanvasElement;
-    const rect = target.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
-    const clickY = e.clientY - rect.top;
-    const pageAnnotations = {
-      texts: textAnnotations.filter((t) => t.page === currentPage),
-    };
-    const clickedText = pageAnnotations.texts.find((t) => {
-      const textWidth = t.text.length * t.fontSize * 0.6;
-      return clickX >= t.x && clickX <= t.x + textWidth && clickY >= t.y - t.fontSize && clickY <= t.y;
-    });
-    if (clickedText) {
-      setEditingTextId(clickedText.id);
-      setEditingText(clickedText.text);
+    const clickX = e.clientX - (e.target as HTMLCanvasElement).getBoundingClientRect().left;
+    const clickY = e.clientY - (e.target as HTMLCanvasElement).getBoundingClientRect().top;
+    const clicked = textAnnotations
+      .filter((t) => t.page === currentPage)
+      .find((t) => {
+        const w = t.text.length * t.fontSize * 0.6;
+        return clickX >= t.x && clickX <= t.x + w && clickY >= t.y - t.fontSize && clickY <= t.y;
+      });
+    if (clicked) {
+      setEditingTextId(clicked.id);
+      setEditingText(clicked.text);
     }
   };
 
   const handleCanvasMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (activeTool === "draw" && isDrawing) {
-      const coords = getCanvasCoords(e);
-      setCurrentPath((prev) => [...prev, coords]);
+      setCurrentPath((prev) => [...prev, getCanvasCoords(e)]);
     }
   };
 
@@ -323,19 +316,17 @@ export function PdfEditor({ fileUrl }: PdfEditorProps) {
       const page = pages[path.page - 1];
       if (!page) continue;
       const { height } = page.getSize();
-      if (path.points.length > 1) {
-        for (let i = 0; i < path.points.length - 1; i++) {
-          page.drawLine({
-            start: { x: path.points[i].x, y: height - path.points[i].y },
-            end: { x: path.points[i + 1].x, y: height - path.points[i + 1].y },
-            thickness: path.width,
-            color: rgb(
-              parseInt(path.color.slice(1, 3), 16) / 255,
-              parseInt(path.color.slice(3, 5), 16) / 255,
-              parseInt(path.color.slice(5, 7), 16) / 255
-            ),
-          });
-        }
+      for (let i = 0; i < path.points.length - 1; i++) {
+        page.drawLine({
+          start: { x: path.points[i].x, y: height - path.points[i].y },
+          end: { x: path.points[i + 1].x, y: height - path.points[i + 1].y },
+          thickness: path.width,
+          color: rgb(
+            parseInt(path.color.slice(1, 3), 16) / 255,
+            parseInt(path.color.slice(3, 5), 16) / 255,
+            parseInt(path.color.slice(5, 7), 16) / 255
+          ),
+        });
       }
     }
 
