@@ -172,7 +172,6 @@ Citizen's Charter Management System/
 
 ### Directory Purpose
 
-| `src/styles/`                | Global CSS, fonts, theme, and Tailwind entry files    |
 | `uploads/charters/`          | Uploaded PDF and document files                       |
 
 ## Setup
