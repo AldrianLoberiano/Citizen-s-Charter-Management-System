@@ -143,7 +143,6 @@ Citizen's Charter Management System/
 │  ├─ public/
 │  │  └─ images/
 │  │     ├─ header/
-│  │     │  └─ (logos and header images)
 │  │     └─ (department images)
 │  └─ styles/
 │     ├─ fonts.css
