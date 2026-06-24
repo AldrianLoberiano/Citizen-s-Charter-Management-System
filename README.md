@@ -53,6 +53,7 @@ Citizen's Charter Management System is a full-stack web app for publishing servi
     - Select tool: edit existing text annotations
     - Page navigation, zoom (50%–400%), clear annotations, export annotated PDF
   - **DOCX Viewer/Editor** (`DocxViewer`):
+    - Renders `.docx` files as HTML via mammoth.js
   - Search, department filtering, pagination
 - **Feedback management**
   - Filters (Department / Charter / Rating) + search
