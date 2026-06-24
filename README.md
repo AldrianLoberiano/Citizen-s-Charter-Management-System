@@ -4,6 +4,7 @@ Citizen's Charter Management System is a full-stack web app for publishing servi
 
 ## Tech Stack
 
+- **Frontend:** React 19, TypeScript, Vite, Tailwind CSS v4, Radix UI, MUI, Recharts, Lucide icons
 ## Purpose
 
 - Publish and maintain citizen service charters by department.
