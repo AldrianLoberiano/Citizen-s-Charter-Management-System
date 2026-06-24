@@ -308,6 +308,7 @@ Backend `backend/.env` can override the defaults used by `backend/server.js` and
   - `DELETE /api/charters/:id`
 - Charter edits and attachments:
   - `POST /api/charters/:id/save-edit` — save admin-edited charter file
+  - `GET /api/charters/:id/edits` — get edit history for a charter
 - Ratings / legacy and feedback responses:
   - `GET /api/ratings`
   - `GET /api/charters/:id/ratings`
