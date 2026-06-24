@@ -34,7 +34,6 @@ Citizen's Charter Management System is a full-stack web app for publishing servi
     - Star rating (1–5) + optional comment
     - Submits to the backend and updates the displayed list/average rating.
   - **Feedback QR code** on the charter page encodes:
-    - `/charter/:id#feedback-form` (so scanning takes users directly to the form)
 
 ### Admin (Dashboard)
 
