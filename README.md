@@ -143,6 +143,7 @@ Citizen's Charter Management System/
 │  ├─ public/
 │  │  └─ images/
 │  │     ├─ header/
+│  │     │  └─ (logos, header images, municipality, mayor)
 │  │     └─ (department images)
 │  └─ styles/
 │     ├─ fonts.css
