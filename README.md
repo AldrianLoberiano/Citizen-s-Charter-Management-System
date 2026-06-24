@@ -60,6 +60,7 @@ Citizen's Charter Management System is a full-stack web app for publishing servi
     - Zoom controls (50%–200%), print, download original
   - **Edit history**: tracks all saved versions with metadata and timestamps
   - Search, department filtering, pagination
+- **Edited Charters** (`/admin/edited-charters`)
 - **Feedback management**
   - Filters (Department / Charter / Rating) + search
   - **Charts**:
