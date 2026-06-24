@@ -29,6 +29,7 @@ Citizen's Charter Management System is a full-stack web app for publishing servi
   - Renders charter content with preserved line breaks.
   - **PDF attachment preview** (iframe) with `HEAD` check for availability.
   - **DOCX attachment rendering** via `DocxViewer` (read-only, HTML conversion via mammoth.js).
+  - **Citizen Feedback** section:
     - Fields: full name (required), email (optional), contact (optional)
     - Star rating (1–5) + optional comment
     - Submits to the backend and updates the displayed list/average rating.
