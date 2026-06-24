@@ -677,7 +677,6 @@ app.post("/api/charters/:id/save-edit", editedUpload.single("file"), async (req,
     req.file.mimetype,
     req.file.size,
     null,
-    null,
     "Admin edit",
   ]);
 
