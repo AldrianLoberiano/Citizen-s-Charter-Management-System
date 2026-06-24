@@ -183,6 +183,7 @@ Citizen's Charter Management System/
 | `src/app/pages/client/`      | Public-facing pages for citizens                               |
 | `src/app/pages/admin/`       | Admin dashboard, login, departments, charters, edited charters |
 | `src/app/store/`             | Local data store and API sync helpers                          |
+| `src/public/images/`         | Department and header images                                   |
 
 ## Setup
 
