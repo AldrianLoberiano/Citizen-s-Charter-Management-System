@@ -172,7 +172,6 @@ Citizen's Charter Management System/
 
 ### Directory Purpose
 
-| `backend/tests/`             | Backend test suite (Vitest)                           |
 | `database/`                  | Connection example script                             |
 | `dist/`                      | Production frontend build output                      |
 | `src/app/components/`        | Shared UI layouts, dialogs, pagination, and logo loop |
