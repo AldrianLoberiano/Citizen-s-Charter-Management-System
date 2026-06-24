@@ -48,6 +48,7 @@ Citizen's Charter Management System is a full-stack web app for publishing servi
   - **PDF and DOCX uploads** (charter attachment)
   - **PDF Annotation Editor** (`PdfEditor`):
     - Text tool: add text annotations with configurable color/size
+    - Draw tool: freehand drawing with configurable color/stroke
   - Search, department filtering, pagination
 - **Feedback management**
   - Filters (Department / Charter / Rating) + search
