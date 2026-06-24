@@ -46,6 +46,7 @@ Citizen's Charter Management System is a full-stack web app for publishing servi
 - **Charters management**
   - Full CRUD for charters
   - **PDF and DOCX uploads** (charter attachment)
+  - **Editor Identification**: before editing any charter document, the system requires the editor to enter their name. This name is recorded in the edit history for accountability.
   - **PDF Annotation Editor** (`PdfEditor`):
     - Text tool: add text annotations with configurable color/size
     - Draw tool: freehand drawing with configurable color/stroke
