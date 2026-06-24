@@ -16,6 +16,8 @@ export interface Charter {
   file_path?: string | null;
   created_at: string;
   updated_at?: string;
+  last_edited_by?: string | null;
+  last_edited_at?: string | null;
 }
 
 export interface Rating {
