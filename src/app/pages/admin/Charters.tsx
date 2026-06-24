@@ -197,6 +197,7 @@ export function Charters() {
   }, [viewerFilePath]);
 
   const openViewer = async (filePath: string, charterId?: number) => {
+    setEditorName("");
     setPendingViewerFile({ filePath, charterId });
     setEditorNameModalOpen(true);
   };
@@ -846,7 +847,6 @@ export function Charters() {
                 type="text"
                 value={editorName}
                 onChange={(e) => setEditorName(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && confirmEditorName()}
                 placeholder="Enter your full name"
                 className="w-full pl-9 pr-4 py-2.5 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-slate-300 dark:bg-slate-800 dark:text-white dark:border-slate-600"
               />
