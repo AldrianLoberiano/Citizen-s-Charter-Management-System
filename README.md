@@ -152,6 +152,7 @@ Citizen's Charter Management System/
 │     └─ theme.css
 ├─ uploads/
 │  ├─ charters/                    # Uploaded charter documents (PDF + DOCX)
+│  └─ edited-charters/             # Saved edited charter versions
 ├─ index.html
 ├─ package.json
 ├─ postcss.config.mjs
