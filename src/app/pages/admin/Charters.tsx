@@ -17,7 +17,7 @@ import {
   Filter,
   Download,
   User,
-  CheckCircle,
+  CircleCheck,
 } from "lucide-react";
 import {
   getCharters,
@@ -809,7 +809,7 @@ export function Charters() {
       >
         <div className="space-y-4">
           <div className="flex items-start gap-3 p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
-            <CheckCircle className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+            <CircleCheck className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
             <p className="text-slate-800 text-sm">
               Document has been saved successfully.
             </p>
