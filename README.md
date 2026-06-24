@@ -185,6 +185,7 @@ Citizen's Charter Management System/
 | `src/app/store/`             | Local data store and API sync helpers                          |
 | `src/public/images/`         | Department and header images                                   |
 | `src/styles/`                | Global CSS, fonts, theme, and Tailwind entry files             |
+| `uploads/charters/`          | Uploaded PDF and DOCX charter files                            |
 
 ## Setup
 
