@@ -57,6 +57,7 @@ Citizen's Charter Management System is a full-stack web app for publishing servi
     - `contentEditable` inline editing mode
     - Undo/Redo with full history stack (Ctrl+Z / Ctrl+Y)
     - Save edited content back to server as new DOCX (Ctrl+S)
+    - Zoom controls (50%–200%), print, download original
   - Search, department filtering, pagination
 - **Feedback management**
   - Filters (Department / Charter / Rating) + search
