@@ -565,7 +565,17 @@ app.get("/api/charters", async (req, res) => {
     conditions.push(`c.department_id = ?`);
   }
   const where = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
-  const sql = `SELECT * FROM charters ${where} ORDER BY id ASC`;
+  const sql = `
+    SELECT c.*, e.submitted_name AS last_edited_by, e.created_at AS last_edited_at
+    FROM charters c
+    LEFT JOIN (
+      SELECT charter_id, submitted_name, created_at,
+             ROW_NUMBER() OVER (PARTITION BY charter_id ORDER BY created_at DESC) AS rn
+      FROM charter_pdf_edits
+    ) e ON e.charter_id = c.id AND e.rn = 1
+    ${where}
+    ORDER BY c.id ASC
+  `;
   const [rows] = await pool.query(sql, params);
   res.json(rows);
 });
