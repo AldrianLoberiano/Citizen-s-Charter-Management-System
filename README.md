@@ -8,6 +8,7 @@ Citizen's Charter Management System is a full-stack web app for publishing servi
 - **Backend:** Express 5, Node.js, MySQL (mysql2), Multer (file uploads), bcryptjs (auth)
 - **Document Processing:** mammoth.js (DOCX→HTML), pdf-lib (PDF export), pdfjs-dist (PDF rendering), docx (DOCX generation)
 - **Testing:** Vitest, React Testing Library
+- **Deployment:** Vercel (frontend), local Node.js (backend)
 ## Purpose
 
 - Publish and maintain citizen service charters by department.
