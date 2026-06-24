@@ -178,6 +178,7 @@ Citizen's Charter Management System/
 | `backend/tests/`             | Backend test suite (Vitest)                                    |
 | `database/`                  | MySQL database dump and connection example script               |
 | `dist/`                      | Production frontend build output                               |
+| `src/app/components/`        | Shared UI: layouts, dialogs, pagination, PDF/DOCX viewers      |
 
 ## Setup
 
