@@ -662,6 +662,7 @@ app.post("/api/charters/:id/save-edit", editedUpload.single("file"), async (req,
   }
 
   const filePath = `/uploads/edited-charters/${req.file.filename}`;
+  const { editor_name = "" } = req.body || {};
 
   await pool.query("UPDATE charters SET file_path = ? WHERE id = ?", [filePath, charterId]);
 
