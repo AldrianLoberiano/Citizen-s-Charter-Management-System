@@ -562,7 +562,6 @@ app.get("/api/charters", async (req, res) => {
   const params = [];
   if (departmentId) {
     params.push(departmentId);
-    conditions.push(`department_id = ?`);
   }
   const where = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
   const sql = `SELECT * FROM charters ${where} ORDER BY id ASC`;
