@@ -129,6 +129,7 @@ Citizen's Charter Management System/
 │  │  │  │  ├─ Charters.tsx
 │  │  │  │  ├─ Dashboard.tsx
 │  │  │  │  ├─ Departments.tsx
+│  │  │  │  ├─ EditedCharters.tsx  # Edited charter documents listing
 │  │  │  │  ├─ Feedback.tsx
 │  │  │  │  └─ Login.tsx
 │  │  │  └─ client/
