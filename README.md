@@ -151,6 +151,7 @@ Citizen's Charter Management System/
 │     ├─ tailwind.css
 │     └─ theme.css
 ├─ uploads/
+│  ├─ charters/                    # Uploaded charter documents (PDF + DOCX)
 ├─ index.html
 ├─ package.json
 ├─ postcss.config.mjs
