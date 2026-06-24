@@ -27,7 +27,6 @@ Citizen's Charter Management System is a full-stack web app for publishing servi
   - Shows all published charters per department with search.
 - **Charter Details** (`/charter/:id`)
   - Renders charter content with preserved line breaks.
-  - Provides **Citizen Feedback** section:
     - Fields: full name (required), email (optional), contact (optional)
     - Star rating (1–5) + optional comment
     - Submits to the backend and updates the displayed list/average rating.
