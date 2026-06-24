@@ -177,6 +177,7 @@ Citizen's Charter Management System/
 | `backend/`                   | Express API, MySQL access, and server startup code             |
 | `backend/tests/`             | Backend test suite (Vitest)                                    |
 | `database/`                  | MySQL database dump and connection example script               |
+| `dist/`                      | Production frontend build output                               |
 
 ## Setup
 
