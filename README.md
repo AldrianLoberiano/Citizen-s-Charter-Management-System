@@ -98,6 +98,7 @@ Citizen's Charter Management System/
 │  └─ tests/
 │     └─ server.test.js
 ├─ database/
+│  ├─ ccms_db.sql                  # Full MySQL database dump
 │  └─ mysql_connection_example.js
 ├─ dist/
 ├─ src/
