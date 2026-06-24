@@ -15,7 +15,6 @@ import {
   Paperclip,
   X,
   Filter,
-  History,
   Download,
   User,
 } from "lucide-react";
@@ -90,7 +89,6 @@ export function Charters() {
   const [viewerType, setViewerType] = useState<ViewerType>("unknown");
   const [viewerError, setViewerError] = useState<string | null>(null);
   const [viewerCharterId, setViewerCharterId] = useState<number | null>(null);
-  const [editHistory, setEditHistory] = useState<any[]>([]);
 
   // Editor name collection
   const [editorNameModalOpen, setEditorNameModalOpen] = useState(false);
@@ -205,16 +203,6 @@ export function Charters() {
     setPendingViewerFile(null);
     setEditorName("");
   }, []);
-
-  useEffect(() => {
-    if (!viewerOpen || !viewerCharterId) {
-      setEditHistory([]);
-      return;
-    }
-    api.getCharterEdits(viewerCharterId).then((data: any) => {
-      setEditHistory(Array.isArray(data) ? data : []);
-    }).catch(() => setEditHistory([]));
-  }, [viewerOpen, viewerCharterId]);
 
   const handleSaveAttachment = useCallback(async (blob: Blob) => {
     if (!viewerCharterId) return;
@@ -726,41 +714,6 @@ export function Charters() {
         {!viewerError && viewerType === "unknown" && (
           <div className="text-sm text-slate-500 dark:text-slate-400">
             Preview is not available for this file type.
-          </div>
-        )}
-        {editHistory.length > 0 && (
-          <div className="mt-4 border-t border-slate-200 dark:border-slate-700 pt-4">
-            <div className="flex items-center gap-2 mb-3">
-              <History className="w-4 h-4 text-slate-500" />
-              <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Edit History</span>
-              <span className="text-xs text-slate-400">({editHistory.length} version{editHistory.length !== 1 ? "s" : ""})</span>
-            </div>
-            <div className="max-h-[20vh] overflow-y-auto space-y-2">
-              {editHistory.map((edit) => (
-                <div key={edit.id} className="flex items-center justify-between gap-3 p-2 rounded-lg bg-slate-50 dark:bg-slate-800 text-sm">
-                  <div className="flex-1 min-w-0">
-                    <p className="text-slate-700 dark:text-slate-300 truncate">{edit.original_name}</p>
-                    <p className="text-xs text-slate-400">
-                      {edit.submitted_name && (
-                        <span className="text-violet-600 dark:text-violet-400 font-medium">{edit.submitted_name}</span>
-                      )}
-                      {edit.submitted_name && (edit.notes || "No notes") && " · "}
-                      {edit.notes || "No notes"} &middot; {new Date(edit.created_at).toLocaleString()}
-                    </p>
-                  </div>
-                  <a
-                    href={`${FILE_BASE}${edit.file_path}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    download
-                    className="shrink-0 p-1.5 text-slate-400 hover:text-violet-700 dark:hover:text-violet-400 transition-colors"
-                    title="Download this version"
-                  >
-                    <Download className="w-4 h-4" />
-                  </a>
-                </div>
-              ))}
-            </div>
           </div>
         )}
       </Modal>
