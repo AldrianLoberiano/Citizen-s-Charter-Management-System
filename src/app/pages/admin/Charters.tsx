@@ -176,6 +176,13 @@ export function Charters() {
     setViewerCharterId(null);
   };
 
+  const handleOpenExternal = useCallback(() => {
+    if (viewerFilePath) {
+      const url = resolveFileUrl(viewerFilePath);
+      window.open(url, "_blank");
+    }
+  }, [viewerFilePath]);
+
   const openViewer = async (filePath: string, charterId?: number) => {
     setPendingViewerFile({ filePath, charterId });
     setEditorNameModalOpen(true);
@@ -708,6 +715,7 @@ export function Charters() {
               fileUrl={resolveFileUrl(viewerFilePath)}
               className="h-full rounded-lg border border-slate-200 dark:border-slate-700"
               onSave={viewerCharterId ? handleSaveAttachment : undefined}
+              onOpenExternal={handleOpenExternal}
             />
           </div>
         )}
