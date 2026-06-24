@@ -11,7 +11,6 @@ import {
   WidthType,
   AlignmentType,
   HeadingLevel,
-  BorderStyle,
   ImageRun,
   convertInchesToTwip,
 } from "docx";
@@ -25,6 +24,7 @@ import {
   Save,
   Undo2,
   Redo2,
+  Pencil,
 } from "lucide-react";
 
 interface DocxViewerProps {
@@ -33,6 +33,7 @@ interface DocxViewerProps {
   className?: string;
   editable?: boolean;
   onSave?: (blob: Blob) => Promise<void>;
+  onOpenExternal?: () => void;
 }
 
 function parseInline(element: HTMLElement): TextRun[] {
@@ -44,7 +45,14 @@ function parseInline(element: HTMLElement): TextRun[] {
         const isBold = element.tagName === "B" || element.tagName === "STRONG";
         const isItalic = element.tagName === "I" || element.tagName === "EM";
         const isUnderline = element.tagName === "U";
-        runs.push(new TextRun({ text, bold: isBold, italics: isItalic, underline: isUnderline ? {} : undefined }));
+        runs.push(
+          new TextRun({
+            text,
+            bold: isBold,
+            italics: isItalic,
+            underline: isUnderline ? {} : undefined,
+          })
+        );
       }
     } else if (child.nodeType === Node.ELEMENT_NODE) {
       const cel = child as HTMLElement;
@@ -55,16 +63,26 @@ function parseInline(element: HTMLElement): TextRun[] {
       cel.childNodes.forEach((gc) => {
         if (gc.nodeType === Node.TEXT_NODE) {
           const t = gc.textContent || "";
-          if (t) runs.push(new TextRun({ text: t, bold: isBold, italics: isItalic, underline: isUnderline ? {} : undefined }));
+          if (t)
+            runs.push(
+              new TextRun({
+                text: t,
+                bold: isBold,
+                italics: isItalic,
+                underline: isUnderline ? {} : undefined,
+              })
+            );
         } else if (gc.nodeType === Node.ELEMENT_NODE) {
           const gcel = gc as HTMLElement;
           const gt = gcel.tagName;
-          runs.push(new TextRun({
-            text: gcel.textContent || "",
-            bold: isBold || gt === "B" || gt === "STRONG",
-            italics: isItalic || gt === "I" || gt === "EM",
-            underline: isUnderline || gt === "U" ? {} : undefined,
-          }));
+          runs.push(
+            new TextRun({
+              text: gcel.textContent || "",
+              bold: isBold || gt === "B" || gt === "STRONG",
+              italics: isItalic || gt === "I" || gt === "EM",
+              underline: isUnderline || gt === "U" ? {} : undefined,
+            })
+          );
         }
       });
     }
@@ -72,7 +90,10 @@ function parseInline(element: HTMLElement): TextRun[] {
   return runs.length > 0 ? runs : [new TextRun("")];
 }
 
-function dataUriToBuffer(dataUri: string): { buffer: ArrayBuffer; type: string } | null {
+function dataUriToBuffer(dataUri: string): {
+  buffer: ArrayBuffer;
+  type: string;
+} | null {
   const match = dataUri.match(/^data:([^;]+);base64,(.+)$/);
   if (!match) return null;
   const type = match[1];
@@ -90,7 +111,10 @@ function htmlToDocxElements(htmlStr: string): (Paragraph | Table)[] {
   function processNode(node: ChildNode) {
     if (node.nodeType === Node.TEXT_NODE) {
       const text = node.textContent || "";
-      if (text.trim()) elements.push(new Paragraph({ children: [new TextRun(text)] }));
+      if (text.trim())
+        elements.push(
+          new Paragraph({ children: [new TextRun(text)] })
+        );
       return;
     }
     if (node.nodeType !== Node.ELEMENT_NODE) return;
@@ -102,15 +126,17 @@ function htmlToDocxElements(htmlStr: string): (Paragraph | Table)[] {
       const imgData = dataUriToBuffer(src);
       if (imgData) {
         const ext = imgData.type.split("/")[1] || "png";
-        elements.push(new Paragraph({
-          children: [
-            new ImageRun({
-              data: imgData.buffer,
-              transformation: { width: 400, height: 300 },
-              type: ext as "png" | "jpg" | "gif",
-            }),
-          ],
-        }));
+        elements.push(
+          new Paragraph({
+            children: [
+              new ImageRun({
+                data: imgData.buffer,
+                transformation: { width: 400, height: 300 },
+                type: ext as "png" | "jpg" | "gif",
+              }),
+            ],
+          })
+        );
       }
       return;
     }
@@ -124,16 +150,39 @@ function htmlToDocxElements(htmlStr: string): (Paragraph | Table)[] {
           td.childNodes.forEach((child) => {
             if (child.nodeType === Node.TEXT_NODE) {
               const t = child.textContent || "";
-              if (t) cellParagraphs.push(new Paragraph({ children: [new TextRun({ text: t, bold: td.tagName === "TH" })] }));
+              if (t)
+                cellParagraphs.push(
+                  new Paragraph({
+                    children: [
+                      new TextRun({
+                        text: t,
+                        bold: td.tagName === "TH",
+                      }),
+                    ],
+                  })
+                );
             } else if (child.nodeType === Node.ELEMENT_NODE) {
-              cellParagraphs.push(...htmlToDocxElements((child as HTMLElement).outerHTML));
+              cellParagraphs.push(
+                ...htmlToDocxElements((child as HTMLElement).outerHTML)
+              );
             }
           });
-          if (cellParagraphs.length === 0) cellParagraphs.push(new Paragraph({ children: [new TextRun("")] }));
-          cells.push(new TableCell({
-            children: cellParagraphs,
-            width: { size: Math.floor(100 / Math.max(tr.querySelectorAll("td, th").length, 1)), type: WidthType.PERCENTAGE },
-          }));
+          if (cellParagraphs.length === 0)
+            cellParagraphs.push(
+              new Paragraph({ children: [new TextRun("")] })
+            );
+          cells.push(
+            new TableCell({
+              children: cellParagraphs,
+              width: {
+                size: Math.floor(
+                  100 /
+                    Math.max(tr.querySelectorAll("td, th").length, 1)
+                ),
+                type: WidthType.PERCENTAGE,
+              },
+            })
+          );
         });
         if (cells.length > 0) rows.push(new TableRow({ children: cells }));
       });
@@ -143,7 +192,10 @@ function htmlToDocxElements(htmlStr: string): (Paragraph | Table)[] {
 
     if (/^h([1-6])$/.test(tag)) {
       const level = Number(tag[1]);
-      const headingMap: Record<number, (typeof HeadingLevel)[keyof typeof HeadingLevel]> = {
+      const headingMap: Record<
+        number,
+        (typeof HeadingLevel)[keyof typeof HeadingLevel]
+      > = {
         1: HeadingLevel.HEADING_1,
         2: HeadingLevel.HEADING_2,
         3: HeadingLevel.HEADING_3,
@@ -151,10 +203,14 @@ function htmlToDocxElements(htmlStr: string): (Paragraph | Table)[] {
         5: HeadingLevel.HEADING_5,
         6: HeadingLevel.HEADING_6,
       };
-      elements.push(new Paragraph({
-        children: [new TextRun({ text: el.textContent || "", bold: true })],
-        heading: headingMap[level] || HeadingLevel.HEADING_1,
-      }));
+      elements.push(
+        new Paragraph({
+          children: [
+            new TextRun({ text: el.textContent || "", bold: true }),
+          ],
+          heading: headingMap[level] || HeadingLevel.HEADING_1,
+        })
+      );
       return;
     }
 
@@ -165,11 +221,16 @@ function htmlToDocxElements(htmlStr: string): (Paragraph | Table)[] {
 
     if (tag === "ul" || tag === "ol") {
       el.querySelectorAll("li").forEach((li) => {
-        elements.push(new Paragraph({
-          children: parseInline(li),
-          bullet: tag === "ul" ? { level: 0 } : undefined,
-          numbering: tag === "ol" ? { reference: 0, level: 0 } : undefined,
-        }));
+        elements.push(
+          new Paragraph({
+            children: parseInline(li),
+            bullet: tag === "ul" ? { level: 0 } : undefined,
+            numbering:
+              tag === "ol"
+                ? { reference: 0, level: 0 }
+                : undefined,
+          })
+        );
       });
       return;
     }
@@ -183,29 +244,68 @@ function htmlToDocxElements(htmlStr: string): (Paragraph | Table)[] {
   }
 
   div.childNodes.forEach(processNode);
-  return elements.length > 0 ? elements : [new Paragraph({ children: [new TextRun("")] })];
+  return elements.length > 0
+    ? elements
+    : [new Paragraph({ children: [new TextRun("")] })];
 }
 
-async function htmlToDocxBlob(htmlStr: string, title?: string): Promise<Blob> {
+async function htmlToDocxBlob(
+  htmlStr: string,
+  title?: string
+): Promise<Blob> {
   const children = htmlToDocxElements(htmlStr);
   const doc = new Document({
     numbering: {
-      config: [{
-        reference: "ordered-list",
-        levels: [{ level: 0, format: "decimal", text: "%1.", alignment: AlignmentType.LEFT, style: { paragraph: { indent: { left: convertInchesToTwip(0.5), hanging: convertInchesToTwip(0.25) } } } }],
-      }],
+      config: [
+        {
+          reference: "ordered-list",
+          levels: [
+            {
+              level: 0,
+              format: "decimal",
+              text: "%1.",
+              alignment: AlignmentType.LEFT,
+              style: {
+                paragraph: {
+                  indent: {
+                    left: convertInchesToTwip(0.5),
+                    hanging: convertInchesToTwip(0.25),
+                  },
+                },
+              },
+            },
+          ],
+        },
+      ],
     },
-    sections: [{
-      properties: {},
-      children: title
-        ? [new Paragraph({ children: [new TextRun({ text: title, bold: true })], heading: HeadingLevel.TITLE }), ...children]
-        : children,
-    }],
+    sections: [
+      {
+        properties: {},
+        children: title
+          ? [
+              new Paragraph({
+                children: [
+                  new TextRun({ text: title, bold: true }),
+                ],
+                heading: HeadingLevel.TITLE,
+              }),
+              ...children,
+            ]
+          : children,
+      },
+    ],
   });
   return Packer.toBlob(doc);
 }
 
-export function DocxViewer({ fileUrl, fileName, className = "", editable = true, onSave }: DocxViewerProps) {
+export function DocxViewer({
+  fileUrl,
+  fileName,
+  className = "",
+  editable = true,
+  onSave,
+  onOpenExternal,
+}: DocxViewerProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const [html, setHtml] = useState("");
   const [originalHtml, setOriginalHtml] = useState("");
@@ -233,7 +333,10 @@ export function DocxViewer({ fileUrl, fileName, className = "", editable = true,
     fetch(fileUrl)
       .then((res) => {
         if (!res.ok) {
-          if (res.status === 404) throw new Error("Document file not found on the server. Please re-upload the file.");
+          if (res.status === 404)
+            throw new Error(
+              "Document file not found on the server. Please re-upload the file."
+            );
           throw new Error("Failed to fetch document");
         }
         return res.arrayBuffer();
@@ -251,12 +354,16 @@ export function DocxViewer({ fileUrl, fileName, className = "", editable = true,
       })
       .catch((err) => {
         if (!cancelled) {
-          setError(err instanceof Error ? err.message : "Failed to load document");
+          setError(
+            err instanceof Error ? err.message : "Failed to load document"
+          );
           setLoading(false);
         }
       });
 
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [fileUrl]);
 
   useEffect(() => {
@@ -310,7 +417,9 @@ export function DocxViewer({ fileUrl, fileName, className = "", editable = true,
         await onSave(blob);
         setIsDirty(false);
       } catch (err) {
-        setSaveError(err instanceof Error ? err.message : "Save failed");
+        setSaveError(
+          err instanceof Error ? err.message : "Save failed"
+        );
       } finally {
         setSaving(false);
       }
@@ -318,7 +427,9 @@ export function DocxViewer({ fileUrl, fileName, className = "", editable = true,
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = fileName ? fileName.replace(/\.docx$/i, "") + " (edited).docx" : "document.docx";
+      a.download = fileName
+        ? fileName.replace(/\.docx$/i, "") + " (edited).docx"
+        : "document.docx";
       a.click();
       URL.revokeObjectURL(url);
       setIsDirty(false);
@@ -376,7 +487,10 @@ export function DocxViewer({ fileUrl, fileName, className = "", editable = true,
         e.preventDefault();
         handleUndo();
       }
-      if ((e.ctrlKey || e.metaKey) && (e.key === "y" || (e.key === "z" && e.shiftKey))) {
+      if (
+        (e.ctrlKey || e.metaKey) &&
+        (e.key === "y" || (e.key === "z" && e.shiftKey))
+      ) {
         e.preventDefault();
         handleRedo();
       }
@@ -391,7 +505,9 @@ export function DocxViewer({ fileUrl, fileName, className = "", editable = true,
 
   if (loading) {
     return (
-      <div className={`flex flex-col items-center justify-center gap-3 p-8 text-sm text-slate-500 dark:text-slate-400 ${className}`}>
+      <div
+        className={`flex flex-col items-center justify-center gap-3 p-8 text-sm text-slate-500 dark:text-slate-400 ${className}`}
+      >
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-slate-300 border-t-violet-600" />
         Loading document...
       </div>
@@ -400,7 +516,9 @@ export function DocxViewer({ fileUrl, fileName, className = "", editable = true,
 
   if (error) {
     return (
-      <div className={`flex flex-col items-center justify-center gap-3 p-8 ${className}`}>
+      <div
+        className={`flex flex-col items-center justify-center gap-3 p-8 ${className}`}
+      >
         <FileText className="h-10 w-10 text-slate-300 dark:text-slate-600" />
         <p className="text-sm text-red-500">{error}</p>
       </div>
@@ -423,53 +541,101 @@ export function DocxViewer({ fileUrl, fileName, className = "", editable = true,
                 {saving ? "Saving..." : "Save"}
               </button>
               <div className="w-px h-5 bg-slate-200 dark:bg-slate-700 mx-1" />
-              <button onClick={handleUndo} title="Undo (Ctrl+Z)" className="p-1.5 rounded text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800">
+              <button
+                onClick={handleUndo}
+                title="Undo (Ctrl+Z)"
+                className="p-1.5 rounded text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+              >
                 <Undo2 className="h-4 w-4" />
               </button>
-              <button onClick={handleRedo} title="Redo (Ctrl+Y)" className="p-1.5 rounded text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800">
+              <button
+                onClick={handleRedo}
+                title="Redo (Ctrl+Y)"
+                className="p-1.5 rounded text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+              >
                 <Redo2 className="h-4 w-4" />
               </button>
-              <button onClick={handleReset} title="Reset to original" className="p-1.5 rounded text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800">
+              <button
+                onClick={handleReset}
+                title="Reset to original"
+                className="p-1.5 rounded text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+              >
                 <RotateCcw className="h-4 w-4" />
               </button>
               <div className="w-px h-5 bg-slate-200 dark:bg-slate-700 mx-1" />
             </>
           )}
-          <button onClick={() => setZoom((z) => Math.max(50, z - 10))} title="Zoom out" className="p-1.5 rounded text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <button
+            onClick={() => setZoom((z) => Math.max(50, z - 10))}
+            title="Zoom out"
+            className="p-1.5 rounded text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+          >
             <ZoomOut className="h-4 w-4" />
           </button>
-          <span className="text-xs text-slate-500 dark:text-slate-400 w-10 text-center">{zoom}%</span>
-          <button onClick={() => setZoom((z) => Math.min(200, z + 10))} title="Zoom in" className="p-1.5 rounded text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <span className="text-xs text-slate-500 dark:text-slate-400 w-10 text-center">
+            {zoom}%
+          </span>
+          <button
+            onClick={() => setZoom((z) => Math.min(200, z + 10))}
+            title="Zoom in"
+            className="p-1.5 rounded text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+          >
             <ZoomIn className="h-4 w-4" />
           </button>
         </div>
         <div className="flex items-center gap-1">
           {saveError && (
-            <span className="text-xs text-red-500 dark:text-red-400 mr-2">{saveError}</span>
+            <span className="text-xs text-red-500 dark:text-red-400 mr-2">
+              {saveError}
+            </span>
           )}
           {isDirty && (
-            <span className="text-xs text-amber-500 dark:text-amber-400 mr-2">Unsaved changes</span>
+            <span className="text-xs text-amber-500 dark:text-amber-400 mr-2">
+              Unsaved changes
+            </span>
           )}
-          <button onClick={handlePrint} title="Print" className="p-1.5 rounded text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <button
+            onClick={handlePrint}
+            title="Print"
+            className="p-1.5 rounded text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+          >
             <Printer className="h-4 w-4" />
           </button>
-          <button onClick={handleDownloadOriginal} title="Download original" className="p-1.5 rounded text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <button
+            onClick={handleDownloadOriginal}
+            title="Download original"
+            className="p-1.5 rounded text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+          >
             <Download className="h-4 w-4" />
           </button>
+          {editable && onOpenExternal && (
+            <button
+              onClick={onOpenExternal}
+              title="Open in new tab for full editing"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs text-white transition-colors hover:bg-emerald-700"
+            >
+              <Pencil className="h-3.5 w-3.5" />
+              Edit Full
+            </button>
+          )}
         </div>
       </div>
+
       <div className="flex-1 overflow-auto bg-slate-50 dark:bg-slate-950 p-4">
-        <div className="mx-auto max-w-4xl bg-white shadow-lg rounded-lg">
+        <div
+          className="mx-auto max-w-4xl bg-white shadow-lg rounded-lg"
+          style={{ zoom: `${zoom}%` }}
+        >
           <div
             ref={contentRef}
             className="docx-content p-8 min-h-[600px]"
-            style={{ transform: `scale(${zoom / 100})`, transformOrigin: "top center" }}
             contentEditable={editable}
             suppressContentEditableWarning
             onInput={handleInput}
           />
         </div>
       </div>
+
       <div className="border-t border-slate-200 dark:border-slate-700 px-4 py-2 flex items-center justify-between">
         <span className="text-xs text-slate-500 dark:text-slate-400 truncate max-w-xs">
           {fileName || "Document"}
