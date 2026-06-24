@@ -118,6 +118,7 @@ Citizen's Charter Management System/
 │  │  │  ├─ Modal.test.tsx
 │  │  │  ├─ Notification.tsx
 │  │  │  ├─ Pagination.tsx
+│  │  │  ├─ Pagination.test.tsx
 │  │  ├─ lib/
 │  │  │  ├─ api.ts
 │  │  │  └─ api.test.ts
