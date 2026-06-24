@@ -56,6 +56,7 @@ Citizen's Charter Management System is a full-stack web app for publishing servi
     - Renders `.docx` files as HTML via mammoth.js
     - `contentEditable` inline editing mode
     - Undo/Redo with full history stack (Ctrl+Z / Ctrl+Y)
+    - Save edited content back to server as new DOCX (Ctrl+S)
   - Search, department filtering, pagination
 - **Feedback management**
   - Filters (Department / Charter / Rating) + search
