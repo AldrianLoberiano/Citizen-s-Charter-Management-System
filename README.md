@@ -74,6 +74,7 @@ Citizen's Charter Management System is a full-stack web app for publishing servi
   - **Feedback Form QR** modal:
     - Generates QR that points to the citizen in-app feedback form
     - Includes **Copy link** button
+- **Backup & Recovery**
 
 ## Prerequisites
 
