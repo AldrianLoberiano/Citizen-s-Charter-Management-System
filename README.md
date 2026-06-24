@@ -151,7 +151,6 @@ Citizen's Charter Management System/
 │     ├─ tailwind.css
 │     └─ theme.css
 ├─ uploads/
-│  └─ charters/
 ├─ index.html
 ├─ package.json
 ├─ postcss.config.mjs
