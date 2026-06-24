@@ -182,6 +182,7 @@ Citizen's Charter Management System/
 | `src/app/lib/`               | API client and helpers                                         |
 | `src/app/pages/client/`      | Public-facing pages for citizens                               |
 | `src/app/pages/admin/`       | Admin dashboard, login, departments, charters, edited charters |
+| `src/app/store/`             | Local data store and API sync helpers                          |
 
 ## Setup
 
