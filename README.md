@@ -50,6 +50,7 @@ Citizen's Charter Management System is a full-stack web app for publishing servi
     - Text tool: add text annotations with configurable color/size
     - Draw tool: freehand drawing with configurable color/stroke
     - Highlight tool: rectangular highlight regions
+    - Select tool: edit existing text annotations
   - Search, department filtering, pagination
 - **Feedback management**
   - Filters (Department / Charter / Rating) + search
