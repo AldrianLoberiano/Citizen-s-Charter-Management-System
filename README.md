@@ -309,6 +309,8 @@ Backend `backend/.env` can override the defaults used by `backend/server.js` and
 - Charter edits and attachments:
   - `POST /api/charters/:id/save-edit` — save admin-edited charter file
   - `GET /api/charters/:id/edits` — get edit history for a charter
+  - `GET /api/edited-charters` — list all edited charters
+  - `POST /api/charters/:id/attachment` — replace charter attachment
 - Ratings / legacy and feedback responses:
   - `GET /api/ratings`
   - `GET /api/charters/:id/ratings`
@@ -317,11 +319,12 @@ Backend `backend/.env` can override the defaults used by `backend/server.js` and
   - `GET /api/charters/:id/feedback`
   - `POST /api/charters/:id/feedback`
 - File uploads:
-  - `POST /api/uploads/charters` (PDF only) → stores in `uploads/charters/`
-  - `POST /api/charters/:id/edited-pdfs` (PDF only) → stores in `uploads/edited-charters/` and inserts into `charter_pdf_edits`
-- Admin backup & recovery:
+  - `POST /api/uploads/charters` (PDF and DOCX) → stores in `uploads/charters/`
+  - `POST /api/charters/:id/edited-pdfs` (PDF and DOCX) → stores in `uploads/edited-charters/` and inserts into `charter_pdf_edits`
+- Admin:
   - `GET /api/admin/backup` (streams `.sql`)
   - `POST /api/admin/restore` (restores from uploaded `.sql`)
+  - `POST /api/admin/import-schema` (imports database schema)
 - Authentication:
   - `POST /api/auth/login`
 
@@ -329,8 +332,8 @@ Backend `backend/.env` can override the defaults used by `backend/server.js` and
 
 Files are stored locally on the server (disk) in these folders:
 
-- `uploads/charters/` — uploaded charter PDFs
-- `uploads/edited-charters/` — uploaded edited PDFs
+- `uploads/charters/` — uploaded charter PDFs and DOCX files
+- `uploads/edited-charters/` — uploaded edited PDFs and DOCX files
 - `uploads/backups/` — uploaded `.sql` files used for restore
 
 The backend serves files under:
