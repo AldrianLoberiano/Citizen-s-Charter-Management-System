@@ -119,6 +119,7 @@ Citizen's Charter Management System/
 │  │  │  ├─ Notification.tsx
 │  │  │  ├─ Pagination.tsx
 │  │  │  ├─ Pagination.test.tsx
+│  │  │  └─ PdfEditor.tsx          # PDF annotation editor (pdfjs-dist + pdf-lib)
 │  │  ├─ lib/
 │  │  │  ├─ api.ts
 │  │  │  └─ api.test.ts
