@@ -306,6 +306,7 @@ Backend `backend/.env` can override the defaults used by `backend/server.js` and
   - `POST /api/charters`
   - `PUT /api/charters/:id`
   - `DELETE /api/charters/:id`
+- Charter edits and attachments:
 - Ratings / legacy and feedback responses:
   - `GET /api/ratings`
   - `GET /api/charters/:id/ratings`
