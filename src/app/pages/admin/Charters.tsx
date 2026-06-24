@@ -4,7 +4,7 @@
  * Includes file upload simulation, department selection, and pagination
  */
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import {
   Plus,
   Search,
@@ -96,6 +96,18 @@ export function Charters() {
   const [editorNameModalOpen, setEditorNameModalOpen] = useState(false);
   const [editorName, setEditorName] = useState("");
   const [pendingViewerFile, setPendingViewerFile] = useState<{ filePath: string; charterId?: number } | null>(null);
+  const editorNameInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (editorNameModalOpen) {
+      const timer = setTimeout(() => {
+        requestAnimationFrame(() => {
+          editorNameInputRef.current?.focus();
+        });
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [editorNameModalOpen]);
 
   // Form
   const [formData, setFormData] = useState<FormData>(emptyForm);
@@ -804,12 +816,12 @@ export function Charters() {
             <div className="relative">
               <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input
+                ref={editorNameInputRef}
                 type="text"
                 value={editorName}
                 onChange={(e) => setEditorName(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && confirmEditorName()}
                 placeholder="Enter your full name"
-                autoFocus
                 className="w-full pl-9 pr-4 py-2.5 border border-slate-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-slate-300 dark:bg-slate-800 dark:text-white dark:border-slate-600"
               />
             </div>
