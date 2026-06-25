@@ -10,6 +10,8 @@ import {
   setFeedback,
 } from "./data";
 
+let pollTimer: ReturnType<typeof setInterval> | null = null;
+
 export async function syncLocalCacheFromApi(): Promise<void> {
   const [departments, charters] = await Promise.all([
     api.getDepartments(),
@@ -25,4 +27,18 @@ export async function syncLocalCacheFromApi(): Promise<void> {
   ]);
   setRatings(ratings);
   setFeedback(feedback);
+}
+
+export function startPolling(intervalMs = 5000) {
+  if (pollTimer) return;
+  pollTimer = setInterval(() => {
+    syncLocalCacheFromApi().catch(() => {});
+  }, intervalMs);
+}
+
+export function stopPolling() {
+  if (pollTimer) {
+    clearInterval(pollTimer);
+    pollTimer = null;
+  }
 }
