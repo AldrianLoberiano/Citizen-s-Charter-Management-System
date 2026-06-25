@@ -1,19 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import mammoth from "mammoth";
-import {
-  Document,
-  Packer,
-  Paragraph,
-  TextRun,
-  Table,
-  TableRow,
-  TableCell,
-  WidthType,
-  AlignmentType,
-  HeadingLevel,
-  ImageRun,
-  convertInchesToTwip,
-} from "docx";
+import JSZip from "jszip";
 import {
   Download,
   Printer,
@@ -36,266 +23,112 @@ interface DocxViewerProps {
   onOpenExternal?: () => void;
 }
 
-function parseInline(element: HTMLElement): TextRun[] {
-  const runs: TextRun[] = [];
-  element.childNodes.forEach((child) => {
-    if (child.nodeType === Node.TEXT_NODE) {
-      const text = child.textContent || "";
-      if (text) {
-        const isBold = element.tagName === "B" || element.tagName === "STRONG";
-        const isItalic = element.tagName === "I" || element.tagName === "EM";
-        const isUnderline = element.tagName === "U";
-        runs.push(
-          new TextRun({
-            text,
-            bold: isBold,
-            italics: isItalic,
-            underline: isUnderline ? {} : undefined,
-          })
-        );
-      }
-    } else if (child.nodeType === Node.ELEMENT_NODE) {
-      const cel = child as HTMLElement;
-      const tag = cel.tagName;
-      const isBold = tag === "B" || tag === "STRONG";
-      const isItalic = tag === "I" || tag === "EM";
-      const isUnderline = tag === "U";
-      cel.childNodes.forEach((gc) => {
-        if (gc.nodeType === Node.TEXT_NODE) {
-          const t = gc.textContent || "";
-          if (t)
-            runs.push(
-              new TextRun({
-                text: t,
-                bold: isBold,
-                italics: isItalic,
-                underline: isUnderline ? {} : undefined,
-              })
-            );
-        } else if (gc.nodeType === Node.ELEMENT_NODE) {
-          const gcel = gc as HTMLElement;
-          const gt = gcel.tagName;
-          runs.push(
-            new TextRun({
-              text: gcel.textContent || "",
-              bold: isBold || gt === "B" || gt === "STRONG",
-              italics: isItalic || gt === "I" || gt === "EM",
-              underline: isUnderline || gt === "U" ? {} : undefined,
-            })
-          );
-        }
-      });
-    }
-  });
-  return runs.length > 0 ? runs : [new TextRun("")];
-}
-
-function dataUriToBuffer(dataUri: string): {
-  buffer: ArrayBuffer;
-  type: string;
-} | null {
-  const match = dataUri.match(/^data:([^;]+);base64,(.+)$/);
-  if (!match) return null;
-  const type = match[1];
-  const binary = atob(match[2]);
-  const bytes = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-  return { buffer: bytes.buffer, type };
-}
-
-function htmlToDocxElements(htmlStr: string): (Paragraph | Table)[] {
+function extractHtmlParagraphs(htmlStr: string): string[] {
   const div = document.createElement("div");
   div.innerHTML = htmlStr;
-  const elements: (Paragraph | Table)[] = [];
-
-  function processNode(node: ChildNode) {
+  const paragraphs: string[] = [];
+  function walk(node: ChildNode) {
     if (node.nodeType === Node.TEXT_NODE) {
-      const text = node.textContent || "";
-      if (text.trim())
-        elements.push(
-          new Paragraph({ children: [new TextRun(text)] })
-        );
+      const t = node.textContent || "";
+      if (t) paragraphs.push(t);
       return;
     }
     if (node.nodeType !== Node.ELEMENT_NODE) return;
     const el = node as HTMLElement;
     const tag = el.tagName.toLowerCase();
-
-    if (tag === "img") {
-      const src = el.getAttribute("src") || "";
-      const imgData = dataUriToBuffer(src);
-      if (imgData) {
-        const ext = imgData.type.split("/")[1] || "png";
-        elements.push(
-          new Paragraph({
-            children: [
-              new ImageRun({
-                data: imgData.buffer,
-                transformation: { width: 400, height: 300 },
-                type: ext as "png" | "jpg" | "gif",
-              }),
-            ],
-          })
-        );
-      }
-      return;
-    }
-
     if (tag === "table") {
-      const rows: TableRow[] = [];
-      el.querySelectorAll("tr").forEach((tr) => {
-        const cells: TableCell[] = [];
-        tr.querySelectorAll("td, th").forEach((td) => {
-          const cellParagraphs: Paragraph[] = [];
-          td.childNodes.forEach((child) => {
-            if (child.nodeType === Node.TEXT_NODE) {
-              const t = child.textContent || "";
-              if (t)
-                cellParagraphs.push(
-                  new Paragraph({
-                    children: [
-                      new TextRun({
-                        text: t,
-                        bold: td.tagName === "TH",
-                      }),
-                    ],
-                  })
-                );
-            } else if (child.nodeType === Node.ELEMENT_NODE) {
-              cellParagraphs.push(
-                ...htmlToDocxElements((child as HTMLElement).outerHTML)
-              );
-            }
-          });
-          if (cellParagraphs.length === 0)
-            cellParagraphs.push(
-              new Paragraph({ children: [new TextRun("")] })
-            );
-          cells.push(
-            new TableCell({
-              children: cellParagraphs,
-              width: {
-                size: Math.floor(
-                  100 /
-                    Math.max(tr.querySelectorAll("td, th").length, 1)
-                ),
-                type: WidthType.PERCENTAGE,
-              },
-            })
-          );
-        });
-        if (cells.length > 0) rows.push(new TableRow({ children: cells }));
+      const cellTexts: string[] = [];
+      el.querySelectorAll("td, th").forEach((cell) => {
+        const cellText = (cell.textContent || "").trim();
+        if (cellText) cellTexts.push(cellText);
       });
-      if (rows.length > 0) elements.push(new Table({ rows }));
+      if (cellTexts.length > 0) paragraphs.push(cellTexts.join(" | "));
       return;
     }
-
-    if (/^h([1-6])$/.test(tag)) {
-      const level = Number(tag[1]);
-      const headingMap: Record<
-        number,
-        (typeof HeadingLevel)[keyof typeof HeadingLevel]
-      > = {
-        1: HeadingLevel.HEADING_1,
-        2: HeadingLevel.HEADING_2,
-        3: HeadingLevel.HEADING_3,
-        4: HeadingLevel.HEADING_4,
-        5: HeadingLevel.HEADING_5,
-        6: HeadingLevel.HEADING_6,
-      };
-      elements.push(
-        new Paragraph({
-          children: [
-            new TextRun({ text: el.textContent || "", bold: true }),
-          ],
-          heading: headingMap[level] || HeadingLevel.HEADING_1,
-        })
-      );
+    if (/^h[1-6]$/.test(tag) || tag === "p" || tag === "li") {
+      const text = (el.textContent || "").trim();
+      if (text) paragraphs.push(text);
       return;
     }
-
-    if (tag === "p") {
-      elements.push(new Paragraph({ children: parseInline(el) }));
-      return;
-    }
-
     if (tag === "ul" || tag === "ol") {
       el.querySelectorAll("li").forEach((li) => {
-        elements.push(
-          new Paragraph({
-            children: parseInline(li),
-            bullet: tag === "ul" ? { level: 0 } : undefined,
-            numbering:
-              tag === "ol"
-                ? { reference: 0, level: 0 }
-                : undefined,
-          })
-        );
+        const text = (li.textContent || "").trim();
+        if (text) paragraphs.push(text);
       });
       return;
     }
-
-    if (tag === "br") {
-      elements.push(new Paragraph({ children: [new TextRun("")] }));
-      return;
-    }
-
-    el.childNodes.forEach(processNode);
+    el.childNodes.forEach(walk);
   }
-
-  div.childNodes.forEach(processNode);
-  return elements.length > 0
-    ? elements
-    : [new Paragraph({ children: [new TextRun("")] })];
+  div.childNodes.forEach(walk);
+  return paragraphs.length > 0 ? paragraphs : [""];
 }
 
-async function htmlToDocxBlob(
-  htmlStr: string,
-  title?: string
+async function editDocxInPlace(
+  originalBuffer: ArrayBuffer,
+  editedHtml: string
 ): Promise<Blob> {
-  const children = htmlToDocxElements(htmlStr);
-  const doc = new Document({
-    numbering: {
-      config: [
-        {
-          reference: "ordered-list",
-          levels: [
-            {
-              level: 0,
-              format: "decimal",
-              text: "%1.",
-              alignment: AlignmentType.LEFT,
-              style: {
-                paragraph: {
-                  indent: {
-                    left: convertInchesToTwip(0.5),
-                    hanging: convertInchesToTwip(0.25),
-                  },
-                },
-              },
-            },
-          ],
-        },
-      ],
-    },
-    sections: [
-      {
-        properties: {},
-        children: title
-          ? [
-              new Paragraph({
-                children: [
-                  new TextRun({ text: title, bold: true }),
-                ],
-                heading: HeadingLevel.TITLE,
-              }),
-              ...children,
-            ]
-          : children,
-      },
-    ],
+  const zip = await JSZip.loadAsync(originalBuffer);
+  const docXmlFile = zip.file("word/document.xml");
+  if (!docXmlFile) {
+    throw new Error("Invalid DOCX: word/document.xml not found");
+  }
+
+  const docXml = await docXmlFile.async("text");
+  const parser = new DOMParser();
+  const xmlDoc = parser.parseFromString(docXml, "application/xml");
+  const body = xmlDoc.getElementsByTagName("w:body")[0];
+  if (!body) throw new Error("Invalid DOCX: no w:body found");
+
+  const htmlParagraphs = extractHtmlParagraphs(editedHtml);
+  const xmlParagraphs: Element[] = [];
+  for (let i = 0; i < body.childNodes.length; i++) {
+    const child = body.childNodes[i];
+    if (child.nodeName === "w:p" || child.localName === "p") {
+      xmlParagraphs.push(child as Element);
+    }
+  }
+
+  const serializer = new XMLSerializer();
+
+  for (let i = 0; i < xmlParagraphs.length; i++) {
+    const pEl = xmlParagraphs[i];
+    const textEls = pEl.querySelectorAll("w\\:t, t");
+
+    if (i < htmlParagraphs.length) {
+      const newText = htmlParagraphs[i];
+      if (textEls.length > 0) {
+        const first = textEls[0];
+        first.textContent = newText;
+        for (let j = 1; j < textEls.length; j++) {
+          textEls[j].textContent = "";
+        }
+      }
+    }
+  }
+
+  if (htmlParagraphs.length > xmlParagraphs.length && xmlParagraphs.length > 0) {
+    const lastP = xmlParagraphs[xmlParagraphs.length - 1];
+    for (let i = xmlParagraphs.length; i < htmlParagraphs.length; i++) {
+      const cloned = lastP.cloneNode(true) as Element;
+      const textEls = cloned.querySelectorAll("w\\:t, t");
+      if (textEls.length > 0) {
+        textEls[0].textContent = htmlParagraphs[i];
+        for (let j = 1; j < textEls.length; j++) {
+          textEls[j].textContent = "";
+        }
+      }
+      body.insertBefore(cloned, null);
+    }
+  }
+
+  const newDocXml = serializer.serializeToString(xmlDoc);
+  zip.file("word/document.xml", newDocXml);
+
+  return zip.generateAsync({
+    type: "blob",
+    mimeType:
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
   });
-  return Packer.toBlob(doc);
 }
 
 export function DocxViewer({
@@ -318,6 +151,7 @@ export function DocxViewer({
   const historyRef = useRef<string[]>([]);
   const historyIndexRef = useRef(-1);
   const skipNextFetchRef = useRef(false);
+  const originalBufferRef = useRef<ArrayBuffer | null>(null);
 
   useEffect(() => {
     if (skipNextFetchRef.current) {
@@ -341,7 +175,10 @@ export function DocxViewer({
         }
         return res.arrayBuffer();
       })
-      .then((buffer) => mammoth.convertToHtml({ arrayBuffer: buffer }))
+      .then((buffer) => {
+        originalBufferRef.current = buffer;
+        return mammoth.convertToHtml({ arrayBuffer: buffer });
+      })
       .then((result) => {
         if (!cancelled) {
           const content = result.value || "<p></p>";
@@ -407,7 +244,20 @@ export function DocxViewer({
   const handleSave = useCallback(async () => {
     if (!contentRef.current) return;
     const editedHtml = contentRef.current.innerHTML;
-    const blob = await htmlToDocxBlob(editedHtml, fileName || undefined);
+
+    let blob: Blob;
+    if (originalBufferRef.current) {
+      try {
+        blob = await editDocxInPlace(originalBufferRef.current, editedHtml);
+      } catch {
+        blob = await import("./docxFallback").then((m) =>
+          m.htmlToDocxBlob(editedHtml, fileName || undefined)
+        );
+      }
+    } else {
+      const { htmlToDocxBlob } = await import("./docxFallback");
+      blob = await htmlToDocxBlob(editedHtml, fileName || undefined);
+    }
 
     if (onSave) {
       setSaving(true);
@@ -415,6 +265,8 @@ export function DocxViewer({
       try {
         skipNextFetchRef.current = true;
         await onSave(blob);
+        originalBufferRef.current = await blob.arrayBuffer();
+        setOriginalHtml(editedHtml);
         setIsDirty(false);
       } catch (err) {
         setSaveError(
@@ -432,6 +284,8 @@ export function DocxViewer({
         : "document.docx";
       a.click();
       URL.revokeObjectURL(url);
+      originalBufferRef.current = await blob.arrayBuffer();
+      setOriginalHtml(editedHtml);
       setIsDirty(false);
     }
   }, [fileName, onSave]);
