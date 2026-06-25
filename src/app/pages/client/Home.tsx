@@ -20,7 +20,6 @@ import {
   Department,
   Charter,
 } from "../../store/data";
-import { api } from "../../lib/api";
 import LogoLoop from "../../components/LogoLoop";
 
 const bagongPilipinasLogoSrc = new URL(
@@ -42,21 +41,13 @@ export function Home() {
   const [charters, setCharters] = useState<Charter[]>(getCharters());
 
   useEffect(() => {
-    let isMounted = true;
-
-    Promise.all([api.getDepartments(), api.getCharters()])
-      .then(([nextDepartments, nextCharters]) => {
-        if (!isMounted) return;
-        setDepartments(nextDepartments);
-        setCharters(nextCharters);
-      })
-      .catch(() => {
-        return;
-      });
-
-    return () => {
-      isMounted = false;
+    const refresh = () => {
+      setDepartments(getDepartments());
+      setCharters(getCharters());
     };
+    refresh();
+    const t = setInterval(refresh, 3000);
+    return () => clearInterval(t);
   }, []);
 
   const [now, setNow] = useState<Date>(new Date());
