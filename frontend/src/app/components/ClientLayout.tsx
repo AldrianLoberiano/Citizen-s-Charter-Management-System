@@ -7,12 +7,9 @@ import { Outlet, Link, useLocation } from "react-router";
 import { Mail, Facebook, MapPin, ArrowUp } from "lucide-react";
 import { useEffect, useState } from "react";
 
-const clientLogoSrc = new URL("../../public/images/header/logo.png", import.meta.url).href;
-const clientHeaderBgSrc = new URL("../../public/images/header/header1.png", import.meta.url).href;
-const mayorAssistantSrc = new URL(
-  "../../public/images/header/mayor.png",
-  import.meta.url
-).href;
+const clientLogoSrc = "/images/header/logo.png";
+const clientHeaderBgSrc = "/images/header/header1.png";
+const mayorAssistantSrc = "/images/header/mayor.png";
 
 export function ClientLayout() {
   const location = useLocation();
