@@ -82,10 +82,7 @@ export function CharterDetail() {
         : `/uploads/charters/${charter.file_path!}`
     : "";
 
-  const FILE_BASE = (import.meta.env.VITE_API_URL || "http://localhost:4000/api").replace(
-    /\/api$/,
-    ""
-  );
+  const FILE_BASE = (import.meta.env.VITE_ENV === "development" ? import.meta.env.VITE_DEV_BASE_URL : import.meta.env.VITE_PROD_BASE_URL);
 
   const resolveFileUrl = (filePath: string) => {
     if (filePath.startsWith("http://") || filePath.startsWith("https://")) return filePath;
