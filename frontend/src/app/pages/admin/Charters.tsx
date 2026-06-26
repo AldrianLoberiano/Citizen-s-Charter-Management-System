@@ -39,10 +39,7 @@ import { PdfEditor } from "../../components/PdfEditor";
 import { DocxViewer } from "../../components/DocxViewer";
 
 const ITEMS_PER_PAGE = 8;
-const FILE_BASE = (import.meta.env.VITE_API_URL || "http://localhost:4000/api").replace(
-  /\/api$/,
-  ""
-);
+const FILE_BASE = import.meta.env.VITE_ENV === "development" ? import.meta.env.VITE_DEV_BASE_URL : import.meta.env.VITE_PROD_BASE_URL;
 type ViewerType = "pdf" | "docx" | "unknown";
 
 const getViewerType = (filePath: string): ViewerType => {
