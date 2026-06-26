@@ -14,3 +14,4 @@ backups/
 *.key
 *.pfx
 *.crt
+backend/.env.production
