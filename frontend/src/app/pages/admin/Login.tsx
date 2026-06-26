@@ -9,8 +9,8 @@ import { Eye, EyeOff, AlertCircle, Lock, User } from "lucide-react";
 import { loginWithApi, isAuthenticated } from "../../store/data";
 import { syncLocalCacheFromApi } from "../../store/apiSync";
 
-const adminLogoSrc = new URL("../../../public/images/header/logo.png", import.meta.url).href;
-const municipalityBg = new URL("../../../public/images/header/municipality.png", import.meta.url).href;
+const adminLogoSrc = "/images/header/logo.png";
+const municipalityBg = "/images/header/municipality.png";
 
 export function Login() {
   const [username, setUsername] = useState("");
