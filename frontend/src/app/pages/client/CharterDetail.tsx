@@ -36,7 +36,7 @@ export function CharterDetail() {
   const charterId = parseInt(id || "0");
 
   const charter = getCharterById(charterId);
-  const [, setTick] = useState(0);
+  const [tick, setTick] = useState(0);
   const [feedbackEntries, setFeedbackEntries] = useState<FeedbackEntry[]>(
     getCombinedFeedbackByCharter(charterId)
   );
