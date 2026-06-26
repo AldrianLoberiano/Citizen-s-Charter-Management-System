@@ -148,6 +148,14 @@ const allowAllOrigins =
   String(process.env.ALLOW_ALL_ORIGINS || "").toLowerCase() === "true" ||
   process.env.NODE_ENV !== "production";
 
+app.get("/.well-known/appspecific/com.chrome.devtools.json", (_req, res) => {
+  res.status(204).end();
+});
+
+app.get("/", (_req, res) => {
+  res.json({ status: "ok", service: "CCMS Backend", timestamp: new Date().toISOString() });
+});
+
 app.use(
   cors({
     origin: (origin, callback) => {
