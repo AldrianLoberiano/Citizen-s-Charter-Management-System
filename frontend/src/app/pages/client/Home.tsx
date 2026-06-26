@@ -22,18 +22,9 @@ import {
 } from "../../store/data";
 import LogoLoop from "../../components/LogoLoop";
 
-const bagongPilipinasLogoSrc = new URL(
-  "../../../public/images/header/Bagong_Pilipinas_logo.png",
-  import.meta.url
-).href;
-const calauanLogo2Src = new URL(
-  "../../../public/images/header/calauan_logo2.png",
-  import.meta.url
-).href;
-const lightVioletBgSrc = new URL(
-  "../../../public/images/header/lightviolet.png",
-  import.meta.url
-).href;
+const bagongPilipinasLogoSrc = "/images/header/Bagong_Pilipinas_logo.png";
+const calauanLogo2Src = "/images/header/calauan_logo2.png";
+const lightVioletBgSrc = "/images/header/lightviolet.png";
 
 export function Home() {
   const [search, setSearch] = useState("");
