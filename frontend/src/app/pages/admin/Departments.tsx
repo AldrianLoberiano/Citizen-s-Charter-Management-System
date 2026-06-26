@@ -269,7 +269,7 @@ export function Departments() {
               {paginated.length === 0 && (
                 <tr>
                   <td
-                    colSpan={5}
+                    colSpan={4}
                     className="px-6 py-12 text-center text-slate-400 dark:text-slate-500 text-sm"
                   >
                     {search
