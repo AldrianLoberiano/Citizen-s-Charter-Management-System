@@ -139,9 +139,12 @@ function htmlToDocxElements(htmlStr: string): (Paragraph | Table)[] {
                   })
                 );
             } else if (child.nodeType === Node.ELEMENT_NODE) {
-              cellParagraphs.push(
-                ...htmlToDocxElements((child as HTMLElement).outerHTML)
-              );
+              const elements = htmlToDocxElements((child as HTMLElement).outerHTML);
+              for (const el of elements) {
+                if (el instanceof Paragraph) {
+                  cellParagraphs.push(el);
+                }
+              }
             }
           });
           if (cellParagraphs.length === 0)
