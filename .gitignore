@@ -2,16 +2,32 @@
 *.md
 **/*.md
 !README.md
+
+# Dependencies
 node_modules
+
+# Database
 *.sql
-backend/.env
+
+# Environment files
 .env
 .env.local
+backend/.env
+frontend/.env
+
+# Logs
 *.log
+
+# Uploads and backups
 uploads/
 backups/
+
+# Security files
 *.pem
 *.key
 *.pfx
 *.crt
-backend/.env.production
+
+# Build output
+frontend/dist
+.env.production
