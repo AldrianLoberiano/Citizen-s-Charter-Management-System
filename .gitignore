@@ -6,6 +6,7 @@ node_modules
 *.sql
 backend/.env
 .env
+.env.local
 *.log
 uploads/
 backups/
