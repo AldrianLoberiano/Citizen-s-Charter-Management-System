@@ -3,7 +3,9 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "start": "node server.js"
+        "start": "node server.js",
+        "test": "vitest run",
+        "test:watch": "vitest"
     },
     "dependencies": {
         "bcryptjs": "^3.0.2",
