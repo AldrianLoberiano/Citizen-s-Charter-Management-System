@@ -21,14 +21,8 @@ const images = [
   "peso.png",
 ];
 
-// Resolve local image URLs from src/public/images using Vite import meta URL
-const imageUrls = images.map((f) => {
-  try {
-    return new URL(`../../public/images/${f}`, import.meta.url).href;
-  } catch (e) {
-    return `/images/${encodeURIComponent(f)}`;
-  }
-});
+// Resolve local image URLs from public/images using Vite public path
+const imageUrls = images.map((f) => `/images/${encodeURIComponent(f)}`);
 
 const loopImages = imageUrls;
 
