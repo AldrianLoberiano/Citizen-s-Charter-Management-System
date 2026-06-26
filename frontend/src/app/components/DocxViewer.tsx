@@ -83,7 +83,7 @@ async function editDocxInPlace(
   const xmlParagraphs: Element[] = [];
   for (let i = 0; i < body.childNodes.length; i++) {
     const child = body.childNodes[i];
-    if (child.nodeName === "w:p" || child.localName === "p") {
+    if (child.nodeName === "w:p" || (child as Element).localName === "p") {
       xmlParagraphs.push(child as Element);
     }
   }
