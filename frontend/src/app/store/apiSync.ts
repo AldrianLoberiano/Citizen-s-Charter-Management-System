@@ -1,9 +1,5 @@
 import { api } from "../lib/api";
 import {
-  getDepartments,
-  getCharters,
-  getRatings,
-  getFeedback,
   setDepartments,
   setCharters,
   setRatings,
@@ -13,20 +9,17 @@ import {
 let pollTimer: ReturnType<typeof setInterval> | null = null;
 
 export async function syncLocalCacheFromApi(): Promise<void> {
-  const [departments, charters] = await Promise.all([
+  const results = await Promise.allSettled([
     api.getDepartments(),
     api.getCharters(),
-  ]);
-
-  setDepartments(departments);
-  setCharters(charters);
-
-  const [ratings, feedback] = await Promise.all([
     api.getRatingsAll(),
     api.getFeedback(),
   ]);
-  setRatings(ratings);
-  setFeedback(feedback);
+
+  if (results[0].status === "fulfilled") setDepartments(results[0].value);
+  if (results[1].status === "fulfilled") setCharters(results[1].value);
+  if (results[2].status === "fulfilled") setRatings(results[2].value);
+  if (results[3].status === "fulfilled") setFeedback(results[3].value);
 }
 
 export function startPolling(intervalMs = 5000) {
