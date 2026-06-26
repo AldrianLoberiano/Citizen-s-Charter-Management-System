@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { History, Download, Search, FileText, User } from "lucide-react";
 import { api } from "../../lib/api";
 
-const FILE_BASE = (import.meta.env.VITE_API_URL || "http://localhost:4000/api").replace(/\/api$/, "");
+const FILE_BASE = import.meta.env.VITE_ENV === "development" ? import.meta.env.VITE_DEV_BASE_URL : import.meta.env.VITE_PROD_BASE_URL;
 
 interface EditedCharter {
   id: number;
