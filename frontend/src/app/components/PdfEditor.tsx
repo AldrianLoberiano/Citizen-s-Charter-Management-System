@@ -331,7 +331,7 @@ export function PdfEditor({ fileUrl }: PdfEditorProps) {
     }
 
     const modifiedPdfBytes = await pdfDocLib.save();
-    const blob = new Blob([modifiedPdfBytes], { type: "application/pdf" });
+    const blob = new Blob([new Uint8Array(modifiedPdfBytes)], { type: "application/pdf" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
