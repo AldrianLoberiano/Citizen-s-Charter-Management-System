@@ -25,8 +25,8 @@ import {
 import { Modal } from "./Modal";
 import { isAuthenticated, logout, getAuthUser } from "../store/data";
 
-const adminLogoSrc = new URL("../../public/images/header/logo.png", import.meta.url).href;
-const adminHeaderBgSrc = new URL("../../public/images/header/header1.png", import.meta.url).href;
+const adminLogoSrc = "/images/header/logo.png";
+const adminHeaderBgSrc = "/images/header/header1.png";
 
 interface NavItem {
   path: string;
