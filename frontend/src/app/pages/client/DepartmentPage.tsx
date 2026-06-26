@@ -44,14 +44,8 @@ export function DepartmentPage() {
     return <Navigate to="/" replace />;
   }
 
-  const bagongPilipinasLogo = new URL(
-    "../../../public/images/header/Bagong_Pilipinas_logo.png",
-    import.meta.url
-  ).href;
-  const calauanLogo2 = new URL(
-    "../../../public/images/header/calauan_logo2.png",
-    import.meta.url
-  ).href;
+  const bagongPilipinasLogo = "/images/header/Bagong_Pilipinas_logo.png";
+  const calauanLogo2 = "/images/header/calauan_logo2.png";
 
   const allCharters = getChartersByDepartment(deptId);
   const charters = allCharters.filter(
