@@ -17,10 +17,10 @@ import {
 } from "../../store/data";
 
 const GSHEETS_CONFIG = {
-  apiKey: "AIzaSyAOam-5qK2RGaR157ylUYkUnFP69BoFRrM",
-  spreadsheetId: "1Op53bBwh9weXkt34YcOaTPUXlE-sSJgJFTJ5Pbky0M8",
-  sheetName: "Form Responses 1",
-  range: "A:Z",
+  apiKey: import.meta.env.VITE_GSHEETS_API_KEY || "",
+  spreadsheetId: import.meta.env.VITE_GSHEETS_SPREADSHEET_ID || "",
+  sheetName: import.meta.env.VITE_GSHEETS_SHEET_NAME || "Form Responses 1",
+  range: import.meta.env.VITE_GSHEETS_RANGE || "A:Z",
 } as const;
 
 type SheetStatus = "idle" | "loading" | "success" | "error";
