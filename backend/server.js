@@ -268,7 +268,6 @@ app.get("/api/admin/backup", async (_req, res) => {
     }
 
     // Data
-    res.write(`SET FOREIGN_KEY_CHECKS = 1;\n\n`);
     for (const table of tables) {
       const [rows] = await pool.query(`SELECT * FROM \`${table}\``);
       if (!rows || rows.length === 0) continue;
@@ -299,6 +298,7 @@ app.get("/api/admin/backup", async (_req, res) => {
       res.write("\n");
     }
 
+    res.write(`SET FOREIGN_KEY_CHECKS = 1;\n\n`);
     res.end();
   } catch (error) {
     console.error("Backup error:", error);
@@ -315,7 +315,7 @@ app.get("/api/admin/backup", async (_req, res) => {
 
 app.post("/api/admin/import-schema", async (_req, res) => {
   try {
-    const sqlPath = path.join(__dirname, "../database/ccms_mysql.sql");
+    const sqlPath = path.join(__dirname, "database", "ccms_db.sql");
     if (!fs.existsSync(sqlPath)) {
       return res.status(400).json({ message: "SQL schema file not found", sqlPath });
     }
@@ -326,7 +326,7 @@ app.post("/api/admin/import-schema", async (_req, res) => {
     }
 
     await pool.query(sql);
-    return res.json({ ok: true, imported: "ccms_mysql.sql" });
+    return res.json({ ok: true, imported: "ccms_db.sql" });
   } catch (error) {
     console.error("Schema import error:", error);
     return res.status(500).json({ message: "Failed to import schema", error: error?.message || String(error) });
@@ -449,7 +449,7 @@ app.post("/api/admin/restore", async (req, res) => {
       database: process.env.DB_NAME || "ccms_db",
     };
 
-    const mysqlBin = process.env.MYSQL_BIN || "C:\\\\laragon\\\\bin\\\\mysql\\\\mysql-8.0.30-winx64\\\\bin\\\\mysql.exe";
+    const mysqlBin = process.env.MYSQL_BIN || "mysql";
 
     const result = await new Promise((resolve, reject) => {
       const args = ["--host", host, "--port", String(port), "--user", user];
