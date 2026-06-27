@@ -1,26 +1,25 @@
-# Ignore all Markdown files
-*.md
-**/*.md
-!README.md
-
 # Dependencies
-node_modules
+node_modules/
 
-# Database
-*.sql
-
-# Environment files
+# Environment files (contain secrets, API keys, DB passwords)
 .env
-.env.local
-backend/.env
-frontend/.env
+.env.*
+!.env.example
 
-# Logs
-*.log
+# Build output
+frontend/dist/
+dist/
 
 # Uploads and backups
 uploads/
 backups/
+
+# Database files (may contain sensitive data)
+*.sql
+
+# Logs
+*.log
+npm-debug.log*
 
 # Security files
 *.pem
@@ -28,6 +27,24 @@ backups/
 *.pfx
 *.crt
 
-# Build output
-frontend/dist
-.env.production
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Markdown (except README)
+*.md
+**/*.md
+!README.md
+
+# Test coverage
+coverage/
+
+# Vite cache
+frontend/.vite/
