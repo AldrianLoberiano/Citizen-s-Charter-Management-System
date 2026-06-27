@@ -1,14 +1,14 @@
-# Calauans Citizen's Charter Management System
+# Calauan Citizen's Charter Management System
 
-Citizen's Charter Management System is a full-stack web app for publishing service charters, managing departments, and collecting citizen feedback, built with a React + Vite frontend and an Express + MySQL backend.
+A full-stack web application for publishing citizen service charters by department, managing charter documents (PDF and DOCX), and collecting citizen feedback with analytics. Built for the Municipality of Calauan, Laguna.
 
 ## Tech Stack
 
-- **Frontend:** React 19, TypeScript, Vite, Tailwind CSS v4, Radix UI, MUI, Recharts, Lucide icons
+- **Frontend:** React 18, TypeScript, Vite, Tailwind CSS v4, Radix UI, MUI, Recharts, Lucide icons
 - **Backend:** Express 5, Node.js, MySQL (mysql2), Multer (file uploads), bcryptjs (auth)
-- **Document Processing:** mammoth.js (DOCX→HTML), pdf-lib (PDF export), pdfjs-dist (PDF rendering), docx (DOCX generation)
-- **Testing:** Vitest, React Testing Library
-- **Deployment:** Vercel (frontend), local Node.js (backend)
+- **Document Processing:** mammoth.js (DOCX → HTML), pdf-lib (PDF export), pdfjs-dist (PDF rendering), docx (DOCX generation)
+- **Testing:** Vitest, React Testing Library, Supertest
+- **Deployment:** Vercel (frontend), Render (backend), MySQL (Railway)
 
 ## Purpose
 
@@ -89,163 +89,189 @@ Citizen's Charter Management System is a full-stack web app for publishing servi
 
 ```text
 Citizen's Charter Management System/
-├─ backend/
-│  ├─ .env.example
-│  ├─ create-table.js              # Migration script for charter_pdf_edits table
-│  ├─ db.js
+├─ frontend/
+│  ├─ .env                        # Dev environment variables
+│  ├─ .env.production             # Production environment variables
+│  ├─ index.html
 │  ├─ package.json
-│  ├─ server.js
-│  ├─ vitest.config.js
-│  └─ tests/
-│     └─ server.test.js
-├─ database/
-│  ├─ ccms_db.sql                  # Full MySQL database dump
-│  └─ mysql_connection_example.js
-├─ dist/
-├─ src/
-│  ├─ env.d.ts
-│  ├─ main.tsx
-│  ├─ test-setup.ts
-│  ├─ vite-env.d.ts
-│  ├─ app/
-│  │  ├─ App.tsx
-│  │  ├─ routes.tsx
-│  │  ├─ components/
-│  │  │  ├─ AdminLayout.tsx
-│  │  │  ├─ ClientLayout.tsx
-│  │  │  ├─ DocxViewer.tsx         # DOCX viewer/editor (mammoth.js + docx)
-│  │  │  ├─ LogoLoop.tsx
-│  │  │  ├─ Modal.tsx
-│  │  │  ├─ Modal.test.tsx
-│  │  │  ├─ Notification.tsx
-│  │  │  ├─ Pagination.tsx
-│  │  │  ├─ Pagination.test.tsx
-│  │  │  └─ PdfEditor.tsx          # PDF annotation editor (pdfjs-dist + pdf-lib)
-│  │  ├─ lib/
-│  │  │  ├─ api.ts
-│  │  │  └─ api.test.ts
-│  │  ├─ pages/
-│  │  │  ├─ admin/
-│  │  │  │  ├─ BackupRecovery.tsx
-│  │  │  │  ├─ Charters.tsx
-│  │  │  │  ├─ Dashboard.tsx
-│  │  │  │  ├─ Departments.tsx
-│  │  │  │  ├─ EditedCharters.tsx  # Edited charter documents listing
-│  │  │  │  ├─ Feedback.tsx
-│  │  │  │  └─ Login.tsx
-│  │  │  └─ client/
-│  │  │     ├─ CharterDetail.tsx
-│  │  │     ├─ DepartmentPage.tsx
-│  │  │     └─ Home.tsx
-│  │  └─ store/
-│  │     ├─ apiSync.ts
-│  │     ├─ data.ts
-│  │     └─ data.test.ts
+│  ├─ postcss.config.mjs
+│  ├─ tsconfig.json
+│  ├─ vercel.json
+│  ├─ vite.config.ts
 │  ├─ public/
 │  │  └─ images/
-│  │     ├─ header/
-│  │     │  └─ (logos, header images, municipality, mayor)
+│  │     ├─ header/               # Logos, header images, municipality, mayor
 │  │     └─ (department images)
-│  └─ styles/
-│     ├─ fonts.css
-│     ├─ index.css
-│     ├─ tailwind.css
-│     └─ theme.css
+│  └─ src/
+│     ├─ env.d.ts
+│     ├─ main.tsx
+│     ├─ test-setup.ts
+│     ├─ app/
+│     │  ├─ App.tsx
+│     │  ├─ routes.tsx
+│     │  ├─ components/
+│     │  │  ├─ AdminLayout.tsx
+│     │  │  ├─ ClientLayout.tsx
+│     │  │  ├─ DocxViewer.tsx     # DOCX viewer/editor (mammoth.js + docx)
+│     │  │  ├─ LogoLoop.tsx
+│     │  │  ├─ Modal.tsx
+│     │  │  ├─ Notification.tsx
+│     │  │  ├─ Pagination.tsx
+│     │  │  └─ PdfEditor.tsx      # PDF annotation editor (pdfjs-dist + pdf-lib)
+│     │  ├─ lib/
+│     │  │  ├─ api.ts
+│     │  │  └─ api.test.ts
+│     │  ├─ pages/
+│     │  │  ├─ admin/
+│     │  │  │  ├─ BackupRecovery.tsx
+│     │  │  │  ├─ Charters.tsx
+│     │  │  │  ├─ Dashboard.tsx
+│     │  │  │  ├─ Departments.tsx
+│     │  │  │  ├─ EditedCharters.tsx
+│     │  │  │  ├─ Feedback.tsx
+│     │  │  │  └─ Login.tsx
+│     │  │  └─ client/
+│     │  │     ├─ CharterDetail.tsx
+│     │  │     ├─ DepartmentPage.tsx
+│     │  │     └─ Home.tsx
+│     │  └─ store/
+│     │     ├─ apiSync.ts
+│     │     ├─ data.ts
+│     │     └─ data.test.ts
+│     └─ styles/
+│        ├─ fonts.css
+│        ├─ index.css
+│        ├─ tailwind.css
+│        └─ theme.css
+├─ backend/
+│  ├─ .env                        # Backend environment variables
+│  ├─ .env.example                # Environment variable template
+│  ├─ .env.production             # Production environment variables
+│  ├─ create-table.js             # Migration script for charter_pdf_edits table
+│  ├─ db.js                       # MySQL connection pool
+│  ├─ package.json
+│  ├─ server.js                   # Express API server (855 lines)
+│  ├─ vitest.config.js
+│  ├─ database/
+│  │  ├─ ccms_db.sql              # Full MySQL database dump
+│  │  └─ mysql_connection_example.js
+│  └─ tests/
+│     └─ server.test.js
 ├─ uploads/
-│  ├─ charters/                    # Uploaded charter documents (PDF + DOCX)
-│  └─ edited-charters/             # Saved edited charter versions
-├─ index.html
-├─ package.json
-├─ postcss.config.mjs
-├─ README.md
-├─ tsconfig.json
-├─ vercel.json
-└─ vite.config.ts
+│  ├─ charters/                   # Uploaded charter documents (PDF + DOCX)
+│  ├─ edited-charters/            # Saved edited charter versions
+│  └─ backups/                    # Uploaded .sql backup files
+├─ render.yaml                    # Render deployment config
+└─ README.md
 ```
-
-- `src/` contains the React frontend.
-- `backend/` contains the Express API, MySQL connection logic, and tests.
-- `database/` contains the MySQL dump and connection example script.
-- `dist/` is the production build output (generated by `npm run build`).
-- `uploads/charters/` stores uploaded charter documents (PDF and DOCX) served by the backend.
-- `uploads/edited-charters/` stores saved edited charter versions.
-- `src/public/images/` holds department and header images.
 
 ### Directory Purpose
 
-| Path                         | Purpose                                                        |
-| ---------------------------- | -------------------------------------------------------------- |
-| `backend/`                   | Express API, MySQL access, and server startup code             |
-| `backend/tests/`             | Backend test suite (Vitest)                                    |
-| `database/`                  | MySQL database dump and connection example script               |
-| `dist/`                      | Production frontend build output                               |
-| `src/app/components/`        | Shared UI: layouts, dialogs, pagination, PDF/DOCX viewers      |
-| `src/app/lib/`               | API client and helpers                                         |
-| `src/app/pages/client/`      | Public-facing pages for citizens                               |
-| `src/app/pages/admin/`       | Admin dashboard, login, departments, charters, edited charters |
-| `src/app/store/`             | Local data store and API sync helpers                          |
-| `src/public/images/`         | Department and header images                                   |
-| `src/styles/`                | Global CSS, fonts, theme, and Tailwind entry files             |
-| `uploads/charters/`          | Uploaded PDF and DOCX charter files                            |
-| `uploads/edited-charters/`   | Saved edited charter versions                                  |
+| Path | Purpose |
+| ---- | ------- |
+| `frontend/` | React SPA with Vite, TypeScript, and Tailwind CSS |
+| `frontend/src/app/components/` | Shared UI: layouts, dialogs, pagination, PDF/DOCX viewers |
+| `frontend/src/app/lib/` | API client and helpers |
+| `frontend/src/app/pages/client/` | Public-facing pages for citizens |
+| `frontend/src/app/pages/admin/` | Admin dashboard, login, departments, charters, edited charters |
+| `frontend/src/app/store/` | Local data store and API sync helpers |
+| `frontend/public/images/` | Department and header images |
+| `frontend/src/styles/` | Global CSS, fonts, theme, and Tailwind entry files |
+| `backend/` | Express API, MySQL access, and server startup code |
+| `backend/database/` | MySQL database dump and connection example script |
+| `backend/tests/` | Backend test suite (Vitest) |
+| `uploads/charters/` | Uploaded PDF and DOCX charter files |
+| `uploads/edited-charters/` | Saved edited charter versions |
+| `uploads/backups/` | Uploaded `.sql` files used for restore |
 
 ## Setup
 
-1. Install frontend dependencies from the project root:
-   `npm install`
+1. Install frontend dependencies:
+   ```bash
+   cd frontend && npm install
+   ```
 2. Install backend dependencies:
-   `cd backend && npm install`
+   ```bash
+   cd backend && npm install
+   ```
 3. Import the database schema and seed data:
-   `mysql -u root -p < database/ccms_mysql.sql`
+   ```bash
+   mysql -u root -p < backend/database/ccms_db.sql
+   ```
 
 ## Run the App
 
 Start the backend in one terminal:
 
-`npm run server`
+```bash
+cd backend && node server.js
+```
 
 Start the frontend in another terminal:
 
-`npm run dev`
+```bash
+cd frontend && npm run dev
+```
 
 The frontend runs on `http://localhost:5173` and the backend runs on `http://localhost:4000` by default.
 
-## Deployment (Vercel)
+## Deployment
+
+### Vercel (Frontend)
 
 This project is a single-page app (SPA). Vercel needs a rewrite so routes like `/admin` return `index.html`.
 
-1. Deploy the frontend to Vercel from the repo root.
-2. Set the environment variable `VITE_API_URL` in Vercel to your deployed backend base URL, e.g.:
-   - `https://your-backend.example.com/api`
-3. Ensure the backend allows your Vercel domain in CORS.
+1. Deploy the `frontend/` directory to Vercel from the repo root.
+2. Set the environment variable `VITE_PROD_BASE_URL` in Vercel to your deployed backend base URL, e.g.:
+   - `https://your-backend.onrender.com`
+3. Ensure the backend allows your Vercel domain in CORS (`CORS_ORIGIN` env var).
 
 Notes:
 
-- The frontend cannot call `http://localhost:4000` from Vercel; you must deploy the backend.
-- The SPA rewrite is configured in `vercel.json`.
+- The SPA rewrite is configured in `frontend/vercel.json`.
+- Environment variables for production are in `frontend/.env.production`.
 
-## Localhost Deployment (Local Only)
+### Render (Backend)
+
+The backend is deployed to Render using the `render.yaml` configuration.
+
+1. Connect the repository to Render.
+2. Render will automatically detect the `render.yaml` and deploy the `backend/` service.
+3. Set environment variables in Render dashboard matching `backend/.env.production`.
+4. The backend runs on `https://ccms-backend.onrender.com` in production.
+
+### Localhost Deployment (Local Only)
 
 Use these steps to run the system locally on `localhost` without any public hosting.
 
 1. Start MySQL locally (XAMPP or MySQL service).
 2. Create and seed the database:
-   `mysql -u root -p < database/ccms_mysql.sql`
+   ```bash
+   mysql -u root -p < backend/database/ccms_db.sql
+   ```
 3. (Optional) Create `backend/.env` if you need custom ports or DB credentials:
-   - `PORT=4000`
-   - `CORS_ORIGIN=http://localhost:5173`
-   - `DB_HOST=127.0.0.1`
-   - `DB_PORT=3306`
-   - `DB_USER=root`
-   - `DB_PASSWORD=`
-   - `DB_NAME=ccms_db`
+   ```
+   PORT=4000
+   CORS_ORIGIN=http://localhost:5173
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_USER=root
+   DB_PASSWORD=
+   DB_NAME=ccms_db
+   ```
 4. Install dependencies:
-   - Frontend: `npm install`
-   - Backend: `cd backend && npm install`
+   ```bash
+   cd frontend && npm install
+   cd ../backend && npm install
+   ```
 5. Start the backend API:
-   `npm run server`
+   ```bash
+   cd backend && node server.js
+   ```
 6. Start the frontend (new terminal):
-   `npm run dev`
+   ```bash
+   cd frontend && npm run dev
+   ```
 7. Open the app:
    - Frontend: `http://localhost:5173`
    - Backend: `http://localhost:4000`
@@ -257,7 +283,7 @@ Notes:
 
 ## Troubleshooting (Localhost)
 
-- Backend won’t start: verify MySQL is running and credentials in `backend/.env` match.
+- Backend won't start: verify MySQL is running and credentials in `backend/.env` match.
 - CORS error in browser: ensure `CORS_ORIGIN` matches the frontend URL.
 - Frontend shows no data: confirm `http://localhost:4000/api/health` returns `{ "ok": true }`.
 - File uploads fail: ensure `uploads/charters/` exists and is writable.
@@ -266,11 +292,15 @@ Notes:
 
 Create a backup (dump) of the local database:
 
-`mysqldump -u root -p ccms_db > backup_ccms_db.sql`
+```bash
+mysqldump -u root -p ccms_db > backup_ccms_db.sql
+```
 
 Restore from a backup file:
 
-`mysql -u root -p ccms_db < backup_ccms_db.sql`
+```bash
+mysql -u root -p ccms_db < backup_ccms_db.sql
+```
 
 Tips:
 
@@ -279,17 +309,29 @@ Tips:
 
 ## Environment Variables
 
-Backend `backend/.env` can override the defaults used by `backend/server.js` and `backend/db.js`:
+### Frontend (`frontend/.env`)
 
-- `PORT` - backend port, default `4000`
-- `CORS_ORIGIN` - allowed frontend origin, default `http://localhost:5173`
-- `DB_HOST` - MySQL host, default `127.0.0.1`
-- `DB_PORT` - MySQL port, default `3306`
-- `DB_USER` - MySQL user, default `root`
-- `DB_PASSWORD` - MySQL password, default empty
-- `DB_NAME` - database name, default `ccms_db`
-- `ADMIN_USERNAME` - default `admin`
-- `ADMIN_PASSWORD` - default `admin123`
+| Variable | Description | Default |
+| -------- | ----------- | ------- |
+| `VITE_ENV` | Environment mode | `development` |
+| `VITE_DEV_BASE_URL` | Backend URL in development | `http://localhost:4000` |
+| `VITE_PROD_BASE_URL` | Backend URL in production | `https://ccms-backend.onrender.com` |
+
+### Backend (`backend/.env`)
+
+| Variable | Description | Default |
+| -------- | ----------- | ------- |
+| `PORT` | Backend port | `4000` |
+| `CORS_ORIGIN` | Allowed frontend origins (comma-separated) | `http://localhost:5173` |
+| `DB_HOST` | MySQL host | `127.0.0.1` |
+| `DB_PORT` | MySQL port | `3306` |
+| `DB_USER` | MySQL user | `root` |
+| `DB_PASSWORD` | MySQL password | (empty) |
+| `DB_NAME` | Database name | `ccms_db` |
+| `DB_SSL` | Enable SSL for MySQL | `false` |
+| `DB_POOL_SIZE` | Connection pool size | `10` |
+| `ADMIN_USERNAME` | Admin login username | `admin` |
+| `ADMIN_PASSWORD` | Admin login password | `admin123` |
 
 ## Key Backend Endpoints
 
@@ -340,4 +382,3 @@ Files are stored locally on the server (disk) in these folders:
 The backend serves files under:
 
 - `/uploads/*` (via `express.static`)
-
