@@ -24,11 +24,11 @@ const allowedOrigins = (process.env.CORS_ORIGIN || "http://localhost:5173,http:/
 const adminUsername = process.env.ADMIN_USERNAME || "admin";
 const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
 
-const uploadsDir = path.join(__dirname, "../uploads/charters");
+const uploadsDir = path.join(__dirname, "../frontend/uploads/charters");
 fs.mkdirSync(uploadsDir, { recursive: true });
-const editedDir = path.join(__dirname, "../uploads/edited-charters");
+const editedDir = path.join(__dirname, "../frontend/uploads/edited-charters");
 fs.mkdirSync(editedDir, { recursive: true });
-const backupsDir = path.join(__dirname, "../uploads/backups");
+const backupsDir = path.join(__dirname, "../frontend/uploads/backups");
 fs.mkdirSync(backupsDir, { recursive: true });
 
 const storage = multer.diskStorage({
@@ -182,7 +182,7 @@ app.use((req, res, next) => {
 });
 app.use(
   "/uploads",
-  express.static(path.join(__dirname, "../uploads"), {
+  express.static(path.join(__dirname, "../frontend/uploads"), {
     etag: false,
     lastModified: false,
     cacheControl: false,
