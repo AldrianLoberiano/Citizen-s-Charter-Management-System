@@ -1,318 +1,367 @@
-# Calauan Citizen's Charter Management System
+# Calauan Citizen's Charter Management System (CCMS)
 
-A full-stack web application for publishing citizen service charters by department, managing charter documents (PDF and DOCX), and collecting citizen feedback with analytics. Built for the Municipality of Calauan, Laguna.
+A full-stack web application for publishing citizen service charters by department, managing charter documents (PDF and DOCX) with built-in editors, collecting citizen feedback with analytics, and supporting database backup/recovery. Built for the Municipality of Calauan, Laguna.
 
 ## Tech Stack
 
-- **Frontend:** React 18, TypeScript, Vite, Tailwind CSS v4, Radix UI, MUI, Recharts, Lucide icons
-- **Backend:** Express 5, Node.js, MySQL (mysql2), Multer (file uploads), bcryptjs (auth)
-- **Document Processing:** mammoth.js (DOCX → HTML), pdf-lib (PDF export), pdfjs-dist (PDF rendering), docx (DOCX generation)
-- **Testing:** Vitest, React Testing Library, Supertest
-- **Deployment:** Vercel (frontend), Render (backend), MySQL (Railway)
+| Layer | Technologies |
+| --- | --- |
+| **Frontend** | React 18, TypeScript, Vite 6, Tailwind CSS v4, Radix UI, MUI, Recharts, Lucide Icons |
+| **Backend** | Express 5, Node.js 18+, MySQL (mysql2), Multer (file uploads), bcryptjs (auth) |
+| **Document Processing** | mammoth.js (DOCX to HTML), pdfjs-dist (PDF rendering), pdf-lib (PDF annotation/export), docx (DOCX generation), JSZip (DOCX in-place editing) |
+| **Testing** | Vitest, React Testing Library, Supertest |
+| **Deployment** | Vercel (frontend), Render (backend), MySQL (Railway) |
 
 ## Purpose
 
 - Publish and maintain citizen service charters by department.
-- Provide a public-facing portal for charter browsing and details.
-- Collect feedback and ratings with basic analytics for admins.
-- Support document uploads, editing, and local backup/recovery workflows.
+- Provide a public-facing portal for charter browsing, document preview, and feedback submission.
+- Enable administrators to manage departments, charters, and document edits with full version history.
+- Support document uploads, inline PDF/DOCX editing, and database backup/recovery workflows.
 
 ## Features
 
-### Citizen (Client-facing)
+### Citizen Portal (Client-Facing)
 
-- **Home page** (`/`)
-  - Live clock display, API-loaded department stats, and service highlights.
-- **Department → Services listing** (`/department/:id`)
-  - Shows all published charters per department with search.
-- **Charter Details** (`/charter/:id`)
-  - Renders charter content with preserved line breaks.
-  - **PDF attachment preview** (iframe) with `HEAD` check for availability.
-  - **DOCX attachment rendering** via `DocxViewer` (read-only, HTML conversion via mammoth.js).
-  - **Citizen Feedback** section:
-    - Fields: full name (required), email (optional), contact (optional)
-    - Star rating (1–5) + optional comment
-    - Submits to the backend and updates the displayed list/average rating.
-  - **Feedback QR code** on the charter page encodes:
-    - `/charter/:id#feedback-form` (scanning takes users directly to the form)
+- **Home Page** (`/`)
+  - Hero section with municipality header banner and welcome message.
+  - Live clock display with date.
+  - Department grid with search and clickable cards.
+  - Statistics banner showing department and charter counts.
+  - Infinite-scrolling logo carousel of department logos.
+  - "How to Use" guide section for citizens.
 
-### Admin (Dashboard)
+- **Department Page** (`/department/:id`)
+  - Lists all published charters for the selected department.
+  - Search bar to filter charters by title or content.
 
-- **Admin layout**
-  - Auth-gated admin routes, sidebar navigation, and dark/light theme toggle.
-- **Dashboard**
-  - Summary cards (departments, charters, attachments, total feedback)
-  - Recent charters table and quick-link navigation.
-- **Charters management**
-  - Full CRUD for charters
-  - **PDF and DOCX uploads** (charter attachment)
-  - **Editor Identification**: before editing any charter document, the system requires the editor to enter their name. This name is recorded in the edit history for accountability.
+- **Charter Detail** (`/charter/:id`)
+  - Full charter content with preserved formatting.
+  - PDF attachment preview (embedded iframe viewer).
+  - DOCX attachment viewer via `DocxViewer` (read-only HTML rendering).
+  - **Citizen Feedback Form**:
+    - Full name (required), email (optional), contact number (optional).
+    - Interactive star rating (1-5) with visual feedback.
+    - Optional comment/text feedback.
+    - Submits directly to backend and updates the displayed rating average.
+  - Feedback QR code encoding the direct feedback form URL.
+
+### Admin Dashboard
+
+- **Authentication** (`/admin/login`)
+  - Username/password login with show/hide password toggle.
+  - Session persisted in browser localStorage.
+  - Default credentials: `admin` / `admin123`.
+
+- **Dashboard** (`/admin/dashboard`)
+  - Summary cards: total departments, charters, attachments, and feedback count.
+  - Recent charters table with quick navigation.
+  - Quick-link cards to major admin sections.
+
+- **Department Management** (`/admin/departments`)
+  - Full CRUD operations via modal forms.
+  - Search and paginated listing.
+  - Charter count displayed per department.
+  - Delete protection warning when charters are associated.
+
+- **Charter Management** (`/admin/charters`)
+  - Full CRUD for charters with department selection.
+  - **File Upload**: PDF and DOCX attachments (max 5MB).
+  - **Editor Identification**: requires editor name before modifying documents (recorded in edit history for accountability).
   - **PDF Annotation Editor** (`PdfEditor`):
-    - Text tool: add text annotations with configurable color/size
-    - Draw tool: freehand drawing with configurable color/stroke
-    - Highlight tool: rectangular highlight regions
-    - Select tool: edit existing text annotations
-    - Page navigation, zoom (50%–400%), clear annotations, export annotated PDF
+    - Text tool: add text annotations with configurable color and size.
+    - Draw tool: freehand drawing with configurable color and stroke width.
+    - Highlight tool: rectangular highlight regions.
+    - Select tool: edit existing text annotations.
+    - Page navigation, zoom (50%-400%), clear all annotations.
+    - Export annotated PDF with all annotations embedded.
   - **DOCX Viewer/Editor** (`DocxViewer`):
-    - Renders `.docx` files as HTML via mammoth.js
-    - `contentEditable` inline editing mode
-    - Undo/Redo with full history stack (Ctrl+Z / Ctrl+Y)
-    - Save edited content back to server as new DOCX (Ctrl+S)
-    - Zoom controls (50%–200%), print, download original
-  - **Edit history**: tracks all saved versions with editor name, metadata, and timestamps
-  - Search, department filtering, pagination
+    - Renders DOCX files as formatted HTML via mammoth.js.
+    - Inline contentEditable editing mode.
+    - Undo/Redo with full history stack (Ctrl+Z / Ctrl+Y).
+    - Save edited content back to server as DOCX (Ctrl+S).
+    - Zoom controls (50%-200%), print, and download original.
+    - Supports complex table structures and formatting.
+  - **Edit History**: tracks all saved versions with editor name, metadata, and timestamps.
+  - Search, department filtering, and pagination.
+
 - **Edited Charters** (`/admin/edited-charters`)
-  - Centralized view of all edited charter documents
-  - Search by charter name or department
-  - Open or download any edited version
-- **Feedback management**
-  - Filters (Department / Charter / Rating) + search
-  - **Charts**:
-    - Rating breakdown (bar style, SVG)
-    - Source breakdown (legacy rating vs QR/form) (pie style, SVG)
-    - Per-question breakdown visualizations (Google Sheets integration)
-  - **CSV export** (downloads a local `.csv` file from filtered results)
-  - **Feedback Form QR** modal:
-    - Generates QR that points to the citizen in-app feedback form
-    - Includes **Copy link** button
-- **Backup & Recovery**
-  - SQL dump download and restore from uploaded `.sql` files
-  - Import database schema via admin endpoint
+  - Centralized view of all edited charter documents.
+  - Search by charter name or department.
+  - Open or download any edited version.
 
-## Prerequisites
+- **Feedback Management** (`/admin/feedback`)
+  - Filters: by department, charter, and star rating.
+  - Search across feedback content.
+  - **Charts and Analytics**:
+    - Rating breakdown bar chart (SVG).
+    - Source breakdown (legacy ratings vs. QR/form feedback).
+    - Google Sheets integration with per-question breakdown visualizations.
+    - Gender, age group, and client type pie charts.
+  - **CSV Export**: downloads filtered feedback as a local CSV file.
+  - **Feedback Form QR Code** modal:
+    - Generates QR code pointing to the citizen feedback form.
+    - Copy-to-clipboard link button.
 
-- Node.js 18+
-- npm
-- MySQL 8.0+ or XAMPP MySQL
+- **Backup & Recovery** (`/admin/backup`)
+  - SQL backup download (complete database dump).
+  - SQL restore from uploaded `.sql` file.
+  - Schema import from `database/ccms_db.sql`.
+  - Drag-and-drop upload zone with confirmation dialog.
 
 ## Project Structure
 
 ```text
 Citizen's Charter Management System/
-├─ frontend/
-│  ├─ .env                        # Dev environment variables
-│  ├─ .env.production             # Production environment variables
-│  ├─ index.html
-│  ├─ package.json
-│  ├─ postcss.config.mjs
-│  ├─ tsconfig.json
-│  ├─ vercel.json
-│  ├─ vite.config.ts
-│  ├─ public/
-│  │  └─ images/
-│  │     ├─ header/               # Logos, header images, municipality, mayor
-│  │     └─ (department images)
-│  └─ src/
-│     ├─ env.d.ts
-│     ├─ main.tsx
-│     ├─ test-setup.ts
-│     ├─ app/
-│     │  ├─ App.tsx
-│     │  ├─ routes.tsx
-│     │  ├─ components/
-│     │  │  ├─ AdminLayout.tsx
-│     │  │  ├─ ClientLayout.tsx
-│     │  │  ├─ DocxViewer.tsx     # DOCX viewer/editor (mammoth.js + docx)
-│     │  │  ├─ LogoLoop.tsx
-│     │  │  ├─ Modal.tsx
-│     │  │  ├─ Notification.tsx
-│     │  │  ├─ Pagination.tsx
-│     │  │  └─ PdfEditor.tsx      # PDF annotation editor (pdfjs-dist + pdf-lib)
-│     │  ├─ lib/
-│     │  │  ├─ api.ts
-│     │  │  └─ api.test.ts
-│     │  ├─ pages/
-│     │  │  ├─ admin/
-│     │  │  │  ├─ BackupRecovery.tsx
-│     │  │  │  ├─ Charters.tsx
-│     │  │  │  ├─ Dashboard.tsx
-│     │  │  │  ├─ Departments.tsx
-│     │  │  │  ├─ EditedCharters.tsx
-│     │  │  │  ├─ Feedback.tsx
-│     │  │  │  └─ Login.tsx
-│     │  │  └─ client/
-│     │  │     ├─ CharterDetail.tsx
-│     │  │     ├─ DepartmentPage.tsx
-│     │  │     └─ Home.tsx
-│     │  └─ store/
-│     │     ├─ apiSync.ts
-│     │     ├─ data.ts
-│     │     └─ data.test.ts
-│     └─ styles/
-│        ├─ fonts.css
-│        ├─ index.css
-│        ├─ tailwind.css
-│        └─ theme.css
-├─ backend/
-│  ├─ .env                        # Backend environment variables
-│  ├─ .env.example                # Environment variable template
-│  ├─ .env.production             # Production environment variables
-│  ├─ create-table.js             # Migration script for charter_pdf_edits table
-│  ├─ db.js                       # MySQL connection pool
-│  ├─ package.json
-│  ├─ server.js                   # Express API server (855 lines)
-│  ├─ vitest.config.js
-│  ├─ database/
-│  │  ├─ ccms_db.sql              # Full MySQL database dump
-│  │  └─ mysql_connection_example.js
-│  └─ tests/
-│     └─ server.test.js
-├─ uploads/
-│  ├─ charters/                   # Uploaded charter documents (PDF + DOCX)
-│  ├─ edited-charters/            # Saved edited charter versions
-│  └─ backups/                    # Uploaded .sql backup files
-├─ render.yaml                    # Render deployment config
-└─ README.md
+├── .gitignore
+├── README.md
+├── render.yaml                      # Render deployment config (backend)
+│
+├── backend/
+│   ├── .env                         # Local environment variables
+│   ├── .env.example                 # Environment variable template
+│   ├── .env.production              # Production environment variables
+│   ├── package.json                 # Express 5, mysql2, multer, bcryptjs
+│   ├── server.js                    # Express API server
+│   ├── db.js                        # MySQL2 connection pool
+│   ├── create-table.js              # Migration: charter_pdf_edits table
+│   ├── vitest.config.js             # Backend test configuration
+│   ├── tests/
+│   │   └── server.test.js           # Supertest integration tests
+│   └── database/
+│       ├── ccms_db.sql              # Full MySQL database dump
+│       └── mysql_connection_example.js
+│
+├── frontend/
+│   ├── .env                         # Dev environment variables (Vite)
+│   ├── .env.production              # Production environment variables
+│   ├── index.html                   # HTML entry point
+│   ├── package.json                 # React 18, Radix UI, MUI, Recharts
+│   ├── vite.config.ts               # Vite + React + Tailwind v4
+│   ├── tsconfig.json                # TypeScript config
+│   ├── postcss.config.mjs           # PostCSS (Tailwind plugin)
+│   ├── vercel.json                  # SPA rewrite for Vercel
+│   ├── public/
+│   │   └── images/
+│   │       ├── header/              # Logos, municipality banner, mayor photo
+│   │       └── (department images)  # BPLO, MTO, MPDC, MHO, etc.
+│   ├── uploads/                     # File storage
+│   │   ├── charters/                # Uploaded PDF/DOCX charter files
+│   │   ├── edited-charters/         # Saved edited charter versions
+│   │   └── backups/                 # Uploaded SQL restore files
+│   └── src/
+│       ├── main.tsx                 # App bootstrap and API sync
+│       ├── env.d.ts                 # Vite env type declarations
+│       ├── test-setup.ts            # Vitest setup (jest-dom)
+│       ├── styles/
+│       │   ├── index.css            # Main CSS entry
+│       │   ├── fonts.css            # Font declarations
+│       │   ├── tailwind.css         # Tailwind v4 configuration
+│       │   └── theme.css            # CSS custom properties, light/dark themes
+│       └── app/
+│           ├── App.tsx              # Root component with RouterProvider
+│           ├── routes.tsx           # React Router route definitions
+│           ├── components/
+│           │   ├── AdminLayout.tsx   # Auth-gated admin shell with sidebar
+│           │   ├── ClientLayout.tsx  # Public header/footer layout
+│           │   ├── Modal.tsx         # Reusable modal (sm-3xl sizes)
+│           │   ├── Notification.tsx  # Toast notifications
+│           │   ├── Pagination.tsx    # Page navigation with ellipsis
+│           │   ├── PdfEditor.tsx     # PDF annotation editor
+│           │   ├── DocxViewer.tsx    # DOCX viewer/editor
+│           │   ├── docxFallback.ts   # HTML-to-DOCX generation
+│           │   └── LogoLoop.tsx      # Infinite scrolling logos
+│           ├── lib/
+│           │   ├── api.ts           # HTTP client (fetch wrapper)
+│           │   └── api.test.ts      # API client tests
+│           ├── pages/
+│           │   ├── admin/
+│           │   │   ├── Login.tsx         # Admin login
+│           │   │   ├── Dashboard.tsx     # Stats and overview
+│           │   │   ├── Departments.tsx   # Department CRUD
+│           │   │   ├── Charters.tsx      # Charter CRUD + editors
+│           │   │   ├── EditedCharters.tsx # Edited charter history
+│           │   │   ├── Feedback.tsx      # Feedback analytics
+│           │   │   └── BackupRecovery.tsx # DB backup/restore
+│           │   └── client/
+│           │       ├── Home.tsx          # Public home page
+│           │       ├── DepartmentPage.tsx # Department listing
+│           │       └── CharterDetail.tsx  # Charter detail + feedback
+│           └── store/
+│               ├── data.ts          # In-memory data cache
+│               ├── data.test.ts     # Data store tests
+│               └── apiSync.ts       # API polling sync
+│
+└── README.md
 ```
 
-### Directory Purpose
+### Directory Reference
 
 | Path | Purpose |
-| ---- | ------- |
+| --- | --- |
 | `frontend/` | React SPA with Vite, TypeScript, and Tailwind CSS |
-| `frontend/src/app/components/` | Shared UI: layouts, dialogs, pagination, PDF/DOCX viewers |
+| `frontend/src/app/components/` | Shared UI components: layouts, modals, pagination, PDF/DOCX viewers |
 | `frontend/src/app/lib/` | API client and helpers |
 | `frontend/src/app/pages/client/` | Public-facing pages for citizens |
-| `frontend/src/app/pages/admin/` | Admin dashboard, login, departments, charters, edited charters |
-| `frontend/src/app/store/` | Local data store and API sync helpers |
-| `frontend/public/images/` | Department and header images |
-| `frontend/src/styles/` | Global CSS, fonts, theme, and Tailwind entry files |
-| `backend/` | Express API, MySQL access, and server startup code |
-| `backend/database/` | MySQL database dump and connection example script |
-| `backend/tests/` | Backend test suite (Vitest) |
-| `uploads/charters/` | Uploaded PDF and DOCX charter files |
-| `uploads/edited-charters/` | Saved edited charter versions |
-| `uploads/backups/` | Uploaded `.sql` files used for restore |
+| `frontend/src/app/pages/admin/` | Admin dashboard, login, departments, charters, feedback, backup |
+| `frontend/src/app/store/` | In-memory data cache and API sync |
+| `frontend/public/images/` | Department logos, header banners, official images |
+| `frontend/src/styles/` | Global CSS, fonts, theme tokens, Tailwind entry |
+| `frontend/uploads/` | Uploaded files (charters, edited charters, backups) |
+| `backend/` | Express API server, MySQL connection, and startup code |
+| `backend/database/` | MySQL database dump and connection example |
+| `backend/tests/` | Backend integration test suite |
+
+## Database Schema
+
+| Table | Purpose |
+| --- | --- |
+| `admins` | Admin user accounts (username, bcrypt password hash) |
+| `departments` | Department records (name, description, owner) |
+| `charters` | Charter records (title, content, file_path, department FK) |
+| `ratings` | Legacy citizen ratings (1-5 stars, optional comment) |
+| `feedback_responses` | Primary citizen feedback (name, email, contact, rating, comment) |
+| `charter_pdf_edits` | Edit history for charter documents (file path, editor, metadata) |
+
+## API Endpoints
+
+### Health
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `GET` | `/api/health` | Health check |
+
+### Authentication
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `POST` | `/api/auth/login` | Admin login (username + password) |
+
+### Departments
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `GET` | `/api/departments` | List all departments |
+| `GET` | `/api/departments/:id` | Get single department |
+| `POST` | `/api/departments` | Create department |
+| `PUT` | `/api/departments/:id` | Update department |
+| `DELETE` | `/api/departments/:id` | Delete department |
+
+### Charters
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `GET` | `/api/charters` | List charters (optional `?departmentId=X`) |
+| `GET` | `/api/charters/:id` | Get single charter |
+| `POST` | `/api/charters` | Create charter |
+| `PUT` | `/api/charters/:id` | Update charter |
+| `DELETE` | `/api/charters/:id` | Delete charter |
+
+### Charter Files and Edits
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `POST` | `/api/uploads/charters` | Upload charter PDF/DOCX |
+| `POST` | `/api/charters/:id/attachment` | Replace charter attachment |
+| `POST` | `/api/charters/:id/save-edit` | Save admin-edited DOCX |
+| `POST` | `/api/charters/:id/edited-pdfs` | Submit edited PDF with metadata |
+| `GET` | `/api/charters/:id/edits` | Get edit history for a charter |
+| `GET` | `/api/edited-charters` | List all edited charters |
+
+### Ratings and Feedback
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `GET` | `/api/ratings` | List all ratings |
+| `GET` | `/api/charters/:id/ratings` | Get ratings for a charter |
+| `POST` | `/api/charters/:id/ratings` | Submit a rating |
+| `GET` | `/api/feedback` | List all feedback responses |
+| `GET` | `/api/charters/:id/feedback` | Get feedback for a charter |
+| `POST` | `/api/charters/:id/feedback` | Submit feedback |
+
+### Admin Backup/Restore
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `GET` | `/api/admin/backup` | Download SQL backup dump |
+| `POST` | `/api/admin/restore` | Restore from uploaded `.sql` file |
+| `POST` | `/api/admin/import-schema` | Import schema from default SQL |
+
+## Prerequisites
+
+- Node.js 18+
+- npm
+- MySQL 8.0+ (or XAMPP MySQL)
 
 ## Setup
 
-1. Install frontend dependencies:
+1. **Clone the repository**:
+   ```bash
+   git clone <repo-url>
+   cd Citizen-s-Charter-Management-System
+   ```
+
+2. **Install frontend dependencies**:
    ```bash
    cd frontend && npm install
    ```
-2. Install backend dependencies:
+
+3. **Install backend dependencies**:
    ```bash
-   cd backend && npm install
+   cd ../backend && npm install
    ```
-3. Import the database schema and seed data:
+
+4. **Import the database schema and seed data**:
    ```bash
    mysql -u root -p < backend/database/ccms_db.sql
    ```
 
+5. **Configure environment variables** (optional for local):
+   ```bash
+   cp backend/.env.example backend/.env
+   # Edit backend/.env with your MySQL credentials
+   ```
+
 ## Run the App
 
-Start the backend in one terminal:
-
+**Start the backend** in one terminal:
 ```bash
 cd backend && node server.js
 ```
 
-Start the frontend in another terminal:
-
+**Start the frontend** in another terminal:
 ```bash
 cd frontend && npm run dev
 ```
 
-The frontend runs on `http://localhost:5173` and the backend runs on `http://localhost:4000` by default.
+- Frontend: `http://localhost:5173`
+- Backend: `http://localhost:4000`
 
 ## Deployment
 
 ### Vercel (Frontend)
 
-This project is a single-page app (SPA). Vercel needs a rewrite so routes like `/admin` return `index.html`.
-
-1. Deploy the `frontend/` directory to Vercel from the repo root.
-2. Set the environment variable `VITE_PROD_BASE_URL` in Vercel to your deployed backend base URL, e.g.:
-   - `https://your-backend.onrender.com`
+1. Deploy the `frontend/` directory to Vercel.
+2. Set `VITE_PROD_BASE_URL` to your deployed backend URL.
 3. Ensure the backend allows your Vercel domain in CORS (`CORS_ORIGIN` env var).
-
-Notes:
-
-- The SPA rewrite is configured in `frontend/vercel.json`.
-- Environment variables for production are in `frontend/.env.production`.
+4. SPA rewrite is configured in `frontend/vercel.json`.
 
 ### Render (Backend)
 
-The backend is deployed to Render using the `render.yaml` configuration.
-
 1. Connect the repository to Render.
-2. Render will automatically detect the `render.yaml` and deploy the `backend/` service.
-3. Set environment variables in Render dashboard matching `backend/.env.production`.
-4. The backend runs on `https://ccms-backend.onrender.com` in production.
+2. Render auto-detects `render.yaml` and deploys the backend service.
+3. Set environment variables in the Render dashboard matching `backend/.env.production`.
 
-### Localhost Deployment (Local Only)
+### Localhost
 
-Use these steps to run the system locally on `localhost` without any public hosting.
-
-1. Start MySQL locally (XAMPP or MySQL service).
-2. Create and seed the database:
-   ```bash
-   mysql -u root -p < backend/database/ccms_db.sql
-   ```
-3. (Optional) Create `backend/.env` if you need custom ports or DB credentials:
-   ```
-   PORT=4000
-   CORS_ORIGIN=http://localhost:5173
-   DB_HOST=127.0.0.1
-   DB_PORT=3306
-   DB_USER=root
-   DB_PASSWORD=
-   DB_NAME=ccms_db
-   ```
-4. Install dependencies:
-   ```bash
-   cd frontend && npm install
-   cd ../backend && npm install
-   ```
-5. Start the backend API:
-   ```bash
-   cd backend && node server.js
-   ```
-6. Start the frontend (new terminal):
-   ```bash
-   cd frontend && npm run dev
-   ```
-7. Open the app:
-   - Frontend: `http://localhost:5173`
-   - Backend: `http://localhost:4000`
-
-Notes:
-
-- This setup is for local development only and is not exposed outside your machine.
-- If you change the frontend port, update `CORS_ORIGIN` in `backend/.env`.
-
-## Troubleshooting (Localhost)
-
-- Backend won't start: verify MySQL is running and credentials in `backend/.env` match.
-- CORS error in browser: ensure `CORS_ORIGIN` matches the frontend URL.
-- Frontend shows no data: confirm `http://localhost:4000/api/health` returns `{ "ok": true }`.
-- File uploads fail: ensure `uploads/charters/` exists and is writable.
-
-## Database Backup and Recovery (Localhost)
-
-Create a backup (dump) of the local database:
-
-```bash
-mysqldump -u root -p ccms_db > backup_ccms_db.sql
-```
-
-Restore from a backup file:
-
-```bash
-mysql -u root -p ccms_db < backup_ccms_db.sql
-```
-
-Tips:
-
-- Store backups outside the project folder.
-- Use a timestamped filename: `backup_ccms_db_YYYYMMDD.sql`.
+See [Setup](#setup) above. This configuration is for local development only.
 
 ## Environment Variables
 
 ### Frontend (`frontend/.env`)
 
 | Variable | Description | Default |
-| -------- | ----------- | ------- |
+| --- | --- | --- |
 | `VITE_ENV` | Environment mode | `development` |
 | `VITE_DEV_BASE_URL` | Backend URL in development | `http://localhost:4000` |
 | `VITE_PROD_BASE_URL` | Backend URL in production | `https://ccms-backend.onrender.com` |
@@ -320,9 +369,9 @@ Tips:
 ### Backend (`backend/.env`)
 
 | Variable | Description | Default |
-| -------- | ----------- | ------- |
+| --- | --- | --- |
 | `PORT` | Backend port | `4000` |
-| `CORS_ORIGIN` | Allowed frontend origins (comma-separated) | `http://localhost:5173` |
+| `CORS_ORIGIN` | Allowed frontend origins (comma-separated) | `http://localhost:5173,http://localhost:5174` |
 | `DB_HOST` | MySQL host | `127.0.0.1` |
 | `DB_PORT` | MySQL port | `3306` |
 | `DB_USER` | MySQL user | `root` |
@@ -333,52 +382,29 @@ Tips:
 | `ADMIN_USERNAME` | Admin login username | `admin` |
 | `ADMIN_PASSWORD` | Admin login password | `admin123` |
 
-## Key Backend Endpoints
-
-- Health check:
-  - `GET /api/health`
-- Departments:
-  - `GET /api/departments`
-  - `GET /api/departments/:id`
-  - `POST /api/departments`
-  - `PUT /api/departments/:id`
-  - `DELETE /api/departments/:id`
-- Charters:
-  - `GET /api/charters?departmentId=...`
-  - `GET /api/charters/:id`
-  - `POST /api/charters`
-  - `PUT /api/charters/:id`
-  - `DELETE /api/charters/:id`
-- Charter edits and attachments:
-  - `POST /api/charters/:id/save-edit` — save admin-edited charter file
-  - `GET /api/charters/:id/edits` — get edit history for a charter
-  - `GET /api/edited-charters` — list all edited charters
-  - `POST /api/charters/:id/attachment` — replace charter attachment
-- Ratings / legacy and feedback responses:
-  - `GET /api/ratings`
-  - `GET /api/charters/:id/ratings`
-  - `POST /api/charters/:id/ratings`
-  - `GET /api/feedback`
-  - `GET /api/charters/:id/feedback`
-  - `POST /api/charters/:id/feedback`
-- File uploads:
-  - `POST /api/uploads/charters` (PDF and DOCX) → stores in `uploads/charters/`
-  - `POST /api/charters/:id/edited-pdfs` (PDF and DOCX) → stores in `uploads/edited-charters/` and inserts into `charter_pdf_edits`
-- Admin:
-  - `GET /api/admin/backup` (streams `.sql`)
-  - `POST /api/admin/restore` (restores from uploaded `.sql`)
-  - `POST /api/admin/import-schema` (imports database schema)
-- Authentication:
-  - `POST /api/auth/login`
-
 ## Upload Storage
 
-Files are stored locally on the server (disk) in these folders:
+Files are stored on the server disk in:
 
-- `uploads/charters/` — uploaded charter PDFs and DOCX files
-- `uploads/edited-charters/` — uploaded edited PDFs and DOCX files
-- `uploads/backups/` — uploaded `.sql` files used for restore
+| Directory | Contents |
+| --- | --- |
+| `frontend/uploads/charters/` | Uploaded charter PDFs and DOCX files |
+| `frontend/uploads/edited-charters/` | Saved edited charter versions |
+| `frontend/uploads/backups/` | Uploaded `.sql` restore files |
 
-The backend serves files under:
+The backend serves files under `/uploads/*` via `express.static`.
 
-- `/uploads/*` (via `express.static`)
+## Troubleshooting
+
+| Issue | Solution |
+| --- | --- |
+| Backend won't start | Verify MySQL is running and credentials in `backend/.env` match |
+| CORS error in browser | Ensure `CORS_ORIGIN` matches the frontend URL |
+| Frontend shows no data | Confirm `http://localhost:4000/api/health` returns `{ "ok": true }` |
+| File uploads fail | Ensure `frontend/uploads/charters/` exists and is writable |
+| Save edit fails | Restart the backend server after any path changes |
+| 500 on upload endpoints | Restart the backend to reload configuration |
+
+## License
+
+Built for the Municipality of Calauan, Laguna.
