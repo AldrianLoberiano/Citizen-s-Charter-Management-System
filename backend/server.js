@@ -36,8 +36,8 @@ const storage = multer.diskStorage({
     callback(null, uploadsDir);
   },
   filename: (_req, file, callback) => {
-    const safeBase = `${Date.now()}-${file.originalname}`.replace(/[^a-zA-Z0-9._-]/g, "_");
-    callback(null, safeBase);
+    const safeName = file.originalname.replace(/[^a-zA-Z0-9._-]/g, "_");
+    callback(null, safeName);
   },
 });
 
@@ -65,8 +65,8 @@ const editedStorage = multer.diskStorage({
     callback(null, editedDir);
   },
   filename: (_req, file, callback) => {
-    const safeBase = `${Date.now()}-${file.originalname}`.replace(/[^a-zA-Z0-9._-]/g, "_");
-    callback(null, safeBase);
+    const safeName = file.originalname.replace(/[^a-zA-Z0-9._-]/g, "_");
+    callback(null, safeName);
   },
 });
 
