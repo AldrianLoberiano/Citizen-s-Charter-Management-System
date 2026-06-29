@@ -519,7 +519,7 @@ export function Feedback() {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-xl border-l-4 border-violet-900 bg-white dark:bg-slate-900 px-6 py-4 mb-6">
+      <div className="rounded-xl bg-white dark:bg-slate-900 px-6 py-4 mb-6">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-slate-900 dark:text-white">Feedback</h1>
