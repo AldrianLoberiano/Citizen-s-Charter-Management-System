@@ -37,12 +37,12 @@ function extractHtmlParagraphs(htmlStr: string): string[] {
     const el = node as HTMLElement;
     const tag = el.tagName.toLowerCase();
     if (tag === "table") {
-      const cellTexts: string[] = [];
-      el.querySelectorAll("td, th").forEach((cell) => {
-        const cellText = (cell.textContent || "").trim();
-        if (cellText) cellTexts.push(cellText);
+      el.querySelectorAll("tr").forEach((tr) => {
+        tr.querySelectorAll("td, th").forEach((cell) => {
+          const text = (cell.textContent || "").trim();
+          if (text) paragraphs.push(text);
+        });
       });
-      if (cellTexts.length > 0) paragraphs.push(cellTexts.join(" | "));
       return;
     }
     if (/^h[1-6]$/.test(tag) || tag === "p" || tag === "li") {
@@ -80,45 +80,48 @@ async function editDocxInPlace(
   if (!body) throw new Error("Invalid DOCX: no w:body found");
 
   const htmlParagraphs = extractHtmlParagraphs(editedHtml);
-  const xmlParagraphs: Element[] = [];
-  for (let i = 0; i < body.childNodes.length; i++) {
-    const child = body.childNodes[i];
-    if (child.nodeName === "w:p" || (child as Element).localName === "p") {
-      xmlParagraphs.push(child as Element);
+
+  const allTextRuns: Element[] = [];
+  function collectTextRuns(node: Node) {
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      const el = node as Element;
+      const localName = el.localName || el.nodeName;
+      if (localName === "t" && el.parentNode && (el.parentNode as Element).localName === "r") {
+        allTextRuns.push(el);
+      }
+      for (const child of Array.from(node.childNodes)) {
+        collectTextRuns(child);
+      }
     }
+  }
+  for (const child of Array.from(body.childNodes)) {
+    collectTextRuns(child);
   }
 
   const serializer = new XMLSerializer();
 
-  for (let i = 0; i < xmlParagraphs.length; i++) {
-    const pEl = xmlParagraphs[i];
-    const textEls = pEl.querySelectorAll("w\\:t, t");
+  let textRunIndex = 0;
+  for (let i = 0; i < htmlParagraphs.length && textRunIndex < allTextRuns.length; i++) {
+    const newText = htmlParagraphs[i];
+    const firstRun = allTextRuns[textRunIndex];
+    firstRun.textContent = newText;
+    textRunIndex++;
 
-    if (i < htmlParagraphs.length) {
-      const newText = htmlParagraphs[i];
-      if (textEls.length > 0) {
-        const first = textEls[0];
-        first.textContent = newText;
-        for (let j = 1; j < textEls.length; j++) {
-          textEls[j].textContent = "";
-        }
+    while (textRunIndex < allTextRuns.length) {
+      const prevParent = allTextRuns[textRunIndex - 1].parentNode?.parentNode as Element | null;
+      const curParent = allTextRuns[textRunIndex].parentNode?.parentNode as Element | null;
+      if (prevParent && curParent && prevParent === curParent) {
+        allTextRuns[textRunIndex].textContent = "";
+        textRunIndex++;
+      } else {
+        break;
       }
     }
   }
 
-  if (htmlParagraphs.length > xmlParagraphs.length && xmlParagraphs.length > 0) {
-    const lastP = xmlParagraphs[xmlParagraphs.length - 1];
-    for (let i = xmlParagraphs.length; i < htmlParagraphs.length; i++) {
-      const cloned = lastP.cloneNode(true) as Element;
-      const textEls = cloned.querySelectorAll("w\\:t, t");
-      if (textEls.length > 0) {
-        textEls[0].textContent = htmlParagraphs[i];
-        for (let j = 1; j < textEls.length; j++) {
-          textEls[j].textContent = "";
-        }
-      }
-      body.insertBefore(cloned, null);
-    }
+  while (textRunIndex < allTextRuns.length) {
+    allTextRuns[textRunIndex].textContent = "";
+    textRunIndex++;
   }
 
   const newDocXml = serializer.serializeToString(xmlDoc);
