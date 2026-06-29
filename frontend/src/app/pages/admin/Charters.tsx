@@ -224,14 +224,15 @@ export function Charters() {
 
   const handleSaveAttachment = useCallback(async (blob: Blob) => {
     if (!viewerCharterId) return;
-    const file = new File([blob], "document.docx", { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
+    const originalName = viewerFilePath.split("/").pop() || "document.docx";
+    const file = new File([blob], originalName, { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
     const result = await api.saveCharterEdit(viewerCharterId, file, editorName.trim());
     setViewerFilePath(result.file_path);
     updateCharterFilePath(viewerCharterId, result.file_path);
     const freshCharters = await api.getCharters();
     setCharters(freshCharters);
     setViewerSuccess(true);
-  }, [viewerCharterId, editorName]);
+  }, [viewerCharterId, editorName, viewerFilePath]);
 
   // Validate form
   const validate = (): boolean => {
@@ -751,6 +752,7 @@ export function Charters() {
           <div className="h-[65vh]">
             <DocxViewer
               fileUrl={resolveFileUrl(viewerFilePath)}
+              fileName={viewerFilePath.split("/").pop() || "document.docx"}
               className="h-full rounded-lg border border-slate-200 dark:border-slate-700"
               onSave={viewerCharterId ? handleSaveAttachment : undefined}
               onOpenExternal={handleOpenExternal}
