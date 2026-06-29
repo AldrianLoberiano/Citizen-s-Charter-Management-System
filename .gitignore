@@ -38,10 +38,11 @@ npm-debug.log*
 .DS_Store
 Thumbs.db
 
-# Markdown (except README)
+# Markdown (except README and USER_MANUAL)
 *.md
 **/*.md
 !README.md
+!USER_MANUAL.md
 
 # Test coverage
 coverage/
