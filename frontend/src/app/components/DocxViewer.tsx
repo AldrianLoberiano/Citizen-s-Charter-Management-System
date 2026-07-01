@@ -69,12 +69,36 @@ function collectText(node: Node): string {
       const tag = el.tagName.toLowerCase();
       if (tag === "br") {
         parts.push("\n");
+      } else if (tag === "li") {
+        parts.push("\n► " + collectText(child).trim());
+      } else if (tag === "ul" || tag === "ol") {
+        parts.push(collectText(child));
       } else {
         parts.push(collectText(child));
       }
     }
   });
   return parts.join("");
+}
+
+function collectListItems(listEl: HTMLElement, blocks: { type: string; text: string }[]) {
+  listEl.querySelectorAll(":scope > li").forEach((li) => {
+    const directText: string[] = [];
+    li.childNodes.forEach((child) => {
+      if (child.nodeType === Node.TEXT_NODE) {
+        directText.push(child.textContent || "");
+      } else if (child.nodeType === Node.ELEMENT_NODE) {
+        const childTag = (child as HTMLElement).tagName.toLowerCase();
+        if (childTag !== "ul" && childTag !== "ol") {
+          directText.push(collectText(child));
+        }
+      }
+    });
+    blocks.push({ type: "li", text: directText.join("").trim() });
+    li.querySelectorAll(":scope > ul, :scope > ol").forEach((sub) => {
+      collectListItems(sub as HTMLElement, blocks);
+    });
+  });
 }
 
 function extractHtmlBlocks(htmlStr: string): { type: string; text: string; cells?: string[][] }[] {
@@ -106,14 +130,7 @@ function extractHtmlBlocks(htmlStr: string): { type: string; text: string; cells
     }
 
     if (tag === "ul" || tag === "ol") {
-      el.querySelectorAll(":scope > li").forEach((li) => {
-        blocks.push({ type: "li", text: collectText(li).trim() });
-        li.querySelectorAll(":scope > ul, :scope > ol").forEach((sub) => {
-          sub.querySelectorAll(":scope > li").forEach((subLi) => {
-            blocks.push({ type: "li", text: collectText(subLi).trim() });
-          });
-        });
-      });
+      collectListItems(el, blocks);
       return;
     }
 
@@ -178,6 +195,49 @@ async function editDocxInPlace(
 
   let htmlIdx = 0;
 
+  function findBulletPPr(): Element | null {
+    for (const child of Array.from(body.childNodes)) {
+      if (child.nodeType !== Node.ELEMENT_NODE) continue;
+      const el = child as Element;
+      if ((el.localName || el.nodeName) === "p") {
+        const pPr = el.querySelector("pPr");
+        if (pPr && pPr.querySelector("numPr")) {
+          return pPr;
+        }
+      }
+    }
+    return null;
+  }
+
+  function createParagraphWithText(xmlDoc: Document, text: string, clonePPr?: Element | null): Element {
+    const p = xmlDoc.createElement("w:p");
+    if (clonePPr) {
+      p.appendChild(clonePPr.cloneNode(true));
+    }
+    const r = xmlDoc.createElement("w:r");
+    const t = xmlDoc.createElement("w:t");
+    t.textContent = text;
+    t.setAttribute("xml:space", "preserve");
+    r.appendChild(t);
+    p.appendChild(r);
+    return p;
+  }
+
+  function createTableCell(xmlDoc: Document, text: string): Element {
+    const tc = xmlDoc.createElement("w:tc");
+    const p = xmlDoc.createElement("w:p");
+    const r = xmlDoc.createElement("w:r");
+    const t = xmlDoc.createElement("w:t");
+    t.textContent = text;
+    t.setAttribute("xml:space", "preserve");
+    r.appendChild(t);
+    p.appendChild(r);
+    tc.appendChild(p);
+    return tc;
+  }
+
+  const bulletPPr = findBulletPPr();
+
   for (const xmlChild of xmlChildren) {
     const localName = xmlChild.localName || xmlChild.nodeName;
 
@@ -189,12 +249,18 @@ async function editDocxInPlace(
           const xmlCells = xmlRows[r].querySelectorAll("tc");
           const htmlCells = htmlBlock.cells[r];
           for (let c = 0; c < xmlCells.length && c < htmlCells.length; c++) {
-            const cellParagraphs = xmlCells[c].querySelectorAll("p");
-            if (cellParagraphs.length > 0) {
-              setParagraphText(cellParagraphs[0], htmlCells[c]);
-              for (let p = 1; p < cellParagraphs.length; p++) {
+            const cellParagraphs = Array.from(xmlCells[c].querySelectorAll("p"));
+            const lines = htmlCells[c].split("\n").filter((l) => l.trim());
+            for (let p = 0; p < cellParagraphs.length; p++) {
+              if (p < lines.length) {
+                setParagraphText(cellParagraphs[p], lines[p].replace(/^►\s*/, "").trim());
+              } else {
                 setParagraphText(cellParagraphs[p], "");
               }
+            }
+            for (let p = cellParagraphs.length; p < lines.length; p++) {
+              const newP = createParagraphWithText(xmlDoc, lines[p].replace(/^►\s*/, "").trim(), bulletPPr);
+              xmlCells[c].appendChild(newP);
             }
           }
         }
@@ -221,30 +287,16 @@ async function editDocxInPlace(
         for (const row of htmlBlock.cells) {
           const tr = xmlDoc.createElement("w:tr");
           for (const cellText of row) {
-            const tc = xmlDoc.createElement("w:tc");
-            const p = xmlDoc.createElement("w:p");
-            const r = xmlDoc.createElement("w:r");
-            const t = xmlDoc.createElement("w:t");
-            t.textContent = cellText;
-            t.setAttribute("xml:space", "preserve");
-            r.appendChild(t);
-            p.appendChild(r);
-            tc.appendChild(p);
-            tr.appendChild(tc);
+            tr.appendChild(createTableCell(xmlDoc, cellText));
           }
           tbl.appendChild(tr);
         }
       }
       body.insertBefore(tbl, body.lastElementChild);
+    } else if (htmlBlock.type === "li") {
+      body.insertBefore(createParagraphWithText(xmlDoc, htmlBlock.text, bulletPPr), body.lastElementChild);
     } else {
-      const p = xmlDoc.createElement("w:p");
-      const r = xmlDoc.createElement("w:r");
-      const t = xmlDoc.createElement("w:t");
-      t.textContent = htmlBlock.text;
-      t.setAttribute("xml:space", "preserve");
-      r.appendChild(t);
-      p.appendChild(r);
-      body.insertBefore(p, body.lastElementChild);
+      body.insertBefore(createParagraphWithText(xmlDoc, htmlBlock.text), body.lastElementChild);
     }
     htmlIdx++;
   }
@@ -466,7 +518,7 @@ export function DocxViewer({
           ul, ol { margin: 8px 0; padding-left: 24px; }
           ul { list-style-type: disc; }
           ol { list-style-type: decimal; }
-          li { margin: 2px 0; line-height: 1.7; }
+          li { margin: 2px 0; line-height: 1.7; padding-left: 4px; }
           img { max-width: 100%; }
         </style>
       </head>
@@ -626,12 +678,12 @@ export function DocxViewer({
 
       <div className="flex-1 overflow-auto bg-slate-50 dark:bg-slate-950 p-4">
         <div
-          className="mx-auto max-w-6xl bg-white shadow-lg rounded-lg"
+          className="mx-auto max-w-4xl bg-white shadow-lg rounded-lg"
           style={{ zoom: `${zoom}%` }}
         >
           <div
             ref={contentRef}
-            className="docx-content p-12 min-h-[900px]"
+            className="docx-content p-8 min-h-[600px]"
             contentEditable={editable}
             suppressContentEditableWarning
             onInput={handleInput}
