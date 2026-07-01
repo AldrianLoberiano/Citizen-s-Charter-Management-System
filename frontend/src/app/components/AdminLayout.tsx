@@ -149,7 +149,7 @@ export function AdminLayout() {
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden min-h-0">
         {/* Top Header Bar */}
         <header
-          className="relative flex flex-shrink-0 items-center gap-4 bg-white dark:bg-slate-900 px-4 py-3 shadow-sm dark:shadow-slate-800/50"
+          className="relative z-30 flex flex-shrink-0 items-center gap-4 bg-white dark:bg-slate-900 px-4 py-3 shadow-sm dark:shadow-slate-800/50"
           style={{
             backgroundImage: `url(${adminHeaderBgSrc})`,
             backgroundSize: "cover",
@@ -223,7 +223,7 @@ export function AdminLayout() {
               <ChevronDown className={`hidden h-3.5 w-3.5 text-white/70 transition-transform sm:block ${menuOpen ? "rotate-180" : ""}`} />
             </button>
             {menuOpen && (
-              <div className="absolute right-0 top-12 w-60 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-xl">
+              <div className="absolute right-0 top-12 z-50 w-60 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-xl">
                 <div className="border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/50 px-4 py-3">
                   <p className="text-sm font-semibold text-slate-900 dark:text-white">{displayName}</p>
                   <p className="text-xs text-slate-500 dark:text-slate-400">{currentUser || "admin@calauan.gov"}</p>
