@@ -16,7 +16,10 @@
 .docx-content ul, .docx-content ol { margin: 8px 0; padding-left: 24px; }
 .docx-content ul { list-style-type: disc; }
 .docx-content ol { list-style-type: decimal; }
-.docx-content li { margin: 2px 0; line-height: 1.7; }
+.docx-content li { margin: 2px 0; line-height: 1.7; padding-left: 4px; }
+.docx-content li ul, .docx-content li ol { margin: 2px 0; padding-left: 24px; }
+.docx-content ul ul { list-style-type: circle; }
+.docx-content ul ul ul { list-style-type: square; }
 .docx-content table { border-collapse: collapse; width: 100%; margin: 12px 0; page-break-inside: avoid; }
 .docx-content th, .docx-content td { border: 1px solid #d1d5db; padding: 8px 12px; text-align: left; }
 .docx-content th { background: #f8fafc; font-weight: 600; }
