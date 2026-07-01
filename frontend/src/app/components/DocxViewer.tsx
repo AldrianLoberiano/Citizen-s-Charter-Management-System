@@ -678,7 +678,7 @@ export function DocxViewer({
 
       <div className="flex-1 overflow-auto bg-slate-50 dark:bg-slate-950 p-4">
         <div
-          className="mx-auto max-w-4xl bg-white shadow-lg rounded-lg"
+          className="mx-auto max-w-6xl bg-white shadow-lg rounded-lg"
           style={{ zoom: `${zoom}%` }}
         >
           <div
