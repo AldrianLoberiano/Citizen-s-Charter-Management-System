@@ -23,44 +23,134 @@ interface DocxViewerProps {
   onOpenExternal?: () => void;
 }
 
-function extractHtmlParagraphs(htmlStr: string): string[] {
+function applyCssTextToDiv(div: HTMLDivElement) {
+  const styles = div.querySelectorAll("style");
+  styles.forEach((styleEl) => {
+    const cssText = styleEl.textContent || "";
+    const ruleRegex = /([^{}]+)\{([^}]*)\}/g;
+    let match;
+    while ((match = ruleRegex.exec(cssText)) !== null) {
+      const selector = match[1].trim();
+      const declarations = match[2].trim();
+      if (!selector || !declarations) continue;
+      try {
+        const matched = div.querySelectorAll(selector);
+        matched.forEach((el) => {
+          declarations.split(";").forEach((decl) => {
+            const [prop, ...valParts] = decl.split(":");
+            if (prop && valParts.length > 0) {
+              const value = valParts.join(":").trim();
+              if (prop.trim() && value) {
+                (el as HTMLElement).style.setProperty(prop.trim(), value);
+              }
+            }
+          });
+        });
+      } catch { /* skip invalid selectors */ }
+    }
+  });
+  div.querySelectorAll("style").forEach((el) => el.remove());
+}
+
+function inlineMammothStyles(htmlStr: string): string {
   const div = document.createElement("div");
   div.innerHTML = htmlStr;
-  const paragraphs: string[] = [];
-  function walk(node: ChildNode) {
-    if (node.nodeType === Node.TEXT_NODE) {
-      const t = node.textContent || "";
-      if (t) paragraphs.push(t);
-      return;
+  applyCssTextToDiv(div);
+  return div.innerHTML;
+}
+
+function collectText(node: Node): string {
+  const parts: string[] = [];
+  node.childNodes.forEach((child) => {
+    if (child.nodeType === Node.TEXT_NODE) {
+      parts.push(child.textContent || "");
+    } else if (child.nodeType === Node.ELEMENT_NODE) {
+      const el = child as HTMLElement;
+      const tag = el.tagName.toLowerCase();
+      if (tag === "br") {
+        parts.push("\n");
+      } else {
+        parts.push(collectText(child));
+      }
     }
+  });
+  return parts.join("");
+}
+
+function extractHtmlBlocks(htmlStr: string): { type: string; text: string; cells?: string[][] }[] {
+  const div = document.createElement("div");
+  div.innerHTML = htmlStr;
+  const blocks: { type: string; text: string; cells?: string[][] }[] = [];
+
+  function walk(node: ChildNode) {
     if (node.nodeType !== Node.ELEMENT_NODE) return;
     const el = node as HTMLElement;
     const tag = el.tagName.toLowerCase();
+
     if (tag === "table") {
+      const rows: string[][] = [];
       el.querySelectorAll("tr").forEach((tr) => {
-        tr.querySelectorAll("td, th").forEach((cell) => {
-          const text = (cell.textContent || "").trim();
-          if (text) paragraphs.push(text);
+        const cells: string[] = [];
+        tr.querySelectorAll("td, th").forEach((td) => {
+          cells.push(collectText(td).trim());
+        });
+        if (cells.length > 0) rows.push(cells);
+      });
+      blocks.push({ type: "table", text: "", cells: rows });
+      return;
+    }
+
+    if (/^h[1-6]$/.test(tag) || tag === "p") {
+      blocks.push({ type: tag, text: collectText(el).trim() });
+      return;
+    }
+
+    if (tag === "ul" || tag === "ol") {
+      el.querySelectorAll(":scope > li").forEach((li) => {
+        blocks.push({ type: "li", text: collectText(li).trim() });
+        li.querySelectorAll(":scope > ul, :scope > ol").forEach((sub) => {
+          sub.querySelectorAll(":scope > li").forEach((subLi) => {
+            blocks.push({ type: "li", text: collectText(subLi).trim() });
+          });
         });
       });
       return;
     }
-    if (/^h[1-6]$/.test(tag) || tag === "p" || tag === "li") {
-      const text = (el.textContent || "").trim();
-      if (text) paragraphs.push(text);
-      return;
-    }
-    if (tag === "ul" || tag === "ol") {
-      el.querySelectorAll("li").forEach((li) => {
-        const text = (li.textContent || "").trim();
-        if (text) paragraphs.push(text);
-      });
-      return;
-    }
+
     el.childNodes.forEach(walk);
   }
+
   div.childNodes.forEach(walk);
-  return paragraphs.length > 0 ? paragraphs : [""];
+  return blocks;
+}
+
+function updateXmlTextNode(textNode: Element, newText: string) {
+  textNode.textContent = newText;
+}
+
+function clearExtraRuns(paragraph: Element) {
+  const ns = "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
+  const runs = paragraph.querySelectorAll("r");
+  for (let i = 1; i < runs.length; i++) {
+    const t = runs[i].querySelector("t");
+    if (t) t.textContent = "";
+  }
+}
+
+function setParagraphText(paragraph: Element, newText: string) {
+  const runs = paragraph.querySelectorAll("r");
+  if (runs.length === 0) return;
+
+  const firstT = runs[0].querySelector("t");
+  if (firstT) {
+    firstT.textContent = newText;
+    firstT.setAttribute("xml:space", "preserve");
+  }
+
+  for (let i = 1; i < runs.length; i++) {
+    const t = runs[i].querySelector("t");
+    if (t) t.textContent = "";
+  }
 }
 
 async function editDocxInPlace(
@@ -69,9 +159,7 @@ async function editDocxInPlace(
 ): Promise<Blob> {
   const zip = await JSZip.loadAsync(originalBuffer);
   const docXmlFile = zip.file("word/document.xml");
-  if (!docXmlFile) {
-    throw new Error("Invalid DOCX: word/document.xml not found");
-  }
+  if (!docXmlFile) throw new Error("Invalid DOCX: word/document.xml not found");
 
   const docXml = await docXmlFile.async("text");
   const parser = new DOMParser();
@@ -79,58 +167,95 @@ async function editDocxInPlace(
   const body = xmlDoc.getElementsByTagName("w:body")[0];
   if (!body) throw new Error("Invalid DOCX: no w:body found");
 
-  const htmlParagraphs = extractHtmlParagraphs(editedHtml);
+  const htmlBlocks = extractHtmlBlocks(editedHtml);
 
-  const allTextRuns: Element[] = [];
-  function collectTextRuns(node: Node) {
-    if (node.nodeType === Node.ELEMENT_NODE) {
-      const el = node as Element;
-      const localName = el.localName || el.nodeName;
-      if (localName === "t" && el.parentNode && (el.parentNode as Element).localName === "r") {
-        allTextRuns.push(el);
+  const xmlChildren: Element[] = [];
+  for (const child of Array.from(body.childNodes)) {
+    if (child.nodeType === Node.ELEMENT_NODE) {
+      xmlChildren.push(child as Element);
+    }
+  }
+
+  let htmlIdx = 0;
+
+  for (const xmlChild of xmlChildren) {
+    const localName = xmlChild.localName || xmlChild.nodeName;
+
+    if (localName === "tbl") {
+      const htmlBlock = htmlBlocks[htmlIdx];
+      if (htmlBlock && htmlBlock.type === "table" && htmlBlock.cells) {
+        const xmlRows = xmlChild.querySelectorAll("tr");
+        for (let r = 0; r < xmlRows.length && r < htmlBlock.cells.length; r++) {
+          const xmlCells = xmlRows[r].querySelectorAll("tc");
+          const htmlCells = htmlBlock.cells[r];
+          for (let c = 0; c < xmlCells.length && c < htmlCells.length; c++) {
+            const cellParagraphs = xmlCells[c].querySelectorAll("p");
+            if (cellParagraphs.length > 0) {
+              setParagraphText(cellParagraphs[0], htmlCells[c]);
+              for (let p = 1; p < cellParagraphs.length; p++) {
+                setParagraphText(cellParagraphs[p], "");
+              }
+            }
+          }
+        }
+        htmlIdx++;
       }
-      for (const child of Array.from(node.childNodes)) {
-        collectTextRuns(child);
+    } else if (localName === "p") {
+      const htmlBlock = htmlBlocks[htmlIdx];
+      if (htmlBlock && htmlBlock.type !== "table") {
+        setParagraphText(xmlChild, htmlBlock.text);
+        htmlIdx++;
+      } else {
+        setParagraphText(xmlChild, "");
       }
     }
   }
-  for (const child of Array.from(body.childNodes)) {
-    collectTextRuns(child);
+
+  while (htmlIdx < htmlBlocks.length) {
+    const htmlBlock = htmlBlocks[htmlIdx];
+    if (htmlBlock.type === "table") {
+      const tbl = xmlDoc.createElement("w:tbl");
+      const tblPr = xmlDoc.createElement("w:tblPr");
+      tbl.appendChild(tblPr);
+      if (htmlBlock.cells) {
+        for (const row of htmlBlock.cells) {
+          const tr = xmlDoc.createElement("w:tr");
+          for (const cellText of row) {
+            const tc = xmlDoc.createElement("w:tc");
+            const p = xmlDoc.createElement("w:p");
+            const r = xmlDoc.createElement("w:r");
+            const t = xmlDoc.createElement("w:t");
+            t.textContent = cellText;
+            t.setAttribute("xml:space", "preserve");
+            r.appendChild(t);
+            p.appendChild(r);
+            tc.appendChild(p);
+            tr.appendChild(tc);
+          }
+          tbl.appendChild(tr);
+        }
+      }
+      body.insertBefore(tbl, body.lastElementChild);
+    } else {
+      const p = xmlDoc.createElement("w:p");
+      const r = xmlDoc.createElement("w:r");
+      const t = xmlDoc.createElement("w:t");
+      t.textContent = htmlBlock.text;
+      t.setAttribute("xml:space", "preserve");
+      r.appendChild(t);
+      p.appendChild(r);
+      body.insertBefore(p, body.lastElementChild);
+    }
+    htmlIdx++;
   }
 
   const serializer = new XMLSerializer();
-
-  let textRunIndex = 0;
-  for (let i = 0; i < htmlParagraphs.length && textRunIndex < allTextRuns.length; i++) {
-    const newText = htmlParagraphs[i];
-    const firstRun = allTextRuns[textRunIndex];
-    firstRun.textContent = newText;
-    textRunIndex++;
-
-    while (textRunIndex < allTextRuns.length) {
-      const prevParent = allTextRuns[textRunIndex - 1].parentNode?.parentNode as Element | null;
-      const curParent = allTextRuns[textRunIndex].parentNode?.parentNode as Element | null;
-      if (prevParent && curParent && prevParent === curParent) {
-        allTextRuns[textRunIndex].textContent = "";
-        textRunIndex++;
-      } else {
-        break;
-      }
-    }
-  }
-
-  while (textRunIndex < allTextRuns.length) {
-    allTextRuns[textRunIndex].textContent = "";
-    textRunIndex++;
-  }
-
   const newDocXml = serializer.serializeToString(xmlDoc);
   zip.file("word/document.xml", newDocXml);
 
   return zip.generateAsync({
     type: "blob",
-    mimeType:
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
   });
 }
 
@@ -180,11 +305,14 @@ export function DocxViewer({
       })
       .then((buffer) => {
         originalBufferRef.current = buffer;
-        return mammoth.convertToHtml({ arrayBuffer: buffer });
+        return mammoth.convertToHtml({
+          arrayBuffer: buffer,
+        } as any);
       })
       .then((result) => {
         if (!cancelled) {
-          const content = result.value || "<p></p>";
+          let content = result.value || "<p></p>";
+          content = inlineMammothStyles(content);
           setHtml(content);
           setOriginalHtml(content);
           setLoading(false);
@@ -244,6 +372,23 @@ export function DocxViewer({
     pushHistory(newHtml);
   }, [originalHtml, pushHistory]);
 
+  const handlePaste = useCallback((e: React.ClipboardEvent) => {
+    e.preventDefault();
+    const html = e.clipboardData.getData("text/html");
+    const text = e.clipboardData.getData("text/plain");
+
+    if (html && /<table[\s>]/i.test(html)) {
+      const div = document.createElement("div");
+      div.innerHTML = html;
+      applyCssTextToDiv(div);
+      div.querySelectorAll("script, link").forEach((el) => el.remove());
+      const cleanHtml = div.innerHTML;
+      document.execCommand("insertHTML", false, cleanHtml);
+    } else {
+      document.execCommand("insertText", false, text);
+    }
+  }, []);
+
   const handleSave = useCallback(async () => {
     if (!contentRef.current) return;
     const editedHtml = contentRef.current.innerHTML;
@@ -253,9 +398,8 @@ export function DocxViewer({
       try {
         blob = await editDocxInPlace(originalBufferRef.current, editedHtml);
       } catch {
-        blob = await import("./docxFallback").then((m) =>
-          m.htmlToDocxBlob(editedHtml, fileName || undefined)
-        );
+        const { htmlToDocxBlob } = await import("./docxFallback");
+        blob = await htmlToDocxBlob(editedHtml, fileName || undefined);
       }
     } else {
       const { htmlToDocxBlob } = await import("./docxFallback");
@@ -319,8 +463,10 @@ export function DocxViewer({
           table { border-collapse: collapse; width: 100%; margin: 12px 0; }
           th, td { border: 1px solid #d1d5db; padding: 8px 12px; text-align: left; }
           th { background: #f8fafc; font-weight: 600; }
-          ul, ol { margin: 8px 0; padding-left: 28px; }
-          li { margin: 4px 0; }
+          ul, ol { margin: 8px 0; padding-left: 24px; }
+          ul { list-style-type: disc; }
+          ol { list-style-type: decimal; }
+          li { margin: 2px 0; line-height: 1.7; }
           img { max-width: 100%; }
         </style>
       </head>
@@ -480,15 +626,16 @@ export function DocxViewer({
 
       <div className="flex-1 overflow-auto bg-slate-50 dark:bg-slate-950 p-4">
         <div
-          className="mx-auto max-w-4xl bg-white shadow-lg rounded-lg"
+          className="mx-auto max-w-6xl bg-white shadow-lg rounded-lg"
           style={{ zoom: `${zoom}%` }}
         >
           <div
             ref={contentRef}
-            className="docx-content p-8 min-h-[600px]"
+            className="docx-content p-12 min-h-[900px]"
             contentEditable={editable}
             suppressContentEditableWarning
             onInput={handleInput}
+            onPaste={handlePaste}
           />
         </div>
       </div>
