@@ -151,6 +151,7 @@ export function DocxViewer({
   useEffect(() => {
     if (contentRef.current && html) {
       contentRef.current.innerHTML = html;
+      setOriginalHtml(contentRef.current.innerHTML);
     }
   }, [html]);
 
