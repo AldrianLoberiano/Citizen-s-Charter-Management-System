@@ -195,18 +195,37 @@ function htmlToDocxElements(htmlStr: string): (Paragraph | Table)[] {
           td.childNodes.forEach((child) => {
             if (child.nodeType === Node.TEXT_NODE) {
               const t = child.textContent || "";
-              if (t)
-                cellParagraphs.push(
-                  new Paragraph({
-                    children: [
-                      new TextRun({
-                        text: t,
-                        bold: td.tagName === "TH",
-                        color: cellColor,
-                      }),
-                    ],
-                  })
-                );
+              if (t) {
+                if (/[►▸•‣]/.test(t)) {
+                  const parts = t.split(/[►▸•‣]/).map((s) => s.trim()).filter(Boolean);
+                  parts.forEach((part) => {
+                    cellParagraphs.push(
+                      new Paragraph({
+                        children: [
+                          new TextRun({
+                            text: part,
+                            bold: td.tagName === "TH",
+                            color: cellColor,
+                          }),
+                        ],
+                        bullet: { level: 0 },
+                      })
+                    );
+                  });
+                } else {
+                  cellParagraphs.push(
+                    new Paragraph({
+                      children: [
+                        new TextRun({
+                          text: t,
+                          bold: td.tagName === "TH",
+                          color: cellColor,
+                        }),
+                      ],
+                    })
+                  );
+                }
+              }
             } else if (child.nodeType === Node.ELEMENT_NODE) {
               const parsed = htmlToDocxElements((child as HTMLElement).outerHTML);
               for (const el of parsed) {
