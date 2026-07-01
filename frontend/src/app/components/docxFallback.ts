@@ -11,6 +11,7 @@ import {
   HeadingLevel,
   ImageRun,
   convertInchesToTwip,
+  ShadingType,
 } from "docx";
 
 function dataUriToBuffer(dataUri: string): {
@@ -26,8 +27,60 @@ function dataUriToBuffer(dataUri: string): {
   return { buffer: bytes.buffer, type };
 }
 
-function parseInline(element: HTMLElement): TextRun[] {
+function getCellShading(el: HTMLElement): string | undefined {
+  const style = el.getAttribute("style") || "";
+  const bgMatch = style.match(/background(?:-color)?:\s*([^;]+)/i);
+  if (bgMatch) {
+    let color = bgMatch[1].trim();
+    const ctx = document.createElement("canvas").getContext("2d");
+    if (ctx) {
+      ctx.fillStyle = color;
+      color = ctx.fillStyle;
+    }
+    if (color.startsWith("#")) color = color.slice(1);
+    return color.toUpperCase();
+  }
+  const bg = el.getAttribute("bgcolor");
+  if (bg) {
+    let color = bg.trim();
+    const ctx = document.createElement("canvas").getContext("2d");
+    if (ctx) {
+      ctx.fillStyle = color;
+      color = ctx.fillStyle;
+    }
+    if (color.startsWith("#")) color = color.slice(1);
+    return color.toUpperCase();
+  }
+  return undefined;
+}
+
+function getDepth(el: HTMLElement): number {
+  let depth = 0;
+  let parent = el.parentElement;
+  while (parent) {
+    const tag = parent.tagName.toLowerCase();
+    if (tag === "ul" || tag === "ol") depth++;
+    parent = parent.parentElement;
+  }
+  return depth;
+}
+
+function parseInline(element: HTMLElement, inheritedColor?: string): TextRun[] {
   const runs: TextRun[] = [];
+  const elColor = (() => {
+    const style = element.getAttribute("style") || "";
+    const m = style.match(/color:\s*([^;]+)/i);
+    if (m) {
+      let c = m[1].trim();
+      const ctx = document.createElement("canvas").getContext("2d");
+      if (ctx) { ctx.fillStyle = c; c = ctx.fillStyle; }
+      if (c.startsWith("#")) c = c.slice(1);
+      return c.toUpperCase();
+    }
+    return undefined;
+  })();
+  const color = elColor || inheritedColor;
+
   element.childNodes.forEach((child) => {
     if (child.nodeType === Node.TEXT_NODE) {
       const text = child.textContent || "";
@@ -41,6 +94,7 @@ function parseInline(element: HTMLElement): TextRun[] {
             bold: isBold,
             italics: isItalic,
             underline: isUnderline ? {} : undefined,
+            color,
           })
         );
       }
@@ -60,6 +114,7 @@ function parseInline(element: HTMLElement): TextRun[] {
                 bold: isBold,
                 italics: isItalic,
                 underline: isUnderline ? {} : undefined,
+                color,
               })
             );
         } else if (gc.nodeType === Node.ELEMENT_NODE) {
@@ -71,6 +126,7 @@ function parseInline(element: HTMLElement): TextRun[] {
               bold: isBold || gt === "B" || gt === "STRONG",
               italics: isItalic || gt === "I" || gt === "EM",
               underline: isUnderline || gt === "U" ? {} : undefined,
+              color,
             })
           );
         }
@@ -124,6 +180,18 @@ function htmlToDocxElements(htmlStr: string): (Paragraph | Table)[] {
         const cells: TableCell[] = [];
         tr.querySelectorAll("td, th").forEach((td) => {
           const cellParagraphs: Paragraph[] = [];
+          const cellColor = (() => {
+            const style = td.getAttribute("style") || "";
+            const m = style.match(/color:\s*([^;]+)/i);
+            if (m) {
+              let c = m[1].trim();
+              const ctx = document.createElement("canvas").getContext("2d");
+              if (ctx) { ctx.fillStyle = c; c = ctx.fillStyle; }
+              if (c.startsWith("#")) c = c.slice(1);
+              return c.toUpperCase();
+            }
+            return undefined;
+          })();
           td.childNodes.forEach((child) => {
             if (child.nodeType === Node.TEXT_NODE) {
               const t = child.textContent || "";
@@ -134,13 +202,14 @@ function htmlToDocxElements(htmlStr: string): (Paragraph | Table)[] {
                       new TextRun({
                         text: t,
                         bold: td.tagName === "TH",
+                        color: cellColor,
                       }),
                     ],
                   })
                 );
             } else if (child.nodeType === Node.ELEMENT_NODE) {
-              const elements = htmlToDocxElements((child as HTMLElement).outerHTML);
-              for (const el of elements) {
+              const parsed = htmlToDocxElements((child as HTMLElement).outerHTML);
+              for (const el of parsed) {
                 if (el instanceof Paragraph) {
                   cellParagraphs.push(el);
                 }
@@ -151,6 +220,7 @@ function htmlToDocxElements(htmlStr: string): (Paragraph | Table)[] {
             cellParagraphs.push(
               new Paragraph({ children: [new TextRun("")] })
             );
+          const shading = getCellShading(td as HTMLElement);
           cells.push(
             new TableCell({
               children: cellParagraphs,
@@ -161,6 +231,12 @@ function htmlToDocxElements(htmlStr: string): (Paragraph | Table)[] {
                 ),
                 type: WidthType.PERCENTAGE,
               },
+              shading: shading
+                ? {
+                    type: ShadingType.CLEAR,
+                    fill: shading,
+                  }
+                : undefined,
             })
           );
         });
@@ -201,16 +277,33 @@ function htmlToDocxElements(htmlStr: string): (Paragraph | Table)[] {
 
     if (tag === "ul" || tag === "ol") {
       el.querySelectorAll("li").forEach((li) => {
+        const depth = getDepth(li);
         elements.push(
           new Paragraph({
             children: parseInline(li),
-            bullet: tag === "ul" ? { level: 0 } : undefined,
+            bullet: tag === "ul" ? { level: Math.min(depth, 3) } : undefined,
             numbering:
               tag === "ol"
-                ? { reference: "ordered-list", level: 0 }
+                ? { reference: "ordered-list", level: Math.min(depth, 3) }
                 : undefined,
           })
         );
+        li.querySelectorAll(":scope > ul, :scope > ol").forEach((subList) => {
+          const subTag = subList.tagName.toLowerCase();
+          subList.querySelectorAll("li").forEach((subLi) => {
+            const subDepth = getDepth(subLi);
+            elements.push(
+              new Paragraph({
+                children: parseInline(subLi),
+                bullet: subTag === "ul" ? { level: Math.min(subDepth, 3) } : undefined,
+                numbering:
+                  subTag === "ol"
+                    ? { reference: "ordered-list", level: Math.min(subDepth, 3) }
+                    : undefined,
+              })
+            );
+          });
+        });
       });
       return;
     }
@@ -249,6 +342,48 @@ export async function htmlToDocxBlob(
                 paragraph: {
                   indent: {
                     left: convertInchesToTwip(0.5),
+                    hanging: convertInchesToTwip(0.25),
+                  },
+                },
+              },
+            },
+            {
+              level: 1,
+              format: "lowerLetter",
+              text: "%2)",
+              alignment: AlignmentType.LEFT,
+              style: {
+                paragraph: {
+                  indent: {
+                    left: convertInchesToTwip(1.0),
+                    hanging: convertInchesToTwip(0.25),
+                  },
+                },
+              },
+            },
+            {
+              level: 2,
+              format: "lowerRoman",
+              text: "%3.",
+              alignment: AlignmentType.LEFT,
+              style: {
+                paragraph: {
+                  indent: {
+                    left: convertInchesToTwip(1.5),
+                    hanging: convertInchesToTwip(0.25),
+                  },
+                },
+              },
+            },
+            {
+              level: 3,
+              format: "decimal",
+              text: "%4.",
+              alignment: AlignmentType.LEFT,
+              style: {
+                paragraph: {
+                  indent: {
+                    left: convertInchesToTwip(2.0),
                     hanging: convertInchesToTwip(0.25),
                   },
                 },
