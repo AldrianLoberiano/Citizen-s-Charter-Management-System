@@ -276,11 +276,13 @@ function htmlToDocxElements(htmlStr: string): (Paragraph | Table)[] {
     }
 
     if (tag === "ul" || tag === "ol") {
-      el.querySelectorAll("li").forEach((li) => {
-        const depth = getDepth(li);
+      el.querySelectorAll(":scope > li").forEach((li) => {
+        const depth = getDepth(li as HTMLElement);
+        const liText = li.cloneNode(true);
+        (liText as HTMLElement).querySelectorAll("ul, ol").forEach((sub) => sub.remove());
         elements.push(
           new Paragraph({
-            children: parseInline(li),
+            children: parseInline(liText as HTMLElement),
             bullet: tag === "ul" ? { level: Math.min(depth, 3) } : undefined,
             numbering:
               tag === "ol"
@@ -290,11 +292,11 @@ function htmlToDocxElements(htmlStr: string): (Paragraph | Table)[] {
         );
         li.querySelectorAll(":scope > ul, :scope > ol").forEach((subList) => {
           const subTag = subList.tagName.toLowerCase();
-          subList.querySelectorAll("li").forEach((subLi) => {
-            const subDepth = getDepth(subLi);
+          subList.querySelectorAll(":scope > li").forEach((subLi) => {
+            const subDepth = getDepth(subLi as HTMLElement);
             elements.push(
               new Paragraph({
-                children: parseInline(subLi),
+                children: parseInline(subLi as HTMLElement),
                 bullet: subTag === "ul" ? { level: Math.min(subDepth, 3) } : undefined,
                 numbering:
                   subTag === "ol"
