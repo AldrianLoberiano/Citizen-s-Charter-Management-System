@@ -12,6 +12,9 @@ import {
   ImageRun,
   convertInchesToTwip,
   ShadingType,
+  BorderStyle,
+  TableLayoutType,
+  VerticalAlign,
 } from "docx";
 
 function dataUriToBuffer(dataUri: string): {
@@ -136,6 +139,82 @@ function parseInline(element: HTMLElement, inheritedColor?: string): TextRun[] {
   return runs.length > 0 ? runs : [new TextRun("")];
 }
 
+function parseBorderStyle(cssValue: string): { style: typeof BorderStyle[keyof typeof BorderStyle]; size: number } | undefined {
+  const map: Record<string, typeof BorderStyle[keyof typeof BorderStyle]> = {
+    solid: BorderStyle.SINGLE,
+    dashed: BorderStyle.DASHED,
+    dotted: BorderStyle.DOTTED,
+    double: BorderStyle.DOUBLE,
+    none: BorderStyle.NONE,
+    hidden: BorderStyle.NONE,
+  };
+  const match = cssValue.match(/(\d+(?:\.\d+)?)(px|pt)\s+(\w+)/);
+  if (match) {
+    const size = Math.max(1, Math.round(Number(match[1]) / 4));
+    const style = map[match[3].toLowerCase()] ?? BorderStyle.SINGLE;
+    return { style, size };
+  }
+  if (cssValue.includes("none") || cssValue.includes("hidden")) {
+    return { style: BorderStyle.NONE, size: 0 };
+  }
+  return undefined;
+}
+
+function parseTableBorders(styleStr: string): {
+  top?: { style: typeof BorderStyle[keyof typeof BorderStyle]; size: number };
+  bottom?: { style: typeof BorderStyle[keyof typeof BorderStyle]; size: number };
+  left?: { style: typeof BorderStyle[keyof typeof BorderStyle]; size: number };
+  right?: { style: typeof BorderStyle[keyof typeof BorderStyle]; size: number };
+} {
+  const borders: Record<string, { style: typeof BorderStyle[keyof typeof BorderStyle]; size: number }> = {};
+  const borderProps = [
+    { css: "border-top", name: "top" },
+    { css: "border-bottom", name: "bottom" },
+    { css: "border-left", name: "left" },
+    { css: "border-right", name: "right" },
+  ];
+  for (const { css, name } of borderProps) {
+    const regex = new RegExp(`${css.replace("-", "\\-")}\\s*:\\s*([^;]+)`, "i");
+    const m = styleStr.match(regex);
+    if (m) {
+      const parsed = parseBorderStyle(m[1]);
+      if (parsed) borders[name] = parsed;
+    }
+  }
+  const allBorder = styleStr.match(/border\s*:\s*([^;]+)/i);
+  if (allBorder) {
+    const parsed = parseBorderStyle(allBorder[1]);
+    if (parsed) {
+      for (const name of ["top", "bottom", "left", "right"]) {
+        if (!borders[name]) borders[name] = parsed;
+      }
+    }
+  }
+  return borders;
+}
+
+function mergeBorders(
+  tableBorders: ReturnType<typeof parseTableBorders>,
+  cellBorders: ReturnType<typeof parseTableBorders>
+) {
+  const fallback = tableBorders.top || tableBorders.bottom || tableBorders.left || tableBorders.right;
+  if (!cellBorders.top && !cellBorders.bottom && !cellBorders.left && !cellBorders.right && !fallback) {
+    return undefined;
+  }
+  const b = {
+    top: cellBorders.top || fallback || { style: BorderStyle.SINGLE, size: 1 },
+    bottom: cellBorders.bottom || fallback || { style: BorderStyle.SINGLE, size: 1 },
+    left: cellBorders.left || fallback || { style: BorderStyle.SINGLE, size: 1 },
+    right: cellBorders.right || fallback || { style: BorderStyle.SINGLE, size: 1 },
+  };
+  return {
+    top: { style: b.top.style, size: b.top.size, color: "000000" },
+    bottom: { style: b.bottom.style, size: b.bottom.size, color: "000000" },
+    left: { style: b.left.style, size: b.left.size, color: "000000" },
+    right: { style: b.right.style, size: b.right.size, color: "000000" },
+  };
+}
+
 function htmlToDocxElements(htmlStr: string): (Paragraph | Table)[] {
   const div = document.createElement("div");
   div.innerHTML = htmlStr;
@@ -175,6 +254,16 @@ function htmlToDocxElements(htmlStr: string): (Paragraph | Table)[] {
     }
 
     if (tag === "table") {
+      const tableStyle = el.getAttribute("style") || "";
+      const tableWidthMatch = tableStyle.match(/width:\s*([\d.]+)(px|%)/i);
+      const tableWidthPct = tableWidthMatch
+        ? tableWidthMatch[2] === "%"
+          ? Number(tableWidthMatch[1])
+          : Math.min(100, Math.round((Number(tableWidthMatch[1]) / 800) * 100))
+        : 100;
+
+      const tableBorders = parseTableBorders(tableStyle);
+
       const rows: TableRow[] = [];
       el.querySelectorAll("tr").forEach((tr) => {
         const cells: TableCell[] = [];
@@ -240,28 +329,62 @@ function htmlToDocxElements(htmlStr: string): (Paragraph | Table)[] {
               new Paragraph({ children: [new TextRun("")] })
             );
           const shading = getCellShading(td as HTMLElement);
+          const colspan = Math.max(1, parseInt(td.getAttribute("colspan") || "1", 10));
+          const rowspan = Math.max(1, parseInt(td.getAttribute("rowspan") || "1", 10));
+
+          const cellStyle = td.getAttribute("style") || "";
+          const cellWidthMatch = cellStyle.match(/width:\s*([\d.]+)(px|%)/i);
+          let cellWidthPct: number | undefined;
+          if (cellWidthMatch) {
+            cellWidthPct = cellWidthMatch[2] === "%"
+              ? Number(cellWidthMatch[1])
+              : Math.round((Number(cellWidthMatch[1]) / 800) * 100);
+          } else {
+            const totalVisibleCols = Math.max(1, tr.querySelectorAll("td, th").length);
+            cellWidthPct = Math.round(tableWidthPct / totalVisibleCols) * colspan;
+          }
+
+          const verticalAlign = (() => {
+            const va = cellStyle.match(/vertical-align:\s*(\w+)/i);
+            if (va) {
+              const val = va[1].toLowerCase();
+              if (val === "top") return VerticalAlign.TOP;
+              if (val === "middle") return VerticalAlign.CENTER;
+              if (val === "bottom") return VerticalAlign.BOTTOM;
+            }
+            return undefined;
+          })();
+
+          const cellBorders = parseTableBorders(cellStyle);
+          const mergedBorders = mergeBorders(tableBorders, cellBorders);
+
           cells.push(
             new TableCell({
               children: cellParagraphs,
-              width: {
-                size: Math.floor(
-                  100 /
-                    Math.max(tr.querySelectorAll("td, th").length, 1)
-                ),
-                type: WidthType.PERCENTAGE,
-              },
-              shading: shading
-                ? {
-                    type: ShadingType.CLEAR,
-                    fill: shading,
-                  }
+              columnSpan: colspan > 1 ? colspan : undefined,
+              rowSpan: rowspan > 1 ? rowspan : undefined,
+              width: cellWidthPct
+                ? { size: cellWidthPct, type: WidthType.PERCENTAGE }
                 : undefined,
+              shading: shading
+                ? { type: ShadingType.CLEAR, fill: shading }
+                : undefined,
+              verticalAlign,
+              borders: mergedBorders,
             })
           );
         });
         if (cells.length > 0) rows.push(new TableRow({ children: cells }));
       });
-      if (rows.length > 0) elements.push(new Table({ rows }));
+      if (rows.length > 0) {
+        elements.push(
+          new Table({
+            rows,
+            width: { size: tableWidthPct, type: WidthType.PERCENTAGE },
+            layout: TableLayoutType.FIXED,
+          })
+        );
+      }
       return;
     }
 
