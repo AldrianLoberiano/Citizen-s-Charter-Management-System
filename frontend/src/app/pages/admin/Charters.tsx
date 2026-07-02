@@ -666,7 +666,7 @@ export function Charters() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
                     <Paperclip className="w-4 h-4 text-slate-600" />
-                    <span className="truncate max-w-xs">{formData.file_path}</span>
+                    <span className="truncate max-w-xs">{formData.file_path.split("/").pop()}</span>
                   </div>
                   <button
                     type="button"
