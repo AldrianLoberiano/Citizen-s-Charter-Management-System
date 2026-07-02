@@ -409,20 +409,24 @@ export function DocxViewer({
               Unsaved changes
             </span>
           )}
-          <button
-            onClick={handlePrint}
-            title="Print"
-            className="p-1.5 rounded text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
-          >
-            <Printer className="h-4 w-4" />
-          </button>
-          <button
-            onClick={handleDownloadOriginal}
-            title="Download original"
-            className="p-1.5 rounded text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
-          >
-            <Download className="h-4 w-4" />
-          </button>
+          {editable && (
+            <>
+              <button
+                onClick={handlePrint}
+                title="Print"
+                className="p-1.5 rounded text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+              >
+                <Printer className="h-4 w-4" />
+              </button>
+              <button
+                onClick={handleDownloadOriginal}
+                title="Download original"
+                className="p-1.5 rounded text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+              >
+                <Download className="h-4 w-4" />
+              </button>
+            </>
+          )}
           {editable && onOpenExternal && (
             <button
               onClick={onOpenExternal}
