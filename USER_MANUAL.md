@@ -345,7 +345,6 @@ Click a charter's DOCX attachment to open the DOCX Viewer/Editor.
 **Editor Identification**:
 Before editing, you must enter your name. This name is recorded with the saved version for accountability tracking.
 
-4. Enter your name and optional notes in the submission form.
 5. The edited version is saved to the edited charters history.
 
 ---
