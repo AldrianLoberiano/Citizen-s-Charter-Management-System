@@ -1,8 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import mammoth from "mammoth";
 import {
-  Download,
-  Printer,
   ZoomIn,
   ZoomOut,
   RotateCcw,
@@ -249,46 +247,6 @@ export function DocxViewer({
     }
   }, [isDirty, fileName, onSave]);
 
-  const handleDownloadOriginal = useCallback(() => {
-    const a = document.createElement("a");
-    a.href = fileUrl;
-    a.download = fileName || "document.docx";
-    a.click();
-  }, [fileUrl, fileName]);
-
-  const handlePrint = useCallback(() => {
-    const content = contentRef.current;
-    if (!content) return;
-    const printWindow = window.open("", "_blank");
-    if (!printWindow) return;
-    printWindow.document.write(`
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>${fileName || "Document"}</title>
-        <style>
-          body { font-family: Arial, sans-serif; padding: 40px; line-height: 1.7; color: #1a1a1a; max-width: 800px; margin: 0 auto; }
-          h1 { font-size: 22px; font-weight: 700; margin: 20px 0 10px; }
-          h2 { font-size: 18px; font-weight: 600; margin: 16px 0 8px; }
-          h3 { font-size: 16px; font-weight: 600; margin: 14px 0 6px; }
-          p { margin: 8px 0; }
-          table { border-collapse: collapse; width: 100%; margin: 12px 0; }
-          th, td { border: 1px solid #d1d5db; padding: 8px 12px; text-align: left; }
-          th { background: #f8fafc; font-weight: 600; }
-          ul, ol { margin: 8px 0; padding-left: 24px; }
-          ul { list-style-type: disc; }
-          ol { list-style-type: decimal; }
-          li { margin: 2px 0; line-height: 1.7; padding-left: 4px; }
-          img { max-width: 100%; }
-        </style>
-      </head>
-      <body>${content.innerHTML}</body>
-      </html>
-    `);
-    printWindow.document.close();
-    printWindow.print();
-  }, [fileName]);
-
   const handleReset = useCallback(() => {
     if (contentRef.current) contentRef.current.innerHTML = originalHtml;
     setIsDirty(false);
@@ -408,24 +366,6 @@ export function DocxViewer({
             <span className="text-xs text-amber-500 dark:text-amber-400 mr-2">
               Unsaved changes
             </span>
-          )}
-          {editable && (
-            <>
-              <button
-                onClick={handlePrint}
-                title="Print"
-                className="p-1.5 rounded text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
-              >
-                <Printer className="h-4 w-4" />
-              </button>
-              <button
-                onClick={handleDownloadOriginal}
-                title="Download original"
-                className="p-1.5 rounded text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
-              >
-                <Download className="h-4 w-4" />
-              </button>
-            </>
           )}
           {editable && onOpenExternal && (
             <button
