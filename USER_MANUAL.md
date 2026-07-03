@@ -315,7 +315,6 @@ Click a charter's DOCX attachment to open the DOCX Viewer/Editor.
 **Viewing Mode**:
 - The document is rendered as formatted HTML using mammoth.js.
 - Use **zoom controls** (50%-200%) to adjust the view.
-- Click the **Print** button to print the document.
 - Click the **Download** button to save the original file.
 
 **Editing Mode**:
