@@ -8,7 +8,6 @@ import {
   Save,
   Undo2,
   Redo2,
-  Pencil,
 } from "lucide-react";
 
 interface DocxViewerProps {
