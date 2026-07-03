@@ -345,7 +345,6 @@ Click a charter's DOCX attachment to open the DOCX Viewer/Editor.
 **Editor Identification**:
 Before editing, you must enter your name. This name is recorded with the saved version for accountability tracking.
 
-
 ---
 
 ## 8. Feedback and Analytics
