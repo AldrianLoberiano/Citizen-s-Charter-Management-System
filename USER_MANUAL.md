@@ -345,7 +345,6 @@ Click a charter's DOCX attachment to open the DOCX Viewer/Editor.
 **Editor Identification**:
 Before editing, you must enter your name. This name is recorded with the saved version for accountability tracking.
 
-1. Open the charter in the viewer.
 2. Click **Edit Full** to open the document in a new tab for full editing.
 3. After making changes, click **Save** to submit the edited version.
 4. Enter your name and optional notes in the submission form.
