@@ -252,6 +252,24 @@ export function DocxViewer({
     historyIndexRef.current = 0;
   }, [originalHtml]);
 
+  const handlePrint = useCallback(() => {
+    if (!contentRef.current) return;
+    const iframe = document.createElement("iframe");
+    iframe.style.position = "fixed";
+    iframe.style.width = "0";
+    iframe.style.height = "0";
+    iframe.style.border = "none";
+    document.body.appendChild(iframe);
+    const doc = iframe.contentWindow?.document;
+    if (!doc) { document.body.removeChild(iframe); return; }
+    doc.open();
+    doc.write(`<html><head><title>${fileName || "Document"}</title><style>.docx-content h1{font-size:22px;font-weight:700;margin:20px 0 10px}.docx-content h2{font-size:18px;font-weight:600;margin:16px 0 8px}.docx-content h3{font-size:16px;font-weight:600;margin:14px 0 6px}.docx-content p{margin:8px 0}.docx-content table{border-collapse:collapse;width:100%;margin:12px 0}.docx-content th,.docx-content td{border:1px solid #d1d5db;padding:8px 12px;text-align:left}.docx-content th{background:#f8fafc;font-weight:600}.docx-content ul,.docx-content ol{margin:8px 0;padding-left:24px}.docx-content ul{list-style-type:disc}.docx-content ol{list-style-type:decimal}.docx-content li{margin:2px 0;line-height:1.7;padding-left:4px}</style></head><body style="margin:0;padding:40px;font-family:Arial,sans-serif"><div class="docx-content">${contentRef.current.innerHTML}</div></body></html>`);
+    doc.close();
+    iframe.contentWindow?.focus();
+    iframe.contentWindow?.print();
+    setTimeout(() => document.body.removeChild(iframe), 1000);
+  }, [fileName]);
+
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === "z" && !e.shiftKey) {
@@ -352,6 +370,14 @@ export function DocxViewer({
             className="p-1.5 rounded text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
           >
             <ZoomIn className="h-4 w-4" />
+          </button>
+          <div className="w-px h-5 bg-slate-200 dark:bg-slate-700 mx-1" />
+          <button
+            onClick={handlePrint}
+            title="Print"
+            className="p-1.5 rounded text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+          >
+            <Printer className="h-4 w-4" />
           </button>
         </div>
         <div className="flex items-center gap-1">
