@@ -80,6 +80,7 @@ A full-stack web application for publishing citizen service charters by departme
     - Inline contentEditable editing mode.
     - Undo/Redo with full history stack (Ctrl+Z / Ctrl+Y).
     - Save edited content back to server as DOCX (Ctrl+S).
+    - Zoom controls (50%-200%) and print (admin only).
     - Supports complex table structures and formatting.
   - **Edit History**: tracks all saved versions with editor name, metadata, and timestamps.
   - Search, department filtering, and pagination.
