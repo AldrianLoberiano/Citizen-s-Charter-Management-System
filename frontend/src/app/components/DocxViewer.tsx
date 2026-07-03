@@ -17,7 +17,6 @@ interface DocxViewerProps {
   className?: string;
   editable?: boolean;
   onSave?: (blob: Blob) => Promise<void>;
-  onOpenExternal?: () => void;
 }
 
 function fixBulletsInTables(htmlStr: string): string {
@@ -366,16 +365,6 @@ export function DocxViewer({
             <span className="text-xs text-amber-500 dark:text-amber-400 mr-2">
               Unsaved changes
             </span>
-          )}
-          {editable && onOpenExternal && (
-            <button
-              onClick={onOpenExternal}
-              title="Open in new tab for full editing"
-              className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs text-white transition-colors hover:bg-emerald-700"
-            >
-              <Pencil className="h-3.5 w-3.5" />
-              Edit Full
-            </button>
           )}
         </div>
       </div>
