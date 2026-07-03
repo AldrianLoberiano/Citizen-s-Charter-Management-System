@@ -345,7 +345,6 @@ Click a charter's DOCX attachment to open the DOCX Viewer/Editor.
 **Editor Identification**:
 Before editing, you must enter your name. This name is recorded with the saved version for accountability tracking.
 
-### 7.3 Editing PDF Documents (Submit Edit)
 
 For PDF files, you can also submit an edited version through a separate workflow:
 
