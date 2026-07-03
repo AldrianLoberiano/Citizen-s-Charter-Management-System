@@ -333,7 +333,6 @@ Click a charter's DOCX attachment to open the DOCX Viewer/Editor.
 | **Reset** | - | Revert to the original document content |
 | **Zoom In** | - | Increase zoom level |
 | **Zoom Out** | - | Decrease zoom level |
-| **Print** | - | Print the document |
 | **Download** | - | Download the original file |
 
 **Saving Process**:
