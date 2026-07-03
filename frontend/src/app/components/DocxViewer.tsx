@@ -17,6 +17,7 @@ interface DocxViewerProps {
   className?: string;
   editable?: boolean;
   onSave?: (blob: Blob) => Promise<void>;
+  showPrint?: boolean;
 }
 
 function fixBulletsInTables(htmlStr: string): string {
@@ -75,6 +76,7 @@ export function DocxViewer({
   className = "",
   editable = true,
   onSave,
+  showPrint = false,
 }: DocxViewerProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const [html, setHtml] = useState("");
@@ -372,13 +374,15 @@ export function DocxViewer({
             <ZoomIn className="h-4 w-4" />
           </button>
           <div className="w-px h-5 bg-slate-200 dark:bg-slate-700 mx-1" />
-          <button
-            onClick={handlePrint}
-            title="Print"
-            className="p-1.5 rounded text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
-          >
-            <Printer className="h-4 w-4" />
-          </button>
+          {showPrint && (
+            <button
+              onClick={handlePrint}
+              title="Print"
+              className="p-1.5 rounded text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+            >
+              <Printer className="h-4 w-4" />
+            </button>
+          )}
         </div>
         <div className="flex items-center gap-1">
           {saveError && (
