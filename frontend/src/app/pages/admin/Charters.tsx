@@ -755,7 +755,6 @@ export function Charters() {
               fileName={viewerFilePath.split("/").pop() || "document.docx"}
               className="h-full rounded-lg border border-slate-200 dark:border-slate-700"
               onSave={viewerCharterId ? handleSaveAttachment : undefined}
-              onOpenExternal={handleOpenExternal}
             />
           </div>
         )}
