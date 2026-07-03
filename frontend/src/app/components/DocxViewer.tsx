@@ -75,7 +75,6 @@ export function DocxViewer({
   className = "",
   editable = true,
   onSave,
-  onOpenExternal,
 }: DocxViewerProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const [html, setHtml] = useState("");
