@@ -10,12 +10,13 @@ const pool = mysql.createPool({
   connectionLimit: 10,
 });
 
-try {
-  const conn = await pool.getConnection();
-  console.log("Connected to MySQL!");
-  conn.release();
-} catch (err) {
-  console.error("Database connection failed:", err);
-}
+pool.getConnection()
+  .then((conn) => {
+    console.log("Connected to MySQL!");
+    conn.release();
+  })
+  .catch((err) => {
+    console.error("Database connection failed:", err);
+  });
 
 export { pool };
