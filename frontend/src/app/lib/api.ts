@@ -5,10 +5,12 @@ export const FILE_BASE = isDev ? (import.meta.env.VITE_DEV_BASE_URL || "http://l
 async function request(path: string, options?: RequestInit) {
   const rawUser = typeof window === "undefined" ? null : window.localStorage.getItem("ccms_auth_user");
   const adminUsername = rawUser ? JSON.parse(rawUser) : null;
+  const method = options?.method?.toUpperCase() || "GET";
+  const hasBody = method === "POST" || method === "PUT" || method === "PATCH";
   const response = await fetch(`${API_BASE}${path}`, {
     cache: "no-store",
     headers: {
-      "Content-Type": "application/json",
+      ...(hasBody ? { "Content-Type": "application/json" } : {}),
       ...(adminUsername ? { "x-admin-username": adminUsername } : {}),
       ...(options?.headers || {}),
     },
