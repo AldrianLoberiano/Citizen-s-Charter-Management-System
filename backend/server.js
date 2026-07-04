@@ -142,6 +142,7 @@ const getDbArgs = () => {
 
 const isLocalhostOrigin = (origin) =>
   /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+const isVercelOrigin = (origin) => /^https:\/\/.*\.vercel\.app$/.test(origin);
 const allowAllOrigins =
   String(process.env.ALLOW_ALL_ORIGINS || "").toLowerCase() === "true" ||
   process.env.NODE_ENV !== "production";
@@ -161,7 +162,7 @@ app.use(
         callback(null, true);
         return;
       }
-      if (!origin || allowedOrigins.includes(origin) || isLocalhostOrigin(origin)) {
+      if (!origin || allowedOrigins.includes(origin) || isLocalhostOrigin(origin) || isVercelOrigin(origin)) {
         callback(null, true);
         return;
       }
@@ -169,7 +170,12 @@ app.use(
     },
   })
 );
-app.use(express.json());
+app.use(express.json({
+  strict: false,
+  verify: (req, _res, buf) => {
+    if (buf.length === 0) req.body = undefined;
+  },
+}));
 app.use((req, res, next) => {
   if (req.path.startsWith("/api")) {
     res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
