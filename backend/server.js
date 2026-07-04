@@ -1,6 +1,5 @@
 import "dotenv/config";
 import express from "express";
-import cors from "cors";
 import bcrypt from "bcryptjs";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -147,6 +146,25 @@ const allowAllOrigins =
   String(process.env.ALLOW_ALL_ORIGINS || "").toLowerCase() === "true" ||
   process.env.NODE_ENV !== "production";
 
+const isAllowedOrigin = (origin) =>
+  allowAllOrigins ||
+  !origin ||
+  allowedOrigins.includes(origin) ||
+  isLocalhostOrigin(origin) ||
+  isVercelOrigin(origin);
+
+const setCorsHeaders = (req, res) => {
+  const origin = req.headers.origin;
+  if (!origin || !isAllowedOrigin(origin)) return false;
+
+  res.setHeader("Access-Control-Allow-Origin", origin);
+  res.setHeader("Vary", "Origin");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, x-admin-username");
+  return true;
+};
+
 app.get("/.well-known/appspecific/com.chrome.devtools.json", (_req, res) => {
   res.status(204).end();
 });
@@ -155,21 +173,13 @@ app.get("/", (_req, res) => {
   res.json({ status: "ok", service: "CCMS Backend", timestamp: new Date().toISOString() });
 });
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (allowAllOrigins) {
-        callback(null, true);
-        return;
-      }
-      if (!origin || allowedOrigins.includes(origin) || isLocalhostOrigin(origin) || isVercelOrigin(origin)) {
-        callback(null, true);
-        return;
-      }
-      callback(new Error("Not allowed by CORS"));
-    },
-  })
-);
+app.use((req, res, next) => {
+  setCorsHeaders(req, res);
+  if (req.method === "OPTIONS") {
+    return res.status(204).end();
+  }
+  next();
+});
 app.use(express.json({
   strict: false,
   verify: (req, _res, buf) => {
