@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
-import { History, Download, Search, FileText, User } from "lucide-react";
+import { Search, FileText, User } from "lucide-react";
 import { api } from "../../lib/api";
-
-const FILE_BASE = import.meta.env.VITE_ENV === "development" ? (import.meta.env.VITE_DEV_BASE_URL || "http://localhost:4000") : (import.meta.env.VITE_PROD_BASE_URL || "");
 
 interface EditedCharter {
   id: number;
@@ -83,7 +81,7 @@ export function EditedCharters() {
                   <th className="text-left px-5 py-3 text-slate-500 text-xs uppercase tracking-wide hidden lg:table-cell">File</th>
                   <th className="text-left px-5 py-3 text-slate-500 text-xs uppercase tracking-wide hidden lg:table-cell">Size</th>
                   <th className="text-left px-5 py-3 text-slate-500 text-xs uppercase tracking-wide">Date</th>
-                  <th className="text-center px-5 py-3 text-slate-500 text-xs uppercase tracking-wide w-20">Actions</th>
+
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
@@ -114,27 +112,6 @@ export function EditedCharters() {
                     </td>
                     <td className="px-5 py-4 text-sm text-slate-600 dark:text-slate-400">
                       {new Date(edit.created_at).toLocaleString()}
-                    </td>
-                    <td className="px-5 py-4 text-center">
-                      <div className="flex items-center justify-center gap-1">
-                        <a
-                          href={`${FILE_BASE}${edit.file_path}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-1.5 text-slate-400 hover:text-violet-700 dark:hover:text-violet-400 transition-colors"
-                          title="Open"
-                        >
-                          <FileText className="w-4 h-4" />
-                        </a>
-                        <a
-                          href={`${FILE_BASE}${edit.file_path}`}
-                          download
-                          className="p-1.5 text-slate-400 hover:text-violet-700 dark:hover:text-violet-400 transition-colors"
-                          title="Download"
-                        >
-                          <Download className="w-4 h-4" />
-                        </a>
-                      </div>
                     </td>
                   </tr>
                 ))}
