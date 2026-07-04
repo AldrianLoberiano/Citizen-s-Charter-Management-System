@@ -127,11 +127,11 @@ const uploadSqlBackup = (req, res) =>
   });
 
 const getDbArgs = () => {
-  const dbHost = process.env.DB_HOST || "127.0.0.1";
+  const dbHost = process.env.DB_HOST || "hayabusa.proxy.rlwy.net";
   const dbPort = process.env.DB_PORT || "3306";
   const dbUser = process.env.DB_USER || "root";
-  const dbPassword = process.env.DB_PASSWORD || "";
-  const dbName = process.env.DB_NAME || "ccms_db";
+  const dbPassword = process.env.DB_PASSWORD || "BBUOvTcjwMNbLPAXnNWoSfCpgauzrNAz";
+  const dbName = process.env.DB_NAME || "ccms";
 
   // Used for mysql/mysqldump commands (credentials passed via CLI flags)
   // Note: this mirrors existing behavior where secrets come from env vars.
