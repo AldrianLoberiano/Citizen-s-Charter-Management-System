@@ -125,10 +125,10 @@ const uploadSqlBackup = (req, res) =>
   });
 
 const getDbArgs = () => {
-  const dbHost = process.env.DB_HOST || "hayabusa.proxy.rlwy.net";
-  const dbPort = process.env.DB_PORT || "18211";
+  const dbHost = process.env.DB_HOST || "trolley.proxy.rlwy.net";
+  const dbPort = process.env.DB_PORT || "36162";
   const dbUser = process.env.DB_USER || "root";
-  const dbPassword = process.env.DB_PASSWORD || "BBUOvTcjwMNbLPAXnNWoSfCpgauzrNAz";
+  const dbPassword = process.env.DB_PASSWORD || "CasxHSDTXeuqhULHAPvDleqsESCgnxYE";
   const dbName = process.env.DB_NAME || "ccms_db";
 
   // Used for mysql/mysqldump commands (credentials passed via CLI flags)
