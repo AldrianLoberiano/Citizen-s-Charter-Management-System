@@ -77,6 +77,17 @@ describe("Health", () => {
     expect(res.status).toBe(200);
     expect(res.body.ok).toBe(true);
   });
+
+  it("OPTIONS /api/health responds with CORS headers", async () => {
+    const res = await request(BASE)
+      .options("/api/health")
+      .set("Origin", "https://citizen-s-charter-management-system-gamma.vercel.app")
+      .set("Access-Control-Request-Method", "GET");
+
+    expect(res.status).toBe(204);
+    expect(res.headers["access-control-allow-origin"]).toBe("https://citizen-s-charter-management-system-gamma.vercel.app");
+    expect(res.headers["access-control-allow-methods"]).toContain("GET");
+  });
 });
 
 describe("Departments CRUD", () => {
