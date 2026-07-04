@@ -11,7 +11,6 @@ async function request(path: string, options?: RequestInit) {
     cache: "no-store",
     headers: {
       ...(hasBody ? { "Content-Type": "application/json" } : {}),
-      ...(adminUsername ? { "x-admin-username": adminUsername } : {}),
       ...(options?.headers || {}),
     },
     ...options,
