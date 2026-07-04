@@ -1,3 +1,7 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "https://ccms-backend.onrender.com/api/$1" },
+    { "source": "/uploads/(.*)", "destination": "https://ccms-backend.onrender.com/uploads/$1" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }
