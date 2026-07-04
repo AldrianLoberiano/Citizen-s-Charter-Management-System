@@ -127,7 +127,7 @@ const uploadSqlBackup = (req, res) =>
   });
 
 const getDbArgs = () => {
-  const dbHost = process.env.DB_HOST || "hayabusa.proxy.rlwy.net";
+  const dbHost = process.env.DB_HOST || "mysql.railway.internal";
   const dbPort = process.env.DB_PORT || "3306";
   const dbUser = process.env.DB_USER || "root";
   const dbPassword = process.env.DB_PASSWORD || "BBUOvTcjwMNbLPAXnNWoSfCpgauzrNAz";
