@@ -1,19 +1,19 @@
-import mysql from "mysql2/promise";
-import dotenv from "dotenv";
+const mysql = require("mysql2");
 
-dotenv.config();
-
-const useSsl = String(process.env.DB_SSL || "").toLowerCase() === "true";
-
-export const pool = mysql.createPool({
-  host: process.env.DB_HOST || "127.0.0.1",
-  port: Number(process.env.DB_PORT || 3306),
-  user: process.env.DB_USER || "root",
-  password: process.env.DB_PASSWORD || "",
-  database: process.env.DB_NAME || "ccms_db",
-  waitForConnections: true,
-  connectionLimit: Number(process.env.DB_POOL_SIZE || 10),
-  queueLimit: 0,
-  ssl: useSsl ? { rejectUnauthorized: false } : undefined,
-  multipleStatements: true,
+const db = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT,
 });
+
+db.connect((err) => {
+  if (err) {
+    console.error("Database connection failed:", err);
+    return;
+  }
+  console.log("Connected to MySQL!");
+});
+
+module.exports = db;
