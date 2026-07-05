@@ -161,6 +161,20 @@ const corsOptions = {
   allowedHeaders: ["Content-Type", "x-admin-username"],
 };
 
+app.use((req, res, next) => {
+  const qIndex = req.url.indexOf("?");
+  if (qIndex === -1) {
+    if (req.url.length > 1 && req.url.endsWith("/")) {
+      req.url = req.url.slice(0, -1);
+    }
+  } else {
+    const path = req.url.slice(0, qIndex);
+    if (path.length > 1 && path.endsWith("/")) {
+      req.url = path.slice(0, -1) + req.url.slice(qIndex);
+    }
+  }
+  next();
+});
 app.use(cors(corsOptions));
 app.use(express.json({
   strict: false,
