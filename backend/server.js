@@ -263,6 +263,7 @@ app.post("/api/charters/:id/edited-pdfs", editedUpload.single("file"), async (re
 app.get("/api", (_req, res) => {
   res.json({
     status: "ok",
+    service: "CCMS API",
 app.get("/api/health", (_req, res) => {
   res.json({ ok: true });
 });
