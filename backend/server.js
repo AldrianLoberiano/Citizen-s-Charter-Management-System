@@ -268,6 +268,7 @@ app.get("/api", (_req, res) => {
     endpoints: [
       "/api/health",
       "/api/departments",
+      "/api/charters",
 app.get("/api/health", (_req, res) => {
   res.json({ ok: true });
 });
