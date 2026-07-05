@@ -276,6 +276,7 @@ app.get("/api", (_req, res) => {
       "/api/admin/backup",
     ],
   });
+});
 app.get("/api/health", (_req, res) => {
   res.json({ ok: true });
 });
