@@ -267,6 +267,7 @@ app.get("/api", (_req, res) => {
     timestamp: new Date().toISOString(),
     endpoints: [
       "/api/health",
+      "/api/departments",
 app.get("/api/health", (_req, res) => {
   res.json({ ok: true });
 });
