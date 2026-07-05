@@ -1,5 +1,6 @@
 import "dotenv/config";
 import express from "express";
+import cors from "cors";
 import bcrypt from "bcryptjs";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -130,8 +131,6 @@ const getDbArgs = () => {
   const dbPassword = process.env.DB_PASSWORD || "CasxHSDTXeuqhULHAPvDleqsESCgnxYE";
   const dbName = process.env.DB_NAME || "ccms_db";
 
-  // Used for mysql/mysqldump commands (credentials passed via CLI flags)
-  // Note: this mirrors existing behavior where secrets come from env vars.
   const baseArgs = ["--host", dbHost, "--port", String(dbPort), "--user", dbUser];
   if (dbPassword) {
     baseArgs.push(`--password=${dbPassword}`);
@@ -142,44 +141,27 @@ const getDbArgs = () => {
 const isLocalhostOrigin = (origin) =>
   /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
 const isVercelOrigin = (origin) => /^https:\/\/.*\.vercel\.app$/.test(origin);
-const allowAllOrigins =
-  String(process.env.ALLOW_ALL_ORIGINS || "").toLowerCase() === "true" ||
-  process.env.NODE_ENV !== "production";
 
 const isAllowedOrigin = (origin) =>
-  allowAllOrigins ||
   !origin ||
   allowedOrigins.includes(origin) ||
   isLocalhostOrigin(origin) ||
   isVercelOrigin(origin);
 
-const setCorsHeaders = (req, res) => {
-  const origin = req.headers.origin;
-  if (!origin || !isAllowedOrigin(origin)) return false;
-
-  res.setHeader("Access-Control-Allow-Origin", origin);
-  res.setHeader("Vary", "Origin");
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-  res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, x-admin-username");
-  return true;
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (isAllowedOrigin(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS origin not allowed: ${origin}`));
+    }
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "x-admin-username"],
 };
 
-app.get("/.well-known/appspecific/com.chrome.devtools.json", (_req, res) => {
-  res.status(204).end();
-});
-
-app.get("/", (_req, res) => {
-  res.json({ status: "ok", service: "CCMS Backend", timestamp: new Date().toISOString() });
-});
-
-app.use((req, res, next) => {
-  setCorsHeaders(req, res);
-  if (req.method === "OPTIONS") {
-    return res.status(204).end();
-  }
-  next();
-});
+app.use(cors(corsOptions));
 app.use(express.json({
   strict: false,
   verify: (req, _res, buf) => {
@@ -209,56 +191,13 @@ app.use(
   })
 );
 
-app.post("/api/uploads/charters", upload.single("file"), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ message: "No file uploaded" });
-  }
-
-  res.status(201).json({
-    file_path: `/uploads/charters/${req.file.filename}`,
-    original_name: req.file.originalname,
-    mime_type: req.file.mimetype,
-    size: req.file.size,
-  });
+app.get("/.well-known/appspecific/com.chrome.devtools.json", (_req, res) => {
+  res.status(204).end();
 });
 
-app.post("/api/charters/:id/edited-pdfs", editedUpload.single("file"), async (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ message: "No file uploaded" });
-  }
-
-  const charterId = Number(req.params.id);
-  if (!charterId || Number.isNaN(charterId)) {
-    return res.status(400).json({ message: "Invalid charter id" });
-  }
-
-  const { submitted_name = "", submitted_email = "", notes = "" } = req.body || {};
-
-  const [charterRows] = await pool.query("SELECT id FROM charters WHERE id = ?", [charterId]);
-  if (!charterRows || charterRows.length === 0) {
-    return res.status(404).json({ message: "Charter not found" });
-  }
-
-  const insertSql = `INSERT INTO charter_pdf_edits
-      (charter_id, file_path, original_name, mime_type, size_bytes, submitted_name, submitted_email, notes)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
-
-  const [insertResult] = await pool.query(insertSql, [
-    charterId,
-    `/uploads/edited-charters/${req.file.filename}`,
-    req.file.originalname,
-    req.file.mimetype,
-    req.file.size,
-    submitted_name.trim() || null,
-    submitted_email.trim() || null,
-    notes.trim() || null,
-  ]);
-
-  const newId = insertResult?.insertId;
-  const [rows] = await pool.query("SELECT * FROM charter_pdf_edits WHERE id = ?", [newId]);
-  return res.status(201).json(rows[0]);
+app.get("/", (_req, res) => {
+  res.json({ status: "ok", service: "CCMS Backend", timestamp: new Date().toISOString() });
 });
-
 
 app.get("/api", (_req, res) => {
   res.json({
@@ -282,6 +221,61 @@ app.get("/api/health", (_req, res) => {
   res.json({ ok: true });
 });
 
+app.post("/api/uploads/charters", upload.single("file"), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ message: "No file uploaded" });
+  }
+
+  res.status(201).json({
+    file_path: `/uploads/charters/${req.file.filename}`,
+    original_name: req.file.originalname,
+    mime_type: req.file.mimetype,
+    size: req.file.size,
+  });
+});
+
+app.post("/api/charters/:id/edited-pdfs", editedUpload.single("file"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    const charterId = Number(req.params.id);
+    if (!charterId || Number.isNaN(charterId)) {
+      return res.status(400).json({ message: "Invalid charter id" });
+    }
+
+    const { submitted_name = "", submitted_email = "", notes = "" } = req.body || {};
+
+    const [charterRows] = await pool.query("SELECT id FROM charters WHERE id = ?", [charterId]);
+    if (!charterRows || charterRows.length === 0) {
+      return res.status(404).json({ message: "Charter not found" });
+    }
+
+    const insertSql = `INSERT INTO charter_pdf_edits
+        (charter_id, file_path, original_name, mime_type, size_bytes, submitted_name, submitted_email, notes)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+
+    const [insertResult] = await pool.query(insertSql, [
+      charterId,
+      `/uploads/edited-charters/${req.file.filename}`,
+      req.file.originalname,
+      req.file.mimetype,
+      req.file.size,
+      submitted_name.trim() || null,
+      submitted_email.trim() || null,
+      notes.trim() || null,
+    ]);
+
+    const newId = insertResult?.insertId;
+    const [rows] = await pool.query("SELECT * FROM charter_pdf_edits WHERE id = ?", [newId]);
+    return res.status(201).json(rows[0]);
+  } catch (error) {
+    console.error("edited-pdfs error:", error);
+    return res.status(500).json({ message: error?.message || "Failed to upload edited PDF" });
+  }
+});
+
 app.get("/api/admin/backup", async (_req, res) => {
   try {
     const filename = `backup_${new Date().toISOString().slice(0, 10)}.sql`;
@@ -294,12 +288,10 @@ app.get("/api/admin/backup", async (_req, res) => {
 
     const tables = (tablesRows || []).map((r) => r[tableKey]).filter(Boolean);
 
-    // Header
     res.write(`-- CCMS MySQL backup (${new Date().toISOString()})\n`);
     res.write(`-- Database: ${process.env.DB_NAME || "ccms_db"}\n\n`);
     res.write(`SET FOREIGN_KEY_CHECKS = 0;\n\n`);
 
-    // Schema
     for (const table of tables) {
       const [createRows] = await pool.query(`SHOW CREATE TABLE \`${table}\``);
       const createStmt = createRows?.[0]?.["Create Table"] || createRows?.[0]?.[Object.keys(createRows?.[0] || {})[1]];
@@ -307,7 +299,6 @@ app.get("/api/admin/backup", async (_req, res) => {
       res.write(`${createStmt};\n\n`);
     }
 
-    // Data
     for (const table of tables) {
       const [rows] = await pool.query(`SELECT * FROM \`${table}\``);
       if (!rows || rows.length === 0) continue;
@@ -327,7 +318,6 @@ app.get("/api/admin/backup", async (_req, res) => {
               const d = new Date(v);
               if (!isNaN(d.getTime())) return "'" + d.toISOString().slice(0,19).replace("T"," ") + "'";
             }
-            // Escape strings for SQL
             return `'${String(v).replace(/\\/g, "\\\\").replace(/'/g, "''")}'`;
           })
           .join(", ");
@@ -418,17 +408,14 @@ const restoreFromSql = async (sql) => {
     return statements;
   };
 
-  // 1) Primary approach: execute the full script at once (multipleStatements enabled in pool)
   try {
     await pool.query(sql);
     return { restoredMode: "bulk", restoredStatements: "unknown" };
   } catch (bulkError) {
-    // 2) Fallback: delimiter-aware splitting to avoid breaking procedures/triggers/etc.
     const fallbackError = bulkError;
 
     const statements = splitStatements(sql);
 
-    // Execute sequentially
     for (let i = 0; i < statements.length; i++) {
       const stmt = statements[i];
       const normalizedStmt = stmt.trim();
@@ -468,7 +455,6 @@ const restoreFromSql = async (sql) => {
       }
     }
 
-    // If fallback succeeded, return
     return { restoredMode: "fallback", restoredStatements: statements.length };
   }
 };
@@ -548,292 +534,392 @@ app.post("/api/admin/restore-sql", async (req, res) => {
 });
 
 app.get("/api/departments", async (_req, res) => {
-  const [rows] = await pool.query("SELECT * FROM departments ORDER BY id ASC");
-  res.json(rows);
+  try {
+    const [rows] = await pool.query("SELECT * FROM departments ORDER BY id ASC");
+    res.json(rows);
+  } catch (error) {
+    console.error("GET /api/departments error:", error);
+    res.status(500).json({ message: error?.message || "Failed to fetch departments" });
+  }
 });
 
 app.get("/api/departments/:id", async (req, res) => {
-  const [rows] = await pool.query("SELECT * FROM departments WHERE id = ?", [req.params.id]);
-  const department = rows[0];
-  if (!department) return res.status(404).json({ message: "Department not found" });
-  res.json(department);
+  try {
+    const [rows] = await pool.query("SELECT * FROM departments WHERE id = ?", [req.params.id]);
+    const department = rows[0];
+    if (!department) return res.status(404).json({ message: "Department not found" });
+    res.json(department);
+  } catch (error) {
+    console.error("GET /api/departments/:id error:", error);
+    res.status(500).json({ message: error?.message || "Failed to fetch department" });
+  }
 });
 
 app.post("/api/departments", async (req, res) => {
-  const { name, description = "" } = req.body || {};
-  if (!name?.trim()) return res.status(400).json({ message: "Department name is required" });
+  try {
+    const { name, description = "" } = req.body || {};
+    if (!name?.trim()) return res.status(400).json({ message: "Department name is required" });
 
-  const [insertResult] = await pool.query(
-    "INSERT INTO departments (name, description) VALUES (?, ?)",
-    [name.trim(), description.trim()]
-  );
-  const newId = insertResult?.insertId;
+    const [insertResult] = await pool.query(
+      "INSERT INTO departments (name, description) VALUES (?, ?)",
+      [name.trim(), description.trim()]
+    );
+    const newId = insertResult?.insertId;
 
-  const [rows] = await pool.query("SELECT * FROM departments WHERE id = ?", [newId]);
-  res.status(201).json(rows[0]);
+    const [rows] = await pool.query("SELECT * FROM departments WHERE id = ?", [newId]);
+    res.status(201).json(rows[0]);
+  } catch (error) {
+    console.error("POST /api/departments error:", error);
+    res.status(500).json({ message: error?.message || "Failed to create department" });
+  }
 });
 
 app.put("/api/departments/:id", async (req, res) => {
-  const { name, description = "" } = req.body || {};
-  if (!name?.trim()) return res.status(400).json({ message: "Department name is required" });
+  try {
+    const { name, description = "" } = req.body || {};
+    if (!name?.trim()) return res.status(400).json({ message: "Department name is required" });
 
-  const [updateResult] = await pool.query(
-    "UPDATE departments SET name = ?, description = ? WHERE id = ?",
-    [name.trim(), description.trim(), req.params.id]
-  );
+    const [updateResult] = await pool.query(
+      "UPDATE departments SET name = ?, description = ? WHERE id = ?",
+      [name.trim(), description.trim(), req.params.id]
+    );
 
-  if ((updateResult?.affectedRows || 0) === 0) {
-    return res.status(404).json({ message: "Department not found" });
+    if ((updateResult?.affectedRows || 0) === 0) {
+      return res.status(404).json({ message: "Department not found" });
+    }
+
+    const [rows] = await pool.query("SELECT * FROM departments WHERE id = ?", [req.params.id]);
+    res.json(rows[0]);
+  } catch (error) {
+    console.error("PUT /api/departments/:id error:", error);
+    res.status(500).json({ message: error?.message || "Failed to update department" });
   }
-
-  const [rows] = await pool.query("SELECT * FROM departments WHERE id = ?", [req.params.id]);
-  res.json(rows[0]);
 });
 
 app.delete("/api/departments/:id", async (req, res) => {
-  const [deleteResult] = await pool.query("DELETE FROM departments WHERE id = ?", [req.params.id]);
-  if ((deleteResult?.affectedRows || 0) === 0) return res.status(404).json({ message: "Department not found" });
-  res.status(204).send();
+  try {
+    const [deleteResult] = await pool.query("DELETE FROM departments WHERE id = ?", [req.params.id]);
+    if ((deleteResult?.affectedRows || 0) === 0) return res.status(404).json({ message: "Department not found" });
+    res.status(204).send();
+  } catch (error) {
+    console.error("DELETE /api/departments/:id error:", error);
+    res.status(500).json({ message: error?.message || "Failed to delete department" });
+  }
 });
 
 app.get("/api/charters", async (req, res) => {
-  const { departmentId } = req.query;
-  const conditions = [];
-  const params = [];
-  if (departmentId) {
-    params.push(departmentId);
-    conditions.push(`c.department_id = ?`);
+  try {
+    const { departmentId } = req.query;
+    const conditions = [];
+    const params = [];
+    if (departmentId) {
+      params.push(departmentId);
+      conditions.push(`c.department_id = ?`);
+    }
+    const where = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
+    const sql = `
+      SELECT c.*, e.submitted_name AS last_edited_by, e.created_at AS last_edited_at
+      FROM charters c
+      LEFT JOIN (
+        SELECT charter_id, submitted_name, created_at,
+               ROW_NUMBER() OVER (PARTITION BY charter_id ORDER BY created_at DESC) AS rn
+        FROM charter_pdf_edits
+      ) e ON e.charter_id = c.id AND e.rn = 1
+      ${where}
+      ORDER BY c.id ASC
+    `;
+    const [rows] = await pool.query(sql, params);
+    res.json(rows);
+  } catch (error) {
+    console.error("GET /api/charters error:", error);
+    res.status(500).json({ message: error?.message || "Failed to fetch charters" });
   }
-  const where = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
-  const sql = `
-    SELECT c.*, e.submitted_name AS last_edited_by, e.created_at AS last_edited_at
-    FROM charters c
-    LEFT JOIN (
-      SELECT charter_id, submitted_name, created_at,
-             ROW_NUMBER() OVER (PARTITION BY charter_id ORDER BY created_at DESC) AS rn
-      FROM charter_pdf_edits
-    ) e ON e.charter_id = c.id AND e.rn = 1
-    ${where}
-    ORDER BY c.id ASC
-  `;
-  const [rows] = await pool.query(sql, params);
-  res.json(rows);
 });
 
 app.get("/api/charters/:id", async (req, res) => {
-  const [rows] = await pool.query("SELECT * FROM charters WHERE id = ?", [req.params.id]);
-  const charter = rows[0];
-  if (!charter) return res.status(404).json({ message: "Charter not found" });
-  res.json(charter);
+  try {
+    const [rows] = await pool.query("SELECT * FROM charters WHERE id = ?", [req.params.id]);
+    const charter = rows[0];
+    if (!charter) return res.status(404).json({ message: "Charter not found" });
+    res.json(charter);
+  } catch (error) {
+    console.error("GET /api/charters/:id error:", error);
+    res.status(500).json({ message: error?.message || "Failed to fetch charter" });
+  }
 });
 
 app.post("/api/charters", async (req, res) => {
-  const { department_id, title, content, file_path = null } = req.body || {};
-  if (!department_id || !title?.trim() || !content?.trim()) {
-    return res.status(400).json({ message: "department_id, title, and content are required" });
+  try {
+    const { department_id, title, content, file_path = null } = req.body || {};
+    if (!department_id || !title?.trim() || !content?.trim()) {
+      return res.status(400).json({ message: "department_id, title, and content are required" });
+    }
+
+    const [insertResult] = await pool.query(
+      "INSERT INTO charters (department_id, title, content, file_path) VALUES (?, ?, ?, ?)",
+      [department_id, title.trim(), content.trim(), file_path]
+    );
+    const newId = insertResult?.insertId;
+
+    const [rows] = await pool.query("SELECT * FROM charters WHERE id = ?", [newId]);
+    res.status(201).json(rows[0]);
+  } catch (error) {
+    console.error("POST /api/charters error:", error);
+    res.status(500).json({ message: error?.message || "Failed to create charter" });
   }
-
-  const [insertResult] = await pool.query(
-    "INSERT INTO charters (department_id, title, content, file_path) VALUES (?, ?, ?, ?)",
-    [department_id, title.trim(), content.trim(), file_path]
-  );
-  const newId = insertResult?.insertId;
-
-  const [rows] = await pool.query("SELECT * FROM charters WHERE id = ?", [newId]);
-  res.status(201).json(rows[0]);
 });
 
 app.put("/api/charters/:id", async (req, res) => {
-  const { department_id, title, content, file_path = null } = req.body || {};
-  if (!department_id || !title?.trim() || !content?.trim()) {
-    return res.status(400).json({ message: "department_id, title, and content are required" });
+  try {
+    const { department_id, title, content, file_path = null } = req.body || {};
+    if (!department_id || !title?.trim() || !content?.trim()) {
+      return res.status(400).json({ message: "department_id, title, and content are required" });
+    }
+
+    const [updateResult] = await pool.query(
+      "UPDATE charters SET department_id = ?, title = ?, content = ?, file_path = ? WHERE id = ?",
+      [department_id, title.trim(), content.trim(), file_path, req.params.id]
+    );
+
+    if ((updateResult?.affectedRows || 0) === 0) {
+      return res.status(404).json({ message: "Charter not found" });
+    }
+
+    const [rows] = await pool.query("SELECT * FROM charters WHERE id = ?", [req.params.id]);
+    res.json(rows[0]);
+  } catch (error) {
+    console.error("PUT /api/charters/:id error:", error);
+    res.status(500).json({ message: error?.message || "Failed to update charter" });
   }
-
-  const [updateResult] = await pool.query(
-    "UPDATE charters SET department_id = ?, title = ?, content = ?, file_path = ? WHERE id = ?",
-    [department_id, title.trim(), content.trim(), file_path, req.params.id]
-  );
-
-  if ((updateResult?.affectedRows || 0) === 0) {
-    return res.status(404).json({ message: "Charter not found" });
-  }
-
-  const [rows] = await pool.query("SELECT * FROM charters WHERE id = ?", [req.params.id]);
-  res.json(rows[0]);
 });
 
 app.post("/api/charters/:id/attachment", upload.single("file"), async (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ message: "No file uploaded" });
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    const charterId = Number(req.params.id);
+    if (!charterId || Number.isNaN(charterId)) {
+      return res.status(400).json({ message: "Invalid charter id" });
+    }
+
+    const [charterRows] = await pool.query("SELECT id, file_path FROM charters WHERE id = ?", [charterId]);
+    if (charterRows.length === 0) {
+      return res.status(404).json({ message: "Charter not found" });
+    }
+
+    const oldFilePath = charterRows[0].file_path;
+    const newRelativePath = `/uploads/charters/${req.file.filename}`;
+
+    if (oldFilePath) {
+      const oldAbsolute = path.join(__dirname, "..", oldFilePath);
+      try {
+        if (fs.existsSync(oldAbsolute)) fs.unlinkSync(oldAbsolute);
+      } catch { /* ignore */ }
+    }
+
+    await pool.query("UPDATE charters SET file_path = ? WHERE id = ?", [newRelativePath, charterId]);
+
+    res.json({
+      file_path: newRelativePath,
+      original_name: req.file.originalname,
+      size: req.file.size,
+    });
+  } catch (error) {
+    console.error("POST /api/charters/:id/attachment error:", error);
+    res.status(500).json({ message: error?.message || "Failed to upload attachment" });
   }
-
-  const charterId = Number(req.params.id);
-  if (!charterId || Number.isNaN(charterId)) {
-    return res.status(400).json({ message: "Invalid charter id" });
-  }
-
-  const [charterRows] = await pool.query("SELECT id, file_path FROM charters WHERE id = ?", [charterId]);
-  if (charterRows.length === 0) {
-    return res.status(404).json({ message: "Charter not found" });
-  }
-
-  const oldFilePath = charterRows[0].file_path;
-  const newRelativePath = `/uploads/charters/${req.file.filename}`;
-
-  if (oldFilePath) {
-    const oldAbsolute = path.join(__dirname, "..", oldFilePath);
-    try {
-      if (fs.existsSync(oldAbsolute)) fs.unlinkSync(oldAbsolute);
-    } catch { /* ignore */ }
-  }
-
-  await pool.query("UPDATE charters SET file_path = ? WHERE id = ?", [newRelativePath, charterId]);
-
-  res.json({
-    file_path: newRelativePath,
-    original_name: req.file.originalname,
-    size: req.file.size,
-  });
 });
 
 app.post("/api/charters/:id/save-edit", editedUpload.single("file"), async (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ message: "No file uploaded" });
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    const charterId = Number(req.params.id);
+    if (!charterId || Number.isNaN(charterId)) {
+      return res.status(400).json({ message: "Invalid charter id" });
+    }
+
+    const [charterRows] = await pool.query("SELECT id FROM charters WHERE id = ?", [charterId]);
+    if (!charterRows || charterRows.length === 0) {
+      return res.status(404).json({ message: "Charter not found" });
+    }
+
+    const filePath = `/uploads/edited-charters/${req.file.filename}`;
+    const { editor_name = "" } = req.body || {};
+
+    await pool.query("UPDATE charters SET file_path = ? WHERE id = ?", [filePath, charterId]);
+
+    const insertSql = `INSERT INTO charter_pdf_edits
+        (charter_id, file_path, original_name, mime_type, size_bytes, submitted_name, submitted_email, notes)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+
+    await pool.query(insertSql, [
+      charterId,
+      filePath,
+      req.file.originalname,
+      req.file.mimetype,
+      req.file.size,
+      editor_name.trim() || null,
+      null,
+      "Admin edit",
+    ]);
+
+    res.json({ file_path: filePath });
+  } catch (error) {
+    console.error("POST /api/charters/:id/save-edit error:", error);
+    res.status(500).json({ message: error?.message || "Failed to save edit" });
   }
-
-  const charterId = Number(req.params.id);
-  if (!charterId || Number.isNaN(charterId)) {
-    return res.status(400).json({ message: "Invalid charter id" });
-  }
-
-  const [charterRows] = await pool.query("SELECT id FROM charters WHERE id = ?", [charterId]);
-  if (!charterRows || charterRows.length === 0) {
-    return res.status(404).json({ message: "Charter not found" });
-  }
-
-  const filePath = `/uploads/edited-charters/${req.file.filename}`;
-  const { editor_name = "" } = req.body || {};
-
-  await pool.query("UPDATE charters SET file_path = ? WHERE id = ?", [filePath, charterId]);
-
-  const insertSql = `INSERT INTO charter_pdf_edits
-      (charter_id, file_path, original_name, mime_type, size_bytes, submitted_name, submitted_email, notes)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
-
-  await pool.query(insertSql, [
-    charterId,
-    filePath,
-    req.file.originalname,
-    req.file.mimetype,
-    req.file.size,
-    editor_name.trim() || null,
-    null,
-    "Admin edit",
-  ]);
-
-  res.json({ file_path: filePath });
 });
 
 app.get("/api/charters/:id/edits", async (req, res) => {
-  const charterId = Number(req.params.id);
-  if (!charterId || Number.isNaN(charterId)) {
-    return res.status(400).json({ message: "Invalid charter id" });
-  }
+  try {
+    const charterId = Number(req.params.id);
+    if (!charterId || Number.isNaN(charterId)) {
+      return res.status(400).json({ message: "Invalid charter id" });
+    }
 
-  const [rows] = await pool.query(
-    "SELECT * FROM charter_pdf_edits WHERE charter_id = ? ORDER BY created_at DESC",
-    [charterId]
-  );
-  res.json(rows);
+    const [rows] = await pool.query(
+      "SELECT * FROM charter_pdf_edits WHERE charter_id = ? ORDER BY created_at DESC",
+      [charterId]
+    );
+    res.json(rows);
+  } catch (error) {
+    console.error("GET /api/charters/:id/edits error:", error);
+    res.status(500).json({ message: error?.message || "Failed to fetch edits" });
+  }
 });
 
 app.get("/api/edited-charters", async (_req, res) => {
-  const [rows] = await pool.query(
-    `SELECT e.*, c.title AS charter_title, d.name AS department_name
-     FROM charter_pdf_edits e
-     JOIN charters c ON c.id = e.charter_id
-     LEFT JOIN departments d ON d.id = c.department_id
-     ORDER BY e.created_at DESC`
-  );
-  res.json(rows);
+  try {
+    const [rows] = await pool.query(
+      `SELECT e.*, c.title AS charter_title, d.name AS department_name
+       FROM charter_pdf_edits e
+       JOIN charters c ON c.id = e.charter_id
+       LEFT JOIN departments d ON d.id = c.department_id
+       ORDER BY e.created_at DESC`
+    );
+    res.json(rows);
+  } catch (error) {
+    console.error("GET /api/edited-charters error:", error);
+    res.status(500).json({ message: error?.message || "Failed to fetch edited charters" });
+  }
 });
 
 app.delete("/api/charters/:id", async (req, res) => {
-  const [deleteResult] = await pool.query("DELETE FROM charters WHERE id = ?", [req.params.id]);
-  if ((deleteResult?.affectedRows || 0) === 0) return res.status(404).json({ message: "Charter not found" });
-  res.status(204).send();
+  try {
+    const [deleteResult] = await pool.query("DELETE FROM charters WHERE id = ?", [req.params.id]);
+    if ((deleteResult?.affectedRows || 0) === 0) return res.status(404).json({ message: "Charter not found" });
+    res.status(204).send();
+  } catch (error) {
+    console.error("DELETE /api/charters/:id error:", error);
+    res.status(500).json({ message: error?.message || "Failed to delete charter" });
+  }
 });
 
 app.get("/api/ratings", async (_req, res) => {
-  const [rows] = await pool.query("SELECT * FROM ratings ORDER BY created_at DESC, id DESC");
-  res.json(rows);
+  try {
+    const [rows] = await pool.query("SELECT * FROM ratings ORDER BY created_at DESC, id DESC");
+    res.json(rows);
+  } catch (error) {
+    console.error("GET /api/ratings error:", error);
+    res.status(500).json({ message: error?.message || "Failed to fetch ratings" });
+  }
 });
 
 app.get("/api/charters/:id/ratings", async (req, res) => {
-  const [rows] = await pool.query("SELECT * FROM ratings WHERE charter_id = ? ORDER BY id ASC", [req.params.id]);
-  res.json(rows);
+  try {
+    const [rows] = await pool.query("SELECT * FROM ratings WHERE charter_id = ? ORDER BY id ASC", [req.params.id]);
+    res.json(rows);
+  } catch (error) {
+    console.error("GET /api/charters/:id/ratings error:", error);
+    res.status(500).json({ message: error?.message || "Failed to fetch ratings" });
+  }
 });
 
 app.post("/api/charters/:id/ratings", async (req, res) => {
-  const { rating, comment = "" } = req.body || {};
-  const parsedRating = Number(rating);
-  if (!parsedRating || parsedRating < 1 || parsedRating > 5) {
-    return res.status(400).json({ message: "Rating must be between 1 and 5" });
+  try {
+    const { rating, comment = "" } = req.body || {};
+    const parsedRating = Number(rating);
+    if (!parsedRating || parsedRating < 1 || parsedRating > 5) {
+      return res.status(400).json({ message: "Rating must be between 1 and 5" });
+    }
+
+    const [insertResult] = await pool.query(
+      "INSERT INTO ratings (charter_id, rating, comment) VALUES (?, ?, ?)",
+      [req.params.id, parsedRating, comment.trim()]
+    );
+    const newId = insertResult?.insertId;
+
+    const [rows] = await pool.query("SELECT * FROM ratings WHERE id = ?", [newId]);
+    res.status(201).json(rows[0]);
+  } catch (error) {
+    console.error("POST /api/charters/:id/ratings error:", error);
+    res.status(500).json({ message: error?.message || "Failed to create rating" });
   }
-
-  const [insertResult] = await pool.query(
-    "INSERT INTO ratings (charter_id, rating, comment) VALUES (?, ?, ?)",
-    [req.params.id, parsedRating, comment.trim()]
-  );
-  const newId = insertResult?.insertId;
-
-  const [rows] = await pool.query("SELECT * FROM ratings WHERE id = ?", [newId]);
-  res.status(201).json(rows[0]);
 });
 
 app.get("/api/feedback", async (_req, res) => {
-  const [rows] = await pool.query(
-    "SELECT * FROM feedback_responses ORDER BY created_at DESC, id DESC"
-  );
-  res.json(rows);
+  try {
+    const [rows] = await pool.query(
+      "SELECT * FROM feedback_responses ORDER BY created_at DESC, id DESC"
+    );
+    res.json(rows);
+  } catch (error) {
+    console.error("GET /api/feedback error:", error);
+    res.status(500).json({ message: error?.message || "Failed to fetch feedback" });
+  }
 });
 
 app.get("/api/charters/:id/feedback", async (req, res) => {
-  const [rows] = await pool.query(
-    "SELECT * FROM feedback_responses WHERE charter_id = ? ORDER BY created_at DESC, id DESC",
-    [req.params.id]
-  );
-  res.json(rows);
+  try {
+    const [rows] = await pool.query(
+      "SELECT * FROM feedback_responses WHERE charter_id = ? ORDER BY created_at DESC, id DESC",
+      [req.params.id]
+    );
+    res.json(rows);
+  } catch (error) {
+    console.error("GET /api/charters/:id/feedback error:", error);
+    res.status(500).json({ message: error?.message || "Failed to fetch feedback" });
+  }
 });
 
 app.post("/api/charters/:id/feedback", async (req, res) => {
-  const {
-    name = "",
-    email = "",
-    contact = "",
-    rating,
-    comment = "",
-  } = req.body || {};
-  const parsedRating = Number(rating);
-  if (!parsedRating || parsedRating < 1 || parsedRating > 5) {
-    return res.status(400).json({ message: "Rating must be between 1 and 5" });
+  try {
+    const {
+      name = "",
+      email = "",
+      contact = "",
+      rating,
+      comment = "",
+    } = req.body || {};
+    const parsedRating = Number(rating);
+    if (!parsedRating || parsedRating < 1 || parsedRating > 5) {
+      return res.status(400).json({ message: "Rating must be between 1 and 5" });
+    }
+
+    const [insertResult] = await pool.query(
+      "INSERT INTO feedback_responses (charter_id, name, email, contact, rating, comment) VALUES (?, ?, ?, ?, ?, ?)",
+      [
+        req.params.id,
+        String(name).trim() || null,
+        String(email).trim() || null,
+        String(contact).trim() || null,
+        parsedRating,
+        String(comment).trim() || null,
+      ]
+    );
+
+    const newId = insertResult?.insertId;
+    const [rows] = await pool.query("SELECT * FROM feedback_responses WHERE id = ?", [newId]);
+    res.status(201).json(rows[0]);
+  } catch (error) {
+    console.error("POST /api/charters/:id/feedback error:", error);
+    res.status(500).json({ message: error?.message || "Failed to submit feedback" });
   }
-
-  const [insertResult] = await pool.query(
-    "INSERT INTO feedback_responses (charter_id, name, email, contact, rating, comment) VALUES (?, ?, ?, ?, ?, ?)",
-    [
-      req.params.id,
-      String(name).trim() || null,
-      String(email).trim() || null,
-      String(contact).trim() || null,
-      parsedRating,
-      String(comment).trim() || null,
-    ]
-  );
-
-  const newId = insertResult?.insertId;
-  const [rows] = await pool.query("SELECT * FROM feedback_responses WHERE id = ?", [newId]);
-  res.status(201).json(rows[0]);
 });
 
 app.post("/api/auth/login", async (req, res) => {
@@ -877,7 +963,8 @@ app.use((err, _req, res, next) => {
   }
   if (err) {
     console.error("Unhandled error:", err);
-    return res.status(500).json({ message: err.message || "Internal server error" });
+    const statusCode = err.statusCode || 500;
+    return res.status(statusCode).json({ message: err.message || "Internal server error" });
   }
   next();
 });
