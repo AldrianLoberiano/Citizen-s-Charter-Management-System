@@ -32,13 +32,8 @@ export function Home() {
   const [charters, setCharters] = useState<Charter[]>(getCharters());
 
   useEffect(() => {
-    const refresh = () => {
-      setDepartments(getDepartments());
-      setCharters(getCharters());
-    };
-    refresh();
-    const t = setInterval(refresh, 3000);
-    return () => clearInterval(t);
+    setDepartments(getDepartments());
+    setCharters(getCharters());
   }, []);
 
   const [now, setNow] = useState<Date>(new Date());
