@@ -1,6 +1,6 @@
-const isDev = import.meta.env.VITE_ENV === "development";
-const API_BASE = `${isDev ? (import.meta.env.VITE_DEV_BASE_URL || "http://localhost:4000") : (import.meta.env.VITE_PROD_BASE_URL || "")}/api`;
-export const FILE_BASE = isDev ? (import.meta.env.VITE_DEV_BASE_URL || "http://localhost:4000") : (import.meta.env.VITE_PROD_BASE_URL || "");
+const API_BASE = import.meta.env.VITE_API_URL;
+
+export const FILE_BASE = API_BASE.replace("/api", "");
 
 async function request(path: string, options?: RequestInit) {
   const rawUser = typeof window === "undefined" ? null : window.localStorage.getItem("ccms_auth_user");
