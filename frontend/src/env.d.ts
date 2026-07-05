@@ -1,9 +1,7 @@
 /// <reference types="vite/client" />
 
 declare interface ImportMetaEnv {
-  readonly VITE_ENV: "development" | "production";
-  readonly VITE_DEV_BASE_URL: string;
-  readonly VITE_PROD_BASE_URL: string;
+  readonly VITE_API_URL: string;
 
   readonly VITE_AUTH_LOGIN_ROUTE: string;
   readonly VITE_AUTH_LOGOUT_ROUTE: string;
