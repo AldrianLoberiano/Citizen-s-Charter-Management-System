@@ -271,6 +271,7 @@ app.get("/api", (_req, res) => {
       "/api/charters",
       "/api/ratings",
       "/api/feedback",
+      "/api/edited-charters",
 app.get("/api/health", (_req, res) => {
   res.json({ ok: true });
 });
