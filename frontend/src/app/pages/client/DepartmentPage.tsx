@@ -32,13 +32,7 @@ export function DepartmentPage() {
   }, []);
 
   const deptId = parseInt(id || "0");
-  const [, setTick] = useState(0);
   const department = getDepartmentById(deptId);
-
-  useEffect(() => {
-    const t = setInterval(() => setTick((t) => t + 1), 3000);
-    return () => clearInterval(t);
-  }, []);
 
   if (!department) {
     return <Navigate to="/" replace />;
