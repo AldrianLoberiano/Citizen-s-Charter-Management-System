@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./app/App.tsx";
 import "./styles/index.css";
-import { syncLocalCacheFromApi, startPolling, stopPolling } from "./app/store/apiSync";
+import { syncLocalCacheFromApi } from "./app/store/apiSync";
 
 function BootstrapApp() {
     const [ready, setReady] = useState(false);
@@ -11,9 +11,7 @@ function BootstrapApp() {
     useEffect(() => {
       syncLocalCacheFromApi().finally(() => {
         setReady(true);
-        startPolling(5000);
       });
-      return () => stopPolling();
     }, []);
 
     if (!ready) {
@@ -40,4 +38,3 @@ const root = globalScope.__ccmsRoot ?? createRoot(rootElement);
 globalScope.__ccmsRoot = root;
 
 root.render(<BootstrapApp />);
-  
