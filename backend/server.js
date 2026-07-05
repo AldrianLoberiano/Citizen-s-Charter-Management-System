@@ -266,6 +266,7 @@ app.get("/api", (_req, res) => {
     service: "CCMS API",
     timestamp: new Date().toISOString(),
     endpoints: [
+      "/api/health",
 app.get("/api/health", (_req, res) => {
   res.json({ ok: true });
 });
