@@ -35,21 +35,15 @@ export function CharterDetail() {
   const charterId = parseInt(id || "0");
 
   const charter = getCharterById(charterId);
-  const [tick, setTick] = useState(0);
   const [feedbackEntries, setFeedbackEntries] = useState<FeedbackEntry[]>(
     getCombinedFeedbackByCharter(charterId)
   );
   const [avgRating, setAvgRating] = useState(getAverageRating(charterId));
 
   useEffect(() => {
-    const t = setInterval(() => setTick((t) => t + 1), 3000);
-    return () => clearInterval(t);
-  }, []);
-
-  useEffect(() => {
     setFeedbackEntries(getCombinedFeedbackByCharter(charterId));
     setAvgRating(getAverageRating(charterId));
-  }, [tick, charterId]);
+  }, [charterId]);
 
   const [hoverStar, setHoverStar] = useState(0);
   const [selectedStar, setSelectedStar] = useState(0);
