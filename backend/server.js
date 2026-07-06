@@ -1015,10 +1015,7 @@ const cleanupEditedCharters = async () => {
   }
 };
 
-const CLEANUP_INTERVAL_MS = Number(process.env.CLEANUP_INTERVAL_HOURS || 24) * 60 * 60 * 1000;
 
-setInterval(cleanupEditedCharters, CLEANUP_INTERVAL_MS);
-cleanupEditedCharters();
 
 app.listen(port, () => {
   console.log(`CCMS backend listening on http://localhost:${port}`);
