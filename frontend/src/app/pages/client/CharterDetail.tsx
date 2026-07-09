@@ -317,7 +317,7 @@ export function CharterDetail() {
                 {fileStatus === "available" && viewerType === "docx" && (
                   <DocxViewer
                     fileUrl={resolvedAttachmentUrl}
-                    fileName={attachmentUrl.split("/").pop() || "document.docx"}
+                    fileName="Document"
                     editable={false}
                     className="h-[720px] rounded-lg border border-slate-200 dark:border-slate-600 bg-white"
                   />
