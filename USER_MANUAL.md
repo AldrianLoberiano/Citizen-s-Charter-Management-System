@@ -76,7 +76,7 @@ After logging in, you will see the admin dashboard with a top navigation bar con
 | **Dashboard** | Overview statistics and recent activity |
 | **Departments** | Manage government departments |
 | **Charters** | Manage service charters |
-| **Edited Charters** | View all edited charter documents |
+| **Edited Charters** | View and delete edited charter documents |
 | **Feedback** | View feedback analytics and responses |
 | **Backup** | Database backup and recovery tools |
 
@@ -96,12 +96,13 @@ Click the **sun/moon icon** in the admin header to toggle between light and dark
 
 The home page is the main landing page for citizens. It includes:
 
-- **Header**: Municipality banner with official logos and navigation.
-- **Hero Section**: Welcome message with the current date and time.
+- **Header**: Municipality banner with official logos (ARTA, Calauan, Bagong Pilipinas), date/time display, and navigation.
+- **Hero Section**: Welcome message with department search bar.
 - **Department Grid**: Clickable cards for each department with search functionality.
 - **Statistics Banner**: Displays the total number of departments and charters.
 - **Logo Carousel**: Scrolling display of department logos.
 - **How to Use**: Step-by-step guide for citizens.
+- **Feedback and Complaints**: Information on how to submit feedback and file complaints.
 - **Footer**: Contact information, map link, email, and social media.
 
 **To find a department**:
@@ -143,6 +144,43 @@ The charter detail page provides complete information about a specific service c
 
 **QR Code**:
 A QR code is displayed on the charter page. Scanning it with a mobile device takes you directly to the feedback form for that charter.
+
+### 3.4 Feedback and Complaints Section
+
+The home page includes a dedicated section for feedback and complaints mechanisms:
+
+**How to Send Feedback**:
+- Answer the **Client Satisfaction Measurement Form** and drop it at the designated drop box in the Public Information Desk or in front of offices.
+- Contact for inquiries: (0917) 154 4318 or Calauanlaguna.hrmo@gmail.com
+
+**How Feedback is Processed**:
+1. Every Friday, the Designated Officer opens the drop box, compiles, and records all feedback.
+2. Feedback requiring answers are endorsed to the relevant offices (response within 3 days).
+3. The answer of the office concerned is relayed to the citizen.
+4. Comments/suggestions are sent to office concerns for proper action.
+
+**How to File a Complaint**:
+- Answer the **Client Complaint Form** and drop it at the designated drop box in front of the Public Information Desk.
+- Complaints can also be filed via telephone and e-mail.
+- Required information:
+  - Name of person being complained
+  - Incident
+  - Evidence
+  - Name and contact number of complainant
+- Contact for complaints: (0917) 154 4318 or Calauanlaguna.hrmo@gmail.com
+
+**How Complaints are Processed**:
+1. The Designated Officer collates complaints daily and evaluates each.
+2. Barangay concerns are forwarded to Barangay Captains for compliance.
+3. Municipal employee complaints: HRMO calls for explanation within 24 hours.
+4. If necessary, forwarded to Investigation Committee for further investigation.
+5. Recommendation rendered to the Disciplining Authority for decision.
+
+**Other Contact Information**:
+- **LPAO** (Legal and Public Assistance Office): (02) 8478-5099
+- **ARTA** (Anti-Red Tape Authority): (02) 8246-7940, complaints@arta.gov.ph
+- **Presidential Complaints Center**: (02) 8736-8645 / 8736-8603, pcc@malacanang.gov.ph
+- **Contact Center ng Bayan (CCB)**: (0908) 881-6565 / 1-6565
 
 ---
 
@@ -268,6 +306,22 @@ Each charter maintains a complete edit history. To view it:
 1. Open the charter in the viewer/editor.
 2. The edit history panel shows all previously saved versions.
 3. Each entry displays the editor name, date, and file metadata.
+
+### 6.7 Edited Charters Page
+
+Navigate to **Edited Charters** from the admin navigation bar to view all edited charter documents across all departments.
+
+**Features**:
+- **Search**: Filter by charter name or department.
+- **Pagination**: Shows 50 items at a time. Click **Show More** to load additional items.
+- **Delete Button**: Remove edited charter versions with confirmation popup.
+
+**To delete an edited charter**:
+1. Click the **trash icon** next to the edited charter you want to remove.
+2. A confirmation modal appears showing the charter title and filename.
+3. Click **Delete** to confirm, or **Cancel** to abort.
+
+> **Note**: Deleting an edited charter removes both the file and the database record. The original charter file is not affected.
 
 ---
 
@@ -458,6 +512,15 @@ mysqldump -u root -p ccms_db > backup_ccms_db.sql
 ```bash
 mysql -u root -p ccms_db < backup_ccms_db.sql
 ```
+
+### 9.5 Edited Charters Retention
+
+Edited charter documents are retained indefinitely. They will not be automatically deleted. To remove old edited versions:
+
+1. Navigate to **Edited Charters** from the admin navigation bar.
+2. Use the search bar to find the charter you want to remove.
+3. Click the **trash icon** next to the edited version.
+4. Confirm the deletion in the popup modal.
 
 ---
 
