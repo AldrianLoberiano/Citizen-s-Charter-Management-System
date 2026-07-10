@@ -219,8 +219,8 @@ export function Dashboard() {
         <h2 className="mb-4 text-sm font-semibold text-slate-900 dark:text-white">Quick Links</h2>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           <Link to="/admin/departments" className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4 transition hover:border-slate-300 hover:shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/50">
-              <Building2 className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+            <div className="flex h-9 w-9 items-center justify-center">
+              <Building2 className="h-4 w-4 text-black dark:text-white" />
             </div>
             <div>
               <p className="text-sm font-medium text-slate-900 dark:text-white">Departments</p>
@@ -228,8 +228,8 @@ export function Dashboard() {
             </div>
           </Link>
           <Link to="/admin/charters" className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4 transition hover:border-slate-300 hover:shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-900/50">
-              <FileText className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+            <div className="flex h-9 w-9 items-center justify-center">
+              <FileText className="h-4 w-4 text-black dark:text-white" />
             </div>
             <div>
               <p className="text-sm font-medium text-slate-900 dark:text-white">Charters</p>
@@ -237,8 +237,8 @@ export function Dashboard() {
             </div>
           </Link>
           <Link to="/admin/feedback" className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4 transition hover:border-slate-300 hover:shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-purple-100 dark:bg-purple-900/50">
-              <Star className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+            <div className="flex h-9 w-9 items-center justify-center">
+              <Star className="h-4 w-4 text-black dark:text-white" />
             </div>
             <div>
               <p className="text-sm font-medium text-slate-900 dark:text-white">Feedback</p>
@@ -246,8 +246,8 @@ export function Dashboard() {
             </div>
           </Link>
           <Link to="/admin/backup" className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4 transition hover:border-slate-300 hover:shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-100 dark:bg-amber-900/50">
-              <Database className="h-4 w-5 text-amber-600 dark:text-amber-400" />
+            <div className="flex h-9 w-9 items-center justify-center">
+              <Database className="h-4 w-5 text-black dark:text-white" />
             </div>
             <div>
               <p className="text-sm font-medium text-slate-900 dark:text-white">Backup</p>
