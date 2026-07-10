@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import { Link, useParams, Navigate } from "react-router";
 import {
   ChevronRight,
-  Building2,
   FileText,
   Paperclip,
   Clock,
