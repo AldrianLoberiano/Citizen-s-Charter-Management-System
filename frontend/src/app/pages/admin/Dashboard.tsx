@@ -50,8 +50,6 @@ export function Dashboard() {
       label: "Total Departments",
       value: departments.length,
       icon: Building2,
-      color: "text-blue-600 dark:text-blue-400",
-      bg: "bg-blue-50 dark:bg-blue-950/50",
       link: "/admin/departments",
       detail: `${departments.length} registered`,
       change: "Government units",
@@ -60,8 +58,6 @@ export function Dashboard() {
       label: "Total Charters",
       value: charters.length,
       icon: FileText,
-      color: "text-emerald-600 dark:text-emerald-400",
-      bg: "bg-emerald-50 dark:bg-emerald-950/50",
       link: "/admin/charters",
       detail: `${charters.length} published`,
       change: "Active services",
@@ -70,8 +66,6 @@ export function Dashboard() {
       label: "With Attachments",
       value: attachmentCount,
       icon: Paperclip,
-      color: "text-amber-600 dark:text-amber-400",
-      bg: "bg-amber-50 dark:bg-amber-950/50",
       link: "/admin/charters",
       detail: `${attachmentPct}% of charters`,
       change: "Have PDF files",
@@ -80,8 +74,6 @@ export function Dashboard() {
       label: "Total Feedback",
       value: feedback.length,
       icon: Star,
-      color: "text-purple-600 dark:text-purple-400",
-      bg: "bg-purple-50 dark:bg-purple-950/50",
       link: "/admin/feedback",
       detail: `${feedbackPct}% response rate`,
       change: "Citizen reviews",
@@ -117,8 +109,8 @@ export function Dashboard() {
             key={stat.label}
             className="group relative rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900"
           >
-            <div className={`absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-lg ${stat.bg} transition-transform group-hover:scale-110`}>
-              <stat.icon className={`h-4 w-4 ${stat.color}`} />
+            <div className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center transition-transform group-hover:scale-110">
+              <stat.icon className="h-4 w-4 text-black dark:text-white" />
             </div>
             <div className="min-w-0 pr-10">
               <p className="text-xs font-medium text-slate-500 dark:text-slate-400">{stat.label}</p>
