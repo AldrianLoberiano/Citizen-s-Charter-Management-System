@@ -87,66 +87,67 @@ export function Home() {
     <div>
       {/* Hero Section */}
       <section className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
-        <div className="relative mx-auto w-full px-6 py-16 sm:px-10 sm:py-20 lg:px-16">
-          <div className="max-w-3xl">
-            <div className="mb-3 -mt-2">
-              <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-1 text-sm text-slate-700 dark:text-slate-300">
-                <Shield className="h-4 w-4" />
-                <span>Official Government Service Directory</span>
+        <div className="mx-auto w-full px-6 py-16 sm:px-10 sm:py-20 lg:px-16">
+          <div className="flex flex-col items-center gap-8 md:flex-row md:items-center md:justify-between">
+            <div className="max-w-2xl">
+              <div className="mb-3 -mt-2">
+                <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-1 text-sm text-slate-700 dark:text-slate-300">
+                  <Shield className="h-4 w-4" />
+                  <span>Official Government Service Directory</span>
+                </div>
               </div>
-            </div>
-            <div className="mb-4 flex flex-wrap items-center gap-3">
-              <h1 className="text-3xl leading-tight text-slate-950 dark:text-white sm:text-4xl">
-                Calauan Citizen's Charter
-              </h1>
-            </div>
-            <p className="mb-8 max-w-2xl text-base leading-relaxed text-slate-600 dark:text-slate-400">
-              Access information on government services, requirements, processing
-              times, and fees. Our Citizen's Charter ensures transparency and
-              accountability in public service delivery.
-            </p>
+              <div className="mb-4">
+                <h1 className="text-3xl leading-tight text-slate-950 dark:text-white sm:text-4xl">
+                  Calauan Citizen's Charter
+                </h1>
+              </div>
+              <p className="mb-8 max-w-2xl text-base leading-relaxed text-slate-600 dark:text-slate-400">
+                Access information on government services, requirements, processing
+                times, and fees. Our Citizen's Charter ensures transparency and
+                accountability in public service delivery.
+              </p>
 
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-              <div className="relative w-full max-w-lg">
-                <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-                <input
-                  type="text"
-                  placeholder="Search departments or services..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="w-full rounded-2xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-12 py-3.5 text-slate-800 dark:text-white shadow-sm placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-300 dark:focus:ring-slate-500"
-                />
-                {search && (
-                  <button
-                    onClick={() => setSearch("")}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 transition-colors hover:text-slate-600 dark:hover:text-slate-200"
-                  >
-                    &times;
-                  </button>
-                )}
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <div className="relative w-full max-w-lg">
+                  <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type="text"
+                    placeholder="Search departments or services..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="w-full rounded-2xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-12 py-3.5 text-slate-800 dark:text-white shadow-sm placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-300 dark:focus:ring-slate-500"
+                  />
+                  {search && (
+                    <button
+                      onClick={() => setSearch("")}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 transition-colors hover:text-slate-600 dark:hover:text-slate-200"
+                    >
+                      &times;
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-          <div className="mt-8 flex flex-col items-center gap-2 sm:absolute sm:right-4 sm:top-20 sm:mt-0">
-            <div className="flex items-center justify-center gap-1 sm:gap-2">
+
+            <div className="flex items-center justify-center gap-3 md:gap-4">
               <img
                 src={artaLogoSrc}
                 alt="ARTA logo"
-                className="h-10 w-10 object-contain sm:h-12 sm:w-12 md:h-[200px] md:w-[200px]"
+                className="h-16 w-16 object-contain sm:h-20 sm:w-20 md:h-[180px] md:w-[180px]"
                 loading="lazy"
                 decoding="async"
               />
               <img
                 src={calauanLogo2Src}
                 alt="Calauan logo"
-                className="h-8 w-8 object-contain sm:h-10 sm:w-10 md:h-[160px] md:w-[160px]"
+                className="h-14 w-14 object-contain sm:h-16 sm:w-16 md:h-[150px] md:w-[150px]"
                 loading="lazy"
                 decoding="async"
               />
               <img
                 src={bagongPilipinasLogoSrc}
                 alt="Bagong Pilipinas logo"
-                className="h-8 w-8 object-contain sm:h-10 sm:w-10 md:h-[160px] md:w-[160px]"
+                className="h-14 w-14 object-contain sm:h-16 sm:w-16 md:h-[150px] md:w-[150px]"
                 loading="lazy"
                 decoding="async"
               />
@@ -352,7 +353,7 @@ export function Home() {
             {/* Feedback */}
             <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
               <div className="mb-5 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400">
+                <div className="flex h-10 w-10 items-center justify-center text-black dark:text-white">
                   <MessageSquare className="h-5 w-5" />
                 </div>
                 <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
@@ -399,7 +400,7 @@ export function Home() {
             {/* Complaints */}
             <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
               <div className="mb-5 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400">
+                <div className="flex h-10 w-10 items-center justify-center text-black dark:text-white">
                   <AlertTriangle className="h-5 w-5" />
                 </div>
                 <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
