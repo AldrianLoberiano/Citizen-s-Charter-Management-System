@@ -148,7 +148,7 @@ export function ClientLayout() {
               </div>
             </div>
           </Link>
-          <div className="hidden sm:inline-flex shrink-0 items-center rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs text-white shadow-sm backdrop-blur-sm">
+          <div className="inline-flex shrink-0 items-center rounded-full border border-white/20 bg-white/10 px-2 py-1 text-[10px] text-white shadow-sm backdrop-blur-sm sm:px-4 sm:py-1.5 sm:text-xs">
             {formattedDate} – {formattedTime}
           </div>
 
