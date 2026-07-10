@@ -15,7 +15,6 @@ import {
   Paperclip,
   X,
   Filter,
-  Download,
   User,
   CircleCheck,
 } from "lucide-react";
@@ -185,13 +184,6 @@ export function Charters() {
     setViewerCharterId(null);
     setViewerSuccess(false);
   };
-
-  const handleOpenExternal = useCallback(() => {
-    if (viewerFilePath) {
-      const url = resolveFileUrl(viewerFilePath);
-      window.open(url, "_blank");
-    }
-  }, [viewerFilePath]);
 
   const openViewer = async (filePath: string, charterId?: number) => {
     setEditorName("");
