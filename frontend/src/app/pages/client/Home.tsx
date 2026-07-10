@@ -128,25 +128,25 @@ export function Home() {
             </div>
           </div>
           <div className="mt-8 flex flex-col items-center gap-2 sm:absolute sm:right-4 sm:top-20 sm:mt-0">
-            <div className="flex items-center justify-center gap-2">
+            <div className="flex items-center justify-center gap-1 sm:gap-2">
               <img
                 src={artaLogoSrc}
                 alt="ARTA logo"
-                className="h-16 w-16 object-contain md:h-[200px] md:w-[200px]"
+                className="h-10 w-10 object-contain sm:h-12 sm:w-12 md:h-[200px] md:w-[200px]"
                 loading="lazy"
                 decoding="async"
               />
               <img
                 src={calauanLogo2Src}
                 alt="Calauan logo"
-                className="h-12 w-12 object-contain md:h-[160px] md:w-[160px]"
+                className="h-8 w-8 object-contain sm:h-10 sm:w-10 md:h-[160px] md:w-[160px]"
                 loading="lazy"
                 decoding="async"
               />
               <img
                 src={bagongPilipinasLogoSrc}
                 alt="Bagong Pilipinas logo"
-                className="h-12 w-12 object-contain md:h-[160px] md:w-[160px]"
+                className="h-8 w-8 object-contain sm:h-10 sm:w-10 md:h-[160px] md:w-[160px]"
                 loading="lazy"
                 decoding="async"
               />
