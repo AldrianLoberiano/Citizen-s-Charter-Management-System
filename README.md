@@ -24,12 +24,16 @@ A full-stack web application for publishing citizen service charters by departme
 ### Citizen Portal (Client-Facing)
 
 - **Home Page** (`/`)
-  - Hero section with municipality header banner and welcome message.
-  - Live clock display with date.
+  - Hero section with ARTA, Calauan, and Bagong Pilipinas logos side by side with welcome message.
   - Department grid with search and clickable cards.
   - Statistics banner showing department and charter counts.
   - Infinite-scrolling logo carousel of department logos.
   - "How to Use" guide section for citizens.
+  - **Feedback and Complaints** section with:
+    - How to send feedback (Client Satisfaction Measurement Form).
+    - How to file a complaint (Client Complaint Form with required details).
+    - Contact information for inquiries and complaints.
+    - External contact information (LPAO, ARTA, Presidential Complaints Center, Contact Center ng Bayan).
 
 - **Department Page** (`/department/:id`)
   - Lists all published charters for the selected department.
@@ -89,6 +93,8 @@ A full-stack web application for publishing citizen service charters by departme
   - Centralized view of all edited charter documents.
   - Search by charter name or department.
   - Open or download any edited version.
+  - **Delete button** with modal confirmation popup.
+  - **Pagination**: Shows 50 items at a time with "Show More" button.
 
 - **Feedback Management** (`/admin/feedback`)
   - Filters: by department, charter, and star rating.
@@ -267,6 +273,7 @@ Citizen's Charter Management System/
 | `POST` | `/api/charters/:id/edited-pdfs` | Submit edited PDF with metadata |
 | `GET` | `/api/charters/:id/edits` | Get edit history for a charter |
 | `GET` | `/api/edited-charters` | List all edited charters |
+| `DELETE` | `/api/edited-charters/:id` | Delete an edited charter (file + record) |
 
 ### Ratings and Feedback
 
