@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Search, FileText, User, Trash2 } from "lucide-react";
-import { api, FILE_BASE } from "../../lib/api";
+import { api } from "../../lib/api";
 import { Modal } from "../../components/Modal";
 
 const PAGE_SIZE = 50;
