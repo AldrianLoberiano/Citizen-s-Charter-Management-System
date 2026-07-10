@@ -29,6 +29,7 @@ import LogoLoop from "../../components/LogoLoop";
 
 const bagongPilipinasLogoSrc = "/images/header/Bagong_Pilipinas_logo.png";
 const calauanLogo2Src = "/images/header/calauan_logo2.png";
+const artaLogoSrc = "/images/header/ARTA_logo.svg";
 const lightVioletBgSrc = "/images/header/lightviolet.png";
 
 export function Home() {
@@ -131,6 +132,13 @@ export function Home() {
               {formattedDate} – {formattedTime}
             </div>
             <div className="flex items-center justify-center gap-2">
+              <img
+                src={artaLogoSrc}
+                alt="ARTA logo"
+                className="h-12 w-12 object-contain md:h-[160px] md:w-[160px]"
+                loading="lazy"
+                decoding="async"
+              />
               <img
                 src={calauanLogo2Src}
                 alt="Calauan logo"
