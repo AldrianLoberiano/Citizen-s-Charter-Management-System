@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { Search, FileText, User } from "lucide-react";
-import { api } from "../../lib/api";
+import { Search, FileText, User, Trash2 } from "lucide-react";
+import { api, FILE_BASE } from "../../lib/api";
+import { Modal } from "../../components/Modal";
 
 interface EditedCharter {
   id: number;
@@ -20,6 +21,8 @@ export function EditedCharters() {
   const [edits, setEdits] = useState<EditedCharter[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState<EditedCharter | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     api.getAllEditedCharters()
@@ -32,6 +35,22 @@ export function EditedCharters() {
     e.charter_title.toLowerCase().includes(search.toLowerCase()) ||
     (e.department_name || "").toLowerCase().includes(search.toLowerCase())
   );
+
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    try {
+      const API_BASE = import.meta.env.VITE_API_URL;
+      const res = await fetch(`${API_BASE}/edited-charters/${deleteTarget.id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed to delete");
+      setEdits((prev) => prev.filter((e) => e.id !== deleteTarget.id));
+      setDeleteTarget(null);
+    } catch {
+      alert("Failed to delete edited charter.");
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -81,7 +100,7 @@ export function EditedCharters() {
                   <th className="text-left px-5 py-3 text-slate-500 text-xs uppercase tracking-wide hidden lg:table-cell">File</th>
                   <th className="text-left px-5 py-3 text-slate-500 text-xs uppercase tracking-wide hidden lg:table-cell">Size</th>
                   <th className="text-left px-5 py-3 text-slate-500 text-xs uppercase tracking-wide">Date</th>
-
+                  <th className="text-left px-5 py-3 text-slate-500 text-xs uppercase tracking-wide">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
@@ -113,6 +132,15 @@ export function EditedCharters() {
                     <td className="px-5 py-4 text-sm text-slate-600 dark:text-slate-400">
                       {new Date(edit.created_at).toLocaleString()}
                     </td>
+                    <td className="px-5 py-4">
+                      <button
+                        onClick={() => setDeleteTarget(edit)}
+                        className="text-slate-600 hover:text-red-600 transition-colors dark:text-slate-400 dark:hover:text-red-400"
+                        title="Delete"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -120,6 +148,42 @@ export function EditedCharters() {
           </div>
         )}
       </div>
+
+      <Modal
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        title="Delete Edited Charter"
+        size="sm"
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-slate-600 dark:text-slate-300">
+            Are you sure you want to delete this edited charter?
+          </p>
+          {deleteTarget && (
+            <div className="rounded-lg bg-slate-50 dark:bg-slate-800 p-3 text-sm">
+              <p className="font-medium text-slate-900 dark:text-white">{deleteTarget.charter_title}</p>
+              <p className="text-slate-500 dark:text-slate-400 text-xs mt-1">{deleteTarget.original_name}</p>
+            </div>
+          )}
+          <div className="flex justify-end gap-2">
+            <button
+              type="button"
+              onClick={() => setDeleteTarget(null)}
+              className="rounded-lg border border-slate-200 dark:border-slate-600 px-3 py-1.5 text-xs text-slate-700 dark:text-slate-300 transition-colors hover:border-slate-300 dark:hover:border-slate-500 hover:text-slate-900 dark:hover:text-white"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handleDelete}
+              disabled={deleting}
+              className="rounded-lg bg-red-600 px-3 py-1.5 text-xs text-white transition-colors hover:bg-red-700 disabled:opacity-50"
+            >
+              {deleting ? "Deleting..." : "Delete"}
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
