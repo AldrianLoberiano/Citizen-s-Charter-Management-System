@@ -47,20 +47,6 @@ export function Home() {
     return () => clearInterval(t);
   }, []);
 
-  const [now, setNow] = useState<Date>(new Date());
-  useEffect(() => {
-    const t = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(t);
-  }, []);
-
-  const formattedDate = now.toLocaleDateString(undefined, {
-    weekday: "short",
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-  const formattedTime = now.toLocaleTimeString();
-
   const filtered = useMemo(
     () =>
       departments.filter(
