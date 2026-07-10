@@ -13,7 +13,6 @@ import {
   ChevronRight,
   Clock,
   Star,
-  ArrowRight,
 } from "lucide-react";
 import {
   getDepartments,
