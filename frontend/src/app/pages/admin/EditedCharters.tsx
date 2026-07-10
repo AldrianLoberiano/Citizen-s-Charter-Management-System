@@ -3,6 +3,8 @@ import { Search, FileText, User, Trash2 } from "lucide-react";
 import { api, FILE_BASE } from "../../lib/api";
 import { Modal } from "../../components/Modal";
 
+const PAGE_SIZE = 50;
+
 interface EditedCharter {
   id: number;
   charter_id: number;
@@ -23,6 +25,7 @@ export function EditedCharters() {
   const [search, setSearch] = useState("");
   const [deleteTarget, setDeleteTarget] = useState<EditedCharter | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   useEffect(() => {
     api.getAllEditedCharters()
@@ -35,6 +38,13 @@ export function EditedCharters() {
     e.charter_title.toLowerCase().includes(search.toLowerCase()) ||
     (e.department_name || "").toLowerCase().includes(search.toLowerCase())
   );
+
+  const visibleEdits = filtered.slice(0, visibleCount);
+  const hasMore = visibleCount < filtered.length;
+
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [search]);
 
   const handleDelete = async () => {
     if (!deleteTarget) return;
@@ -63,6 +73,7 @@ export function EditedCharters() {
             <h1 className="text-slate-900 dark:text-white">Edited Charters</h1>
             <p className="text-slate-600 dark:text-slate-300 text-sm mt-1">
               {edits.length} edit{edits.length !== 1 ? "s" : ""} saved
+              {search && ` · ${filtered.length} result${filtered.length !== 1 ? "s" : ""}`}
             </p>
           </div>
         </div>
@@ -93,6 +104,7 @@ export function EditedCharters() {
             <p className="text-sm">No edited charters found.</p>
           </div>
         ) : (
+          <>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -107,7 +119,7 @@ export function EditedCharters() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
-                {filtered.map((edit) => (
+                {visibleEdits.map((edit) => (
                   <tr key={edit.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                     <td className="px-5 py-4">
                       <p className="text-sm font-medium text-slate-800 dark:text-slate-200">{edit.charter_title}</p>
@@ -149,6 +161,18 @@ export function EditedCharters() {
               </tbody>
             </table>
           </div>
+
+          {hasMore && (
+            <div className="border-t border-slate-200 dark:border-slate-700 px-5 py-3 text-center">
+              <button
+                onClick={() => setVisibleCount((prev) => prev + PAGE_SIZE)}
+                className="text-sm text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"
+              >
+                Show More ({visibleCount} of {filtered.length})
+              </button>
+            </div>
+          )}
+          </>
         )}
       </div>
 
