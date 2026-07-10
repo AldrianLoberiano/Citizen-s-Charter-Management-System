@@ -124,20 +124,6 @@ const uploadSqlBackup = (req, res) =>
     });
   });
 
-const getDbArgs = () => {
-  const dbHost = process.env.DB_HOST || "trolley.proxy.rlwy.net";
-  const dbPort = process.env.DB_PORT || "36162";
-  const dbUser = process.env.DB_USER || "root";
-  const dbPassword = process.env.DB_PASSWORD || "CasxHSDTXeuqhULHAPvDleqsESCgnxYE";
-  const dbName = process.env.DB_NAME || "ccms_db";
-
-  const baseArgs = ["--host", dbHost, "--port", String(dbPort), "--user", dbUser];
-  if (dbPassword) {
-    baseArgs.push(`--password=${dbPassword}`);
-  }
-  return { baseArgs, dbName, dbUser, dbPassword };
-};
-
 const isLocalhostOrigin = (origin) =>
   /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
 const isVercelOrigin = (origin) => /^https:\/\/.*\.vercel\.app$/.test(origin);
@@ -984,7 +970,7 @@ app.post("/api/auth/login", async (req, res) => {
   }
 });
 
-app.use((err, _req, res, next) => {
+app.use((err, _req, res, _next) => {
   if (err instanceof multer.MulterError) {
     if (err.code === "LIMIT_FILE_SIZE") {
       return res.status(400).json({ message: "File too large. Maximum size is 5MB." });
@@ -996,7 +982,6 @@ app.use((err, _req, res, next) => {
     const statusCode = err.statusCode || 500;
     return res.status(statusCode).json({ message: err.message || "Internal server error" });
   }
-  next();
 });
 
 
