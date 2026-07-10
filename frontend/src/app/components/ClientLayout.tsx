@@ -16,6 +16,20 @@ export function ClientLayout() {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [assistantVisible, setAssistantVisible] = useState(true);
+  const [now, setNow] = useState<Date>(new Date());
+
+  useEffect(() => {
+    const t = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(t);
+  }, []);
+
+  const formattedDate = now.toLocaleDateString(undefined, {
+    weekday: "short",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+  const formattedTime = now.toLocaleTimeString();
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
@@ -134,6 +148,9 @@ export function ClientLayout() {
               </div>
             </div>
           </Link>
+          <div className="hidden sm:inline-flex shrink-0 items-center rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs text-white shadow-sm backdrop-blur-sm">
+            {formattedDate} – {formattedTime}
+          </div>
 
         </div>
       </header>
