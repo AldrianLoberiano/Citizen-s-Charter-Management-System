@@ -99,6 +99,9 @@ export function Home() {
               <h1 className="text-3xl leading-tight text-slate-950 dark:text-white sm:text-4xl">
                 Calauan Citizen's Charter
               </h1>
+              <div className="inline-flex shrink-0 items-center rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-1.5 text-xs text-slate-600 dark:text-slate-300 shadow-sm">
+                {formattedDate} – {formattedTime}
+              </div>
             </div>
             <p className="mb-8 max-w-2xl text-base leading-relaxed text-slate-600 dark:text-slate-400">
               Access information on government services, requirements, processing
@@ -128,14 +131,11 @@ export function Home() {
             </div>
           </div>
           <div className="mt-8 flex flex-col items-center gap-2 sm:absolute sm:right-4 sm:top-20 sm:mt-0">
-            <div className="inline-flex shrink-0 items-center rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1 text-xs text-slate-600 dark:text-slate-300 shadow-sm">
-              {formattedDate} – {formattedTime}
-            </div>
             <div className="flex items-center justify-center gap-2">
               <img
                 src={artaLogoSrc}
                 alt="ARTA logo"
-                className="h-12 w-12 object-contain md:h-[160px] md:w-[160px]"
+                className="h-16 w-16 object-contain md:h-[200px] md:w-[200px]"
                 loading="lazy"
                 decoding="async"
               />
