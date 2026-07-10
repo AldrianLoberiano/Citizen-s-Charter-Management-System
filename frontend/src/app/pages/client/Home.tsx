@@ -99,9 +99,6 @@ export function Home() {
               <h1 className="text-3xl leading-tight text-slate-950 dark:text-white sm:text-4xl">
                 Calauan Citizen's Charter
               </h1>
-              <div className="inline-flex shrink-0 items-center rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-1.5 text-xs text-slate-600 dark:text-slate-300 shadow-sm">
-                {formattedDate} – {formattedTime}
-              </div>
             </div>
             <p className="mb-8 max-w-2xl text-base leading-relaxed text-slate-600 dark:text-slate-400">
               Access information on government services, requirements, processing
