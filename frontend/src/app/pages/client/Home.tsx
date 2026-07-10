@@ -13,6 +13,11 @@ import {
   Users,
   Shield,
   BookOpen,
+  MessageSquare,
+  Phone,
+  Mail,
+  AlertTriangle,
+  ExternalLink,
 } from "lucide-react";
 import {
   getDepartments,
@@ -324,6 +329,207 @@ export function Home() {
                 </p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Feedback & Complaints Section */}
+      <section className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-12">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h2 className="mb-2 text-center text-slate-950 dark:text-white">
+            Feedback and Complaints
+          </h2>
+          <p className="mb-10 text-center text-sm text-slate-500 dark:text-slate-400">
+            Your voice matters. Help us improve our services.
+          </p>
+
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+            {/* Feedback */}
+            <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
+              <div className="mb-5 flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400">
+                  <MessageSquare className="h-5 w-5" />
+                </div>
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
+                  How to Send Feedback
+                </h3>
+              </div>
+
+              <div className="space-y-4">
+                <div className="rounded-xl bg-slate-50 dark:bg-slate-700/50 p-4">
+                  <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+                    Answer the <strong>Client Satisfaction Measurement Form</strong> and drop it at the
+                    designated drop box in the Public Information Desk or in front of offices.
+                  </p>
+                </div>
+
+                <div className="rounded-xl bg-slate-50 dark:bg-slate-700/50 p-4">
+                  <h4 className="mb-2 text-sm font-semibold text-slate-900 dark:text-white">
+                    Contact for Inquiries
+                  </h4>
+                  <div className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
+                    <Phone className="h-4 w-4 text-slate-400" />
+                    <span>(0917) 154 4318</span>
+                  </div>
+                  <div className="mt-1 flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
+                    <Mail className="h-4 w-4 text-slate-400" />
+                    <span>Calauanlaguna.hrmo@gmail.com</span>
+                  </div>
+                </div>
+
+                <div className="rounded-xl bg-slate-50 dark:bg-slate-700/50 p-4">
+                  <h4 className="mb-2 text-sm font-semibold text-slate-900 dark:text-white">
+                    How Feedback is Processed
+                  </h4>
+                  <ol className="list-inside list-decimal space-y-1 text-sm text-slate-700 dark:text-slate-300">
+                    <li>Every Friday, the Designated Officer opens the drop box, compiles, and records all feedback.</li>
+                    <li>Feedback requiring answers are endorsed to the relevant offices (response within 3 days).</li>
+                    <li>The answer of the office concerned is relayed to the citizen.</li>
+                    <li>Comments/suggestions are sent to office concerns for proper action.</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+
+            {/* Complaints */}
+            <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
+              <div className="mb-5 flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400">
+                  <AlertTriangle className="h-5 w-5" />
+                </div>
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
+                  How to File a Complaint
+                </h3>
+              </div>
+
+              <div className="space-y-4">
+                <div className="rounded-xl bg-slate-50 dark:bg-slate-700/50 p-4">
+                  <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+                    Answer the <strong>Client Complaint Form</strong> and drop it at the designated drop box in front of the Public Information Desk.
+                  </p>
+                  <p className="mt-2 text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+                    Complaints can also be filed via <strong>telephone</strong> and <strong>e-mail</strong>. Provide:
+                  </p>
+                  <ul className="mt-2 list-inside list-disc space-y-1 text-sm text-slate-700 dark:text-slate-300">
+                    <li>Name of person being complained</li>
+                    <li>Incident</li>
+                    <li>Evidence</li>
+                    <li>Name and contact number of complainant</li>
+                  </ul>
+                </div>
+
+                <div className="rounded-xl bg-slate-50 dark:bg-slate-700/50 p-4">
+                  <h4 className="mb-2 text-sm font-semibold text-slate-900 dark:text-white">
+                    Contact for Complaints
+                  </h4>
+                  <div className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
+                    <Phone className="h-4 w-4 text-slate-400" />
+                    <span>(0917) 154 4318</span>
+                  </div>
+                  <div className="mt-1 flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
+                    <Mail className="h-4 w-4 text-slate-400" />
+                    <span>Calauanlaguna.hrmo@gmail.com</span>
+                  </div>
+                </div>
+
+                <div className="rounded-xl bg-slate-50 dark:bg-slate-700/50 p-4">
+                  <h4 className="mb-2 text-sm font-semibold text-slate-900 dark:text-white">
+                    How Complaints are Processed
+                  </h4>
+                  <ol className="list-inside list-decimal space-y-1 text-sm text-slate-700 dark:text-slate-300">
+                    <li>The Designated Officer collates complaints daily and evaluates each.</li>
+                    <li>Barangay concerns are forwarded to Barangay Captains for compliance.</li>
+                    <li>Municipal employee complaints: HRMO calls for explanation within 24 hours.</li>
+                    <li>If necessary, forwarded to Investigation Committee for further investigation.</li>
+                    <li>Recommendation rendered to the Disciplining Authority for decision.</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* External Contact Information */}
+          <div className="mt-10 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow-sm">
+            <h3 className="mb-4 text-center text-lg font-semibold text-slate-900 dark:text-white">
+              Other Contact Information
+            </h3>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <a
+                href="tel:(02)84785099"
+                className="group flex flex-col rounded-xl border border-slate-200 dark:border-slate-600 p-4 transition-all hover:border-slate-300 dark:hover:border-slate-500 hover:shadow-sm"
+              >
+                <h4 className="mb-1 text-sm font-semibold text-slate-900 dark:text-white">
+                  LPAO
+                </h4>
+                <p className="mb-1 text-xs text-slate-500 dark:text-slate-400">
+                  Legal and Public Assistance Office
+                </p>
+                <div className="flex items-center gap-1.5 text-sm text-slate-700 dark:text-slate-300">
+                  <Phone className="h-3.5 w-3.5" />
+                  <span>(02) 8478-5099</span>
+                </div>
+              </a>
+
+              <a
+                href="tel:(02)8246-7940"
+                className="group flex flex-col rounded-xl border border-slate-200 dark:border-slate-600 p-4 transition-all hover:border-slate-300 dark:hover:border-slate-500 hover:shadow-sm"
+              >
+                <h4 className="mb-1 text-sm font-semibold text-slate-900 dark:text-white">
+                  ARTA
+                </h4>
+                <p className="mb-1 text-xs text-slate-500 dark:text-slate-400">
+                  Anti-Red Tape Authority
+                </p>
+                <div className="flex items-center gap-1.5 text-sm text-slate-700 dark:text-slate-300">
+                  <Phone className="h-3.5 w-3.5" />
+                  <span>(02) 8246-7940</span>
+                </div>
+                <div className="mt-1 flex items-center gap-1.5 text-sm text-slate-700 dark:text-slate-300">
+                  <Mail className="h-3.5 w-3.5" />
+                  <span className="truncate">complaints@arta.gov.ph</span>
+                </div>
+              </a>
+
+              <a
+                href="tel:(02)8736-8645"
+                className="group flex flex-col rounded-xl border border-slate-200 dark:border-slate-600 p-4 transition-all hover:border-slate-300 dark:hover:border-slate-500 hover:shadow-sm"
+              >
+                <h4 className="mb-1 text-sm font-semibold text-slate-900 dark:text-white">
+                  Presidential Complaints Center
+                </h4>
+                <p className="mb-1 text-xs text-slate-500 dark:text-slate-400">
+                  Office of the President
+                </p>
+                <div className="flex items-center gap-1.5 text-sm text-slate-700 dark:text-slate-300">
+                  <Phone className="h-3.5 w-3.5" />
+                  <span>(02) 8736-8645 / 8736-8603</span>
+                </div>
+                <div className="mt-1 flex items-center gap-1.5 text-sm text-slate-700 dark:text-slate-300">
+                  <Mail className="h-3.5 w-3.5" />
+                  <span className="truncate">pcc@malacanang.gov.ph</span>
+                </div>
+              </a>
+
+              <a
+                href="tel:09088816565"
+                className="group flex flex-col rounded-xl border border-slate-200 dark:border-slate-600 p-4 transition-all hover:border-slate-300 dark:hover:border-slate-500 hover:shadow-sm"
+              >
+                <h4 className="mb-1 text-sm font-semibold text-slate-900 dark:text-white">
+                  Contact Center ng Bayan
+                </h4>
+                <p className="mb-1 text-xs text-slate-500 dark:text-slate-400">
+                  (CCB)
+                </p>
+                <div className="flex items-center gap-1.5 text-sm text-slate-700 dark:text-slate-300">
+                  <Phone className="h-3.5 w-3.5" />
+                  <span>(0908) 881-6565 / 1-6565</span>
+                </div>
+                <div className="mt-1 flex items-center gap-1.5 text-sm text-slate-700 dark:text-slate-300">
+                  <ExternalLink className="h-3.5 w-3.5" />
+                  <span className="truncate">contactcenterngBayan.gov.ph</span>
+                </div>
+              </a>
+            </div>
           </div>
         </div>
       </section>
