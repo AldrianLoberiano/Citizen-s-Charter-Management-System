@@ -42,11 +42,14 @@ export function EditedCharters() {
     try {
       const API_BASE = import.meta.env.VITE_API_URL;
       const res = await fetch(`${API_BASE}/edited-charters/${deleteTarget.id}`, { method: "DELETE" });
-      if (!res.ok) throw new Error("Failed to delete");
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || `HTTP ${res.status}`);
+      }
       setEdits((prev) => prev.filter((e) => e.id !== deleteTarget.id));
       setDeleteTarget(null);
-    } catch {
-      alert("Failed to delete edited charter.");
+    } catch (err: any) {
+      alert(`Failed to delete: ${err?.message || err}`);
     } finally {
       setDeleting(false);
     }
