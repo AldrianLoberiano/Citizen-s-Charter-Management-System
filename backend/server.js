@@ -823,6 +823,22 @@ app.get("/api/edited-charters", async (_req, res) => {
   }
 });
 
+app.delete("/api/edited-charters/:id", async (req, res) => {
+  try {
+    const [rows] = await pool.query("SELECT file_path FROM charter_pdf_edits WHERE id = ?", [req.params.id]);
+    if (!rows.length) return res.status(404).json({ message: "Edited charter not found" });
+
+    const filePath = path.join(__dirname, "..", rows[0].file_path);
+    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+
+    await pool.query("DELETE FROM charter_pdf_edits WHERE id = ?", [req.params.id]);
+    res.status(204).send();
+  } catch (error) {
+    console.error("DELETE /api/edited-charters/:id error:", error);
+    res.status(500).json({ message: error?.message || "Failed to delete edited charter" });
+  }
+});
+
 app.delete("/api/charters/:id", async (req, res) => {
   try {
     const [deleteResult] = await pool.query("DELETE FROM charters WHERE id = ?", [req.params.id]);
@@ -982,39 +998,6 @@ app.use((err, _req, res, next) => {
   }
   next();
 });
-
-const cleanupEditedCharters = async () => {
-  const retentionDays = Number(process.env.EDITED_CHARTERS_RETENTION_DAYS || 30);
-  const cutoff = Date.now() - retentionDays * 24 * 60 * 60 * 1000;
-
-  try {
-    const files = fs.readdirSync(editedDir);
-    let deletedFiles = 0;
-    let deletedRows = 0;
-
-    for (const file of files) {
-      const filePath = path.join(editedDir, file);
-      const stat = fs.statSync(filePath);
-      if (stat.isFile() && stat.mtimeMs < cutoff) {
-        fs.unlinkSync(filePath);
-        deletedFiles++;
-      }
-    }
-
-    const [result] = await pool.query(
-      "DELETE FROM charter_pdf_edits WHERE created_at < ?",
-      [new Date(cutoff)]
-    );
-    deletedRows = result?.affectedRows || 0;
-
-    if (deletedFiles > 0 || deletedRows > 0) {
-      console.log(`Cleanup: removed ${deletedFiles} files and ${deletedRows} database records older than ${retentionDays} days`);
-    }
-  } catch (error) {
-    console.error("Cleanup error:", error?.message || error);
-  }
-};
-
 
 
 app.listen(port, () => {
