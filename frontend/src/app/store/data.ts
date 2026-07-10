@@ -56,16 +56,6 @@ const STORAGE_KEYS = {
   authUser: "ccms_auth_user",
 } as const;
 
-function getAuthUserFromStorage(): string | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEYS.authUser);
-    return raw ? (JSON.parse(raw) as string | null) : null;
-  } catch {
-    return null;
-  }
-}
-
 function safeRead<T>(key: string, fallback: T): T {
   if (typeof window === "undefined") return fallback;
   try {
@@ -86,14 +76,6 @@ function safeWrite<T>(key: string, value: T) {
   }
 }
 
-
-function getNextId(items: { id: number }[]): number {
-  return items.length === 0 ? 1 : Math.max(...items.map((item) => item.id)) + 1;
-}
-
-function getNowIso() {
-  return new Date().toISOString();
-}
 
 let departmentsCache: Department[] = [];
 let chartersCache: Charter[] = [];
