@@ -3,8 +3,6 @@ const API_BASE = import.meta.env.VITE_API_URL;
 export const FILE_BASE = API_BASE.replace("/api", "");
 
 async function request(path: string, options?: RequestInit) {
-  const rawUser = typeof window === "undefined" ? null : window.localStorage.getItem("ccms_auth_user");
-  const adminUsername = rawUser ? JSON.parse(rawUser) : null;
   const method = options?.method?.toUpperCase() || "GET";
   const hasBody = method === "POST" || method === "PUT" || method === "PATCH";
   const response = await fetch(`${API_BASE}${path}`, {
