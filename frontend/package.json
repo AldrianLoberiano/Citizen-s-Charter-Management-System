@@ -6,6 +6,7 @@
     "scripts": {
         "build": "vite build",
         "dev": "vite",
+        "dev:2": "vite --port 5174",
         "preview": "vite preview",
         "test": "vitest run",
         "test:watch": "vitest"
