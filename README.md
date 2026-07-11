@@ -120,6 +120,7 @@ A full-stack web application for publishing citizen service charters by departme
 ```text
 Citizen's Charter Management System/
 ├── .gitignore
+├── package.json                     # Root scripts (dev:all, dev:backend, dev:frontend)
 ├── README.md
 ├── render.yaml                      # Render deployment config (backend)
 │
@@ -291,7 +292,8 @@ Citizen's Charter Management System/
 | Method | Endpoint | Description |
 | --- | --- | --- |
 | `GET` | `/api/admin/backup` | Download SQL backup dump |
-| `POST` | `/api/admin/restore` | Restore from uploaded `.sql` file |
+| `POST` | `/api/admin/restore` | Restore from uploaded `.sql` file (uses mysql CLI) |
+| `POST` | `/api/admin/restore-sql` | Restore from raw SQL in request body |
 | `POST` | `/api/admin/import-schema` | Import schema from default SQL |
 
 ## Prerequisites
@@ -331,25 +333,57 @@ Citizen's Charter Management System/
 
 ## Run the App
 
-**Start the backend** in one terminal:
+**Prerequisites**: Start WAMP/XAMPP to ensure MySQL is running on port 3306.
+
+**Start both backend and frontend** with a single command:
 ```bash
-cd backend && node server.js
+npm run dev:all
 ```
 
-**Start the frontend** in another terminal:
+This runs the backend (`localhost:4000`) and frontend (`localhost:5173`) concurrently using `concurrently`. Output is color-coded (blue for backend, green for frontend).
+
+**Or run them separately**:
+
+Start the backend in one terminal:
+```bash
+cd backend && npm run dev
+```
+
+Start the frontend in another terminal:
 ```bash
 cd frontend && npm run dev
 ```
 
-- Frontend: `http://localhost:5173`
-- Backend: `http://localhost:4000`
+| Service | URL |
+| --- | --- |
+| Frontend | `http://localhost:5173` |
+| Backend API | `http://localhost:4000` |
+| MySQL (WAMP) | `127.0.0.1:3306` |
+
+## Testing
+
+**Run backend tests** (Supertest integration tests):
+```bash
+cd backend && npm test
+```
+
+**Run frontend tests** (Vitest + React Testing Library):
+```bash
+cd frontend && npm test
+```
+
+**Run tests in watch mode** (auto-rerun on file changes):
+```bash
+cd backend && npm run test:watch
+cd frontend && npm run test:watch
+```
 
 ## Deployment
 
 ### Vercel (Frontend)
 
 1. Deploy the `frontend/` directory to Vercel.
-2. Set `VITE_PROD_BASE_URL` to your deployed backend URL.
+2. Set `VITE_API_URL` to your deployed backend API URL (e.g., `https://your-backend.onrender.com/api`).
 3. Ensure the backend allows your Vercel domain in CORS (`CORS_ORIGIN` env var).
 4. SPA rewrite is configured in `frontend/vercel.json`.
 
@@ -369,16 +403,34 @@ See [Setup](#setup) above. This configuration is for local development only.
 
 | Variable | Description | Default |
 | --- | --- | --- |
-| `VITE_ENV` | Environment mode | `development` |
-| `VITE_DEV_BASE_URL` | Backend URL in development | `http://localhost:4000` |
-| `VITE_PROD_BASE_URL` | Backend URL in production | `https://ccms-backend.onrender.com` |
+| `VITE_API_URL` | Backend API base URL | `http://localhost:4000/api` |
+| `VITE_GSHEETS_API_KEY` | Google Sheets API key for analytics | (set in .env) |
+| `VITE_GSHEETS_SPREADSHEET_ID` | Google Sheets spreadsheet ID | (set in .env) |
+| `VITE_GSHEETS_SHEET_NAME` | Google Sheets sheet name | `Form Responses 1` |
+| `VITE_GSHEETS_RANGE` | Google Sheets data range | `A:Z` |
+| `VITE_HOME_ROUTE` | Home page route | `/` |
+| `VITE_ADMIN_ROUTE` | Admin base route | `/admin` |
+| `VITE_ADMIN_DASHBOARD_ROUTE` | Admin dashboard route | `/admin/dashboard` |
+| `VITE_ADMIN_DEPARTMENTS_ROUTE` | Admin departments route | `/admin/departments` |
+| `VITE_ADMIN_CHARTERS_ROUTE` | Admin charters route | `/admin/charters` |
+| `VITE_ADMIN_EDITED_CHARTERS_ROUTE` | Admin edited charters route | `/admin/edited-charters` |
+| `VITE_ADMIN_FEEDBACK_ROUTE` | Admin feedback route | `/admin/feedback` |
+| `VITE_ADMIN_BACKUP_ROUTE` | Admin backup route | `/admin/backup` |
+| `VITE_DEPARTMENTS_ROUTE` | API departments endpoint | `/departments` |
+| `VITE_CHARTERS_ROUTE` | API charters endpoint | `/charters` |
+| `VITE_EDITED_CHARTERS_ROUTE` | API edited charters endpoint | `/edited-charters` |
+| `VITE_RATINGS_ROUTE` | API ratings endpoint | `/ratings` |
+| `VITE_FEEDBACK_ROUTE` | API feedback endpoint | `/feedback` |
+| `VITE_AUTH_LOGIN_ROUTE` | API login endpoint | `/auth/login` |
+| `VITE_AUTH_LOGOUT_ROUTE` | API logout endpoint | `/auth/logout` |
 
 ### Backend (`backend/.env`)
 
 | Variable | Description | Default |
 | --- | --- | --- |
-| `PORT` | Backend port | `4000` |
+| `PORT` | Backend port (auto-increments if in use) | `4000` |
 | `CORS_ORIGIN` | Allowed frontend origins (comma-separated) | `http://localhost:5173,http://localhost:5174` |
+| `ALLOW_ALL_ORIGINS` | Allow all CORS origins | `false` |
 | `DB_HOST` | MySQL host | `127.0.0.1` |
 | `DB_PORT` | MySQL port | `3306` |
 | `DB_USER` | MySQL user | `root` |
@@ -388,6 +440,8 @@ See [Setup](#setup) above. This configuration is for local development only.
 | `DB_POOL_SIZE` | Connection pool size | `10` |
 | `ADMIN_USERNAME` | Admin login username | `admin` |
 | `ADMIN_PASSWORD` | Admin login password | `admin123` |
+| `MYSQL_BIN` | Path to mysql CLI binary for restore | `mysql` |
+| `EDITED_CHARTERS_RETENTION_DAYS` | Days to retain edited charters (unused) | `30` |
 
 ## Upload Storage
 
