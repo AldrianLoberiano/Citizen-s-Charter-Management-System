@@ -1,6 +1,6 @@
 # Calauan Citizen's Charter Management System (CCMS) - User Manual
 
-**Version 1.0**
+**Version 1.1**
 **For the Municipality of Calauan, Laguna**
 
 ---
@@ -589,23 +589,45 @@ If you encounter issues not covered in this manual:
 
 | Variable | Purpose | Example |
 |---|---|---|
-| `VITE_ENV` | Environment mode | `development` or `production` |
-| `VITE_DEV_BASE_URL` | Backend URL for development | `http://localhost:4000` |
-| `VITE_PROD_BASE_URL` | Backend URL for production | `https://ccms-backend.onrender.com` |
+| `VITE_API_URL` | Backend API base URL | `http://localhost:4000/api` |
+| `VITE_GSHEETS_API_KEY` | Google Sheets API key for analytics | `AIzaSy...` |
+| `VITE_GSHEETS_SPREADSHEET_ID` | Google Sheets spreadsheet ID | `1Op53bBwh...` |
+| `VITE_GSHEETS_SHEET_NAME` | Google Sheets sheet name | `Form Responses 1` |
+| `VITE_GSHEETS_RANGE` | Google Sheets data range | `A:Z` |
+| `VITE_HOME_ROUTE` | Home page route | `/` |
+| `VITE_ADMIN_ROUTE` | Admin base route | `/admin` |
+| `VITE_ADMIN_DASHBOARD_ROUTE` | Admin dashboard route | `/admin/dashboard` |
+| `VITE_ADMIN_DEPARTMENTS_ROUTE` | Admin departments route | `/admin/departments` |
+| `VITE_ADMIN_CHARTERS_ROUTE` | Admin charters route | `/admin/charters` |
+| `VITE_ADMIN_EDITED_CHARTERS_ROUTE` | Admin edited charters route | `/admin/edited-charters` |
+| `VITE_ADMIN_FEEDBACK_ROUTE` | Admin feedback route | `/admin/feedback` |
+| `VITE_ADMIN_BACKUP_ROUTE` | Admin backup route | `/admin/backup` |
+| `VITE_DEPARTMENTS_ROUTE` | API departments endpoint | `/departments` |
+| `VITE_CHARTERS_ROUTE` | API charters endpoint | `/charters` |
+| `VITE_EDITED_CHARTERS_ROUTE` | API edited charters endpoint | `/edited-charters` |
+| `VITE_RATINGS_ROUTE` | API ratings endpoint | `/ratings` |
+| `VITE_FEEDBACK_ROUTE` | API feedback endpoint | `/feedback` |
+| `VITE_AUTH_LOGIN_ROUTE` | API login endpoint | `/auth/login` |
+| `VITE_AUTH_LOGOUT_ROUTE` | API logout endpoint | `/auth/logout` |
 
 ### Backend Variables
 
 | Variable | Purpose | Example |
 |---|---|---|
-| `PORT` | Server listening port | `4000` |
+| `PORT` | Server listening port (auto-increments if in use) | `4000` |
 | `CORS_ORIGIN` | Allowed frontend origins | `http://localhost:5173,https://your-domain.com` |
+| `ALLOW_ALL_ORIGINS` | Allow all CORS origins | `false` |
 | `DB_HOST` | MySQL server host | `127.0.0.1` |
 | `DB_PORT` | MySQL server port | `3306` |
 | `DB_USER` | MySQL username | `root` |
 | `DB_PASSWORD` | MySQL password | `your_password` |
 | `DB_NAME` | Database name | `ccms_db` |
+| `DB_SSL` | Enable SSL for MySQL | `false` |
+| `DB_POOL_SIZE` | Connection pool size | `10` |
 | `ADMIN_USERNAME` | Admin login username | `admin` |
 | `ADMIN_PASSWORD` | Admin login password | `admin123` |
+| `MYSQL_BIN` | Path to mysql CLI binary for restore | `mysql` |
+| `EDITED_CHARTERS_RETENTION_DAYS` | Days to retain edited charters (currently unused) | `30` |
 
 ---
 
@@ -619,6 +641,83 @@ If you encounter issues not covered in this manual:
 | `ratings` | `charter_id`, `rating` (1-5), `comment` | Legacy citizen ratings |
 | `feedback_responses` | `charter_id`, `name`, `email`, `contact`, `rating`, `comment` | Primary citizen feedback |
 | `charter_pdf_edits` | `charter_id`, `file_path`, `submitted_name`, `notes` | Document edit history |
+
+---
+
+## Appendix E: Local Development Setup
+
+For developers setting up the project locally:
+
+### Prerequisites
+
+- Node.js 18+
+- npm
+- MySQL 8.0+ (via WAMP or XAMPP) running on port 3306
+
+### Quick Start
+
+1. **Start WAMP/XAMPP** to ensure MySQL is running on port 3306.
+
+2. **Clone the repository**:
+   ```bash
+   git clone <repo-url>
+   cd Citizen-s-Charter-Management-System
+   ```
+
+3. **Install all dependencies**:
+   ```bash
+   npm install
+   cd backend && npm install
+   cd ../frontend && npm install
+   ```
+
+4. **Import the database schema**:
+   ```bash
+   mysql -u root -p < backend/database/ccms_db.sql
+   ```
+
+5. **Configure environment variables**:
+   ```bash
+   cp backend/.env.example backend/.env
+   # Edit backend/.env with your MySQL credentials
+   ```
+
+6. **Start both servers**:
+   ```bash
+   npm run dev:all
+   ```
+
+   | Service | URL |
+   |---|---|
+   | Frontend | `http://localhost:5173` |
+   | Backend API | `http://localhost:4000` |
+   | MySQL (WAMP) | `127.0.0.1:3306` |
+
+### Available Scripts
+
+| Command | Description |
+|---|---|
+| `npm run dev:all` | Start both backend and frontend concurrently |
+| `npm run dev:backend` | Start only the backend server |
+| `npm run dev:frontend` | Start only the frontend dev server |
+
+### Running Tests
+
+**Backend tests** (Supertest integration tests):
+```bash
+cd backend && npm test
+```
+
+**Frontend tests** (Vitest + React Testing Library):
+```bash
+cd frontend && npm test
+```
+
+**Watch mode** (auto-rerun on file changes):
+```bash
+cd backend && npm run test:watch
+cd frontend && npm run test:watch
+```
 
 ---
 
