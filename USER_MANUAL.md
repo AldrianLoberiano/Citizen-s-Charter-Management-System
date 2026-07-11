@@ -689,7 +689,7 @@ For developers setting up the project locally:
 
    | Service | URL |
    |---|---|
-   | Frontend | `http://localhost:5173` |
+   | Frontend | `http://localhost:5174` |
    | Backend API | `http://localhost:4000` |
    | MySQL (WAMP) | `127.0.0.1:3306` |
 
@@ -699,7 +699,7 @@ For developers setting up the project locally:
 |---|---|
 | `npm run dev:all` | Start both backend and frontend concurrently |
 | `npm run dev:backend` | Start only the backend server |
-| `npm run dev:frontend` | Start only the frontend dev server |
+| `npm run dev:frontend:2` | Start only the frontend dev server |
 
 ### Running Tests
 
