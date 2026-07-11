@@ -340,23 +340,18 @@ Citizen's Charter Management System/
 npm run dev:all
 ```
 
-This runs the backend (`localhost:4000`) and frontend (`localhost:5173`) concurrently using `concurrently`. Output is color-coded (blue for backend, green for frontend).
+This runs the backend (`localhost:4000`) and frontend (`localhost:5174`) concurrently using `concurrently`. Output is color-coded (blue for backend, green for frontend).
 
-**Or run them separately**:
-
-Start the backend in one terminal:
-```bash
-cd backend && npm run dev
-```
-
-Start the frontend in another terminal:
-```bash
-cd frontend && npm run dev
+| Command | Description |
+|---|---|
+| `npm run dev:all` | Start both backend and frontend concurrently |
+| `npm run dev:backend` | Start only the backend server |
+| `npm run dev:frontend:2` | Start only the frontend dev server |
 ```
 
 | Service | URL |
 | --- | --- |
-| Frontend | `http://localhost:5173` |
+| Frontend | `http://localhost:5174` |
 | Backend API | `http://localhost:4000` |
 | MySQL (WAMP) | `127.0.0.1:3306` |
 
