@@ -1,0 +1,15 @@
+{
+    "name": "ccms",
+    "private": true,
+    "scripts": {
+        "dev:all": "concurrently -n back,front -c blue,green \"npm run dev --prefix backend\" \"npm run dev:2 --prefix frontend\"",
+        "dev:all:2": "concurrently -n back,front -c blue,green \"npm run dev:2 --prefix backend\" \"npm run dev:2 --prefix frontend\"",
+        "dev:backend": "npm run dev --prefix backend",
+        "dev:backend:2": "npm run dev:2 --prefix backend",
+        "dev:frontend": "npm run dev --prefix frontend",
+        "dev:frontend:2": "npm run dev:2 --prefix frontend"
+    },
+    "devDependencies": {
+        "concurrently": "^9.1.2"
+    }
+}
