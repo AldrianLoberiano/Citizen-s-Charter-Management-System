@@ -985,6 +985,33 @@ app.use((err, _req, res, _next) => {
 });
 
 
-app.listen(port, () => {
-  console.log(`CCMS backend listening on http://localhost:${port}`);
-});
+import net from "net";
+
+function tryPort(port) {
+  return new Promise((resolve, reject) => {
+    const server = net.createServer();
+    server.once("error", () => reject(port));
+    server.once("listening", () => {
+      server.close(() => resolve(port));
+    });
+    server.listen(port);
+  });
+}
+
+async function start() {
+  let availablePort = port;
+  while (true) {
+    try {
+      await tryPort(availablePort);
+      break;
+    } catch {
+      console.log(`Port ${availablePort} is in use, trying ${availablePort + 1}...`);
+      availablePort++;
+    }
+  }
+  app.listen(availablePort, () => {
+    console.log(`CCMS backend listening on http://localhost:${availablePort}`);
+  });
+}
+
+start();
