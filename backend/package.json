@@ -3,6 +3,8 @@
     "private": true,
     "type": "module",
     "scripts": {
+        "dev": "node --watch server.js",
+        "dev:2": "cross-env PORT=4001 node --watch server.js",
         "start": "node server.js",
         "test": "vitest run",
         "test:watch": "vitest"
@@ -12,10 +14,11 @@
         "cors": "^2.8.5",
         "dotenv": "^16.6.1",
         "express": "^5.1.0",
-        "multer": "^2.0.2",
+        "multer": "^2.1.2",
         "mysql2": "^3.11.5"
     },
     "devDependencies": {
+        "cross-env": "^10.1.0",
         "supertest": "^7.2.2",
         "vitest": "^4.1.8"
     }
