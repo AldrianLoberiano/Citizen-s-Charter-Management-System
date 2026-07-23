@@ -6,10 +6,10 @@ A full-stack web application for publishing citizen service charters by departme
 
 | Layer | Technologies |
 | --- | --- |
-| **Frontend** | React 18, TypeScript, Vite 6, Tailwind CSS v4, Radix UI, MUI, Recharts, Lucide Icons |
+| **Frontend** | React 18, TypeScript 6, Vite 6, Tailwind CSS v4, Radix UI, MUI v7, Recharts, Lucide Icons, Motion, Sonner |
 | **Backend** | Express 5, Node.js 18+, MySQL (mysql2), Multer (file uploads), bcryptjs (auth) |
-| **Document Processing** | mammoth.js (DOCX to HTML), pdfjs-dist (PDF rendering), pdf-lib (PDF annotation/export), docx (DOCX generation), JSZip (DOCX in-place editing) |
-| **Testing** | Vitest, React Testing Library, Supertest |
+| **Document Processing** | mammoth.js (DOCX to HTML), pdfjs-dist (PDF rendering), pdf-lib (PDF annotation/export), docx (DOCX generation), JSZip (DOCX in-place editing), docx-preview |
+| **Testing** | Vitest 4, React Testing Library, Supertest |
 | **Deployment** | Vercel (frontend), Render (backend), MySQL (Railway) |
 
 ## Purpose
@@ -122,6 +122,7 @@ Citizen's Charter Management System/
 ├── .gitignore
 ├── package.json                     # Root scripts (dev:all, dev:backend, dev:frontend)
 ├── README.md
+├── USER_MANUAL.md                   # End-user documentation
 ├── render.yaml                      # Render deployment config (backend)
 │
 ├── backend/
@@ -129,7 +130,7 @@ Citizen's Charter Management System/
 │   ├── .env.example                 # Environment variable template
 │   ├── .env.production              # Production environment variables
 │   ├── package.json                 # Express 5, mysql2, multer, bcryptjs
-│   ├── server.js                    # Express API server
+│   ├── server.js                    # Express API server (all routes)
 │   ├── db.js                        # MySQL2 connection pool
 │   ├── create-table.js              # Migration: charter_pdf_edits table
 │   ├── vitest.config.js             # Backend test configuration
@@ -146,8 +147,7 @@ Citizen's Charter Management System/
 │   ├── package.json                 # React 18, Radix UI, MUI, Recharts
 │   ├── vite.config.ts               # Vite + React + Tailwind v4
 │   ├── tsconfig.json                # TypeScript config
-│   ├── postcss.config.mjs           # PostCSS (Tailwind plugin)
-│   ├── vercel.json                  # SPA rewrite for Vercel
+│   ├── vercel.json                  # SPA rewrite + API/uploads proxy
 │   ├── public/
 │   │   └── images/
 │   │       ├── header/              # Logos, municipality banner, mayor photo
@@ -167,7 +167,7 @@ Citizen's Charter Management System/
 │       │   └── theme.css            # CSS custom properties, light/dark themes
 │       └── app/
 │           ├── App.tsx              # Root component with RouterProvider
-│           ├── routes.tsx           # React Router route definitions
+│           ├── routes.tsx           # React Router v7 route definitions
 │           ├── components/
 │           │   ├── AdminLayout.tsx   # Auth-gated admin shell with sidebar
 │           │   ├── ClientLayout.tsx  # Public header/footer layout
@@ -300,7 +300,7 @@ Citizen's Charter Management System/
 
 - Node.js 18+
 - npm
-- MySQL 8.0+ (or XAMPP MySQL)
+- MySQL 8.0+ (or Laragon/XAMPP MySQL)
 
 ## Setup
 
@@ -333,7 +333,7 @@ Citizen's Charter Management System/
 
 ## Run the App
 
-**Prerequisites**: Start WAMP/XAMPP to ensure MySQL is running on port 3306.
+**Prerequisites**: Start Laragon/WAMP/XAMPP to ensure MySQL is running on port 3306.
 
 **Start both backend and frontend** with a single command:
 ```bash
@@ -345,15 +345,16 @@ This runs the backend (`localhost:4000`) and frontend (`localhost:5174`) concurr
 | Command | Description |
 |---|---|
 | `npm run dev:all` | Start both backend and frontend concurrently |
-| `npm run dev:backend` | Start only the backend server |
-| `npm run dev:frontend:2` | Start only the frontend dev server |
-```
+| `npm run dev:backend` | Start only the backend server (port 4000) |
+| `npm run dev:backend:2` | Start only the backend server (port 4001) |
+| `npm run dev:frontend` | Start only the frontend dev server (port 5173) |
+| `npm run dev:frontend:2` | Start only the frontend dev server (port 5174) |
 
 | Service | URL |
 | --- | --- |
 | Frontend | `http://localhost:5174` |
 | Backend API | `http://localhost:4000` |
-| MySQL (WAMP) | `127.0.0.1:3306` |
+| MySQL (Laragon) | `127.0.0.1:3306` |
 
 ## Testing
 
@@ -378,9 +379,9 @@ cd frontend && npm run test:watch
 ### Vercel (Frontend)
 
 1. Deploy the `frontend/` directory to Vercel.
-2. Set `VITE_API_URL` to your deployed backend API URL (e.g., `https://your-backend.onrender.com/api`).
+2. Set `VITE_API_URL` to your deployed backend API URL (e.g., `https://ccms-backend.onrender.com/api`).
 3. Ensure the backend allows your Vercel domain in CORS (`CORS_ORIGIN` env var).
-4. SPA rewrite is configured in `frontend/vercel.json`.
+4. SPA rewrite and API/uploads proxy are configured in `frontend/vercel.json`.
 
 ### Render (Backend)
 
@@ -436,7 +437,7 @@ See [Setup](#setup) above. This configuration is for local development only.
 | `ADMIN_USERNAME` | Admin login username | `admin` |
 | `ADMIN_PASSWORD` | Admin login password | `admin123` |
 | `MYSQL_BIN` | Path to mysql CLI binary for restore | `mysql` |
-| `EDITED_CHARTERS_RETENTION_DAYS` | Days to retain edited charters (unused) | `30` |
+| `EDITED_CHARTERS_RETENTION_DAYS` | Days to retain edited charters | `30` |
 
 ## Upload Storage
 
