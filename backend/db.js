@@ -39,8 +39,14 @@ if (process.env.DATABASE_URL) {
         return out;
       });
 
-      // Simulate MySQL2 insert result
+      // Check if we auto-appended RETURNING id (not user-provided)
+      const hadReturning = /RETURNING/i.test(sql);
       if (result.command === "INSERT" && result.rows.length > 0) {
+        if (hadReturning) {
+          // User wrote RETURNING explicitly (e.g. RETURNING *) — return actual rows
+          return [castRows, []];
+        }
+        // Auto-appended RETURNING id — simulate MySQL insertId
         return [[{ insertId: result.rows[0].id, affectedRows: result.rowCount }], []];
       }
       // Simulate MySQL2 update/delete result
