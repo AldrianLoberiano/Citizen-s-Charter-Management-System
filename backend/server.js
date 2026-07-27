@@ -998,6 +998,25 @@ function tryPort(port) {
   });
 }
 
+app.get("/api/debug/migration-status", async (req, res) => {
+  try {
+    const seqCheck = await pool.query("SELECT pg_get_serial_sequence('charters', 'id') AS seq");
+    const nullIds = await pool.query("SELECT COUNT(*) AS cnt FROM charters WHERE id IS NULL");
+    const maxId = await pool.query("SELECT MAX(id) AS mx FROM charters");
+    const cols = await pool.query("SELECT column_name, column_default, is_nullable FROM information_schema.columns WHERE table_name = 'charters' AND column_name = 'id'");
+    const total = await pool.query("SELECT COUNT(*) AS cnt FROM charters");
+    res.json({
+      sequence: seqCheck.rows[0],
+      nullIds: Number(nullIds.rows[0].cnt),
+      maxId: Number(maxId.rows[0].mx),
+      column: cols.rows[0],
+      totalRows: Number(total.rows[0].cnt),
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 async function runMigration() {
   if (!process.env.DATABASE_URL) return;
   try {
