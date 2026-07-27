@@ -3,5 +3,5 @@ services:
     name: ccms-backend
     runtime: node
     rootDir: backend
-    buildCommand: npm install
+    buildCommand: npm ci
     startCommand: npm start
