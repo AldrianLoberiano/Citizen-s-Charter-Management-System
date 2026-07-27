@@ -19,8 +19,15 @@ if (process.env.DATABASE_URL) {
       let paramIndex = 0;
       let pgSql = sql.replace(/\?/g, () => `$${++paramIndex}`);
 
-      // Append RETURNING id for INSERT if not already present
-      if (/^\s*INSERT\b/i.test(pgSql.trim()) && !/RETURNING/i.test(pgSql)) {
+      // Detect statement type from original SQL (before ? conversion)
+      const trimmed = pgSql.trim();
+      const isInsert = /^\s*INSERT\b/i.test(trimmed);
+      const isUpdate = /^\s*UPDATE\b/i.test(trimmed);
+      const isDelete = /^\s*DELETE\b/i.test(trimmed);
+      const hadReturning = /RETURNING/i.test(sql);
+
+      // Auto-append RETURNING for INSERT/UPDATE/DELETE if not present
+      if ((isInsert || isUpdate || isDelete) && !hadReturning) {
         pgSql += " RETURNING id";
       }
 
@@ -31,7 +38,7 @@ if (process.env.DATABASE_URL) {
         const out = {};
         for (const [key, val] of Object.entries(row)) {
           if (typeof val === "string" && val !== "" && !isNaN(val) && key !== "file_path" && key !== "content" && key !== "title" && key !== "name" && key !== "description" && key !== "comment" && key !== "notes" && key !== "username" && key !== "password_hash" && key !== "password" && key !== "full_name" && key !== "role" && key !== "email" && key !== "contact" && key !== "submitted_name" && key !== "submitted_email" && key !== "original_name" && key !== "mime_type") {
-            out[key] = Number(val);
+              out[key] = Number(val);
           } else {
             out[key] = val;
           }
@@ -39,9 +46,8 @@ if (process.env.DATABASE_URL) {
         return out;
       });
 
-      // Check if we auto-appended RETURNING id (not user-provided)
-      const hadReturning = /RETURNING/i.test(sql);
-      if (result.command === "INSERT" && result.rows.length > 0) {
+      // INSERT handling
+      if (isInsert && result.rows.length > 0) {
         if (hadReturning) {
           // User wrote RETURNING explicitly (e.g. RETURNING *) — return actual rows
           return [castRows, []];
@@ -49,9 +55,10 @@ if (process.env.DATABASE_URL) {
         // Auto-appended RETURNING id — simulate MySQL insertId
         return [[{ insertId: result.rows[0].id, affectedRows: result.rowCount }], []];
       }
-      // Simulate MySQL2 update/delete result
-      if (result.command === "UPDATE" || result.command === "DELETE") {
-        return [[{ affectedRows: result.rowCount }], []];
+      // UPDATE/DELETE handling — use rowCount (pg always sets this correctly)
+      if (isUpdate || isDelete) {
+        const affectedRows = result.rowCount ?? castRows.length ?? 0;
+        return [[{ affectedRows: Number(affectedRows) }], []];
       }
       // Default: return rows like MySQL
       return [castRows, []];
