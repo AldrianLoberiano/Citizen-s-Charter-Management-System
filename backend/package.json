@@ -16,7 +16,7 @@
         "express": "^5.1.0",
         "multer": "^2.1.2",
         "mysql2": "^3.11.5",
-        "pg": "^8.16.0"
+        "pg": "^8.22.0"
     },
     "devDependencies": {
         "cross-env": "^10.1.0",
