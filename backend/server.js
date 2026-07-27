@@ -998,6 +998,36 @@ function tryPort(port) {
   });
 }
 
+async function runMigration() {
+  if (!process.env.DATABASE_URL) return;
+  try {
+    console.log("Running schema migration...");
+    await pool.query(`
+      DO $$
+      BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM pg_attribute WHERE attrelid = 'charters'::regclass AND attname = 'id' AND attidentity = 'a'
+        ) THEN
+          DELETE FROM charters WHERE id IS NULL;
+          ALTER TABLE charters ADD COLUMN id_new SERIAL;
+          UPDATE charters SET id_new = id WHERE id IS NOT NULL;
+          ALTER TABLE charters DROP CONSTRAINT IF EXISTS charters_pkey;
+          ALTER TABLE charters DROP COLUMN id;
+          ALTER TABLE charters RENAME COLUMN id_new TO id;
+          ALTER TABLE charters ADD PRIMARY KEY (id);
+          ALTER TABLE charters ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
+          ALTER TABLE charters ALTER COLUMN updated_at SET DEFAULT CURRENT_TIMESTAMP;
+          PERFORM setval(pg_get_serial_sequence('charters', 'id'), COALESCE((SELECT MAX(id) FROM charters), 0) + 1, false);
+          RAISE NOTICE 'Charters table fixed: id is now SERIAL';
+        END IF;
+      END $$;
+    `);
+    console.log("Schema migration complete.");
+  } catch (err) {
+    console.error("Migration error:", err.message);
+  }
+}
+
 async function start() {
   let availablePort = port;
   while (true) {
@@ -1014,4 +1044,5 @@ async function start() {
   });
 }
 
+await runMigration();
 start();
