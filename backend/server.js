@@ -1009,19 +1009,13 @@ async function runMigration() {
     console.error("Cleanup migration error:", err.message);
   }
   try {
-    const check = await pool.query(
-      `SELECT pg_get_serial_sequence('charters', 'id') AS seq`
-    );
-    if (!check.rows[0]?.seq) {
-      console.log("Charters id has no sequence, adding one...");
-      await pool.query("CREATE SEQUENCE IF NOT EXISTS charters_id_seq");
-      await pool.query("ALTER TABLE charters ALTER COLUMN id SET DEFAULT nextval('charters_id_seq')");
-      await pool.query("ALTER SEQUENCE charters_id_seq OWNED BY charters.id");
-      const maxRes = await pool.query("SELECT COALESCE(MAX(id), 0) AS mx FROM charters");
-      const nextVal = Number(maxRes.rows[0].mx) + 1;
-      console.log(`Setting charters_id_seq to ${nextVal}`);
-      await pool.query("SELECT setval('charters_id_seq', $1, false)", [nextVal]);
-    }
+    await pool.query("CREATE SEQUENCE IF NOT EXISTS charters_id_seq");
+    await pool.query("ALTER TABLE charters ALTER COLUMN id SET DEFAULT nextval('charters_id_seq')");
+    await pool.query("ALTER SEQUENCE charters_id_seq OWNED BY charters.id");
+    const maxRes = await pool.query("SELECT COALESCE(MAX(id), 0) AS mx FROM charters");
+    const nextVal = Number(maxRes.rows[0].mx) + 1;
+    console.log(`Setting charters_id_seq to ${nextVal}`);
+    await pool.query("SELECT setval('charters_id_seq', $1, false)", [nextVal]);
     await pool.query("ALTER TABLE charters ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP");
     await pool.query("ALTER TABLE charters ALTER COLUMN updated_at SET DEFAULT CURRENT_TIMESTAMP");
     console.log("Schema migration complete.");
