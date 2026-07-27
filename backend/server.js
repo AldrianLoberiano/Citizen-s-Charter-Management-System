@@ -623,7 +623,7 @@ app.get("/api/charters", async (req, res) => {
         SELECT charter_id, submitted_name, created_at,
                ROW_NUMBER() OVER (PARTITION BY charter_id ORDER BY created_at DESC) AS rn
         FROM charter_pdf_edits
-      ) e ON e.charter_id::text = c.id::text AND e.rn = 1
+      ) e ON e.charter_id::bigint = c.id AND e.rn = 1
       ${where}
       ORDER BY c.id ASC
     `;
@@ -796,7 +796,7 @@ app.get("/api/edited-charters", async (_req, res) => {
     const [rows] = await pool.query(
       `SELECT e.*, c.title AS charter_title, d.name AS department_name
        FROM charter_pdf_edits e
-       JOIN charters c ON c.id::text = e.charter_id
+       JOIN charters c ON c.id = e.charter_id::bigint
        LEFT JOIN departments d ON d.id = c.department_id
        ORDER BY e.created_at DESC`
     );
