@@ -254,9 +254,9 @@ app.post("/api/charters/:id/edited-pdfs", editedUpload.single("file"), async (re
 
     const insertSql = `INSERT INTO charter_pdf_edits
         (charter_id, file_path, original_name, mime_type, size_bytes, submitted_name, submitted_email, notes)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING *`;
 
-    const [insertResult] = await pool.query(insertSql, [
+    const [rows] = await pool.query(insertSql, [
       charterId,
       `/uploads/edited-charters/${req.file.filename}`,
       req.file.originalname,
@@ -266,9 +266,6 @@ app.post("/api/charters/:id/edited-pdfs", editedUpload.single("file"), async (re
       submitted_email.trim() || null,
       notes.trim() || null,
     ]);
-
-    const newId = insertResult?.insertId;
-    const [rows] = await pool.query("SELECT * FROM charter_pdf_edits WHERE id = ?", [newId]);
     return res.status(201).json(rows[0]);
   } catch (error) {
     console.error("edited-pdfs error:", error);
@@ -560,13 +557,10 @@ app.post("/api/departments", async (req, res) => {
     const { name, description = "" } = req.body || {};
     if (!name?.trim()) return res.status(400).json({ message: "Department name is required" });
 
-    const [insertResult] = await pool.query(
-      "INSERT INTO departments (name, description) VALUES (?, ?)",
+    const [rows] = await pool.query(
+      "INSERT INTO departments (name, description) VALUES (?, ?) RETURNING *",
       [name.trim(), description.trim()]
     );
-    const newId = insertResult?.insertId;
-
-    const [rows] = await pool.query("SELECT * FROM departments WHERE id = ?", [newId]);
     res.status(201).json(rows[0]);
   } catch (error) {
     console.error("POST /api/departments error:", error);
@@ -655,13 +649,10 @@ app.post("/api/charters", async (req, res) => {
       return res.status(400).json({ message: "department_id, title, and content are required" });
     }
 
-    const [insertResult] = await pool.query(
-      "INSERT INTO charters (department_id, title, content, file_path) VALUES (?, ?, ?, ?)",
+    const [rows] = await pool.query(
+      "INSERT INTO charters (department_id, title, content, file_path) VALUES (?, ?, ?, ?) RETURNING *",
       [department_id, title.trim(), content.trim(), file_path]
     );
-    const newId = insertResult?.insertId;
-
-    const [rows] = await pool.query("SELECT * FROM charters WHERE id = ?", [newId]);
     res.status(201).json(rows[0]);
   } catch (error) {
     console.error("POST /api/charters error:", error);
@@ -864,13 +855,10 @@ app.post("/api/charters/:id/ratings", async (req, res) => {
       return res.status(400).json({ message: "Rating must be between 1 and 5" });
     }
 
-    const [insertResult] = await pool.query(
-      "INSERT INTO ratings (charter_id, rating, comment) VALUES (?, ?, ?)",
+    const [rows] = await pool.query(
+      "INSERT INTO ratings (charter_id, rating, comment) VALUES (?, ?, ?) RETURNING *",
       [req.params.id, parsedRating, comment.trim()]
     );
-    const newId = insertResult?.insertId;
-
-    const [rows] = await pool.query("SELECT * FROM ratings WHERE id = ?", [newId]);
     res.status(201).json(rows[0]);
   } catch (error) {
     console.error("POST /api/charters/:id/ratings error:", error);
@@ -917,8 +905,8 @@ app.post("/api/charters/:id/feedback", async (req, res) => {
       return res.status(400).json({ message: "Rating must be between 1 and 5" });
     }
 
-    const [insertResult] = await pool.query(
-      "INSERT INTO feedback_responses (charter_id, name, email, contact, rating, comment) VALUES (?, ?, ?, ?, ?, ?)",
+    const [rows] = await pool.query(
+      "INSERT INTO feedback_responses (charter_id, name, email, contact, rating, comment) VALUES (?, ?, ?, ?, ?, ?) RETURNING *",
       [
         req.params.id,
         String(name).trim() || null,
@@ -928,9 +916,6 @@ app.post("/api/charters/:id/feedback", async (req, res) => {
         String(comment).trim() || null,
       ]
     );
-
-    const newId = insertResult?.insertId;
-    const [rows] = await pool.query("SELECT * FROM feedback_responses WHERE id = ?", [newId]);
     res.status(201).json(rows[0]);
   } catch (error) {
     console.error("POST /api/charters/:id/feedback error:", error);
@@ -998,25 +983,6 @@ function tryPort(port) {
   });
 }
 
-app.get("/api/debug/migration-status", async (req, res) => {
-  try {
-    const seqCheck = await pool.query("SELECT pg_get_serial_sequence('charters', 'id') AS seq");
-    const nullIds = await pool.query("SELECT COUNT(*) AS cnt FROM charters WHERE id IS NULL");
-    const maxId = await pool.query("SELECT MAX(id) AS mx FROM charters");
-    const cols = await pool.query("SELECT column_name, column_default, is_nullable FROM information_schema.columns WHERE table_name = 'charters' AND column_name = 'id'");
-    const total = await pool.query("SELECT COUNT(*) AS cnt FROM charters");
-    res.json({
-      sequence: seqCheck.rows[0],
-      nullIds: Number(nullIds.rows[0].cnt),
-      maxId: Number(maxId.rows[0].mx),
-      column: cols.rows[0],
-      totalRows: Number(total.rows[0].cnt),
-    });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
 async function runMigration() {
   if (!process.env.DATABASE_URL) return;
   try {
@@ -1031,8 +997,8 @@ async function runMigration() {
     await pool.query("CREATE SEQUENCE IF NOT EXISTS charters_id_seq");
     await pool.query("ALTER TABLE charters ALTER COLUMN id SET DEFAULT nextval('charters_id_seq')");
     await pool.query("ALTER SEQUENCE charters_id_seq OWNED BY charters.id");
-    const maxRes = await pool.query("SELECT COALESCE(MAX(id), 0) AS mx FROM charters");
-    const nextVal = Number(maxRes.rows[0].mx) + 1;
+    const [maxRows] = await pool.query("SELECT COALESCE(MAX(id), 0) AS mx FROM charters");
+    const nextVal = Number(maxRows[0]?.mx || 0) + 1;
     console.log(`Setting charters_id_seq to ${nextVal}`);
     await pool.query("SELECT setval('charters_id_seq', $1, false)", [nextVal]);
     await pool.query("ALTER TABLE charters ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP");
