@@ -26,6 +26,19 @@ if (process.env.DATABASE_URL) {
 
       const result = await pgPool.query(pgSql, params);
 
+      // Cast string numbers to actual numbers to match MySQL behavior
+      const castRows = result.rows.map((row) => {
+        const out = {};
+        for (const [key, val] of Object.entries(row)) {
+          if (typeof val === "string" && val !== "" && !isNaN(val) && key !== "file_path" && key !== "content" && key !== "title" && key !== "name" && key !== "description" && key !== "comment" && key !== "notes" && key !== "username" && key !== "password_hash" && key !== "password" && key !== "full_name" && key !== "role" && key !== "email" && key !== "contact" && key !== "submitted_name" && key !== "submitted_email" && key !== "original_name" && key !== "mime_type") {
+            out[key] = Number(val);
+          } else {
+            out[key] = val;
+          }
+        }
+        return out;
+      });
+
       // Simulate MySQL2 insert result
       if (result.command === "INSERT" && result.rows.length > 0) {
         return [[{ insertId: result.rows[0].id, affectedRows: result.rowCount }], []];
@@ -35,7 +48,7 @@ if (process.env.DATABASE_URL) {
         return [[{ affectedRows: result.rowCount }], []];
       }
       // Default: return rows like MySQL
-      return [result.rows, []];
+      return [castRows, []];
     },
     async getConnection() {
       return pgPool.connect();
