@@ -49,3 +49,4 @@ coverage/
 
 # Vite cache
 frontend/.vite/
+*.csv
