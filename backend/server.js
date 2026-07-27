@@ -1002,29 +1002,31 @@ async function runMigration() {
   if (!process.env.DATABASE_URL) return;
   try {
     console.log("Running schema migration...");
-    await pool.query(`
-      DO $$
-      BEGIN
-        IF NOT EXISTS (
-          SELECT 1 FROM pg_attribute WHERE attrelid = 'charters'::regclass AND attname = 'id' AND attidentity = 'a'
-        ) THEN
-          DELETE FROM charters WHERE id IS NULL;
-          ALTER TABLE charters ADD COLUMN id_new SERIAL;
-          UPDATE charters SET id_new = id WHERE id IS NOT NULL;
-          ALTER TABLE charters DROP CONSTRAINT IF EXISTS charters_pkey;
-          ALTER TABLE charters DROP COLUMN id;
-          ALTER TABLE charters RENAME COLUMN id_new TO id;
-          ALTER TABLE charters ADD PRIMARY KEY (id);
-          ALTER TABLE charters ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
-          ALTER TABLE charters ALTER COLUMN updated_at SET DEFAULT CURRENT_TIMESTAMP;
-          PERFORM setval(pg_get_serial_sequence('charters', 'id'), COALESCE((SELECT MAX(id) FROM charters), 0) + 1, false);
-          RAISE NOTICE 'Charters table fixed: id is now SERIAL';
-        END IF;
-      END $$;
-    `);
+    await pool.query("DELETE FROM charters WHERE id IS NULL");
+    await pool.query("DELETE FROM charter_pdf_edits WHERE charter_id IS NULL");
+    console.log("Deleted null-ID rows.");
+  } catch (err) {
+    console.error("Cleanup migration error:", err.message);
+  }
+  try {
+    const check = await pool.query(
+      `SELECT pg_get_serial_sequence('charters', 'id') AS seq`
+    );
+    if (!check.rows[0]?.seq) {
+      console.log("Charters id has no sequence, adding one...");
+      await pool.query("CREATE SEQUENCE IF NOT EXISTS charters_id_seq");
+      await pool.query("ALTER TABLE charters ALTER COLUMN id SET DEFAULT nextval('charters_id_seq')");
+      await pool.query("ALTER SEQUENCE charters_id_seq OWNED BY charters.id");
+      const maxRes = await pool.query("SELECT COALESCE(MAX(id), 0) AS mx FROM charters");
+      const nextVal = Number(maxRes.rows[0].mx) + 1;
+      console.log(`Setting charters_id_seq to ${nextVal}`);
+      await pool.query("SELECT setval('charters_id_seq', $1, false)", [nextVal]);
+    }
+    await pool.query("ALTER TABLE charters ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP");
+    await pool.query("ALTER TABLE charters ALTER COLUMN updated_at SET DEFAULT CURRENT_TIMESTAMP");
     console.log("Schema migration complete.");
   } catch (err) {
-    console.error("Migration error:", err.message);
+    console.error("Schema migration error:", err.message);
   }
 }
 
