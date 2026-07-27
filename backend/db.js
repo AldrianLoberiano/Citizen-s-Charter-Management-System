@@ -55,10 +55,13 @@ if (process.env.DATABASE_URL) {
         // Auto-appended RETURNING id — simulate MySQL insertId
         return [[{ insertId: result.rows[0].id, affectedRows: result.rowCount }], []];
       }
-      // UPDATE/DELETE handling — use rowCount (pg always sets this correctly)
+      // UPDATE/DELETE handling
       if (isUpdate || isDelete) {
-        const affectedRows = result.rowCount ?? castRows.length ?? 0;
-        return [[{ affectedRows: Number(affectedRows) }], []];
+        if (hadReturning && castRows.length > 0) {
+          // User wrote RETURNING explicitly — return actual rows
+          return [castRows, []];
+        }
+        return [[{ affectedRows: Number(result.rowCount ?? castRows.length ?? 0) }], []];
       }
       // Default: return rows like MySQL
       return [castRows, []];

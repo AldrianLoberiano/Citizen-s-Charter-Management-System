@@ -570,19 +570,21 @@ app.post("/api/departments", async (req, res) => {
 
 app.put("/api/departments/:id", async (req, res) => {
   try {
+    const deptId = Number(req.params.id);
+    if (!deptId) return res.status(400).json({ message: "Invalid department id" });
+
     const { name, description = "" } = req.body || {};
     if (!name?.trim()) return res.status(400).json({ message: "Department name is required" });
 
-    const [updateResult] = await pool.query(
-      "UPDATE departments SET name = ?, description = ? WHERE id = ?",
-      [name.trim(), description.trim(), req.params.id]
+    const [rows] = await pool.query(
+      "UPDATE departments SET name = ?, description = ? WHERE id = ? RETURNING *",
+      [name.trim(), description.trim(), deptId]
     );
 
-    if ((updateResult?.affectedRows || 0) === 0) {
+    if (!rows || rows.length === 0) {
       return res.status(404).json({ message: "Department not found" });
     }
 
-    const [rows] = await pool.query("SELECT * FROM departments WHERE id = ?", [req.params.id]);
     res.json(rows[0]);
   } catch (error) {
     console.error("PUT /api/departments/:id error:", error);
@@ -592,8 +594,11 @@ app.put("/api/departments/:id", async (req, res) => {
 
 app.delete("/api/departments/:id", async (req, res) => {
   try {
-    const [deleteResult] = await pool.query("DELETE FROM departments WHERE id = ?", [req.params.id]);
-    if ((deleteResult?.affectedRows || 0) === 0) return res.status(404).json({ message: "Department not found" });
+    const deptId = Number(req.params.id);
+    if (!deptId) return res.status(404).json({ message: "Department not found" });
+
+    const [rows] = await pool.query("DELETE FROM departments WHERE id = ? RETURNING id", [deptId]);
+    if (!rows || rows.length === 0) return res.status(404).json({ message: "Department not found" });
     res.status(204).send();
   } catch (error) {
     console.error("DELETE /api/departments/:id error:", error);
@@ -618,7 +623,7 @@ app.get("/api/charters", async (req, res) => {
         SELECT charter_id, submitted_name, created_at,
                ROW_NUMBER() OVER (PARTITION BY charter_id ORDER BY created_at DESC) AS rn
         FROM charter_pdf_edits
-      ) e ON e.charter_id = c.id AND e.rn = 1
+      ) e ON e.charter_id::text = c.id::text AND e.rn = 1
       ${where}
       ORDER BY c.id ASC
     `;
@@ -650,7 +655,7 @@ app.post("/api/charters", async (req, res) => {
     }
 
     const [rows] = await pool.query(
-      "INSERT INTO charters (department_id, title, content, file_path) VALUES (?, ?, ?, ?) RETURNING *",
+      "INSERT INTO charters (department_id, title, content, file_path, created_at, updated_at) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING *",
       [department_id, title.trim(), content.trim(), file_path]
     );
     res.status(201).json(rows[0]);
@@ -662,21 +667,23 @@ app.post("/api/charters", async (req, res) => {
 
 app.put("/api/charters/:id", async (req, res) => {
   try {
+    const charterId = Number(req.params.id);
+    if (!charterId) return res.status(400).json({ message: "Invalid charter id" });
+
     const { department_id, title, content, file_path = null } = req.body || {};
     if (!department_id || !title?.trim() || !content?.trim()) {
       return res.status(400).json({ message: "department_id, title, and content are required" });
     }
 
-    const [updateResult] = await pool.query(
-      "UPDATE charters SET department_id = ?, title = ?, content = ?, file_path = ? WHERE id = ?",
-      [department_id, title.trim(), content.trim(), file_path, req.params.id]
+    const [rows] = await pool.query(
+      "UPDATE charters SET department_id = ?, title = ?, content = ?, file_path = ? WHERE id = ? RETURNING *",
+      [Number(department_id), title.trim(), content.trim(), file_path, charterId]
     );
 
-    if ((updateResult?.affectedRows || 0) === 0) {
+    if (!rows || rows.length === 0) {
       return res.status(404).json({ message: "Charter not found" });
     }
 
-    const [rows] = await pool.query("SELECT * FROM charters WHERE id = ?", [req.params.id]);
     res.json(rows[0]);
   } catch (error) {
     console.error("PUT /api/charters/:id error:", error);
@@ -789,7 +796,7 @@ app.get("/api/edited-charters", async (_req, res) => {
     const [rows] = await pool.query(
       `SELECT e.*, c.title AS charter_title, d.name AS department_name
        FROM charter_pdf_edits e
-       JOIN charters c ON c.id = e.charter_id
+       JOIN charters c ON c.id::text = e.charter_id
        LEFT JOIN departments d ON d.id = c.department_id
        ORDER BY e.created_at DESC`
     );
@@ -802,13 +809,14 @@ app.get("/api/edited-charters", async (_req, res) => {
 
 app.delete("/api/edited-charters/:id", async (req, res) => {
   try {
-    const [rows] = await pool.query("SELECT file_path FROM charter_pdf_edits WHERE id = ?", [req.params.id]);
+    const editId = Number(req.params.id);
+    const [rows] = await pool.query("SELECT id, file_path FROM charter_pdf_edits WHERE id = ?", [editId]);
     if (!rows.length) return res.status(404).json({ message: "Edited charter not found" });
 
     const filePath = path.join(__dirname, "..", rows[0].file_path);
     if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
 
-    await pool.query("DELETE FROM charter_pdf_edits WHERE id = ?", [req.params.id]);
+    await pool.query("DELETE FROM charter_pdf_edits WHERE id = ? RETURNING id", [editId]);
     res.status(204).send();
   } catch (error) {
     console.error("DELETE /api/edited-charters/:id error:", error);
@@ -818,8 +826,11 @@ app.delete("/api/edited-charters/:id", async (req, res) => {
 
 app.delete("/api/charters/:id", async (req, res) => {
   try {
-    const [deleteResult] = await pool.query("DELETE FROM charters WHERE id = ?", [req.params.id]);
-    if ((deleteResult?.affectedRows || 0) === 0) return res.status(404).json({ message: "Charter not found" });
+    const charterId = Number(req.params.id);
+    if (!charterId) return res.status(404).json({ message: "Charter not found" });
+
+    const [rows] = await pool.query("DELETE FROM charters WHERE id = ? RETURNING id", [charterId]);
+    if (!rows || rows.length === 0) return res.status(404).json({ message: "Charter not found" });
     res.status(204).send();
   } catch (error) {
     console.error("DELETE /api/charters/:id error:", error);
