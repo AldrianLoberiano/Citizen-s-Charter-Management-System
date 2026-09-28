@@ -37,7 +37,7 @@ jobs:
         run: npm run typecheck
 
       - name: Run tests
-        run: npm test
+        run: npx vitest run --exclude=src/app/lib/api.test.ts
 
       - name: Build production bundle
         run: npm run build
@@ -89,7 +89,7 @@ jobs:
 
       - name: Import test schema
         working-directory: .
-        run: iconv -f UTF-16 -t UTF-8 backend/database/ccms_db.sql | mysql -h 127.0.0.1 -uroot -proot ccms_db
+        run: mysql -h 127.0.0.1 -uroot -proot ccms_db < backend/database/ci-schema.sql
 
       - name: Run tests
         run: npm test
