@@ -14,6 +14,8 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 app.disable("etag");
+const getInsertId = (result) => result?.insertId ?? result?.[0]?.insertId;
+const getAffectedRows = (result) => result?.affectedRows ?? result?.[0]?.affectedRows ?? 0;
 const port = Number(process.env.PORT || 4000);
 const allowedOrigins = (process.env.CORS_ORIGIN || "http://localhost:5173,http://localhost:5174")
   .split(",")
@@ -254,9 +256,9 @@ app.post("/api/charters/:id/edited-pdfs", editedUpload.single("file"), async (re
 
     const insertSql = `INSERT INTO charter_pdf_edits
         (charter_id, file_path, original_name, mime_type, size_bytes, submitted_name, submitted_email, notes)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING *`;
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
 
-    const [rows] = await pool.query(insertSql, [
+     const [result] = await pool.query(insertSql, [
       charterId,
       `/uploads/edited-charters/${req.file.filename}`,
       req.file.originalname,
@@ -266,6 +268,7 @@ app.post("/api/charters/:id/edited-pdfs", editedUpload.single("file"), async (re
       submitted_email.trim() || null,
       notes.trim() || null,
     ]);
+    const [rows] = await pool.query("SELECT * FROM charter_pdf_edits WHERE id = ?", [getInsertId(result)]);
     return res.status(201).json(rows[0]);
   } catch (error) {
     console.error("edited-pdfs error:", error);
@@ -557,10 +560,11 @@ app.post("/api/departments", async (req, res) => {
     const { name, description = "" } = req.body || {};
     if (!name?.trim()) return res.status(400).json({ message: "Department name is required" });
 
-    const [rows] = await pool.query(
-      "INSERT INTO departments (name, description) VALUES (?, ?) RETURNING *",
+    const [result] = await pool.query(
+      "INSERT INTO departments (name, description) VALUES (?, ?)",
       [name.trim(), description.trim()]
     );
+    const [rows] = await pool.query("SELECT * FROM departments WHERE id = ?", [getInsertId(result)]);
     res.status(201).json(rows[0]);
   } catch (error) {
     console.error("POST /api/departments error:", error);
@@ -576,15 +580,16 @@ app.put("/api/departments/:id", async (req, res) => {
     const { name, description = "" } = req.body || {};
     if (!name?.trim()) return res.status(400).json({ message: "Department name is required" });
 
-    const [rows] = await pool.query(
-      "UPDATE departments SET name = ?, description = ? WHERE id = ? RETURNING *",
+    const [result] = await pool.query(
+      "UPDATE departments SET name = ?, description = ? WHERE id = ?",
       [name.trim(), description.trim(), deptId]
     );
 
-    if (!rows || rows.length === 0) {
+    if (getAffectedRows(result) === 0) {
       return res.status(404).json({ message: "Department not found" });
     }
 
+    const [rows] = await pool.query("SELECT * FROM departments WHERE id = ?", [deptId]);
     res.json(rows[0]);
   } catch (error) {
     console.error("PUT /api/departments/:id error:", error);
@@ -597,8 +602,8 @@ app.delete("/api/departments/:id", async (req, res) => {
     const deptId = Number(req.params.id);
     if (!deptId) return res.status(404).json({ message: "Department not found" });
 
-    const [rows] = await pool.query("DELETE FROM departments WHERE id = ? RETURNING id", [deptId]);
-    if (!rows || rows.length === 0) return res.status(404).json({ message: "Department not found" });
+    const [result] = await pool.query("DELETE FROM departments WHERE id = ?", [deptId]);
+    if (getAffectedRows(result) === 0) return res.status(404).json({ message: "Department not found" });
     res.status(204).send();
   } catch (error) {
     console.error("DELETE /api/departments/:id error:", error);
@@ -623,7 +628,7 @@ app.get("/api/charters", async (req, res) => {
         SELECT charter_id, submitted_name, created_at,
                ROW_NUMBER() OVER (PARTITION BY charter_id ORDER BY created_at DESC) AS rn
         FROM charter_pdf_edits
-      ) e ON e.charter_id::bigint = c.id::bigint AND e.rn = 1
+      ) e ON e.charter_id = c.id AND e.rn = 1
       ${where}
       ORDER BY c.id ASC
     `;
@@ -654,10 +659,11 @@ app.post("/api/charters", async (req, res) => {
       return res.status(400).json({ message: "department_id, title, and content are required" });
     }
 
-    const [rows] = await pool.query(
-      "INSERT INTO charters (department_id, title, content, file_path, created_at, updated_at) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING *",
+    const [result] = await pool.query(
+      "INSERT INTO charters (department_id, title, content, file_path, created_at, updated_at) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)",
       [department_id, title.trim(), content.trim(), file_path]
     );
+    const [rows] = await pool.query("SELECT * FROM charters WHERE id = ?", [getInsertId(result)]);
     res.status(201).json(rows[0]);
   } catch (error) {
     console.error("POST /api/charters error:", error);
@@ -675,15 +681,16 @@ app.put("/api/charters/:id", async (req, res) => {
       return res.status(400).json({ message: "department_id, title, and content are required" });
     }
 
-    const [rows] = await pool.query(
-      "UPDATE charters SET department_id = ?, title = ?, content = ?, file_path = ? WHERE id = ? RETURNING *",
+    const [result] = await pool.query(
+      "UPDATE charters SET department_id = ?, title = ?, content = ?, file_path = ? WHERE id = ?",
       [Number(department_id), title.trim(), content.trim(), file_path, charterId]
     );
 
-    if (!rows || rows.length === 0) {
+    if (getAffectedRows(result) === 0) {
       return res.status(404).json({ message: "Charter not found" });
     }
 
+    const [rows] = await pool.query("SELECT * FROM charters WHERE id = ?", [charterId]);
     res.json(rows[0]);
   } catch (error) {
     console.error("PUT /api/charters/:id error:", error);
@@ -796,8 +803,8 @@ app.get("/api/edited-charters", async (_req, res) => {
     const [rows] = await pool.query(
       `SELECT e.*, c.title AS charter_title, d.name AS department_name
        FROM charter_pdf_edits e
-       JOIN charters c ON c.id::bigint = e.charter_id::bigint
-       LEFT JOIN departments d ON d.id::bigint = c.department_id::bigint
+      JOIN charters c ON c.id = e.charter_id
+      LEFT JOIN departments d ON d.id = c.department_id
        ORDER BY e.created_at DESC`
     );
     res.json(rows);
@@ -816,7 +823,7 @@ app.delete("/api/edited-charters/:id", async (req, res) => {
     const filePath = path.join(__dirname, "..", rows[0].file_path);
     if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
 
-    await pool.query("DELETE FROM charter_pdf_edits WHERE id = ? RETURNING id", [editId]);
+    await pool.query("DELETE FROM charter_pdf_edits WHERE id = ?", [editId]);
     res.status(204).send();
   } catch (error) {
     console.error("DELETE /api/edited-charters/:id error:", error);
@@ -829,8 +836,8 @@ app.delete("/api/charters/:id", async (req, res) => {
     const charterId = Number(req.params.id);
     if (!charterId) return res.status(404).json({ message: "Charter not found" });
 
-    const [rows] = await pool.query("DELETE FROM charters WHERE id = ? RETURNING id", [charterId]);
-    if (!rows || rows.length === 0) return res.status(404).json({ message: "Charter not found" });
+    const [result] = await pool.query("DELETE FROM charters WHERE id = ?", [charterId]);
+    if (getAffectedRows(result) === 0) return res.status(404).json({ message: "Charter not found" });
     res.status(204).send();
   } catch (error) {
     console.error("DELETE /api/charters/:id error:", error);
@@ -866,10 +873,11 @@ app.post("/api/charters/:id/ratings", async (req, res) => {
       return res.status(400).json({ message: "Rating must be between 1 and 5" });
     }
 
-    const [rows] = await pool.query(
-      "INSERT INTO ratings (charter_id, rating, comment) VALUES (?, ?, ?) RETURNING *",
+    const [result] = await pool.query(
+      "INSERT INTO ratings (charter_id, rating, comment) VALUES (?, ?, ?)",
       [req.params.id, parsedRating, comment.trim()]
     );
+    const [rows] = await pool.query("SELECT * FROM ratings WHERE id = ?", [getInsertId(result)]);
     res.status(201).json(rows[0]);
   } catch (error) {
     console.error("POST /api/charters/:id/ratings error:", error);
@@ -916,8 +924,8 @@ app.post("/api/charters/:id/feedback", async (req, res) => {
       return res.status(400).json({ message: "Rating must be between 1 and 5" });
     }
 
-    const [rows] = await pool.query(
-      "INSERT INTO feedback_responses (charter_id, name, email, contact, rating, comment) VALUES (?, ?, ?, ?, ?, ?) RETURNING *",
+    const [result] = await pool.query(
+      "INSERT INTO feedback_responses (charter_id, name, email, contact, rating, comment) VALUES (?, ?, ?, ?, ?, ?)",
       [
         req.params.id,
         String(name).trim() || null,
@@ -927,6 +935,7 @@ app.post("/api/charters/:id/feedback", async (req, res) => {
         String(comment).trim() || null,
       ]
     );
+    const [rows] = await pool.query("SELECT * FROM feedback_responses WHERE id = ?", [getInsertId(result)]);
     res.status(201).json(rows[0]);
   } catch (error) {
     console.error("POST /api/charters/:id/feedback error:", error);
