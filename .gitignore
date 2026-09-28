@@ -16,6 +16,7 @@ backups/
 
 # Database files (may contain sensitive data)
 *.sql
+!backend/database/ci-schema.sql
 
 # Logs
 *.log
